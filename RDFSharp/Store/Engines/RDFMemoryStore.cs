@@ -195,11 +195,11 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
     /// <summary>
     /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
     /// </summary>
-    public override RDFStore RemoveQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
+    public override RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
     {
-        foreach (RDFQuadruple quadruple in SelectQuadruples(ctx, subj, pred, obj, lit))
+        foreach (RDFQuadruple quadruple in SelectQuadruples(c, s, p, o, l))
             Index.Remove(quadruple);
         return this;
     }
@@ -220,47 +220,47 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
     /// <summary>
     /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    public override List<RDFQuadruple> SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred,RDFResource obj, RDFLiteral lit)
+    public override List<RDFQuadruple> SelectQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
     {
         #region Guards
-        if (obj != null && lit != null)
+        if (o != null && l != null)
             throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!");
         #endregion
 
         StringBuilder queryFilters = new StringBuilder(4);
-        if (ctx != null)  queryFilters.Append('C');
-        if (subj != null) queryFilters.Append('S');
-        if (pred != null) queryFilters.Append('P');
-        if (obj != null)  queryFilters.Append('O');
-        if (lit != null)  queryFilters.Append('L');
+        if (c != null) queryFilters.Append('C');
+        if (s != null) queryFilters.Append('S');
+        if (p != null) queryFilters.Append('P');
+        if (o != null) queryFilters.Append('O');
+        if (l != null) queryFilters.Append('L');
         List<RDFHashedQuadruple> hashedQuadruples = queryFilters.ToString() switch
         {
-            "C"    => [.. Index.LookupIndexByContext(ctx).Select(q => Index.Hashes[q])],
-            "S"    => [.. Index.LookupIndexBySubject(subj).Select(q => Index.Hashes[q])],
-            "P"    => [.. Index.LookupIndexByPredicate(pred).Select(q => Index.Hashes[q])],
-            "O"    => [.. Index.LookupIndexByObject(obj).Select(q => Index.Hashes[q])],
-            "L"    => [.. Index.LookupIndexByLiteral(lit).Select(q => Index.Hashes[q])],
-            "CS"   => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexBySubject(subj)).Select(q => Index.Hashes[q])],
-            "CP"   => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexByPredicate(pred)).Select(q => Index.Hashes[q])],
-            "CO"   => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexByObject(obj)).Select(q => Index.Hashes[q])],
-            "CL"   => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexByLiteral(lit)).Select(q => Index.Hashes[q])],
-            "CSP"  => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred))).Select(q => Index.Hashes[q])],
-            "CSO"  => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByObject(obj))).Select(q => Index.Hashes[q])],
-            "CSL"  => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByLiteral(lit))).Select(q => Index.Hashes[q])],
-            "CPO"  => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj))).Select(q => Index.Hashes[q])],
-            "CPL"  => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit))).Select(q => Index.Hashes[q])],
-            "CSPO" => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj)))).Select(t => Index.Hashes[t])],
-            "CSPL" => [.. Index.LookupIndexByContext(ctx).Intersect(Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit)))).Select(t => Index.Hashes[t])],
-            "SP"   => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred)).Select(q => Index.Hashes[q])],
-            "SO"   => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByObject(obj)).Select(q => Index.Hashes[q])],
-            "SL"   => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByLiteral(lit)).Select(q => Index.Hashes[q])],
-            "PO"   => [.. Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj)).Select(q => Index.Hashes[q])],
-            "PL"   => [.. Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit)).Select(q => Index.Hashes[q])],
-            "SPO"  => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj))).Select(q => Index.Hashes[q])],
-            "SPL"  => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit))).Select(q => Index.Hashes[q])],
+            "C"    => [.. Index.LookupIndexByContext(c).Select(q => Index.Hashes[q])],
+            "S"    => [.. Index.LookupIndexBySubject(s).Select(q => Index.Hashes[q])],
+            "P"    => [.. Index.LookupIndexByPredicate(p).Select(q => Index.Hashes[q])],
+            "O"    => [.. Index.LookupIndexByObject(o).Select(q => Index.Hashes[q])],
+            "L"    => [.. Index.LookupIndexByLiteral(l).Select(q => Index.Hashes[q])],
+            "CS"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s)).Select(q => Index.Hashes[q])],
+            "CP"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByPredicate(p)).Select(q => Index.Hashes[q])],
+            "CO"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByObject(o)).Select(q => Index.Hashes[q])],
+            "CL"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByLiteral(l)).Select(q => Index.Hashes[q])],
+            "CSP"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p))).Select(q => Index.Hashes[q])],
+            "CSO"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByObject(o))).Select(q => Index.Hashes[q])],
+            "CSL"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByLiteral(l))).Select(q => Index.Hashes[q])],
+            "CPO"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o))).Select(q => Index.Hashes[q])],
+            "CPL"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l))).Select(q => Index.Hashes[q])],
+            "CSPO" => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o)))).Select(t => Index.Hashes[t])],
+            "CSPL" => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l)))).Select(t => Index.Hashes[t])],
+            "SP"   => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p)).Select(q => Index.Hashes[q])],
+            "SO"   => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByObject(o)).Select(q => Index.Hashes[q])],
+            "SL"   => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByLiteral(l)).Select(q => Index.Hashes[q])],
+            "PO"   => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o)).Select(q => Index.Hashes[q])],
+            "PL"   => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l)).Select(q => Index.Hashes[q])],
+            "SPO"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o))).Select(q => Index.Hashes[q])],
+            "SPL"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l))).Select(q => Index.Hashes[q])],
             _      => [.. Index.Hashes.Values]
         };
 
