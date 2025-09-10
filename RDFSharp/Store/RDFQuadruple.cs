@@ -130,24 +130,24 @@ public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
     }
 
     /// <summary>
-    /// Builds a quadruple from the given hashed quadruple
+    /// Builds a quadruple from the given hashes
     /// </summary>
-    internal RDFQuadruple(RDFHashedQuadruple hashedQuadruple, RDFStoreIndex index)
+    internal RDFQuadruple((long qid, long cid, long sid, long pid, long oid, byte tfv) hashes, RDFStoreIndex index)
     {
-        Context = index.Contexts[hashedQuadruple.ContextID];
-        Subject = index.Resources[hashedQuadruple.SubjectID];
-        Predicate = index.Resources[hashedQuadruple.PredicateID];
-        if (hashedQuadruple.TripleFlavor == 1) //SPO
+        Context = index.Contexts[hashes.cid];
+        Subject = index.Resources[hashes.sid];
+        Predicate = index.Resources[hashes.pid];
+        if (hashes.tfv == 1) //SPO
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            Object = index.Resources[hashedQuadruple.ObjectID];
+            Object = index.Resources[hashes.oid];
         }
         else
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-            Object = index.Literals[hashedQuadruple.ObjectID];
+            Object = index.Literals[hashes.oid];
         }
-        LazyQuadrupleID = new Lazy<long>(() => hashedQuadruple.QuadrupleID);
+        LazyQuadrupleID = new Lazy<long>(() => hashes.qid);
         LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
     }
     #endregion
@@ -266,78 +266,5 @@ public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
     /// </summary>
     public Task<RDFMemoryStore> ReifyQuadrupleTermAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> quadrupleAnnotations = null)
         => Task.Run(() => ReifyQuadrupleTerm(quadrupleAnnotations));
-    #endregion
-}
-
-/// <summary>
-/// RDFHashedQuadruple represents the internal hashed representation of a quadruple
-/// </summary>
-internal sealed class RDFHashedQuadruple : IEquatable<RDFHashedQuadruple>
-{
-    #region Properties
-    /// <summary>
-    /// Identifier of the quadruple
-    /// </summary>
-    internal readonly long QuadrupleID;
-
-    /// <summary>
-    /// Identifier of the member acting as context of the quadruple
-    /// </summary>
-    internal readonly long ContextID;
-
-    /// <summary>
-    /// Identifier of the member acting as subject of the quadruple
-    /// </summary>
-    internal readonly long SubjectID;
-
-    /// <summary>
-    /// Identifier of the member acting as predicate of the quadruple
-    /// </summary>
-    internal readonly long PredicateID;
-
-    /// <summary>
-    /// Identifier of the member acting as object of the quadruple
-    /// </summary>
-    internal readonly long ObjectID;
-
-    /// <summary>
-    /// Flavor of the quadruple (1=SPO, 2=SPL)
-    /// </summary>
-    internal readonly byte TripleFlavor;
-    #endregion
-
-    #region Ctor
-    /// <summary>
-    /// Builds an hashed quadruple from the given quadruple
-    /// </summary>
-    internal RDFHashedQuadruple(RDFQuadruple quadruple)
-    {
-        TripleFlavor = (byte)quadruple.TripleFlavor;
-        QuadrupleID = quadruple.QuadrupleID;
-        ContextID = quadruple.Context.PatternMemberID;
-        SubjectID = quadruple.Subject.PatternMemberID;
-        PredicateID = quadruple.Predicate.PatternMemberID;
-        ObjectID = quadruple.Object.PatternMemberID;
-    }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Performs the equality comparison between two hashed quadruples
-    /// </summary>
-    public bool Equals(RDFHashedQuadruple other)
-        => other != null && QuadrupleID == other.QuadrupleID;
-
-    /// <summary>
-    /// Performs the equality comparison between two hashed quadruples
-    /// </summary>
-    public override bool Equals(object other)
-        => other is RDFHashedQuadruple hq && QuadrupleID == hq.QuadrupleID;
-
-    /// <summary>
-    /// Calculates the hashcode of this hashed quadruple
-    /// </summary>
-    public override int GetHashCode()
-        => QuadrupleID.GetHashCode();
     #endregion
 }

@@ -48,11 +48,11 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     {
         get
         {
-            foreach (RDFHashedQuadruple hashedQuadruple in Index.Hashes.Values)
+            foreach ((_, long cid, long sid, long pid, long oid, byte tfv) in Index.Hashes.Values)
             {
-                yield return hashedQuadruple.TripleFlavor == 1 //SPO
-                    ? new RDFQuadruple(Index.Contexts[hashedQuadruple.ContextID], Index.Resources[hashedQuadruple.SubjectID], Index.Resources[hashedQuadruple.PredicateID], Index.Resources[hashedQuadruple.ObjectID])
-                    : new RDFQuadruple(Index.Contexts[hashedQuadruple.ContextID], Index.Resources[hashedQuadruple.SubjectID], Index.Resources[hashedQuadruple.PredicateID], Index.Literals[hashedQuadruple.ObjectID]);
+                yield return tfv == 1 //SPO
+                    ? new RDFQuadruple(Index.Contexts[cid], Index.Resources[sid], Index.Resources[pid], Index.Resources[oid])
+                    : new RDFQuadruple(Index.Contexts[cid], Index.Resources[sid], Index.Resources[pid], Index.Literals[oid]);
             }
         }
     }
@@ -236,7 +236,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         if (p != null) queryFilters.Append('P');
         if (o != null) queryFilters.Append('O');
         if (l != null) queryFilters.Append('L');
-        List<RDFHashedQuadruple> hashedQuadruples = queryFilters.ToString() switch
+        List<(long qid, long cid, long sid, long pid, long oid, byte tfv)> hashes = queryFilters.ToString() switch
         {
             "C"    => [.. Index.LookupIndexByContext(c).Select(q => Index.Hashes[q])],
             "S"    => [.. Index.LookupIndexBySubject(s).Select(q => Index.Hashes[q])],
@@ -264,8 +264,8 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             _      => [.. Index.Hashes.Values]
         };
 
-        //Decompress hashed quadruples
-        return hashedQuadruples!.ConvertAll(hq => new RDFQuadruple(hq, Index));
+        //Decompress hashes
+        return hashes!.ConvertAll(hq => new RDFQuadruple(hq, Index));
     }
     #endregion
 
