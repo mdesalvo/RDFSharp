@@ -26,17 +26,17 @@ public sealed class RDFQueryException : Exception
 {
     #region Ctors
     /// <summary>
-    /// Basic ctor to throw an empty RDFQueryException
+    /// Builds an empty RDFQueryException
     /// </summary>
     public RDFQueryException() { }
 
     /// <summary>
-    /// Basic ctor to throw an RDFQueryException with message
+    /// Builds a RDFQueryException with the given message
     /// </summary>
     public RDFQueryException(string message) : base(message) { }
 
     /// <summary>
-    /// Basic ctor to throw an RDFQueryException with message and inner exception
+    /// Builds a RDFQueryException with the given message and inner exception
     /// </summary>
     public RDFQueryException(string message, Exception innerException) : base(message, innerException) { }
     #endregion

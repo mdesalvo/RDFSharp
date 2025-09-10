@@ -40,7 +40,7 @@ public sealed class RDFContext : RDFPatternMember
     public RDFContext() : this(RDFNamespaceRegister.DefaultNamespace.NamespaceUri) { }
 
     /// <summary>
-    /// String-based ctor to build a context from the given string
+    /// Builds a context from the given string
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
     public RDFContext(string ctxUri)
@@ -60,7 +60,7 @@ public sealed class RDFContext : RDFPatternMember
     }
 
     /// <summary>
-    /// Uri-based ctor to build a context from the given Uri
+    /// Builds a context from the given Uri
     /// </summary>
     public RDFContext(Uri ctxUri) : this(ctxUri?.ToString()) { }
     #endregion
