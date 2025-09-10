@@ -159,7 +159,7 @@ public sealed class RDFPattern : RDFPatternGroupMember
     /// <summary>
     /// Sets the pattern to be joined as Union with the next pattern
     /// </summary>
-    public RDFPattern UnionWithNext()
+    public RDFPattern Union()
     {
         IsOptional = false;
         JoinAsUnion = true;
@@ -170,7 +170,7 @@ public sealed class RDFPattern : RDFPatternGroupMember
     /// <summary>
     /// Sets the pattern to be joined as Minus with the next pattern
     /// </summary>
-    public RDFPattern MinusWithNext()
+    public RDFPattern Minus()
     {
         IsOptional = false;
         JoinAsUnion = false;
