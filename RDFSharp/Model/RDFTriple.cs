@@ -100,23 +100,23 @@ public sealed class RDFTriple : IEquatable<RDFTriple>
     }
 
     /// <summary>
-    /// Builds a triple from the given hashed triple
+    /// Builds a triple from the given hashes
     /// </summary>
-    internal RDFTriple(RDFHashedTriple hashedTriple, RDFGraphIndex index)
+    internal RDFTriple((long tid, long sid, long pid, long oid, byte tfv) hash, RDFGraphIndex index)
     {
-        Subject = index.Resources[hashedTriple.SubjectID];
-        Predicate = index.Resources[hashedTriple.PredicateID];
-        if (hashedTriple.TripleFlavor == 1) //SPO
+        Subject = index.Resources[hash.sid];
+        Predicate = index.Resources[hash.pid];
+        if (hash.tfv == 1) //SPO
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            Object = index.Resources[hashedTriple.ObjectID];
+            Object = index.Resources[hash.oid];
         }
         else
         {
             TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-            Object = index.Literals[hashedTriple.ObjectID];
+            Object = index.Literals[hash.oid];
         }
-        LazyTripleID = new Lazy<long>(() => hashedTriple.TripleID);
+        LazyTripleID = new Lazy<long>(() => hash.tid);
         LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
     }
     #endregion
@@ -221,72 +221,5 @@ public sealed class RDFTriple : IEquatable<RDFTriple>
 
         return reifGraph;
     }
-    #endregion
-}
-
-/// <summary>
-/// RDFHashedTriple represents the internal hashed representation of a triple
-/// </summary>
-internal sealed class RDFHashedTriple : IEquatable<RDFHashedTriple>
-{
-    #region Properties
-    /// <summary>
-    /// Identifier of the triple
-    /// </summary>
-    internal readonly long TripleID;
-
-    /// <summary>
-    /// Identifier of the member acting as subject of the triple
-    /// </summary>
-    internal readonly long SubjectID;
-
-    /// <summary>
-    /// Identifier of the member acting as predicate of the triple
-    /// </summary>
-    internal readonly long PredicateID;
-
-    /// <summary>
-    /// Identifier of the member acting as object of the triple
-    /// </summary>
-    internal readonly long ObjectID;
-
-    /// <summary>
-    /// Flavor of the triple (1=SPO, 2=SPL)
-    /// </summary>
-    internal readonly byte TripleFlavor;
-    #endregion
-
-    #region Ctor
-    /// <summary>
-    /// Builds an hashed triple from the given triple
-    /// </summary>
-    internal RDFHashedTriple(RDFTriple triple)
-    {
-        TripleFlavor = (byte)triple.TripleFlavor;
-        TripleID = triple.TripleID;
-        SubjectID = triple.Subject.PatternMemberID;
-        PredicateID = triple.Predicate.PatternMemberID;
-        ObjectID = triple.Object.PatternMemberID;
-    }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Performs the equality comparison between two hashed triples
-    /// </summary>
-    public bool Equals(RDFHashedTriple other)
-        => other != null && TripleID == other.TripleID;
-
-    /// <summary>
-    /// Performs the equality comparison between two hashed triples
-    /// </summary>
-    public override bool Equals(object other)
-        => other is RDFHashedTriple ht && TripleID == ht.TripleID;
-
-    /// <summary>
-    /// Calculates the hashcode of this hashed triple
-    /// </summary>
-    public override int GetHashCode()
-        => TripleID.GetHashCode();
     #endregion
 }

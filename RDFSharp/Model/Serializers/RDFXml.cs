@@ -101,7 +101,7 @@ internal static class RDFXml
                         ContainerType =
                             t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
                             t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag : RDFModelEnums.RDFContainerTypes.Seq,
-                        IsFloatingContainer = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))
+                        IsFloatingContainer = !graph.Index.Hashes.Any(v => v.Value.oid.Equals(t.Subject.PatternMemberID))
                     }).ToList();
 
                 //Fetch data describing collections of the graph
@@ -111,7 +111,7 @@ internal static class RDFXml
                         CollectionUri = (RDFResource)t.Subject,
                         CollectionValue = rdfFirst[s: (RDFResource)t.Subject].FirstOrDefault()?.Object,
                         CollectionNext = rdfRest[s: (RDFResource)t.Subject].FirstOrDefault()?.Object,
-                        IsFloatingCollection = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID)),
+                        IsFloatingCollection = !graph.Index.Hashes.Any(v => v.Value.oid.Equals(t.Subject.PatternMemberID)),
                         HasAllResourceItems = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)t.Subject, RDFModelEnums.RDFTripleFlavors.SPO, true)
                             .Items.TrueForAll(collItem => collItem is RDFResource)
                     }).ToList();
@@ -751,7 +751,7 @@ internal static class RDFXml
     private static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph)
     {
         List<RDFNamespace> result = [];
-        foreach (string pred in graph.Index.Hashes.Select(x => graph.Index.Resources[x.Value.PredicateID].ToString()).Distinct())
+        foreach (string pred in graph.Index.Hashes.Select(x => graph.Index.Resources[x.Value.pid].ToString()).Distinct())
         {
             RDFNamespace nspace = GenerateNamespace(pred, false);
 
