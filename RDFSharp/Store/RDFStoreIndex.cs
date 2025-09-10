@@ -158,8 +158,7 @@ internal sealed class RDFStoreIndex : IDisposable
         Hashes.Add(quadruple.QuadrupleID, new RDFHashedQuadruple(quadruple));
 
         //Context (Register)
-        if (!Contexts.ContainsKey(quadruple.Context.PatternMemberID))
-            Contexts.Add(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
+        Contexts.TryAdd(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
         //Context (Index)
         if (!IDXContexts.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex))
             IDXContexts.Add(quadruple.Context.PatternMemberID, [quadruple.QuadrupleID]);
@@ -167,8 +166,7 @@ internal sealed class RDFStoreIndex : IDisposable
             contextsIndex.Add(quadruple.QuadrupleID);
 
         //Subject (Register)
-        if (!Resources.ContainsKey(quadruple.Subject.PatternMemberID))
-            Resources.Add(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
+        Resources.TryAdd(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
         //Subject (Index)
         if (!IDXSubjects.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
             IDXSubjects.Add(quadruple.Subject.PatternMemberID, [quadruple.QuadrupleID]);
@@ -176,8 +174,7 @@ internal sealed class RDFStoreIndex : IDisposable
             subjectsIndex.Add(quadruple.QuadrupleID);
 
         //Predicate (Register)
-        if (!Resources.ContainsKey(quadruple.Predicate.PatternMemberID))
-            Resources.Add(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
+        Resources.TryAdd(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
         //Predicate (Index)
         if (!IDXPredicates.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
             IDXPredicates.Add(quadruple.Predicate.PatternMemberID, [quadruple.QuadrupleID]);
@@ -188,8 +185,7 @@ internal sealed class RDFStoreIndex : IDisposable
         if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
         {
             //Register
-            if (!Resources.ContainsKey(quadruple.Object.PatternMemberID))
-                Resources.Add(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
+            Resources.TryAdd(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
             //Index
             if (!IDXObjects.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex))
                 IDXObjects.Add(quadruple.Object.PatternMemberID, [quadruple.QuadrupleID]);
@@ -201,8 +197,7 @@ internal sealed class RDFStoreIndex : IDisposable
         else
         {
             //Register
-            if (!Literals.ContainsKey(quadruple.Object.PatternMemberID))
-                Literals.Add(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
+            Literals.TryAdd(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
             //Index
             if (!IDXLiterals.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex))
                 IDXLiterals.Add(quadruple.Object.PatternMemberID, [quadruple.QuadrupleID]);
@@ -225,7 +220,7 @@ internal sealed class RDFStoreIndex : IDisposable
 
         //Context
         if (IDXContexts.TryGetValue(quadruple.Context.PatternMemberID, out HashSet<long> contextsIndex)
-            && contextsIndex.Contains(quadruple.QuadrupleID))
+             && contextsIndex.Contains(quadruple.QuadrupleID))
         {
             contextsIndex.Remove(quadruple.QuadrupleID);
             if (contextsIndex.Count == 0)
@@ -234,7 +229,7 @@ internal sealed class RDFStoreIndex : IDisposable
 
         //Subject
         if (IDXSubjects.TryGetValue(quadruple.Subject.PatternMemberID, out HashSet<long> subjectsIndex)
-            && subjectsIndex.Contains(quadruple.QuadrupleID))
+             && subjectsIndex.Contains(quadruple.QuadrupleID))
         {
             subjectsIndex.Remove(quadruple.QuadrupleID);
             if (subjectsIndex.Count == 0)
@@ -243,7 +238,7 @@ internal sealed class RDFStoreIndex : IDisposable
 
         //Predicate
         if (IDXPredicates.TryGetValue(quadruple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex)
-            && predicatesIndex.Contains(quadruple.QuadrupleID))
+             && predicatesIndex.Contains(quadruple.QuadrupleID))
         {
             predicatesIndex.Remove(quadruple.QuadrupleID);
             if (predicatesIndex.Count == 0)
@@ -254,7 +249,7 @@ internal sealed class RDFStoreIndex : IDisposable
         if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
         {
             if (IDXObjects.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> objectsIndex)
-                && objectsIndex.Contains(quadruple.QuadrupleID))
+                 && objectsIndex.Contains(quadruple.QuadrupleID))
             {
                 objectsIndex.Remove(quadruple.QuadrupleID);
                 if (objectsIndex.Count == 0)
@@ -266,7 +261,7 @@ internal sealed class RDFStoreIndex : IDisposable
         else
         {
             if (IDXLiterals.TryGetValue(quadruple.Object.PatternMemberID, out HashSet<long> literalsIndex)
-                && literalsIndex.Contains(quadruple.QuadrupleID))
+                 && literalsIndex.Contains(quadruple.QuadrupleID))
             {
                 literalsIndex.Remove(quadruple.QuadrupleID);
                 if (literalsIndex.Count == 0)
@@ -280,32 +275,40 @@ internal sealed class RDFStoreIndex : IDisposable
 
         //Subject (Register)
         if (!IDXSubjects.ContainsKey(quadruple.Subject.PatternMemberID)
-            && !IDXPredicates.ContainsKey(quadruple.Subject.PatternMemberID)
-            && !IDXObjects.ContainsKey(quadruple.Subject.PatternMemberID))
+             && !IDXPredicates.ContainsKey(quadruple.Subject.PatternMemberID)
+             && !IDXObjects.ContainsKey(quadruple.Subject.PatternMemberID))
+        {
             Resources.Remove(quadruple.Subject.PatternMemberID);
+        }
 
         //Predicate (Register)
         if (!IDXSubjects.ContainsKey(quadruple.Predicate.PatternMemberID)
-            && !IDXPredicates.ContainsKey(quadruple.Predicate.PatternMemberID)
-            && !IDXObjects.ContainsKey(quadruple.Predicate.PatternMemberID))
+             && !IDXPredicates.ContainsKey(quadruple.Predicate.PatternMemberID)
+             && !IDXObjects.ContainsKey(quadruple.Predicate.PatternMemberID))
+        {
             Resources.Remove(quadruple.Predicate.PatternMemberID);
+        }
 
         //Object (Register)
         if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
         {
             if (!IDXSubjects.ContainsKey(quadruple.Object.PatternMemberID)
-                && !IDXPredicates.ContainsKey(quadruple.Object.PatternMemberID)
-                && !IDXObjects.ContainsKey(quadruple.Object.PatternMemberID))
+                 && !IDXPredicates.ContainsKey(quadruple.Object.PatternMemberID)
+                 && !IDXObjects.ContainsKey(quadruple.Object.PatternMemberID))
+            {
                 Resources.Remove(quadruple.Object.PatternMemberID);
+            }
         }
 
         //Literal (Register)
         else
         {
             if (!IDXSubjects.ContainsKey(quadruple.Object.PatternMemberID)
-                && !IDXPredicates.ContainsKey(quadruple.Object.PatternMemberID)
-                && !IDXLiterals.ContainsKey(quadruple.Object.PatternMemberID))
+                 && !IDXPredicates.ContainsKey(quadruple.Object.PatternMemberID)
+                 && !IDXLiterals.ContainsKey(quadruple.Object.PatternMemberID))
+            {
                 Literals.Remove(quadruple.Object.PatternMemberID);
+            }
         }
 
         return this;
