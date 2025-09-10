@@ -25,13 +25,9 @@ public sealed class RDFPlainLiteral : RDFLiteral
 {
     #region Statics
     /// <summary>
-    /// Represents an handy plain literal for empty strings
+    /// Represents a handy plain literal for empty strings
     /// </summary>
     public static readonly RDFPlainLiteral Empty = new RDFPlainLiteral(string.Empty);
-    /// <summary>
-    /// Represents an handy plain literal for querying any language tags (*)
-    /// </summary>
-    public static readonly RDFPlainLiteral Star = new RDFPlainLiteral("*");
     #endregion
 
     #region Properties

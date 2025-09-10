@@ -23,19 +23,19 @@ public sealed class RDFTypedLiteral : RDFLiteral
 {
     #region Statics
     /// <summary>
-    /// Represents an handy typed literal for boolean True
+    /// Represents a handy typed literal for boolean True
     /// </summary>
     public static readonly RDFTypedLiteral True = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
     /// <summary>
-    /// Represents an handy typed literal for boolean False
+    /// Represents a handy typed literal for boolean False
     /// </summary>
     public static readonly RDFTypedLiteral False = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
     /// <summary>
-    /// Represents an handy typed literal for integer Zero
+    /// Represents a handy typed literal for integer Zero
     /// </summary>
     public static readonly RDFTypedLiteral Zero = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
     /// <summary>
-    /// Represents an handy typed literal for integer One
+    /// Represents a handy typed literal for integer One
     /// </summary>
     public static readonly RDFTypedLiteral One = new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
     #endregion
