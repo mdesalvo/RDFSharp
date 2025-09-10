@@ -116,7 +116,7 @@ public sealed class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
     /// </summary>
     public RDFFederation AddFederation(RDFFederation federation)
     {
-        if (federation?.Equals(this) == false)
+        if (federation != null && !federation.Equals(this))
             DataSources.Add(federation);
         return this;
     }
