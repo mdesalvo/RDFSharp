@@ -237,18 +237,18 @@ public class RDFCollectionTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(3, graph.TriplesCount);
-        Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST).TripleID));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST)));
 
         switch (itemType)
         {
             case RDFModelEnums.RDFItemTypes.Literal:
-                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFPlainLiteral("lit1")).TripleID));
+                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFPlainLiteral("lit1"))));
                 break;
             case RDFModelEnums.RDFItemTypes.Resource:
-                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFResource("http://item1/")).TripleID));
+                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.FIRST, new RDFResource("http://item1/"))));
                 break;
         }
-        Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL).TripleID));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(coll.ReificationSubject, RDFVocabulary.RDF.REST, RDFVocabulary.RDF.NIL)));
     }
 
     [TestMethod]

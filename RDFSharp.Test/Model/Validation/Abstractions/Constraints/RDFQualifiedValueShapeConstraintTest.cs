@@ -65,13 +65,13 @@ public class RDFQualifiedValueShapeConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(3, graph.TriplesCount);
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE.PatternMemberID)
                                                     && t.Value.oid.Equals(new RDFResource("ex:QVShape").PatternMemberID)));
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT.PatternMemberID)
                                                     && t.Value.oid.Equals(RDFTypedLiteral.One.PatternMemberID)));
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT.PatternMemberID)
                                                     && t.Value.oid.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
     }

@@ -57,32 +57,32 @@ public class RDFNodeKindConstraintTest
         switch (nodeKind)
         {
             case RDFValidationEnums.RDFNodeKinds.BlankNode:
-                Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                             && t.Value.pid.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
                                                             && t.Value.oid.Equals(RDFVocabulary.SHACL.BLANK_NODE.PatternMemberID)));
                 break;
             case RDFValidationEnums.RDFNodeKinds.BlankNodeOrIRI:
-                Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                             && t.Value.pid.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
                                                             && t.Value.oid.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_IRI.PatternMemberID)));
                 break;
             case RDFValidationEnums.RDFNodeKinds.BlankNodeOrLiteral:
-                Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                             && t.Value.pid.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
                                                             && t.Value.oid.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_LITERAL.PatternMemberID)));
                 break;
             case RDFValidationEnums.RDFNodeKinds.IRI:
-                Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                             && t.Value.pid.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
                                                             && t.Value.oid.Equals(RDFVocabulary.SHACL.IRI.PatternMemberID)));
                 break;
             case RDFValidationEnums.RDFNodeKinds.IRIOrLiteral:
-                Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                             && t.Value.pid.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
                                                             && t.Value.oid.Equals(RDFVocabulary.SHACL.IRI_OR_LITERAL.PatternMemberID)));
                 break;
             case RDFValidationEnums.RDFNodeKinds.Literal:
-                Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                             && t.Value.pid.Equals(RDFVocabulary.SHACL.NODE_KIND.PatternMemberID)
                                                             && t.Value.oid.Equals(RDFVocabulary.SHACL.LITERAL.PatternMemberID)));
                 break;

@@ -51,7 +51,7 @@ public class RDFMinLengthConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.MIN_LENGTH.PatternMemberID)
                                                     && t.Value.oid.Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
     }
