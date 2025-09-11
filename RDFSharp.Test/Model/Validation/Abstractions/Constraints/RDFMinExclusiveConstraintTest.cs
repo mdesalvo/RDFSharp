@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
+using System.Data;
 using System.Linq;
 
 namespace RDFSharp.Test.Model;
@@ -46,9 +47,9 @@ public class RDFMinExclusiveConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE.PatternMemberID)
-                                                    && t.Value.oid.Equals(new RDFResource("ex:value").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFResource("ex:value").PatternMemberID)));
     }
 
     [TestMethod]
@@ -72,9 +73,9 @@ public class RDFMinExclusiveConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE.PatternMemberID)
-                                                    && t.Value.oid.Equals(new RDFPlainLiteral("value").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFPlainLiteral("value").PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE
