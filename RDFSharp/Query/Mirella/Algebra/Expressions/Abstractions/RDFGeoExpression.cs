@@ -72,8 +72,6 @@ public abstract class RDFGeoExpression : RDFExpression
     /// </summary>
     internal override RDFPatternMember ApplyExpression(DataRow row)
     {
-        RDFTypedLiteral expressionResult = null;
-
         #region Guards
         if (LeftArgument is RDFVariable lv && !row.Table.Columns.Contains(lv.ToString()))
             return null;
@@ -81,6 +79,7 @@ public abstract class RDFGeoExpression : RDFExpression
             return null;
         #endregion
 
+        RDFTypedLiteral expressionResult = null;
         try
         {
             #region Evaluate Arguments
@@ -297,7 +296,6 @@ public abstract class RDFGeoExpression : RDFExpression
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
         return expressionResult;
     }
     #endregion

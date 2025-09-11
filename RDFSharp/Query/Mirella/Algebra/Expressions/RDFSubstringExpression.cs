@@ -91,13 +91,12 @@ public sealed class RDFSubstringExpression : RDFExpression
     /// </summary>
     internal override RDFPatternMember ApplyExpression(DataRow row)
     {
-        RDFPlainLiteral expressionResult = null;
-
         #region Guards
         if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
             return null;
         #endregion
 
+        RDFPlainLiteral expressionResult = null;
         try
         {
             #region Evaluate Arguments
@@ -142,7 +141,6 @@ public sealed class RDFSubstringExpression : RDFExpression
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
-
         return expressionResult;
     }
     #endregion
