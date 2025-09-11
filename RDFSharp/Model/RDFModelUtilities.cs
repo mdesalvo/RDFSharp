@@ -208,10 +208,11 @@ public static class RDFModelUtilities
         foreach (RDFTriple datatypeTriple in graph[p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDFS.DATATYPE])
         {
             RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
+            RDFGraph datatypeGraph = graph[s: datatypeIRI];
 
             //Try detect a faceted datatype
-            if (graph[s: datatypeIRI, p: RDFVocabulary.OWL.WITH_RESTRICTIONS].FirstOrDefault()?.Object is RDFResource facetsRepresentative
-                && graph[s: datatypeIRI, p: RDFVocabulary.OWL.ON_DATATYPE].FirstOrDefault()?.Object is RDFResource onDatatype)
+            if (datatypeGraph[p: RDFVocabulary.OWL.WITH_RESTRICTIONS].FirstOrDefault()?.Object is RDFResource facetsRepresentative
+                 && datatypeGraph[p: RDFVocabulary.OWL.ON_DATATYPE].FirstOrDefault()?.Object is RDFResource onDatatype)
             {
                 //Detect the target datatype (fallback to rdfs:Literal in case not found)
                 RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
@@ -222,94 +223,66 @@ public static class RDFModelUtilities
                 RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
                 foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
                 {
+                    RDFGraph facetGraph = graph[s: facet];
+
                     //xsd:length
-                    if (graph[s: facet, p: RDFVocabulary.XSD.LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
-                        && facetLength.HasDecimalDatatype() && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
+                    if (facetGraph[p: RDFVocabulary.XSD.LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
+                         && facetLength.HasDecimalDatatype()
+                         && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
                     {
                         targetFacets.Add(new RDFLengthFacet(facetLengthValue));
                         continue;
                     }
                     //xsd:maxExclusive
-                    if (graph[s: facet, p: RDFVocabulary.XSD.MAX_EXCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
-                        && facetMaxExclusive.HasDecimalDatatype())
+                    if (facetGraph[p: RDFVocabulary.XSD.MAX_EXCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
+                         && facetMaxExclusive.HasDecimalDatatype() && double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
                     {
-                        //owl:rational needs parsing and evaluation before being compared
-                        if (facetMaxExclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        {
-                            targetFacets.Add(new RDFMaxExclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMaxExclusive), CultureInfo.InvariantCulture)));
-                            continue;
-                        }
-                        if (double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
-                        {
-                            targetFacets.Add(new RDFMaxExclusiveFacet(facetMaxExclusiveValue));
-                            continue;
-                        }
+                        targetFacets.Add(new RDFMaxExclusiveFacet(facetMaxExclusiveValue));
+                        continue;
                     }
                     //xsd:maxInclusive
-                    if (graph[s: facet, p: RDFVocabulary.XSD.MAX_INCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxInclusive
-                        && facetMaxInclusive.HasDecimalDatatype())
+                    if (facetGraph[p: RDFVocabulary.XSD.MAX_INCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxInclusive
+                         && facetMaxInclusive.HasDecimalDatatype()
+                         && double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxInclusiveValue))
                     {
-                        //owl:rational needs parsing and evaluation before being compared
-                        if (facetMaxInclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        {
-                            targetFacets.Add(new RDFMaxInclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMaxInclusive), CultureInfo.InvariantCulture)));
-                            continue;
-                        }
-                        if (double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxInclusiveValue))
-                        {
-                            targetFacets.Add(new RDFMaxInclusiveFacet(facetMaxInclusiveValue));
-                            continue;
-                        }
+                        targetFacets.Add(new RDFMaxInclusiveFacet(facetMaxInclusiveValue));
+                        continue;
                     }
                     //xsd:maxLength
-                    if (graph[s: facet, p: RDFVocabulary.XSD.MAX_LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
-                        && facetMaxLength.HasDecimalDatatype() && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
+                    if (facetGraph[p: RDFVocabulary.XSD.MAX_LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
+                         && facetMaxLength.HasDecimalDatatype()
+                         && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
                     {
                         targetFacets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
                         continue;
                     }
                     //xsd:minExclusive
                     if (graph[s: facet, RDFVocabulary.XSD.MIN_EXCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMinExclusive
-                        && facetMinExclusive.HasDecimalDatatype())
+                         && facetMinExclusive.HasDecimalDatatype()
+                         && double.TryParse(facetMinExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinExclusiveValue))
                     {
-                        //owl:rational needs parsing and evaluation before being compared
-                        if (facetMinExclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        {
-                            targetFacets.Add(new RDFMinExclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMinExclusive), CultureInfo.InvariantCulture)));
-                            continue;
-                        }
-                        if (double.TryParse(facetMinExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinExclusiveValue))
-                        {
-                            targetFacets.Add(new RDFMinExclusiveFacet(facetMinExclusiveValue));
-                            continue;
-                        }
+                        targetFacets.Add(new RDFMinExclusiveFacet(facetMinExclusiveValue));
+                        continue;
                     }
                     //xsd:minInclusive
-                    if (graph[s: facet, p: RDFVocabulary.XSD.MIN_INCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMinInclusive
-                        && facetMinInclusive.HasDecimalDatatype())
+                    if (facetGraph[p: RDFVocabulary.XSD.MIN_INCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMinInclusive
+                         && facetMinInclusive.HasDecimalDatatype()
+                         && double.TryParse(facetMinInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinInclusiveValue))
                     {
-                        //owl:rational needs parsing and evaluation before being compared
-                        if (facetMinInclusive.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        {
-                            targetFacets.Add(new RDFMinInclusiveFacet(Convert.ToDouble(ComputeOWLRationalValue(facetMinInclusive), CultureInfo.InvariantCulture)));
-                            continue;
-                        }
-                        if (double.TryParse(facetMinInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinInclusiveValue))
-                        {
-                            targetFacets.Add(new RDFMinInclusiveFacet(facetMinInclusiveValue));
-                            continue;
-                        }
+                        targetFacets.Add(new RDFMinInclusiveFacet(facetMinInclusiveValue));
+                        continue;
                     }
                     //xsd:minLength
-                    if (graph[s: facet, p: RDFVocabulary.XSD.MIN_LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
-                        && facetMinLength.HasDecimalDatatype() && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
+                    if (facetGraph[p: RDFVocabulary.XSD.MIN_LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
+                         && facetMinLength.HasDecimalDatatype()
+                         && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
                     {
                         targetFacets.Add(new RDFMinLengthFacet(facetMinLengthValue));
                         continue;
                     }
                     //xsd:pattern
-                    if (graph[s: facet, p: RDFVocabulary.XSD.PATTERN].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
-                        && facetPattern.HasStringDatatype())
+                    if (facetGraph[p: RDFVocabulary.XSD.PATTERN].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
+                         && facetPattern.HasStringDatatype())
                     {
                         targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
                     }
@@ -320,7 +293,7 @@ public static class RDFModelUtilities
             }
 
             //Try detect an alias datatype
-            else if (graph[s: datatypeIRI, p: RDFVocabulary.OWL.EQUIVALENT_CLASS].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
+            else if (datatypeGraph[p: RDFVocabulary.OWL.EQUIVALENT_CLASS].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
             {
                 //Detect the target datatype (fallback to rdfs:Literal in case not found)
                 RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
