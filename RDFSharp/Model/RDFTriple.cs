@@ -98,27 +98,6 @@ public sealed class RDFTriple : IEquatable<RDFTriple>
         LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
         LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
     }
-
-    /// <summary>
-    /// Builds a triple from the given hashes
-    /// </summary>
-    internal RDFTriple((long tid, long sid, long pid, long oid, byte tfv) hash, RDFGraphIndex index)
-    {
-        Subject = index.Resources[hash.sid];
-        Predicate = index.Resources[hash.pid];
-        if (hash.tfv == 1) //SPO
-        {
-            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-            Object = index.Resources[hash.oid];
-        }
-        else
-        {
-            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-            Object = index.Literals[hash.oid];
-        }
-        LazyTripleID = new Lazy<long>(() => hash.tid);
-        LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
-    }
     #endregion
 
     #region Interfaces

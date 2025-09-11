@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace RDFSharp.Model;
 
@@ -26,39 +28,9 @@ internal sealed class RDFGraphIndex : IDisposable
 {
     #region Properties
     /// <summary>
-    /// Hashed representation of the triples
+    /// Table storing the hashed representations of the index's triples
     /// </summary>
-    internal Dictionary<long, (long tid, long sid, long pid, long oid, byte tfv)> Hashes { get; set; }
-
-    /// <summary>
-    /// Register of the resources
-    /// </summary>
-    internal Dictionary<long, RDFResource> Resources { get; set; }
-
-    /// <summary>
-    /// Register of the literals
-    /// </summary>
-    internal Dictionary<long, RDFLiteral> Literals { get; set; }
-
-    /// <summary>
-    /// Index on the subjects of the triples
-    /// </summary>
-    internal Dictionary<long, HashSet<long>> IDXSubjects { get; set; }
-
-    /// <summary>
-    /// Index on the predicates of the triples
-    /// </summary>
-    internal Dictionary<long, HashSet<long>> IDXPredicates { get; set; }
-
-    /// <summary>
-    /// Index on the objects of the triples
-    /// </summary>
-    internal Dictionary<long, HashSet<long>> IDXObjects { get; set; }
-
-    /// <summary>
-    /// Index on the literals of the triples
-    /// </summary>
-    internal Dictionary<long, HashSet<long>> IDXLiterals { get; set; }
+    internal DataTable Triples { get; set; }
 
     /// <summary>
     /// Flag indicating that the index has already been disposed
@@ -72,16 +44,15 @@ internal sealed class RDFGraphIndex : IDisposable
     /// </summary>
     internal RDFGraphIndex()
     {
-        //Hashes
-        Hashes = [];
-        //Registers
-        Resources = [];
-        Literals = [];
-        //Indexes
-        IDXSubjects = [];
-        IDXPredicates = [];
-        IDXObjects = [];
-        IDXLiterals = [];
+        Triples = new DataTable();
+        Triples.Columns.Add("?TID", typeof(long));
+        Triples.Columns.Add("?SID", typeof(long));
+        Triples.Columns.Add("?PID", typeof(long));
+        Triples.Columns.Add("?OID", typeof(long));
+        Triples.Columns.Add("?TFV", typeof(RDFModelEnums.RDFTripleFlavors));
+        Triples.PrimaryKey = [Triples.Columns["?TID"]];
+        Triples.ExtendedProperties.Add("RES", new Dictionary<long, RDFResource>());
+        Triples.ExtendedProperties.Add("LIT", new Dictionary<long, RDFLiteral>());
     }
 
     /// <summary>
@@ -111,18 +82,10 @@ internal sealed class RDFGraphIndex : IDisposable
 
         if (disposing)
         {
-            Clear();
-
-            //Hashes
-            Hashes = null;
-            //Registers
-            Resources = null;
-            Literals = null;
-            //Indexes
-            IDXSubjects = null;
-            IDXPredicates = null;
-            IDXObjects = null;
-            IDXLiterals = null;
+            Triples?.Clear();
+            Triples?.ExtendedProperties.Clear();
+            Triples?.Dispose();
+            Triples = null;
         }
 
         Disposed = true;
@@ -138,53 +101,26 @@ internal sealed class RDFGraphIndex : IDisposable
     internal RDFGraphIndex Add(RDFTriple triple)
     {
         #region Guards
-        if (Hashes.ContainsKey(triple.TripleID))
+        if (Triples.Rows.Find(triple.TripleID) is not null)
             return this;
         #endregion
 
-        //Triple (Hash)
-        Hashes.Add(triple.TripleID, (tid: triple.TripleID, sid: triple.Subject.PatternMemberID,
-            pid: triple.Predicate.PatternMemberID, oid: triple.Object.PatternMemberID, tfv: (byte)triple.TripleFlavor));
+        //Merge the given triple into the table
+        DataRow addRow = Triples.NewRow();
+        addRow["?TID"] = triple.TripleID;
+        addRow["?SID"] = triple.Subject.PatternMemberID;
+        addRow["?PID"] = triple.Predicate.PatternMemberID;
+        addRow["?OID"] = triple.Object.PatternMemberID;
+        addRow["?TFV"] = triple.TripleFlavor;
+        Triples.Rows.Add(addRow);
 
-        //Subject (Register)
-        Resources.TryAdd(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
-        //Subject (Index)
-        if (!IDXSubjects.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
-            IDXSubjects.Add(triple.Subject.PatternMemberID, [triple.TripleID]);
-        else
-            subjectsIndex.Add(triple.TripleID);
-
-        //Predicate (Register)
-        Resources.TryAdd(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
-        //Predicate (Index)
-        if (!IDXPredicates.TryGetValue(triple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
-            IDXPredicates.Add(triple.Predicate.PatternMemberID, [triple.TripleID]);
-        else
-            predicatesIndex.Add(triple.TripleID);
-
-        //Object
+        //Update metadata with elements of the given triple
+        ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"]).TryAdd(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
+        ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"]).TryAdd(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
         if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-        {
-            //Register
-            Resources.TryAdd(triple.Object.PatternMemberID, (RDFResource)triple.Object);
-            //Index
-            if (!IDXObjects.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> objectsIndex))
-                IDXObjects.Add(triple.Object.PatternMemberID, [triple.TripleID]);
-            else
-                objectsIndex.Add(triple.TripleID);
-        }
-
-        //Literal
+            ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"]).TryAdd(triple.Object.PatternMemberID, (RDFResource)triple.Object);
         else
-        {
-            //Register
-            Literals.TryAdd(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
-            //Index
-            if (!IDXLiterals.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> literalsIndex))
-                IDXLiterals.Add(triple.Object.PatternMemberID, [triple.TripleID]);
-            else
-                literalsIndex.Add(triple.TripleID);
-        }
+            ((Dictionary<long, RDFLiteral>)Triples.ExtendedProperties["LIT"]).TryAdd(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
 
         return this;
     }
@@ -196,134 +132,31 @@ internal sealed class RDFGraphIndex : IDisposable
     /// </summary>
     internal RDFGraphIndex Remove(RDFTriple triple)
     {
-        //Triple (Hash)
-        Hashes.Remove(triple.TripleID);
+        //Remove the given triple from the table
+        DataRow delRow = Triples.Rows.Find(triple.TripleID);
+        if (delRow is null)
+            return this;
+        Triples.Rows.Remove(delRow);
 
-        //Subject (Index)
-        if (IDXSubjects.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex)
-             && subjectsIndex.Contains(triple.TripleID))
+        //Update metadata with elements of the given triple
+        if (Triples.Select($"?SID == {triple.Subject.PatternMemberID} OR ?PID == {triple.Subject.PatternMemberID} OR (?OID == {triple.Subject.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO})").Length == 0)
+            ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"]).Remove(triple.Subject.PatternMemberID);
+        if (Triples.Select($"?SID == {triple.Predicate.PatternMemberID} OR ?PID == {triple.Predicate.PatternMemberID} OR (?OID == {triple.Predicate.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO})").Length == 0)
+            ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"]).Remove(triple.Predicate.PatternMemberID);
+        switch (triple.TripleFlavor)
         {
-            subjectsIndex.Remove(triple.TripleID);
-            if (subjectsIndex.Count == 0)
-                IDXSubjects.Remove(triple.Subject.PatternMemberID);
-        }
-
-        //Predicate (Index)
-        if (IDXPredicates.TryGetValue(triple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex)
-             && predicatesIndex.Contains(triple.TripleID))
-        {
-            predicatesIndex.Remove(triple.TripleID);
-            if (predicatesIndex.Count == 0)
-                IDXPredicates.Remove(triple.Predicate.PatternMemberID);
-        }
-
-        //Object (Index)
-        if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-        {
-            if (IDXObjects.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> objectsIndex)
-                 && objectsIndex.Contains(triple.TripleID))
-            {
-                objectsIndex.Remove(triple.TripleID);
-                if (objectsIndex.Count == 0)
-                    IDXObjects.Remove(triple.Object.PatternMemberID);
-            }
-        }
-
-        //Literal (Index)
-        else
-        {
-            if (IDXLiterals.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> literalsIndex)
-                 && literalsIndex.Contains(triple.TripleID))
-            {
-                literalsIndex.Remove(triple.TripleID);
-                if (literalsIndex.Count == 0)
-                    IDXLiterals.Remove(triple.Object.PatternMemberID);
-            }
-        }
-
-        //Subject (Register)
-        if (!IDXSubjects.ContainsKey(triple.Subject.PatternMemberID)
-             && !IDXPredicates.ContainsKey(triple.Subject.PatternMemberID)
-             && !IDXObjects.ContainsKey(triple.Subject.PatternMemberID))
-        {
-            Resources.Remove(triple.Subject.PatternMemberID);
-        }
-
-        //Predicate (Register)
-        if (!IDXSubjects.ContainsKey(triple.Predicate.PatternMemberID)
-             && !IDXPredicates.ContainsKey(triple.Predicate.PatternMemberID)
-             && !IDXObjects.ContainsKey(triple.Predicate.PatternMemberID))
-        {
-            Resources.Remove(triple.Predicate.PatternMemberID);
-        }
-
-        //Object (Register)
-        if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-        {
-            if (!IDXSubjects.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXPredicates.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXObjects.ContainsKey(triple.Object.PatternMemberID))
-            {
-                Resources.Remove(triple.Object.PatternMemberID);
-            }
-        }
-
-        //Literal (Register)
-        else
-        {
-            if (!IDXSubjects.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXPredicates.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXLiterals.ContainsKey(triple.Object.PatternMemberID))
-            {
-                Literals.Remove(triple.Object.PatternMemberID);
-            }
+            case RDFModelEnums.RDFTripleFlavors.SPO:
+                if (Triples.Select($"?SID == {triple.Object.PatternMemberID} OR ?PID == {triple.Object.PatternMemberID} OR (?OID == {triple.Object.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO})").Length == 0)
+                    ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"]).Remove(triple.Object.PatternMemberID);
+                break;
+            case RDFModelEnums.RDFTripleFlavors.SPL:
+                if (Triples.Select($"?OID == {triple.Object.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}").Length == 0)
+                    ((Dictionary<long, RDFLiteral>)Triples.ExtendedProperties["LIT"]).Remove(triple.Object.PatternMemberID);
+                break;
         }
 
         return this;
     }
-
-    /// <summary>
-    /// Clears the index
-    /// </summary>
-    internal void Clear()
-    {
-        //Hash
-        Hashes.Clear();
-        //Registers
-        Resources.Clear();
-        Literals.Clear();
-        //Indexes
-        IDXSubjects.Clear();
-        IDXPredicates.Clear();
-        IDXObjects.Clear();
-        IDXLiterals.Clear();
-    }
-    #endregion
-
-    #region Select
-    /// <summary>
-    /// Selects the triples indexed by the given subject
-    /// </summary>
-    internal HashSet<long> LookupIndexBySubject(RDFResource subj)
-        => IDXSubjects.TryGetValue(subj.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
-
-    /// <summary>
-    /// Selects the triples indexed by the given predicate
-    /// </summary>
-    internal HashSet<long> LookupIndexByPredicate(RDFResource pred)
-        => IDXPredicates.TryGetValue(pred.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
-
-    /// <summary>
-    /// Selects the triples indexed by the given object
-    /// </summary>
-    internal HashSet<long> LookupIndexByObject(RDFResource obj)
-        => IDXObjects.TryGetValue(obj.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
-
-    /// <summary>
-    /// Selects the triples indexed by the given literal
-    /// </summary>
-    internal HashSet<long> LookupIndexByLiteral(RDFLiteral lit)
-        => IDXLiterals.TryGetValue(lit.PatternMemberID, out HashSet<long> index) ? index : RDFModelUtilities.EmptyHashSet;
     #endregion
 
     #endregion
