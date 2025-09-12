@@ -103,7 +103,7 @@ internal static class RDFXml
                         ContainerType =
                             t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
                             t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag : RDFModelEnums.RDFContainerTypes.Seq,
-                        IsFloatingContainer = graph.Triples.Select($"[?OID] = {t.Subject.PatternMemberID} AND [?TFV] = 1").Length == 0
+                        IsFloatingContainer = graph.Triples.Select($"OID = {t.Subject.PatternMemberID} AND TFV = 1").Length == 0
                     }).ToList();
 
                 //Fetch data describing collections of the graph
@@ -113,7 +113,7 @@ internal static class RDFXml
                         CollectionUri = (RDFResource)t.Subject,
                         CollectionValue = rdfFirst[s: (RDFResource)t.Subject].FirstOrDefault()?.Object,
                         CollectionNext = rdfRest[s: (RDFResource)t.Subject].FirstOrDefault()?.Object,
-                        IsFloatingCollection = graph.Triples.Select($"[?OID] = {t.Subject.PatternMemberID} AND [?TFV] = 1").Length == 0,
+                        IsFloatingCollection = graph.Triples.Select($"OID = {t.Subject.PatternMemberID} AND TFV = 1").Length == 0,
                         HasAllResourceItems = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)t.Subject, RDFModelEnums.RDFTripleFlavors.SPO, true)
                             .Items.TrueForAll(collItem => collItem is RDFResource)
                     }).ToList();
@@ -753,7 +753,7 @@ internal static class RDFXml
     private static List<RDFNamespace> GetAutomaticNamespaces(RDFGraph graph)
     {
         List<RDFNamespace> result = [];
-        foreach (string pred in graph.Triples.AsEnumerable().Select(row => ((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"])![row.Field<long>("?PID")].ToString()).Distinct())
+        foreach (string pred in graph.Triples.AsEnumerable().Select(row => ((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"])![row.Field<long>("PID")].ToString()).Distinct())
         {
             RDFNamespace nspace = GenerateNamespace(pred, false);
 

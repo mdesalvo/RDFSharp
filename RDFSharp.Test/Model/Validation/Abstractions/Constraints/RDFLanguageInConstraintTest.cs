@@ -58,19 +58,19 @@ public class RDFLanguageInConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(10, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.LANGUAGE_IN.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(RDFVocabulary.RDF.LIST.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFPlainLiteral("EN-US").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFPlainLiteral("EN-US--LTR").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFPlainLiteral("IT-IT").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.LANGUAGE_IN.PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("PID").Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+                                                    && t.Field<long>("OID").Equals(RDFVocabulary.RDF.LIST.PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                    && t.Field<long>("OID").Equals(new RDFPlainLiteral("EN-US").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                    && t.Field<long>("OID").Equals(new RDFPlainLiteral("EN-US--LTR").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                    && t.Field<long>("OID").Equals(new RDFPlainLiteral("IT-IT").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+                                                    && t.Field<long>("OID").Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
     }
 
     //PS-CONFORMS:TRUE
