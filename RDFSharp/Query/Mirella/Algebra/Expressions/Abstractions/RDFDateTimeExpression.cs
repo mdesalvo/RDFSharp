@@ -71,12 +71,6 @@ public abstract class RDFDateTimeExpression : RDFExpression
             case RDFSecondsExpression:
                 sb.Append("(SECONDS(");
                 break;
-            case RDFTimeZoneExpression:
-                sb.Append("(TIMEZONE(");
-                break;
-            case RDFTZExpression:
-                sb.Append("(TZ(");
-                break;
         }
         if (LeftArgument is RDFExpression expLeftArgument)
             sb.Append(expLeftArgument.ToString(prefixes));
@@ -125,8 +119,6 @@ public abstract class RDFDateTimeExpression : RDFExpression
                     RDFHoursExpression => new RDFTypedLiteral(leftArgumentDateTimeValue.Hour.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER),
                     RDFMinutesExpression => new RDFTypedLiteral(leftArgumentDateTimeValue.Minute.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER),
                     RDFSecondsExpression => new RDFTypedLiteral($"{leftArgumentDateTimeValue.Second}.{leftArgumentDateTimeValue.Millisecond}", RDFModelEnums.RDFDatatypes.XSD_DECIMAL),
-                    RDFTimeZoneExpression => new RDFTypedLiteral("PT0S", RDFModelEnums.RDFDatatypes.XSD_DURATION), //constant because we are always UTC
-                    RDFTZExpression => new RDFTypedLiteral("Z", RDFModelEnums.RDFDatatypes.XSD_STRING), //constant because we are always UTC
                     _ => null
                 };
             }
