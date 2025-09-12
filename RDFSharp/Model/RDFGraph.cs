@@ -397,7 +397,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             //Add intersection triples
             foreach (RDFTriple t in this)
             {
-                if (graph.Triples.Rows.Find(t.TripleID) is not null)
+                if (graph.ContainsTriple(t))
                     result.AddTriple(t);
             }
         }
@@ -438,7 +438,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             //Add difference triples
             foreach (RDFTriple t in this)
             {
-                if (graph.Triples.Rows.Find(t.TripleID) is null)
+                if (!graph.ContainsTriple(t))
                     result.AddTriple(t);
             }
         }

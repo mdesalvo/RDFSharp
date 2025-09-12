@@ -37,17 +37,23 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.IsTrue(store.StoreType.Equals("MEMORY", StringComparison.Ordinal));
-        Assert.IsNotNull(store.Index);
-        Assert.IsNotNull(store.Index.Hashes);
+        Assert.IsNotNull(store.Quadruples);
         Assert.AreEqual(0, store.QuadruplesCount);
-        Assert.IsEmpty(store.Index.Contexts);
-        Assert.IsEmpty(store.Index.Resources);
-        Assert.IsEmpty(store.Index.Literals);
-        Assert.IsEmpty(store.Index.IDXContexts);
-        Assert.IsEmpty(store.Index.IDXSubjects);
-        Assert.IsEmpty(store.Index.IDXPredicates);
-        Assert.IsEmpty(store.Index.IDXObjects);
-        Assert.IsEmpty(store.Index.IDXLiterals);
+        Assert.AreEqual(6, store.Quadruples.Columns.Count);
+        Assert.IsTrue(store.Quadruples.Columns.Contains("QID"));
+        Assert.IsTrue(store.Quadruples.Columns.Contains("CID"));
+        Assert.IsTrue(store.Quadruples.Columns.Contains("SID"));
+        Assert.IsTrue(store.Quadruples.Columns.Contains("PID"));
+        Assert.IsTrue(store.Quadruples.Columns.Contains("OID"));
+        Assert.IsTrue(store.Quadruples.Columns.Contains("TFV"));
+        Assert.IsNotNull(store.Quadruples.PrimaryKey);
+        Assert.AreEqual("QID", store.Quadruples.PrimaryKey[0].ColumnName);
+        Assert.IsNotNull(store.Quadruples.ExtendedProperties["CTX"]);
+        Assert.IsNotNull(store.Quadruples.ExtendedProperties["RES"]);
+        Assert.IsNotNull(store.Quadruples.ExtendedProperties["LIT"]);
+        Assert.IsEmpty((Dictionary<long, RDFContext>)store.Quadruples.ExtendedProperties["CTX"]!);
+        Assert.IsEmpty((Dictionary<long, RDFResource>)store.Quadruples.ExtendedProperties["RES"]!);
+        Assert.IsEmpty((Dictionary<long, RDFLiteral>)store.Quadruples.ExtendedProperties["LIT"]!);
         Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
         Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}", StringComparison.Ordinal));
     }
@@ -63,22 +69,17 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.IsTrue(store.StoreType.Equals("MEMORY", StringComparison.Ordinal));
-        Assert.IsNotNull(store.Index);
-        Assert.IsNotNull(store.Index.Hashes);
         Assert.AreEqual(2, store.QuadruplesCount);
-        Assert.HasCount(1, store.Index.Contexts);
-        Assert.HasCount(3, store.Index.Resources);
-        Assert.HasCount(1, store.Index.Literals);
-        Assert.HasCount(1, store.Index.IDXContexts);
-        Assert.HasCount(1, store.Index.IDXSubjects);
-        Assert.HasCount(1, store.Index.IDXPredicates);
-        Assert.HasCount(1, store.Index.IDXObjects);
-        Assert.HasCount(1, store.Index.IDXLiterals);
-        Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
-        Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}", StringComparison.Ordinal));
+        Assert.HasCount(1, (Dictionary<long, RDFContext>)store.Quadruples.ExtendedProperties["CTX"]!);
+        Assert.IsTrue(((Dictionary<long, RDFContext>)store.Quadruples.ExtendedProperties["CTX"]!).ContainsKey(new RDFContext("ex:c").PatternMemberID));
+        Assert.HasCount(3, (Dictionary<long, RDFResource>)store.Quadruples.ExtendedProperties["RES"]!);
+        Assert.IsTrue(((Dictionary<long, RDFResource>)store.Quadruples.ExtendedProperties["RES"]!).ContainsKey(new RDFResource("ex:s").PatternMemberID));
+        Assert.IsTrue(((Dictionary<long, RDFResource>)store.Quadruples.ExtendedProperties["RES"]!).ContainsKey(new RDFResource("ex:p").PatternMemberID));
+        Assert.IsTrue(((Dictionary<long, RDFResource>)store.Quadruples.ExtendedProperties["RES"]!).ContainsKey(new RDFResource("ex:o").PatternMemberID));
+        Assert.HasCount(1, (Dictionary<long, RDFLiteral>)store.Quadruples.ExtendedProperties["LIT"]!);
+        Assert.IsTrue(((Dictionary<long, RDFLiteral>)store.Quadruples.ExtendedProperties["LIT"]!).ContainsKey(new RDFPlainLiteral("lit").PatternMemberID));
 
-        int i = store.Count();
-        Assert.AreEqual(2, i);
+        Assert.AreEqual(2, store.Count());
 
         int j = 0;
         IEnumerator<RDFQuadruple> quads = store.QuadruplesEnumerator;
@@ -90,14 +91,16 @@ public class RDFMemoryStoreTest
     public void ShouldDisposeMemoryStoreWithUsing()
     {
         RDFMemoryStore store;
-        using (store = new RDFMemoryStore([
-                   new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")) ]))
+        using (store = new RDFMemoryStore(
+        [
+           new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o"))
+        ]))
         {
             Assert.IsFalse(store.Disposed);
-            Assert.IsNotNull(store.Index);
+            Assert.IsNotNull(store.Quadruples);
         }
         Assert.IsTrue(store.Disposed);
-        Assert.IsNull(store.Index);
+        Assert.IsNull(store.Quadruples);
     }
 
     [TestMethod]
@@ -468,11 +471,9 @@ public class RDFMemoryStoreTest
         store.ClearQuadruples();
 
         Assert.AreEqual(0, store.QuadruplesCount);
-        Assert.IsEmpty(store.Index.IDXContexts);
-        Assert.IsEmpty(store.Index.IDXSubjects);
-        Assert.IsEmpty(store.Index.IDXPredicates);
-        Assert.IsEmpty(store.Index.IDXObjects);
-        Assert.IsEmpty(store.Index.IDXLiterals);
+        Assert.IsEmpty((Dictionary<long, RDFContext>)store.Quadruples.ExtendedProperties["CTX"]!);
+        Assert.IsEmpty((Dictionary<long, RDFResource>)store.Quadruples.ExtendedProperties["RES"]!);
+        Assert.IsEmpty((Dictionary<long, RDFLiteral>)store.Quadruples.ExtendedProperties["LIT"]!);
     }
 
     [TestMethod]
