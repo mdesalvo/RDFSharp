@@ -536,7 +536,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -560,7 +560,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, subj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(s: subj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -584,7 +584,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, pred1);
+        List<RDFQuadruple> result = data.SelectQuadruples(p: pred1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -608,7 +608,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, null, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -633,7 +633,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit2)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, null, null, lit2);
+        List<RDFQuadruple> result = data.SelectQuadruples(l: lit2);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -657,7 +657,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -681,7 +681,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, null, pred1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, p: pred1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -705,7 +705,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, null, null, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -729,7 +729,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, null, null, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, l: lit);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -753,7 +753,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj1, pred1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj1, p: pred1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -777,7 +777,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj1, null, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj1,o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -801,7 +801,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj2, null, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj2, l: lit);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -825,7 +825,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, null, pred1, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, p: pred1, o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -849,7 +849,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, null, pred1, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, p: pred1, l: lit);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -873,7 +873,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj1, pred1, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj1, p: pred1, o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -897,7 +897,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj2, pred1, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj2, p: pred1, l: lit);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -921,7 +921,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, subj1, pred1);
+        List<RDFQuadruple> result = data.SelectQuadruples(s: subj1, p: pred1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -945,7 +945,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, subj1, null, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(s: subj1, o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -969,7 +969,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, subj2, null, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(s: subj2, l: lit);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -993,7 +993,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, pred1, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(p: pred1, o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -1017,7 +1017,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, pred1, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(p: pred1, l: lit);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -1041,7 +1041,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, subj1, pred1, obj1);
+        List<RDFQuadruple> result = data.SelectQuadruples(s: subj1, p: pred1, o: obj1);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -1065,7 +1065,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, subj2, pred1, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(s: subj2, p: pred1, l: lit);
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -1089,7 +1089,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx1, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx2);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx2);
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1113,7 +1113,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred2, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, subj2);
+        List<RDFQuadruple> result = data.SelectQuadruples(s: subj2);
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1137,7 +1137,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred1, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, pred2);
+        List<RDFQuadruple> result = data.SelectQuadruples(p: pred2);
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1162,7 +1162,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred1, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, null, obj2);
+        List<RDFQuadruple> result = data.SelectQuadruples(o: obj2);
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1187,7 +1187,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred1, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(null, null, null, null, lit2);
+        List<RDFQuadruple> result = data.SelectQuadruples(l: lit2);
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1210,7 +1210,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred1, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj1, pred2, null, lit);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj1, p: pred2, l: lit);
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1233,7 +1233,7 @@ public class RDFMemoryStoreTest
                 new RDFQuadruple(ctx2, subj1, pred1, lit)
             ]
         );
-        List<RDFQuadruple> result = data.SelectQuadruples(ctx1, subj1, pred1, null, lit2);
+        List<RDFQuadruple> result = data.SelectQuadruples(c: ctx1, s: subj1, p: pred1, l: lit2);
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1257,7 +1257,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[new RDFContext("ex:ctx1")];
+        RDFMemoryStore store2 = store[c: new RDFContext("ex:ctx1")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(1, store2.QuadruplesCount);
@@ -1269,7 +1269,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[new RDFContext("ex:ctx3")];
+        RDFMemoryStore store2 = store[c: new RDFContext("ex:ctx3")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(0, store2.QuadruplesCount);
@@ -1281,7 +1281,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj2"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, new RDFResource("ex:subj1")];
+        RDFMemoryStore store2 = store[s: new RDFResource("ex:subj1")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(1, store2.QuadruplesCount);
@@ -1293,7 +1293,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj1"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj2"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, new RDFResource("ex:subj3")];
+        RDFMemoryStore store2 = store[s: new RDFResource("ex:subj3")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(0, store2.QuadruplesCount);
@@ -1305,7 +1305,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, null, new RDFResource("ex:pred1")];
+        RDFMemoryStore store2 = store[p: new RDFResource("ex:pred1")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(1, store2.QuadruplesCount);
@@ -1317,7 +1317,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred1"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, null, new RDFResource("ex:pred3")];
+        RDFMemoryStore store2 = store[p: new RDFResource("ex:pred3")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(0, store2.QuadruplesCount);
@@ -1329,7 +1329,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, null, null, new RDFResource("ex:obj")];
+        RDFMemoryStore store2 = store[o: new RDFResource("ex:obj")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(1, store2.QuadruplesCount);
@@ -1341,7 +1341,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, null, null, new RDFResource("ex:obj3")];
+        RDFMemoryStore store2 = store[o: new RDFResource("ex:obj3")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(0, store2.QuadruplesCount);
@@ -1353,7 +1353,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, null, null, null, new RDFPlainLiteral("lit")];
+        RDFMemoryStore store2 = store[l: new RDFPlainLiteral("lit")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(1, store2.QuadruplesCount);
@@ -1365,7 +1365,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[null, null, null, null, new RDFPlainLiteral("lit","en")];
+        RDFMemoryStore store2 = store[l: new RDFPlainLiteral("lit","en")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(0, store2.QuadruplesCount);
@@ -1377,7 +1377,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), null, new RDFPlainLiteral("lit")];
+        RDFMemoryStore store2 = store[c: new RDFContext("ex:ctx2"), s: new RDFResource("ex:subj"), p: new RDFResource("ex:pred"), o: new RDFResource("ex:obj")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(1, store2.QuadruplesCount);
@@ -1389,20 +1389,20 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[new RDFContext("ex:ctx1"), new RDFResource("ex:subj2"), new RDFResource("ex:pred"), null, new RDFPlainLiteral("lit")];
+        RDFMemoryStore store2 = store[c: new RDFContext("ex:ctx1"), s: new RDFResource("ex:subj2"), p: new RDFResource("ex:pred"), o: new RDFResource("ex:obj")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(0, store2.QuadruplesCount);
     }
 
     [TestMethod]
-    public void ShouldThrowExceptionOnSelectingQuadruplesByIllecitAccessor()
+    public void ShouldThrowExceptionOnSelectingQuadruplesByInvalidAccessor()
     {
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
 
-        Assert.ThrowsExactly<RDFStoreException>(() => _ = store[null, null, null, new RDFResource("http://obj/"), new RDFPlainLiteral("lit")]);
+        Assert.ThrowsExactly<RDFStoreException>(() => _ = store[o: new RDFResource("http://obj/"), l: new RDFPlainLiteral("lit")]);
     }
 
     [TestMethod]
@@ -1977,7 +1977,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -1994,7 +1994,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -2010,7 +2010,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -2027,7 +2027,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -2248,7 +2248,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -2265,7 +2265,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -2282,7 +2282,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
