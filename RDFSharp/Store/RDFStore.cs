@@ -83,7 +83,7 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
 
     /// <summary>
     /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
     /// </summary>
     public abstract RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
 
@@ -101,14 +101,14 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
 
     /// <summary>
     /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
     public abstract List<RDFQuadruple> SelectQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
 
     /// <summary>
     /// Gets a memory store containing quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
     public RDFMemoryStore this[RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null]
@@ -120,7 +120,7 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
     public List<RDFGraph> ExtractGraphs()
     {
         Dictionary<long, RDFGraph> graphs = [];
-        foreach (RDFQuadruple q in this as RDFMemoryStore ?? this[null, null, null, null, null])
+        foreach (RDFQuadruple q in SelectQuadruples())
         {
             // Step 1: Cache-Update
             if (!graphs.TryGetValue(q.Context.PatternMemberID, out RDFGraph graph))
@@ -143,7 +143,7 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
     public List<RDFContext> ExtractContexts()
     {
         Dictionary<long, RDFPatternMember> contexts = [];
-        foreach (RDFQuadruple q in this as RDFMemoryStore ?? this[null, null, null, null, null])
+        foreach (RDFQuadruple q in SelectQuadruples())
             contexts.TryAdd(q.Context.PatternMemberID, q.Context);
         return [.. contexts.Values.OfType<RDFContext>()];
     }
@@ -230,7 +230,7 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
 
         //Iterate the quadruples of the store to populate the result datatable
         result.BeginLoadData();
-        foreach (RDFQuadruple q in this as RDFMemoryStore ?? this[null, null, null, null, null])
+        foreach (RDFQuadruple q in SelectQuadruples())
         {
             DataRow newRow = result.NewRow();
             newRow["?CONTEXT"] = q.Context.ToString();

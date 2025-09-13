@@ -259,7 +259,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
     /// <summary>
     /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
     /// </summary>
     public override RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
     {
@@ -289,7 +289,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
     /// <summary>
     /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
     public override List<RDFQuadruple> SelectQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
@@ -394,7 +394,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         if (store != null)
         {
             //Add quadruples from the given store
-            foreach (RDFQuadruple q in store as RDFMemoryStore ?? store[null, null, null, null, null])
+            foreach (RDFQuadruple q in store.SelectQuadruples())
                 result.AddQuadruple(q);
         }
 

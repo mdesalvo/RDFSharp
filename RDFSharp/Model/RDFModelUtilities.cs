@@ -205,14 +205,13 @@ public static class RDFModelUtilities
             return [];
 
         List<RDFDatatype> datatypes = [];
-        foreach (RDFTriple datatypeTriple in graph[p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDFS.DATATYPE])
+        foreach (RDFTriple datatypeTriple in graph.SelectTriples(p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDFS.DATATYPE))
         {
             RDFResource datatypeIRI = (RDFResource)datatypeTriple.Subject;
-            RDFGraph datatypeGraph = graph[s: datatypeIRI];
 
             //Try detect a faceted datatype
-            if (datatypeGraph[p: RDFVocabulary.OWL.WITH_RESTRICTIONS].FirstOrDefault()?.Object is RDFResource facetsRepresentative
-                 && datatypeGraph[p: RDFVocabulary.OWL.ON_DATATYPE].FirstOrDefault()?.Object is RDFResource onDatatype)
+            if (graph.SelectTriples(s: datatypeIRI, p: RDFVocabulary.OWL.WITH_RESTRICTIONS).FirstOrDefault()?.Object is RDFResource facetsRepresentative
+                 && graph.SelectTriples(s: datatypeIRI, p: RDFVocabulary.OWL.ON_DATATYPE).FirstOrDefault()?.Object is RDFResource onDatatype)
             {
                 //Detect the target datatype (fallback to rdfs:Literal in case not found)
                 RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
@@ -223,41 +222,39 @@ public static class RDFModelUtilities
                 RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
                 foreach (RDFResource facet in facetsCollection.Items.Cast<RDFResource>())
                 {
-                    RDFGraph facetGraph = graph[s: facet];
-
                     //xsd:length
-                    if (facetGraph[p: RDFVocabulary.XSD.LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetLength
-                         && facetLength.HasDecimalDatatype()
-                         && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
+                    if (graph.SelectTriples(s: facet, p: RDFVocabulary.XSD.LENGTH).FirstOrDefault()?.Object is RDFTypedLiteral facetLength
+                        && facetLength.HasDecimalDatatype()
+                        && uint.TryParse(facetLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetLengthValue))
                     {
                         targetFacets.Add(new RDFLengthFacet(facetLengthValue));
                         continue;
                     }
                     //xsd:maxExclusive
-                    if (facetGraph[p: RDFVocabulary.XSD.MAX_EXCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
-                         && facetMaxExclusive.HasDecimalDatatype() && double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
+                    if (graph.SelectTriples(s: facet, p: RDFVocabulary.XSD.MAX_EXCLUSIVE).FirstOrDefault()?.Object is RDFTypedLiteral facetMaxExclusive
+                        && facetMaxExclusive.HasDecimalDatatype() && double.TryParse(facetMaxExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxExclusiveValue))
                     {
                         targetFacets.Add(new RDFMaxExclusiveFacet(facetMaxExclusiveValue));
                         continue;
                     }
                     //xsd:maxInclusive
-                    if (facetGraph[p: RDFVocabulary.XSD.MAX_INCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxInclusive
-                         && facetMaxInclusive.HasDecimalDatatype()
-                         && double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxInclusiveValue))
+                    if (graph.SelectTriples(s: facet, p: RDFVocabulary.XSD.MAX_INCLUSIVE).FirstOrDefault()?.Object is RDFTypedLiteral facetMaxInclusive
+                        && facetMaxInclusive.HasDecimalDatatype()
+                        && double.TryParse(facetMaxInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMaxInclusiveValue))
                     {
                         targetFacets.Add(new RDFMaxInclusiveFacet(facetMaxInclusiveValue));
                         continue;
                     }
                     //xsd:maxLength
-                    if (facetGraph[p: RDFVocabulary.XSD.MAX_LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
-                         && facetMaxLength.HasDecimalDatatype()
-                         && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
+                    if (graph.SelectTriples(s: facet, p: RDFVocabulary.XSD.MAX_LENGTH).FirstOrDefault()?.Object is RDFTypedLiteral facetMaxLength
+                        && facetMaxLength.HasDecimalDatatype()
+                        && uint.TryParse(facetMaxLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMaxLengthValue))
                     {
                         targetFacets.Add(new RDFMaxLengthFacet(facetMaxLengthValue));
                         continue;
                     }
                     //xsd:minExclusive
-                    if (graph[s: facet, RDFVocabulary.XSD.MIN_EXCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMinExclusive
+                    if (graph.SelectTriples(s: facet, RDFVocabulary.XSD.MIN_EXCLUSIVE).FirstOrDefault()?.Object is RDFTypedLiteral facetMinExclusive
                          && facetMinExclusive.HasDecimalDatatype()
                          && double.TryParse(facetMinExclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinExclusiveValue))
                     {
@@ -265,24 +262,24 @@ public static class RDFModelUtilities
                         continue;
                     }
                     //xsd:minInclusive
-                    if (facetGraph[p: RDFVocabulary.XSD.MIN_INCLUSIVE].FirstOrDefault()?.Object is RDFTypedLiteral facetMinInclusive
-                         && facetMinInclusive.HasDecimalDatatype()
-                         && double.TryParse(facetMinInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinInclusiveValue))
+                    if (graph.SelectTriples(s: facet, p: RDFVocabulary.XSD.MIN_INCLUSIVE).FirstOrDefault()?.Object is RDFTypedLiteral facetMinInclusive
+                        && facetMinInclusive.HasDecimalDatatype()
+                        && double.TryParse(facetMinInclusive.Value, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double facetMinInclusiveValue))
                     {
                         targetFacets.Add(new RDFMinInclusiveFacet(facetMinInclusiveValue));
                         continue;
                     }
                     //xsd:minLength
-                    if (facetGraph[p: RDFVocabulary.XSD.MIN_LENGTH].FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
-                         && facetMinLength.HasDecimalDatatype()
-                         && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
+                    if (graph.SelectTriples(s: facet, p: RDFVocabulary.XSD.MIN_LENGTH).FirstOrDefault()?.Object is RDFTypedLiteral facetMinLength
+                        && facetMinLength.HasDecimalDatatype()
+                        && uint.TryParse(facetMinLength.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out uint facetMinLengthValue))
                     {
                         targetFacets.Add(new RDFMinLengthFacet(facetMinLengthValue));
                         continue;
                     }
                     //xsd:pattern
-                    if (facetGraph[p: RDFVocabulary.XSD.PATTERN].FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
-                         && facetPattern.HasStringDatatype())
+                    if (graph.SelectTriples(s: facet, p: RDFVocabulary.XSD.PATTERN).FirstOrDefault()?.Object is RDFTypedLiteral facetPattern
+                        && facetPattern.HasStringDatatype())
                     {
                         targetFacets.Add(new RDFPatternFacet(facetPattern.Value));
                     }
@@ -293,7 +290,7 @@ public static class RDFModelUtilities
             }
 
             //Try detect an alias datatype
-            else if (datatypeGraph[p: RDFVocabulary.OWL.EQUIVALENT_CLASS].FirstOrDefault()?.Object is RDFResource equivalentDatatype)
+            else if (graph.SelectTriples(s: datatypeIRI, p: RDFVocabulary.OWL.EQUIVALENT_CLASS).FirstOrDefault()?.Object is RDFResource equivalentDatatype)
             {
                 //Detect the target datatype (fallback to rdfs:Literal in case not found)
                 RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(equivalentDatatype.ToString()) ?? RDFDatatypeRegister.RDFSLiteral;
@@ -314,8 +311,6 @@ public static class RDFModelUtilities
     internal static RDFCollection DeserializeCollectionFromGraph(RDFGraph graph, RDFResource collRepresentative, RDFModelEnums.RDFTripleFlavors expectedFlavor, bool acceptDuplicates=false)
     {
         RDFCollection collection = new RDFCollection(expectedFlavor == RDFModelEnums.RDFTripleFlavors.SPO ? RDFModelEnums.RDFItemTypes.Resource : RDFModelEnums.RDFItemTypes.Literal, acceptDuplicates);
-        RDFGraph rdfFirst = graph[p: RDFVocabulary.RDF.FIRST];
-        RDFGraph rdfRest = graph[p: RDFVocabulary.RDF.REST];
 
         #region Deserialization
         bool nilFound = false;
@@ -324,7 +319,7 @@ public static class RDFModelUtilities
         while (!nilFound)
         {
             #region rdf:first
-            RDFTriple first = rdfFirst[s: itemRest].FirstOrDefault();
+            RDFTriple first = graph.SelectTriples(s: itemRest, p: RDFVocabulary.RDF.FIRST).FirstOrDefault();
             if (first != null)
             {
                 if (first.Object is RDFResource firstObjRes)
@@ -348,7 +343,7 @@ public static class RDFModelUtilities
             //Ensure considering exit signal from bad-formed rdf:first
             if (!nilFound)
             {
-                RDFTriple rest = rdfRest[s: itemRest].FirstOrDefault();
+                RDFTriple rest = graph.SelectTriples(s: itemRest, p: RDFVocabulary.RDF.REST).FirstOrDefault();
                 if (rest != null)
                 {
                     if (rest.Object.Equals(RDFVocabulary.RDF.NIL))
@@ -379,7 +374,7 @@ public static class RDFModelUtilities
     /// Detects the flavor (SPO/SPL) of the collection represented by the given resource within the given graph
     /// </summary>
     internal static RDFModelEnums.RDFTripleFlavors DetectCollectionFlavorFromGraph(RDFGraph graph, RDFResource collRepresentative)
-        => graph[s: collRepresentative, p: RDFVocabulary.RDF.FIRST].FirstOrDefault()?.TripleFlavor ?? RDFModelEnums.RDFTripleFlavors.SPO;
+        => graph.SelectTriples(s: collRepresentative, p: RDFVocabulary.RDF.FIRST).FirstOrDefault()?.TripleFlavor ?? RDFModelEnums.RDFTripleFlavors.SPO;
     #endregion
 
     #region Namespaces
@@ -418,7 +413,7 @@ public static class RDFModelUtilities
     /// </summary>
     public static string GetDatatypeFromEnum(this RDFModelEnums.RDFDatatypes datatype)
         => ((DescriptionAttribute)RDFModelEnums_RDFDatatypes_EnumType
-            .GetField(datatype.ToString())
+            .GetField(datatype.ToString())!
             .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
     private static readonly Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
     private static readonly Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
@@ -428,7 +423,7 @@ public static class RDFModelUtilities
     /// </summary>
     public static RDFModelEnums.RDFDatatypes GetEnumFromDatatype(this string datatype)
         => (from RDFModelEnums.RDFDatatypes enumValue
-                in RDFModelEnums_RDFDatatypes_EnumValues
+            in RDFModelEnums_RDFDatatypes_EnumValues
             let enumValueInfo = RDFModelEnums_RDFDatatypes_EnumType.GetMember(enumValue.ToString())[0]
             let enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>()
             where string.Equals(datatype, enumValueDescriptionAttribute.Description)

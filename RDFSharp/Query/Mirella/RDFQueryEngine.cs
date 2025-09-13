@@ -610,18 +610,21 @@ internal class RDFQueryEngine
     {
         #region Utilities
         RDFGraph QueryGraph(RDFGraph dsGraph)
-            => dsGraph[s: describeResource]
-                .UnionWith(dsGraph[p: describeResource])
-                .UnionWith(dsGraph[o: describeResource]);
+            => new RDFGraph([..
+                dsGraph.SelectTriples(s: describeResource)
+                .Union(dsGraph.SelectTriples(p: describeResource))
+                .Union(dsGraph.SelectTriples(o: describeResource)) ]);
 
         RDFMemoryStore QueryStore(RDFStore dsStore)
             => describeResource.IsBlank
-                ? dsStore[s: describeResource]
-                    .UnionWith(dsStore[o: describeResource])
-                : dsStore[c: new RDFContext(describeResource.URI)]
-                    .UnionWith(dsStore[s: describeResource])
-                    .UnionWith(dsStore[p: describeResource])
-                    .UnionWith(dsStore[o: describeResource]);
+                ? new RDFMemoryStore([..
+                    dsStore.SelectQuadruples(s: describeResource)
+                    .Union(dsStore.SelectQuadruples(o: describeResource)) ])
+                : new RDFMemoryStore([..
+                    dsStore.SelectQuadruples(c: new RDFContext(describeResource.URI))
+                    .Union(dsStore.SelectQuadruples(s: describeResource))
+                    .Union(dsStore.SelectQuadruples(p: describeResource))
+                    .Union(dsStore.SelectQuadruples(o: describeResource)) ]);
 
         RDFSelectQuery BuildFederationOrSPARQLEndpointQuery()
             => describeResource.IsBlank
@@ -671,10 +674,10 @@ internal class RDFQueryEngine
     {
         #region Utilities
         RDFGraph QueryGraph(RDFGraph dsGraph)
-            => dsGraph[l: describeLiteral];
+            => new RDFGraph(dsGraph.SelectTriples(l: describeLiteral));
 
         RDFMemoryStore QueryStore(RDFStore dsStore)
-            => dsStore[l: describeLiteral];
+            => new RDFMemoryStore(dsStore.SelectQuadruples(l: describeLiteral));
 
         RDFSelectQuery BuildFederationOrSPARQLEndpointQuery()
             => new RDFSelectQuery()
