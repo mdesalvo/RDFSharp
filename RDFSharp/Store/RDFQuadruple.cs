@@ -36,27 +36,27 @@ public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
     /// <summary>
     /// Flavor of the triple nested into the quadruple
     /// </summary>
-    public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
+    public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; }
 
     /// <summary>
     /// Member acting as context token of the quadruple
     /// </summary>
-    public RDFPatternMember Context { get; internal set; }
+    public RDFPatternMember Context { get; }
 
     /// <summary>
     /// Member acting as subject token of the quadruple
     /// </summary>
-    public RDFPatternMember Subject { get; internal set; }
+    public RDFPatternMember Subject { get; }
 
     /// <summary>
     /// Member acting as predicate token of the quadruple
     /// </summary>
-    public RDFPatternMember Predicate { get; internal set; }
+    public RDFPatternMember Predicate { get; }
 
     /// <summary>
     /// Member acting as object token of the quadruple
     /// </summary>
-    public RDFPatternMember Object { get; internal set; }
+    public RDFPatternMember Object { get; }
 
     /// <summary>
     /// Subject of the quadruple's reification
@@ -70,18 +70,18 @@ public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
     /// Builds a quadruple from the given triple and the given context
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    public RDFQuadruple(RDFContext context, RDFTriple triple)
+    public RDFQuadruple(RDFContext c, RDFTriple t)
     {
         #region Guards
-        if (triple == null)
-            throw new RDFStoreException("Cannot create RDFQuadruple because given \"triple\" parameter is null");
+        if (t == null)
+            throw new RDFStoreException("Cannot create RDFQuadruple because given \"t\" parameter is null");
         #endregion
 
-        Context = context ?? new RDFContext();
-        TripleFlavor = triple.TripleFlavor;
-        Subject = triple.Subject;
-        Predicate = triple.Predicate;
-        Object = triple.Object;
+        Context = c ?? new RDFContext();
+        TripleFlavor = t.TripleFlavor;
+        Subject = t.Subject;
+        Predicate = t.Predicate;
+        Object = t.Object;
         LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
         LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
     }
@@ -90,40 +90,38 @@ public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
     /// Builds a quadruple with SPO flavor
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFResource obj)
-        : this(context, subj, pred)
+    public RDFQuadruple(RDFContext c, RDFResource s, RDFResource p, RDFResource o) : this(c, s, p)
     {
         TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-        Object = obj ?? new RDFResource();
+        Object = o ?? new RDFResource();
     }
 
     /// <summary>
     /// Builds a quadruple with SPL flavor
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    public RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred, RDFLiteral lit)
-        : this(context, subj, pred)
+    public RDFQuadruple(RDFContext c, RDFResource s, RDFResource p, RDFLiteral l) : this(c, s, p)
     {
         TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-        Object = lit ?? RDFPlainLiteral.Empty;
+        Object = l ?? RDFPlainLiteral.Empty;
     }
 
     /// <summary>
     /// Initializes common quadruple properties
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    private RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred)
+    private RDFQuadruple(RDFContext c, RDFResource s, RDFResource p)
     {
         #region Guards
-        if (pred == null)
+        if (p == null)
             throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is null");
-        if (pred.IsBlank)
+        if (p.IsBlank)
             throw new RDFStoreException("Cannot create RDFQuadruple because given \"pred\" parameter is a blank resource");
         #endregion
 
-        Context = context ?? new RDFContext();
-        Subject = subj ?? new RDFResource();
-        Predicate = pred;
+        Context = c ?? new RDFContext();
+        Subject = s ?? new RDFResource();
+        Predicate = p;
         LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
         LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
     }
