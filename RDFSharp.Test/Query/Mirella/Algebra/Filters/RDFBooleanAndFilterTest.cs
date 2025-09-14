@@ -103,7 +103,7 @@ public class RDFBooleanAndFilterTest
                     new RDFDatatypeExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(RDFVocabulary.XSD.FLOAT))),
             new RDFExpressionFilter(
-                new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")))));
+                new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
@@ -151,7 +151,7 @@ public class RDFBooleanAndFilterTest
                     RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFDatatypeExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(RDFVocabulary.XSD.FLOAT))),
-            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")))));
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsFalse(keepRow);
@@ -175,7 +175,7 @@ public class RDFBooleanAndFilterTest
                     RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFDatatypeExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))),
-            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")))));
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
