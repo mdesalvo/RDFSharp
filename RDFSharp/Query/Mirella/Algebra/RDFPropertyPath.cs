@@ -186,9 +186,9 @@ public sealed class RDFPropertyPath : RDFPatternGroupMember
 
                         patterns.Add(Steps[i].IsInverseStep
                             //InversePath (swap start/end)
-                            ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart).Union()
+                            ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart).UnionWithNext()
                             //Path
-                            : new RDFPattern(currStart, Steps[i].StepProperty, currEnd).Union());
+                            : new RDFPattern(currStart, Steps[i].StepProperty, currEnd).UnionWithNext());
                     }
                     //Translate to pattern (item is the last alternative)
                     else
