@@ -35,22 +35,22 @@ public sealed class RDFTriple : IEquatable<RDFTriple>
     /// <summary>
     /// Flavor of the triple
     /// </summary>
-    public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; }
+    public RDFModelEnums.RDFTripleFlavors TripleFlavor { get; internal set; }
 
     /// <summary>
     /// Member acting as subject of the triple
     /// </summary>
-    public RDFPatternMember Subject { get; }
+    public RDFPatternMember Subject { get; internal set; }
 
     /// <summary>
     /// Member acting as predicate of the triple
     /// </summary>
-    public RDFPatternMember Predicate { get; }
+    public RDFPatternMember Predicate { get; internal set; }
 
     /// <summary>
     /// Member acting as object of the triple
     /// </summary>
-    public RDFPatternMember Object { get; }
+    public RDFPatternMember Object { get; internal set; }
 
     /// <summary>
     /// Representative of the triple's reification
@@ -64,37 +64,37 @@ public sealed class RDFTriple : IEquatable<RDFTriple>
     /// Builds a triple with SPO flavor
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
-    public RDFTriple(RDFResource s, RDFResource p, RDFResource o) : this(s, p)
+    public RDFTriple(RDFResource subj, RDFResource pred, RDFResource obj) : this(subj, pred)
     {
         TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
-        Object = o ?? new RDFResource();
+        Object = obj ?? new RDFResource();
     }
 
     /// <summary>
     /// Builds a triple with SPL flavor
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
-    public RDFTriple(RDFResource s, RDFResource p, RDFLiteral l) : this(s, p)
+    public RDFTriple(RDFResource subj, RDFResource pred, RDFLiteral lit) : this(subj, pred)
     {
         TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
-        Object = l ?? RDFPlainLiteral.Empty;
+        Object = lit ?? RDFPlainLiteral.Empty;
     }
 
     /// <summary>
     /// Initializer for common triple properties
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
-    private RDFTriple(RDFResource s, RDFResource p)
+    private RDFTriple(RDFResource subj, RDFResource pred)
     {
         #region Guards
-        if (p == null)
+        if (pred == null)
             throw new RDFModelException("Cannot create RDFTriple because given \"pred\" parameter is null");
-        if (p.IsBlank)
+        if (pred.IsBlank)
             throw new RDFModelException("Cannot create RDFTriple because given \"pred\" parameter is a blank resource");
         #endregion
 
-        Subject = s ?? new RDFResource();
-        Predicate = p;
+        Subject = subj ?? new RDFResource();
+        Predicate = pred;
         LazyTripleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
         LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{TripleID}"));
     }
