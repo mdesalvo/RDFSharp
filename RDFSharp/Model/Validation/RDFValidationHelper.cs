@@ -584,7 +584,7 @@ namespace RDFSharp.Model
                   && shapePatternConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
             {
                 //sh:flags (accepted occurrences: 1)
-                RegexOptions regexOptions = RegexOptions.Compiled;
+                RegexOptions regexOptions = RegexOptions.None;
                 RDFTriple shapeFlagsConstraint = shapeDefinition[null, RDFVocabulary.SHACL.FLAGS, null, null].FirstOrDefault();
                 if (shapeFlagsConstraint?.Object is RDFTypedLiteral shapeFlagsConstraintLiteral
                       && shapeFlagsConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
