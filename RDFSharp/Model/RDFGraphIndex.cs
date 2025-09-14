@@ -137,12 +137,9 @@ internal sealed class RDFGraphIndex : IDisposable
     /// </summary>
     internal RDFGraphIndex Add(RDFTriple triple)
     {
-        #region Guards
+        //Triple (Hash)
         if (Hashes.ContainsKey(triple.TripleID))
             return this;
-        #endregion
-
-        //Triple (Hash)
         Hashes.Add(triple.TripleID, new RDFHashedTriple(triple));
 
         //Subject (Register)
