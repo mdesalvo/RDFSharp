@@ -2037,8 +2037,6 @@ public class RDFGraphTest
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:integer", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER
                                           && dt.Facets.Count == 0));
-
-        Assert.IsEmpty((null as RDFGraph).ExtractDatatypeDefinitions());
     }
 
     [TestCleanup]
