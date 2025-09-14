@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
-using System.Data;
 using System.Linq;
 
 namespace RDFSharp.Test.Model;
@@ -49,15 +48,15 @@ public class RDFUniqueLangConstraintTest
         Assert.AreEqual(1, graph.TriplesCount);
         if (uniqueLang)
         {
-            Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                                && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
-                                                                && t.Field<long>("?OID").Equals(RDFTypedLiteral.True.PatternMemberID)));
+            Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                                && t.Value.pid.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
+                                                                && t.Value.oid.Equals(RDFTypedLiteral.True.PatternMemberID)));
         }
         else
         {
-            Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                                && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
-                                                                && t.Field<long>("?OID").Equals(RDFTypedLiteral.False.PatternMemberID)));
+            Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                                && t.Value.pid.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
+                                                                && t.Value.oid.Equals(RDFTypedLiteral.False.PatternMemberID)));
         }
     }
 

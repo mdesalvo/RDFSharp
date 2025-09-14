@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
-using System.Data;
 using System.Linq;
 
 namespace RDFSharp.Test.Model;
@@ -48,9 +47,9 @@ public class RDFPropertyConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.PROPERTY.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFResource("ex:PropertyShapeConstraint").PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.PROPERTY.PatternMemberID)
+                                                    && t.Value.oid.Equals(new RDFResource("ex:PropertyShapeConstraint").PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE

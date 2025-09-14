@@ -48,7 +48,7 @@ public class RDFGraphTest
         Assert.IsNotNull(graph.Triples.ExtendedProperties["RES"]);
         Assert.IsNotNull(graph.Triples.ExtendedProperties["LIT"]);
         Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!);
-        Assert.IsEmpty((Dictionary<long, RDFLiteral>)graph.Triples.ExtendedProperties["LIT"]!);
+        Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["LIT"]!);
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
 
@@ -640,7 +640,7 @@ public class RDFGraphTest
 
         Assert.AreEqual(0, graph.TriplesCount);
         Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!);
-        Assert.IsEmpty((Dictionary<long, RDFLiteral>)graph.Triples.ExtendedProperties["LIT"]!);
+        Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["LIT"]!);
     }
 
     [TestMethod]

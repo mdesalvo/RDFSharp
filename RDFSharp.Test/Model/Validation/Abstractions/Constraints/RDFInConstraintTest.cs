@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
-using System.Data;
 using System.Linq;
 
 namespace RDFSharp.Test.Model;
@@ -82,17 +81,17 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(7, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFResource("ex:value1").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFResource("ex:value2").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+                                                    && t.Value.oid.Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                    && t.Value.oid.Equals(new RDFResource("ex:value1").PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                    && t.Value.oid.Equals(new RDFResource("ex:value2").PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+                                                    && t.Value.oid.Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
     }
 
     [TestMethod]
@@ -105,17 +104,17 @@ public class RDFInConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(7, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFPlainLiteral("value1").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFPlainLiteral("value2").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?PID").Equals(RDFVocabulary.RDF.REST.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.IN.PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+                                                    && t.Value.oid.Equals(RDFVocabulary.RDF.LIST.PatternMemberID))); //2 occurrences of this
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                    && t.Value.oid.Equals(new RDFPlainLiteral("value1").PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.REST.PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+                                                    && t.Value.oid.Equals(new RDFPlainLiteral("value2").PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+                                                    && t.Value.oid.Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE

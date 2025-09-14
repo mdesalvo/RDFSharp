@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
-using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -48,12 +47,12 @@ public class RDFPatternConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(2, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.PATTERN.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFTypedLiteral("^test$", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.FLAGS.PatternMemberID)
-                                                    && t.Field<long>("?OID").Equals(new RDFTypedLiteral("ismx", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.PATTERN.PatternMemberID)
+                                                    && t.Value.oid.Equals(new RDFTypedLiteral("^test$", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
+        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.FLAGS.PatternMemberID)
+                                                    && t.Value.oid.Equals(new RDFTypedLiteral("ismx", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
     }
 
     //NS-CONFORMS: TRUE
