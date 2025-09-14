@@ -17,32 +17,33 @@
 using RDFSharp.Query;
 using RDFSharp.Store;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFDataSource is the foundation class for modeling RDF data sources
-/// </summary>
-public abstract class RDFDataSource
+namespace RDFSharp.Model
 {
-    #region Methods
     /// <summary>
-    /// Checks if this data source is a graph
+    /// RDFDataSource is the foundation class for modeling RDF data sources
     /// </summary>
-    internal bool IsGraph() => this is RDFGraph;
+    public abstract class RDFDataSource
+    {
+        #region Methods
+        /// <summary>
+        /// Checks if this data source is a graph
+        /// </summary>
+        internal bool IsGraph() => this is RDFGraph;
 
-    /// <summary>
-    /// Checks if this data source is a store
-    /// </summary>
-    internal bool IsStore() => this is RDFStore;
+        /// <summary>
+        /// Checks if this data source is a store
+        /// </summary>
+        internal bool IsStore() => this is RDFStore;
 
-    /// <summary>
-    /// Checks if this data source is a federation
-    /// </summary>
-    internal bool IsFederation() => this is RDFFederation;
+        /// <summary>
+        /// Checks if this data source is a federation
+        /// </summary>
+        internal bool IsFederation() => this is RDFFederation;
 
-    /// <summary>
-    /// Checks if this data source is a SPARQL endpoint
-    /// </summary>
-    internal bool IsSPARQLEndpoint() => this is RDFSPARQLEndpoint;
-    #endregion
+        /// <summary>
+        /// Checks if this data source is a SPARQL endpoint
+        /// </summary>
+        internal bool IsSPARQLEndpoint() => this is RDFSPARQLEndpoint;
+        #endregion
+    }
 }

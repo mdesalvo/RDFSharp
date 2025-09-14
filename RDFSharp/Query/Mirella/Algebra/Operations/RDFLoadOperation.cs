@@ -16,64 +16,65 @@
 
 using System;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFLoadOperation is the SPARQL "LOAD" operation implementation
-/// </summary>
-public sealed class RDFLoadOperation : RDFOperation
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Flag indicating that the operation will hide errors from the SPARQL UPDATE endpoint
+    /// RDFLoadOperation is the SPARQL "LOAD" operation implementation
     /// </summary>
-    public bool IsSilent { get; internal set; }
-
-    /// <summary>
-    /// Represents the Uri of the remote graph from which RDF data will be fetched
-    /// </summary>
-    public Uri FromContext { get; internal set; }
-
-    /// <summary>
-    /// Represents the Uri of the graph into which RDF data will be inserted
-    /// </summary>
-    public Uri ToContext { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a LOAD operation for the given remote graph Uri
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFLoadOperation(Uri fromContext)
-        => FromContext = fromContext ?? throw new RDFQueryException("Cannot create RDFLoadOperation because given \"fromContext\" parameter is null.");
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the LOAD operation
-    /// </summary>
-    public override string ToString()
-        => RDFOperationPrinter.PrintLoadOperation(this);
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Sets the context of the graph into which RDF data will be inserted
-    /// </summary>
-    public RDFLoadOperation SetContext(Uri toContext)
+    public sealed class RDFLoadOperation : RDFOperation
     {
-        ToContext = toContext;
-        return this;
-    }
+        #region Properties
+        /// <summary>
+        /// Flag indicating that the operation will hide errors from the SPARQL UPDATE endpoint
+        /// </summary>
+        public bool IsSilent { get; internal set; }
 
-    /// <summary>
-    /// Sets the operation as silent, so that errors will not be delivered to the application
-    /// </summary>
-    public RDFLoadOperation Silent()
-    {
-        IsSilent = true;
-        return this;
+        /// <summary>
+        /// Represents the Uri of the remote graph from which RDF data will be fetched
+        /// </summary>
+        public Uri FromContext { get; internal set; }
+
+        /// <summary>
+        /// Represents the Uri of the graph into which RDF data will be inserted
+        /// </summary>
+        public Uri ToContext { get; internal set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Builds a LOAD operation for the given remote graph Uri
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFLoadOperation(Uri fromContext)
+            => FromContext = fromContext ?? throw new RDFQueryException("Cannot create RDFLoadOperation because given \"fromContext\" parameter is null.");
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the LOAD operation
+        /// </summary>
+        public override string ToString()
+            => RDFOperationPrinter.PrintLoadOperation(this);
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Sets the context of the graph into which RDF data will be inserted
+        /// </summary>
+        public RDFLoadOperation SetContext(Uri toContext)
+        {
+            ToContext = toContext;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the operation as silent, so that errors will not be delivered to the application
+        /// </summary>
+        public RDFLoadOperation Silent()
+        {
+            IsSilent = true;
+            return this;
+        }
+        #endregion
     }
-    #endregion
 }

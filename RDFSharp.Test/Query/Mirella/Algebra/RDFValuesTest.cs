@@ -36,6 +36,7 @@ public class RDFValuesTest
         Assert.IsEmpty(values.Bindings);
         Assert.AreEqual(0, values.MaxBindingsLength());
         Assert.IsFalse(values.IsEvaluable);
+        Assert.IsFalse(values.IsInjected);
         Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES () {", Environment.NewLine, "    }"), StringComparison.Ordinal));
         Assert.IsTrue(values.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(values.PatternGroupMemberStringID)));
     }
@@ -53,6 +54,7 @@ public class RDFValuesTest
         Assert.HasCount(3, values.Bindings);
         Assert.AreEqual(1, values.MaxBindingsLength());
         Assert.IsTrue(values.IsEvaluable);
+        Assert.IsFalse(values.IsInjected);
         Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "    }"), StringComparison.Ordinal));
         Assert.IsTrue(values.ToString([RDFNamespaceRegister.GetByPrefix("rdf")], string.Empty).Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( rdf:type <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "    }"), StringComparison.Ordinal));
         Assert.IsTrue(values.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(values.PatternGroupMemberStringID)));
@@ -71,6 +73,7 @@ public class RDFValuesTest
         Assert.HasCount(3, values.Bindings);
         Assert.AreEqual(2, values.MaxBindingsLength());
         Assert.IsTrue(values.IsEvaluable);
+        Assert.IsFalse(values.IsInjected);
         Assert.IsTrue(values.ToString().Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "      ( <http://www.w3.org/1999/02/22-rdf-syntax-ns#Alt> UNDEF UNDEF )", Environment.NewLine, "    }"), StringComparison.Ordinal));
         Assert.IsTrue(values.ToString([RDFNamespaceRegister.GetByPrefix("rdf")], string.Empty).Equals(string.Concat("VALUES (?V1 ?V2 ?V3) {", Environment.NewLine, "      ( rdf:type <http://xmlns.com/foaf/0.1/knows> UNDEF )", Environment.NewLine, "      ( rdf:Alt UNDEF UNDEF )", Environment.NewLine, "    }"), StringComparison.Ordinal));
         Assert.IsTrue(values.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(values.PatternGroupMemberStringID)));

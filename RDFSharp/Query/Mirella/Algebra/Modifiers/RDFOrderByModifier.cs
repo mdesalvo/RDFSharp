@@ -16,58 +16,59 @@
 
 using System.Data;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFOrderByModifier is a modifier which applies a sort on the results of a SELECT query for the given variable.
-/// </summary>
-public sealed class RDFOrderByModifier : RDFModifier
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Variable to be ordered
+    /// RDFOrderByModifier is a modifier which applies a sort on the results of a SELECT query for the given variable.
     /// </summary>
-    public RDFVariable Variable { get; internal set; }
-
-    /// <summary>
-    /// Flavor of variable ordering (ASC/DESC)
-    /// </summary>
-    public RDFQueryEnums.RDFOrderByFlavors OrderByFlavor { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an OrderBy modifier of the given flavor on the given variable
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor)
+    public sealed class RDFOrderByModifier : RDFModifier
     {
-        OrderByFlavor = orderbyFlavor;
-        Variable = variable ?? throw new RDFQueryException("Cannot create RDFOrderByModifier because given \"variable\" parameter is null.");
-    }
-    #endregion
+        #region Properties
+        /// <summary>
+        /// Variable to be ordered
+        /// </summary>
+        public RDFVariable Variable { get; internal set; }
 
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the modifier
-    /// </summary>
-    public override string ToString()
-        => $"{OrderByFlavor}({Variable})";
-    #endregion
+        /// <summary>
+        /// Flavor of variable ordering (ASC/DESC)
+        /// </summary>
+        public RDFQueryEnums.RDFOrderByFlavors OrderByFlavor { get; internal set; }
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Applies the modifier on the column corresponding to the variable in the given datatable
-    /// </summary>
-    internal override DataTable ApplyModifier(DataTable table)
-    {
-        if (table.Columns.Contains(Variable.ToString()))
+        #region Ctors
+        /// <summary>
+        /// Builds an OrderBy modifier of the given flavor on the given variable
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOrderByModifier(RDFVariable variable, RDFQueryEnums.RDFOrderByFlavors orderbyFlavor)
         {
-            table.DefaultView.Sort = !string.IsNullOrEmpty(table.DefaultView.Sort)
-                ? $"{table.DefaultView.Sort}, {Variable} {OrderByFlavor}"
-                : $"{Variable} {OrderByFlavor}";
+            OrderByFlavor = orderbyFlavor;
+            Variable = variable ?? throw new RDFQueryException("Cannot create RDFOrderByModifier because given \"variable\" parameter is null.");
         }
-        return table;
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the modifier
+        /// </summary>
+        public override string ToString()
+            => $"{OrderByFlavor}({Variable})";
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the modifier on the column corresponding to the variable in the given datatable
+        /// </summary>
+        internal override DataTable ApplyModifier(DataTable table)
+        {
+            if (table.Columns.Contains(Variable.ToString()))
+            {
+                table.DefaultView.Sort = !string.IsNullOrEmpty(table.DefaultView.Sort)
+                                            ? $"{table.DefaultView.Sort}, {Variable} {OrderByFlavor}"
+                                            : $"{Variable} {OrderByFlavor}";
+            }
+            return table;
+        }
+        #endregion
     }
-    #endregion
 }

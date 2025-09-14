@@ -18,38 +18,39 @@ using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFBooleanAndExpression represents a boolean "AND" expression to be applied on a query results table.
-/// </summary>
-public sealed class RDFBooleanAndExpression : RDFBooleanExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a boolean "AND" expression with given arguments
+    /// RDFBooleanAndExpression represents a boolean "AND" expression to be applied on a query results table.
     /// </summary>
-    public RDFBooleanAndExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)  { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the boolean "AND" expression
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFBooleanAndExpression : RDFBooleanExpression
     {
-        StringBuilder sb = new StringBuilder(64);
+        #region Ctors
+        /// <summary>
+        /// Builds a boolean "AND" expression with given arguments
+        /// </summary>
+        public RDFBooleanAndExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)  { }
+        #endregion
 
-        //(L && R)
-        sb.Append('(');
-        sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
-        sb.Append(" && ");
-        sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
-        sb.Append(')');
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the boolean "AND" expression
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(64);
 
-        return sb.ToString();
+            //(L && R)
+            sb.Append('(');
+            sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
+            sb.Append(" && ");
+            sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
+            sb.Append(')');
+
+            return sb.ToString();
+        }
+        #endregion
     }
-    #endregion
 }

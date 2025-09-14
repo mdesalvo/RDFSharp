@@ -16,265 +16,294 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Xml;
 using NetTopologySuite.Geometries;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
-/// </summary>
-public static class RDFQueryUtilities
+namespace RDFSharp.Query
 {
-    #region MIRELLA RDF
     /// <summary>
-    /// Parses the given string to return an instance of pattern member
+    /// RDFQueryUtilities is a collector of reusable utility methods for RDF query management
     /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public static RDFPatternMember ParseRDFPatternMember(string pMember)
+    public static class RDFQueryUtilities
     {
-        if (pMember == null)
-            throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
-
-        #region Resource
-        if (Uri.TryCreate(pMember, UriKind.Absolute, out _))
-            return new RDFResource(pMember);
-        #endregion
-
-        #region Plain Literal
-        //Detect presence of semantically valid datatype indicator ("^^")
-        int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
-        if (lastIndexOfDatatype == -1
-            || lastIndexOfDatatype == pMember.Length - 2 //EndsWith "^^"
-            || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
+        #region MIRELLA RDF
+        /// <summary>
+        /// Parses the given string to return an instance of pattern member
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public static RDFPatternMember ParseRDFPatternMember(string pMember)
         {
-            if (RDFUtilities.EndingLangTagRegex().IsMatch(pMember))
+            if (pMember == null)
+                throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
+
+            #region Resource
+            if (Uri.TryCreate(pMember, UriKind.Absolute, out _))
+                return new RDFResource(pMember);
+            #endregion
+
+            #region Plain Literal
+            //Detect presence of semantically valid datatype indicator ("^^")
+            int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+            if (lastIndexOfDatatype == -1
+                 || lastIndexOfDatatype == pMember.Length - 2 //EndsWith "^^"
+                 || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
             {
-                int lastIndexOfLanguage = pMember.LastIndexOf('@');
-                string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
-                string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
-                return new RDFPlainLiteral(pLitVal, pLitLng);
+                if (RDFShims.EndingLangTagRegex.Value.IsMatch(pMember))
+                {
+                    int lastIndexOfLanguage = pMember.LastIndexOf('@');
+                    string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
+                    string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
+                    return new RDFPlainLiteral(pLitVal, pLitLng);
+                }
+                return new RDFPlainLiteral(pMember);
             }
-            return new RDFPlainLiteral(pMember);
+            #endregion
+
+            #region Typed Literal
+            string tLitValue = pMember.Substring(0, lastIndexOfDatatype);
+            string tLitDatatype = pMember.Substring(lastIndexOfDatatype + 2);
+            return new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
+            #endregion
         }
-        #endregion
 
-        #region Typed Literal
-        string tLitValue = pMember.Substring(0, lastIndexOfDatatype);
-        string tLitDatatype = pMember.Substring(lastIndexOfDatatype + 2);
-        return new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
-        #endregion
-    }
-
-    /// <summary>
-    /// Compares the given pattern members, throwing a "Type Error" whenever the comparison operator detects sematically incompatible members;
-    /// </summary>
-    internal static int CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right)
-    {
-        #region NULLS
-        if (left == null)
+        /// <summary>
+        /// Compares the given pattern members, throwing a "Type Error" whenever the comparison operator detects sematically incompatible members;
+        /// </summary>
+        internal static int CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right)
         {
+            #region NULLS
+            if (left == null)
+            {
+                if (right == null)
+                    return 0;
+
+                return -1;
+            }
             if (right == null)
-                return 0;
+                return 1;
+            #endregion
 
-            return -1;
-        }
-        if (right == null)
-            return 1;
-        #endregion
-
-        switch (left)
-        {
-            case RDFResource:
-            case RDFContext:
+            switch (left)
             {
-                //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource or RDFContext or RDFPlainLiteral)
-                    return string.CompareOrdinal(left.ToString(), right.ToString());
-
-                //RESOURCE/CONTEXT VS TYPEDLITERAL
-                if (((RDFTypedLiteral)right).HasStringDatatype())
-                    return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
-
-                return -99; //Type Error
-            }
-            //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-            case RDFPlainLiteral when right is RDFResource or RDFContext or RDFPlainLiteral:
-                return string.CompareOrdinal(left.ToString(), right.ToString());
-            //PLAINLITERAL VS TYPEDLITERAL
-            case RDFPlainLiteral when ((RDFTypedLiteral)right).HasStringDatatype():
-                return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
-            case RDFPlainLiteral:
-                return -99; //Type Error
-            default:
-            {
-                //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
-                if (right is RDFResource or RDFContext or RDFPlainLiteral)
+                case RDFResource _:
+                case RDFContext _:
                 {
-                    if (((RDFTypedLiteral)left).HasStringDatatype())
-                        return string.CompareOrdinal(((RDFTypedLiteral)left).Value, right.ToString());
+                    //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
+                    if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
+                        return string.CompareOrdinal(left.ToString(), right.ToString());
 
-                    return -99; //Type Error
-                }
-
-                //TYPEDLITERAL VS TYPEDLITERAL
-
-                //DATETIME
-                if (((RDFTypedLiteral)left).HasDatetimeDatatype())
-                {
-                    if (((RDFTypedLiteral)right).HasDatetimeDatatype())
-                    {
-                        DateTime leftValueDateTime = DateTime.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-                        DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-                        return leftValueDateTime.CompareTo(rightValueDateTime);
-                    }
-                    return -99; //Type Error
-                }
-
-                //DECIMAL
-                if (((RDFTypedLiteral)left).HasDecimalDatatype())
-                {
-                    if (((RDFTypedLiteral)right).HasDecimalDatatype())
-                    {
-                        //owl:rational needs parsing and evaluation before being compared (LEFT)
-                        decimal leftValueDecimal = ((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                            ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left)
-                            : decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
-                        //owl:rational needs parsing and evaluation before being compared (RIGHT)
-                        decimal rightValueDecimal = ((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                            ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right)
-                            : decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
-                        return leftValueDecimal.CompareTo(rightValueDecimal);
-                    }
-                    return -99; //Type Error
-                }
-
-                //STRING
-                if (((RDFTypedLiteral)left).HasStringDatatype())
-                {
+                    //RESOURCE/CONTEXT VS TYPEDLITERAL
                     if (((RDFTypedLiteral)right).HasStringDatatype())
-                    {
-                        string leftValueString = ((RDFTypedLiteral)left).Value;
-                        string rightValueString = ((RDFTypedLiteral)right).Value;
-                        return string.CompareOrdinal(leftValueString, rightValueString);
-                    }
+                        return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
+
                     return -99; //Type Error
                 }
-
-                //GEOGRAPHIC
-                if (((RDFTypedLiteral)left).HasGeographicDatatype())
+                //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
+                case RDFPlainLiteral _ when right is RDFResource || right is RDFContext || right is RDFPlainLiteral:
+                    return string.CompareOrdinal(left.ToString(), right.ToString());
+                //PLAINLITERAL VS TYPEDLITERAL
+                case RDFPlainLiteral _ when ((RDFTypedLiteral)right).HasStringDatatype():
+                    return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
+                case RDFPlainLiteral _:
+                    return -99; //Type Error
+                default:
                 {
-                    if (((RDFTypedLiteral)right).HasGeographicDatatype())
+                    //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
+                    if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                     {
-                        Geometry leftGeometry = ((RDFTypedLiteral)left).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
-                            ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)left).Value)
-                            : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)left).Value);
-                        leftGeometry.SRID = 4326;
-                        Geometry rightGeometry = ((RDFTypedLiteral)right).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
-                            ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)right).Value)
-                            : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)right).Value);
-                        rightGeometry.SRID = 4326;
-                        return leftGeometry.CompareTo(rightGeometry);
+                        if (((RDFTypedLiteral)left).HasStringDatatype())
+                            return string.CompareOrdinal(((RDFTypedLiteral)left).Value, right.ToString());
+
+                        return -99; //Type Error
                     }
+
+                    //TYPEDLITERAL VS TYPEDLITERAL
+
+                    //DATETIME
+                    if (((RDFTypedLiteral)left).HasDatetimeDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasDatetimeDatatype())
+                        {
+                            DateTime leftValueDateTime = DateTime.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+                            DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+                            return leftValueDateTime.CompareTo(rightValueDateTime);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //DECIMAL
+                    if (((RDFTypedLiteral)left).HasDecimalDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasDecimalDatatype())
+                        {
+                            //owl:rational needs parsing and evaluation before being compared (LEFT)
+                            decimal leftValueDecimal = ((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
+                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left)
+                                : decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
+                            //owl:rational needs parsing and evaluation before being compared (RIGHT)
+                            decimal rightValueDecimal = ((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
+                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right)
+                                : decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
+                            return leftValueDecimal.CompareTo(rightValueDecimal);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //STRING
+                    if (((RDFTypedLiteral)left).HasStringDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasStringDatatype())
+                        {
+                            string leftValueString = ((RDFTypedLiteral)left).Value;
+                            string rightValueString = ((RDFTypedLiteral)right).Value;
+                            return string.CompareOrdinal(leftValueString, rightValueString);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //GEOGRAPHIC
+                    if (((RDFTypedLiteral)left).HasGeographicDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasGeographicDatatype())
+                        {
+                            Geometry leftGeometry = ((RDFTypedLiteral)left).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
+                                ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)left).Value)
+                                : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)left).Value);
+                            leftGeometry.SRID = 4326;
+                            Geometry rightGeometry = ((RDFTypedLiteral)right).Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
+                                ? RDFGeoExpression.WKTReader.Read(((RDFTypedLiteral)right).Value)
+                                : RDFGeoExpression.GMLReader.Read(((RDFTypedLiteral)right).Value);
+                            rightGeometry.SRID = 4326;
+                            return leftGeometry.CompareTo(rightGeometry);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //TIMESPAN
+                    if (((RDFTypedLiteral)left).HasTimespanDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasTimespanDatatype())
+                        {
+                            TimeSpan leftValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
+                            TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
+                            return leftValueDuration.CompareTo(rightValueDuration);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //BOOLEAN
+                    if (((RDFTypedLiteral)left).HasBooleanDatatype())
+                    {
+                        if (((RDFTypedLiteral)right).HasBooleanDatatype())
+                        {
+                            bool leftValueBoolean = bool.Parse(((RDFTypedLiteral)left).Value);
+                            bool rightValueBoolean = bool.Parse(((RDFTypedLiteral)right).Value);
+                            return leftValueBoolean.CompareTo(rightValueBoolean);
+                        }
+                        return -99; //Type Error
+                    }
+
+                    //Fallback (not possible)
                     return -99; //Type Error
                 }
-
-                //TIMESPAN
-                if (((RDFTypedLiteral)left).HasTimespanDatatype())
-                {
-                    if (((RDFTypedLiteral)right).HasTimespanDatatype())
-                    {
-                        TimeSpan leftValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)left).Value);
-                        TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
-                        return leftValueDuration.CompareTo(rightValueDuration);
-                    }
-                    return -99; //Type Error
-                }
-
-                //BOOLEAN
-                if (((RDFTypedLiteral)left).HasBooleanDatatype())
-                {
-                    if (((RDFTypedLiteral)right).HasBooleanDatatype())
-                    {
-                        bool leftValueBoolean = bool.Parse(((RDFTypedLiteral)left).Value);
-                        bool rightValueBoolean = bool.Parse(((RDFTypedLiteral)right).Value);
-                        return leftValueBoolean.CompareTo(rightValueBoolean);
-                    }
-                    return -99; //Type Error
-                }
-
-                //Fallback (not possible)
-                return -99; //Type Error
             }
         }
-    }
 
-    /// <summary>
-    /// Tries to abbreviate the string representation of the given pattern member by searching for it in the given list of namespaces
-    /// </summary>
-    internal static (bool, string) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
-    {
-        prefixes ??= Enumerable.Empty<RDFNamespace>().ToList();
-        string pmemberString = patternMember.ToString();
-        string pmemberStringOriginal = patternMember.ToString();
-
-        #region Prefix Search
-        //Check if the pattern member starts with a known prefix, if so just return it
-        string prefixToSearch = pmemberString.Split(':')[0];
-        RDFNamespace searchedPrefix = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
-        if (searchedPrefix != null)
-            return (true, pmemberString);
-        #endregion
-
-        #region Namespace Search
-        //Check if the pattern member starts with a known namespace, if so replace it with its prefix
-        bool hasAbbreviation = false;
-        foreach (RDFNamespace nsp in prefixes)
+        /// <summary>
+        /// Tries to abbreviate the string representation of the given pattern member by searching for it in the given list of namespaces
+        /// </summary>
+        internal static (bool, string) AbbreviateRDFPatternMember(RDFPatternMember patternMember, List<RDFNamespace> prefixes)
         {
-            string nspString = nsp.ToString();
-            if (!string.Equals(pmemberString, nspString, StringComparison.OrdinalIgnoreCase)
-                && pmemberString.StartsWith(nspString, StringComparison.Ordinal))
-            {
-                pmemberString = pmemberString.Replace(nspString, $"{nsp.NamespacePrefix}:").TrimEnd('/');
+            if (prefixes == null)
+                prefixes = Enumerable.Empty<RDFNamespace>().ToList();
+            string pmemberString = patternMember.ToString();
+            string pmemberStringOriginal = patternMember.ToString();
 
-                //Accept the abbreviation only if it has generated a valid XSD QName
-                try
+            #region Prefix Search
+            //Check if the pattern member starts with a known prefix, if so just return it
+            string prefixToSearch = pmemberString.Split(':')[0];
+            RDFNamespace searchedPrefix = prefixes.Find(pf => pf.NamespacePrefix.Equals(prefixToSearch, StringComparison.OrdinalIgnoreCase));
+            if (searchedPrefix != null)
+                return (true, pmemberString);
+            #endregion
+
+            #region Namespace Search
+            //Check if the pattern member starts with a known namespace, if so replace it with its prefix
+            bool hasAbbreviation = false;
+            foreach (RDFNamespace nsp in prefixes)
+            {
+                string nspString = nsp.ToString();
+                if (!string.Equals(pmemberString, nspString, StringComparison.OrdinalIgnoreCase)
+                     && pmemberString.StartsWith(nspString, StringComparison.Ordinal))
                 {
-                    _ = new RDFTypedLiteral(pmemberString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
-                    hasAbbreviation = true;
-                    break;
-                }
-                catch
-                {
-                    pmemberString = pmemberStringOriginal;
+                    pmemberString = pmemberString.Replace(nspString, $"{nsp.NamespacePrefix}:").TrimEnd('/');
+
+                    //Accept the abbreviation only if it has generated a valid XSD QName
+                    try
+                    {
+                        _ = new RDFTypedLiteral(pmemberString, RDFModelEnums.RDFDatatypes.XSD_QNAME);
+                        hasAbbreviation = true;
+                        break;
+                    }
+                    catch
+                    {
+                        pmemberString = pmemberStringOriginal;
+                    }
                 }
             }
+            return (hasAbbreviation, pmemberString);
+            #endregion
         }
-        return (hasAbbreviation, pmemberString);
+
+        /// <summary>
+        /// Removes the duplicates from the given list of T elements
+        /// </summary>
+        public static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember
+        {
+            if (elements?.Count > 0)
+            {
+                List<T> results = new List<T>(elements.Count);
+                HashSet<long> lookup = new HashSet<long>();
+                elements.ForEach(element =>
+                {
+                    if (lookup.Add(element.PatternMemberID))
+                        results.Add(element);
+                });
+                return results;
+            }
+            return Enumerable.Empty<T>().ToList();
+        }
+
+        /// <summary>
+        /// RDFWebClient extends WebClient with support for customization of timeout
+        /// </summary>
+        [ExcludeFromCodeCoverage]
+        internal sealed class RDFWebClient : WebClient
+        {
+            #region Properties
+            private int TimeOut { get; }
+            #endregion
+
+            #region Ctors
+            internal RDFWebClient(int timeoutMilliseconds)
+                => TimeOut = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
+            #endregion
+
+            #region Methods
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                WebRequest webRequest = base.GetWebRequest(address);
+                webRequest.Timeout = TimeOut;
+                return webRequest;
+            }
+            #endregion
+        }
         #endregion
     }
-
-    /// <summary>
-    /// Removes the duplicates from the given list of T elements
-    /// </summary>
-    public static List<T> RemoveDuplicates<T>(List<T> elements) where T : RDFPatternMember
-    {
-        if (elements?.Count > 0)
-        {
-            List<T> results = [];
-            HashSet<long> lookup = [];
-            elements.ForEach(element =>
-            {
-                if (lookup.Add(element.PatternMemberID))
-                    results.Add(element);
-            });
-            return results;
-        }
-        return Enumerable.Empty<T>().ToList();
-    }
-    #endregion
 }

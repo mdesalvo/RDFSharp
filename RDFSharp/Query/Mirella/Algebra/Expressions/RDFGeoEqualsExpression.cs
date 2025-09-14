@@ -18,100 +18,101 @@ using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// GEOEqualsExpression represents "geof:sfEquals" geographic function to be applied on a query results table.<br/>
-/// The result of this function is a boolean typed literal.
-/// </summary>
-public sealed class RDFGeoEqualsExpression : RDFGeoExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a geof:sfEquals function with given arguments
+    /// GEOEqualsExpression represents "geof:sfEquals" geographic function to be applied on a query results table.<br/>
+    /// The result of this function is a boolean typed literal.
     /// </summary>
-    public RDFGeoEqualsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+    public sealed class RDFGeoEqualsExpression : RDFGeoExpression
     {
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        #region Ctors
+        /// <summary>
+        /// Builds a geof:sfEquals function with given arguments
+        /// </summary>
+        public RDFGeoEqualsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
+
+        /// <summary>
+        /// Builds a geof:sfEquals function with given arguments
+        /// </summary>
+        public RDFGeoEqualsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
+
+        /// <summary>
+        /// Builds a geof:sfEquals function with given arguments
+        /// </summary>
+        public RDFGeoEqualsExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            if (!rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
+                 && !rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString()))
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
+        }
+
+        /// <summary>
+        /// Builds a geof:sfEquals function with given arguments
+        /// </summary>
+        public RDFGeoEqualsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
+
+        /// <summary>
+        /// Builds a geof:sfEquals function with given arguments
+        /// </summary>
+        public RDFGeoEqualsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        }
+
+        /// <summary>
+        /// Builds a geof:sfEquals function with given arguments
+        /// </summary>
+        public RDFGeoEqualsExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
+        {
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            if (!rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
+                 && !rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString()))
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the geof:sfEquals function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            //(geof:sfEquals(L,R))
+            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.SF_EQUALS, prefixes)}(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append(", ");
+            if (RightArgument is RDFExpression expRightArgument)
+                sb.Append(expRightArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            sb.Append("))");
+
+            return sb.ToString();
+        }
+        #endregion
     }
-
-    /// <summary>
-    /// Builds a geof:sfEquals function with given arguments
-    /// </summary>
-    public RDFGeoEqualsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
-    {
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-    }
-
-    /// <summary>
-    /// Builds a geof:sfEquals function with given arguments
-    /// </summary>
-    public RDFGeoEqualsExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
-    {
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        if (!rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
-            && !rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString()))
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
-    }
-
-    /// <summary>
-    /// Builds a geof:sfEquals function with given arguments
-    /// </summary>
-    public RDFGeoEqualsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
-    {
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-    }
-
-    /// <summary>
-    /// Builds a geof:sfEquals function with given arguments
-    /// </summary>
-    public RDFGeoEqualsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
-    {
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-    }
-
-    /// <summary>
-    /// Builds a geof:sfEquals function with given arguments
-    /// </summary>
-    public RDFGeoEqualsExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument)
-    {
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        if (!rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.WKT_LITERAL.ToString())
-            && !rightArgument.Datatype.ToString().Equals(RDFVocabulary.GEOSPARQL.GML_LITERAL.ToString()))
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is not a geographic typed literal");
-    }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the geof:sfEquals function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
-    {
-        StringBuilder sb = new StringBuilder(32);
-
-        //(geof:sfEquals(L,R))
-        sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.SF_EQUALS, prefixes)}(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append(", ");
-        if (RightArgument is RDFExpression expRightArgument)
-            sb.Append(expRightArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-        sb.Append("))");
-
-        return sb.ToString();
-    }
-    #endregion
 }

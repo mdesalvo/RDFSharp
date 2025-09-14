@@ -20,132 +20,133 @@ using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFFederation represents a virtually integrated collection of RDF data sources
-/// </summary>
-public sealed class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Name of the federation
+    /// RDFFederation represents a virtually integrated collection of RDF data sources
     /// </summary>
-    public string FederationName { get; internal set; }
-
-    /// <summary>
-    /// Count of the federation's data sources
-    /// </summary>
-    public int DataSourcesCount
-        => DataSources.Count;
-
-    /// <summary>
-    /// Gets the enumerator on the federation's data sources for iteration
-    /// </summary>
-    public IEnumerator<RDFDataSource> DataSourcesEnumerator
-        => DataSources.GetEnumerator();
-
-    /// <summary>
-    /// List of data sources of the federation
-    /// </summary>
-    internal List<RDFDataSource> DataSources { get; set; }
-
-    /// <summary>
-    /// Dictionary of query options for the SPARQL endpoint data sources of the federation
-    /// </summary>
-    internal Dictionary<string, RDFSPARQLEndpointQueryOptions> EndpointDataSourcesQueryOptions { get; set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an empty federation
-    /// </summary>
-    public RDFFederation()
+    public sealed class RDFFederation : RDFDataSource, IEnumerable<RDFDataSource>
     {
-        FederationName = $"FEDERATION|ID={Guid.NewGuid():N}";
-        DataSources = [];
-        EndpointDataSourcesQueryOptions = [];
-    }
-    #endregion
+        #region Properties
+        /// <summary>
+        /// Name of the federation
+        /// </summary>
+        public string FederationName { get; internal set; }
 
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the federation
-    /// </summary>
-    public override string ToString()
-        => FederationName;
+        /// <summary>
+        /// Count of the federation's data sources
+        /// </summary>
+        public int DataSourcesCount
+            => DataSources.Count;
 
-    /// <summary>
-    /// Exposes a typed enumerator on the federation's data sources
-    /// </summary>
-    IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator()
-        => DataSourcesEnumerator;
+        /// <summary>
+        /// Gets the enumerator on the federation's data sources for iteration
+        /// </summary>
+        public IEnumerator<RDFDataSource> DataSourcesEnumerator
+            => DataSources.GetEnumerator();
 
-    /// <summary>
-    /// Exposes an untyped enumerator on the federation's data sources
-    /// </summary>
-    IEnumerator IEnumerable.GetEnumerator()
-        => DataSourcesEnumerator;
-    #endregion
+        /// <summary>
+        /// List of data sources of the federation
+        /// </summary>
+        internal List<RDFDataSource> DataSources { get; set; }
 
-    #region Methods
+        /// <summary>
+        /// Dictionary of query options for the SPARQL endpoint data sources of the federation
+        /// </summary>
+        internal Dictionary<string, RDFSPARQLEndpointQueryOptions> EndpointDataSourcesQueryOptions { get; set; }
+        #endregion
 
-    #region Add
-    /// <summary>
-    /// Adds the given graph to the federation
-    /// </summary>
-    public RDFFederation AddGraph(RDFGraph graph)
-    {
-        if (graph != null)
-            DataSources.Add(graph);
-        return this;
-    }
-
-    /// <summary>
-    /// Adds the given store to the federation
-    /// </summary>
-    public RDFFederation AddStore(RDFStore store)
-    {
-        if (store != null)
-            DataSources.Add(store);
-        return this;
-    }
-
-    /// <summary>
-    /// Adds the given federation to the federation
-    /// </summary>
-    public RDFFederation AddFederation(RDFFederation federation)
-    {
-        if (federation?.Equals(this) == false)
-            DataSources.Add(federation);
-        return this;
-    }
-
-    /// <summary>
-    /// Adds the given SPARQL endpoint to the federation
-    /// </summary>
-    public RDFFederation AddSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-    {
-        string sparqlEndpointString = sparqlEndpoint?.ToString();
-        if (sparqlEndpoint != null && !EndpointDataSourcesQueryOptions.ContainsKey(sparqlEndpointString))
+        #region Ctors
+        /// <summary>
+        /// Builds an empty federation
+        /// </summary>
+        public RDFFederation()
         {
-            DataSources.Add(sparqlEndpoint);
-            EndpointDataSourcesQueryOptions.Add(sparqlEndpointString, sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
+            FederationName = $"FEDERATION|ID={Guid.NewGuid():N}";
+            DataSources = new List<RDFDataSource>();
+            EndpointDataSourcesQueryOptions = new Dictionary<string, RDFSPARQLEndpointQueryOptions>();
         }
-        return this;
-    }
-    #endregion
+        #endregion
 
-    #region Remove
-    /// <summary>
-    /// Clears the data sources of the federation
-    /// </summary>
-    public void ClearDataSources()
-    {
-        DataSources.Clear();
-        EndpointDataSourcesQueryOptions.Clear();
-    }
-    #endregion
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the federation
+        /// </summary>
+        public override string ToString()
+            => FederationName;
 
-    #endregion
+        /// <summary>
+        /// Exposes a typed enumerator on the federation's data sources
+        /// </summary>
+        IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator()
+            => DataSourcesEnumerator;
+
+        /// <summary>
+        /// Exposes an untyped enumerator on the federation's data sources
+        /// </summary>
+        IEnumerator IEnumerable.GetEnumerator()
+            => DataSourcesEnumerator;
+        #endregion
+
+        #region Methods
+
+        #region Add
+        /// <summary>
+        /// Adds the given graph to the federation
+        /// </summary>
+        public RDFFederation AddGraph(RDFGraph graph)
+        {
+            if (graph != null)
+                DataSources.Add(graph);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given store to the federation
+        /// </summary>
+        public RDFFederation AddStore(RDFStore store)
+        {
+            if (store != null)
+                DataSources.Add(store);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given federation to the federation
+        /// </summary>
+        public RDFFederation AddFederation(RDFFederation federation)
+        {
+            if (federation?.Equals(this) == false)
+                DataSources.Add(federation);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given SPARQL endpoint to the federation
+        /// </summary>
+        public RDFFederation AddSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
+        {
+            string sparqlEndpointString = sparqlEndpoint?.ToString();
+            if (sparqlEndpoint != null && !EndpointDataSourcesQueryOptions.ContainsKey(sparqlEndpointString))
+            {
+                DataSources.Add(sparqlEndpoint);
+                EndpointDataSourcesQueryOptions.Add(sparqlEndpointString, sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
+            }
+            return this;
+        }
+        #endregion
+
+        #region Remove
+        /// <summary>
+        /// Clears the data sources of the federation
+        /// </summary>
+        public void ClearDataSources()
+        {
+            DataSources.Clear();
+            EndpointDataSourcesQueryOptions.Clear();
+        }
+        #endregion
+
+        #endregion
+    }
 }

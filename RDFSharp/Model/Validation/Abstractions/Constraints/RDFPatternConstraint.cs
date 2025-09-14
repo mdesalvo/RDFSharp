@@ -19,105 +19,106 @@ using System.Text;
 using System.Text.RegularExpressions;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFPatternConstraint represents a SHACL constraint on the specified regular expression for a given RDF term
-/// </summary>
-public sealed class RDFPatternConstraint : RDFConstraint
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Regular Expression to be applied on the given RDF term
+    /// RDFPatternConstraint represents a SHACL constraint on the specified regular expression for a given RDF term
     /// </summary>
-    public Regex RegEx { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a pattern constraint with the given regex
-    /// </summary>
-    /// <exception cref="RDFModelException"></exception>
-    public RDFPatternConstraint(Regex regex)
-        => RegEx = regex ?? throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Evaluates this constraint against the given data graph
-    /// </summary>
-    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+    public sealed class RDFPatternConstraint : RDFConstraint
     {
-        RDFValidationReport report = new RDFValidationReport();
-        RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-        //In case no shape messages have been provided, this constraint emits a default one (for usability)
-        List<RDFLiteral> shapeMessages = [.. shape.Messages];
-        if (shapeMessages.Count == 0)
-            shapeMessages.Add(new RDFPlainLiteral($"Must match expression {RegEx} and can't be a blank node"));
-
-        #region Evaluation
-        foreach (RDFPatternMember valueNode in valueNodes)
-            switch (valueNode)
-            {
-                //Resource
-                case RDFResource valueNodeResource:
-                    if (valueNodeResource.IsBlank || !RegEx.IsMatch(valueNodeResource.ToString()))
-                    {
-                        report.AddResult(new RDFValidationResult(shape,
-                            RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
-                            focusNode,
-                            pShape?.Path,
-                            valueNode,
-                            shapeMessages,
-                            shape.Severity));
-                    }
-                    break;
-
-                //Literal
-                case RDFLiteral valueNodeLiteral:
-                    if (!RegEx.IsMatch(valueNodeLiteral.Value))
-                    {
-                        report.AddResult(new RDFValidationResult(shape,
-                            RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
-                            focusNode,
-                            pShape?.Path,
-                            valueNode,
-                            shapeMessages,
-                            shape.Severity));
-                    }
-                    break;
-            }
+        #region Properties
+        /// <summary>
+        /// Regular Expression to be applied on the given RDF term
+        /// </summary>
+        public Regex RegEx { get; internal set; }
         #endregion
 
-        return report;
-    }
+        #region Ctors
+        /// <summary>
+        /// Builds a pattern constraint with the given regex
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        public RDFPatternConstraint(Regex regex)
+            => RegEx = regex ?? throw new RDFModelException("Cannot create RDFPatternConstraint because given \"regex\" parameter is null.");
+        #endregion
 
-    /// <summary>
-    /// Gets a graph representation of this constraint
-    /// </summary>
-    internal override RDFGraph ToRDFGraph(RDFShape shape)
-    {
-        RDFGraph result = new RDFGraph();
-        if (shape != null)
+        #region Methods
+        /// <summary>
+        /// Evaluates this constraint against the given data graph
+        /// </summary>
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
-            //sh:pattern
-            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
 
-            //sh:flags
-            StringBuilder regexFlags = new StringBuilder(4);
-            if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
-                regexFlags.Append('i');
-            if (RegEx.Options.HasFlag(RegexOptions.Singleline))
-                regexFlags.Append('s');
-            if (RegEx.Options.HasFlag(RegexOptions.Multiline))
-                regexFlags.Append('m');
-            if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
-                regexFlags.Append('x');
-            if (regexFlags.Length > 0)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Must match expression {RegEx} and can't be a blank node"));
+
+            #region Evaluation
+            foreach (RDFPatternMember valueNode in valueNodes)
+                switch (valueNode)
+                {
+                    //Resource
+                    case RDFResource valueNodeResource:
+                        if (valueNodeResource.IsBlank || !RegEx.IsMatch(valueNodeResource.ToString()))
+                        {
+                            report.AddResult(new RDFValidationResult(shape,
+                                                                     RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     pShape?.Path,
+                                                                     valueNode,
+                                                                     shapeMessages,
+                                                                     shape.Severity));
+                        }
+                        break;
+
+                    //Literal
+                    case RDFLiteral valueNodeLiteral:
+                        if (!RegEx.IsMatch(valueNodeLiteral.Value))
+                        {
+                            report.AddResult(new RDFValidationResult(shape,
+                                                                     RDFVocabulary.SHACL.PATTERN_CONSTRAINT_COMPONENT,
+                                                                     focusNode,
+                                                                     pShape?.Path,
+                                                                     valueNode,
+                                                                     shapeMessages,
+                                                                     shape.Severity));
+                        }
+                        break;
+                }
+            #endregion
+
+            return report;
         }
-        return result;
+
+        /// <summary>
+        /// Gets a graph representation of this constraint
+        /// </summary>
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
+            RDFGraph result = new RDFGraph();
+            if (shape != null)
+            {
+                //sh:pattern
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
+
+                //sh:flags
+                StringBuilder regexFlags = new StringBuilder(4);
+                if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
+                    regexFlags.Append('i');
+                if (RegEx.Options.HasFlag(RegexOptions.Singleline))
+                    regexFlags.Append('s');
+                if (RegEx.Options.HasFlag(RegexOptions.Multiline))
+                    regexFlags.Append('m');
+                if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+                    regexFlags.Append('x');
+                if (regexFlags.Length > 0)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.FLAGS, new RDFTypedLiteral(regexFlags.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
+            }
+            return result;
+        }
+        #endregion
     }
-    #endregion
 }

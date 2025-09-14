@@ -18,82 +18,84 @@ using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFEqualsConstraint represents a SHACL constraint on presence of a given RDF term for the specified predicate
-/// </summary>
-public sealed class RDFEqualsConstraint : RDFConstraint
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Predicate for which value nodes of a given RDF term are checked for presence
+    /// RDFEqualsConstraint represents a SHACL constraint on presence of a given RDF term for the specified predicate
     /// </summary>
-    public RDFResource EqualsPredicate { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an equals constraint with the given predicate
-    /// </summary>
-    /// <exception cref="RDFModelException"></exception>
-    public RDFEqualsConstraint(RDFResource equalsPredicate)
-        => EqualsPredicate = equalsPredicate ?? throw new RDFModelException("Cannot create RDFEqualsConstraint because given \"equalsPredicate\" parameter is null.");
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Evaluates this constraint against the given data graph
-    /// </summary>
-    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+    public sealed class RDFEqualsConstraint : RDFConstraint
     {
-        RDFValidationReport report = new RDFValidationReport();
-        RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-        //In case no shape messages have been provided, this constraint emits a default one (for usability)
-        List<RDFLiteral> shapeMessages = [.. shape.Messages];
-        if (shapeMessages.Count == 0)
-            shapeMessages.Add(new RDFPlainLiteral($"Must have same values as property <{EqualsPredicate}>"));
-
-        #region Evaluation
-        List<RDFPatternMember> predicateNodes = [.. dataGraph.Where(t => t.Subject.Equals(focusNode)
-                                                                         && t.Predicate.Equals(EqualsPredicate))
-            .Select(x => x.Object)];
-
-        foreach (RDFPatternMember predicateNode in predicateNodes)
-            if (!valueNodes.Any(v => v.Equals(predicateNode)))
-                report.AddResult(new RDFValidationResult(shape,
-                    RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
-                    focusNode,
-                    pShape?.Path,
-                    predicateNode,
-                    shapeMessages,
-                    shape.Severity));
-
-        foreach (RDFPatternMember valueNode in valueNodes)
-            if (!predicateNodes.Any(p => p.Equals(valueNode)))
-                report.AddResult(new RDFValidationResult(shape,
-                    RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
-                    focusNode,
-                    pShape?.Path,
-                    valueNode,
-                    shapeMessages,
-                    shape.Severity));
+        #region Properties
+        /// <summary>
+        /// Predicate for which value nodes of a given RDF term are checked for presence
+        /// </summary>
+        public RDFResource EqualsPredicate { get; internal set; }
         #endregion
 
-        return report;
-    }
+        #region Ctors
+        /// <summary>
+        /// Builds an equals constraint with the given predicate
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        public RDFEqualsConstraint(RDFResource equalsPredicate)
+            => EqualsPredicate = equalsPredicate ?? throw new RDFModelException("Cannot create RDFEqualsConstraint because given \"equalsPredicate\" parameter is null.");
+        #endregion
 
-    /// <summary>
-    /// Gets a graph representation of this constraint
-    /// </summary>
-    internal override RDFGraph ToRDFGraph(RDFShape shape)
-    {
-        RDFGraph result = new RDFGraph();
-        if (shape != null)
-            //sh:equals
-            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, EqualsPredicate));
-        return result;
+        #region Methods
+        /// <summary>
+        /// Evaluates this constraint against the given data graph
+        /// </summary>
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+        {
+            RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
+
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Must have same values as property <{EqualsPredicate}>"));
+
+            #region Evaluation
+            List<RDFPatternMember> predicateNodes = dataGraph.Where(t => t.Subject.Equals(focusNode)
+                                                                            && t.Predicate.Equals(EqualsPredicate))
+                                                             .Select(x => x.Object)
+                                                             .ToList();
+
+            foreach (RDFPatternMember predicateNode in predicateNodes)
+                if (!valueNodes.Any(v => v.Equals(predicateNode)))
+                    report.AddResult(new RDFValidationResult(shape,
+                                                             RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
+                                                             focusNode,
+                                                             pShape?.Path,
+                                                             predicateNode,
+                                                             shapeMessages,
+                                                             shape.Severity));
+
+            foreach (RDFPatternMember valueNode in valueNodes)
+                if (!predicateNodes.Any(p => p.Equals(valueNode)))
+                    report.AddResult(new RDFValidationResult(shape,
+                                                             RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
+                                                             focusNode,
+                                                             pShape?.Path,
+                                                             valueNode,
+                                                             shapeMessages,
+                                                             shape.Severity));
+            #endregion
+
+            return report;
+        }
+
+        /// <summary>
+        /// Gets a graph representation of this constraint
+        /// </summary>
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
+            RDFGraph result = new RDFGraph();
+            if (shape != null)
+                //sh:equals
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.EQUALS, EqualsPredicate));
+            return result;
+        }
+        #endregion
     }
-    #endregion
 }

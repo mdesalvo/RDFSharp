@@ -17,57 +17,58 @@
 using System;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFPatternGroupMember defines an object which can be member of a pattern group
-/// </summary>
-public class RDFPatternGroupMember : IEquatable<RDFPatternGroupMember>
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Unique identifier of the pattern group member
+    /// RDFPatternGroupMember defines an object which can be member of a pattern group
     /// </summary>
-    public long PatternGroupMemberID => LazyPatternGroupMemberID.Value;
-
-    /// <summary>
-    /// Lazy evaluation of the pattern group member identifier
-    /// </summary>
-    protected readonly Lazy<long> LazyPatternGroupMemberID;
-
-    /// <summary>
-    /// Unique identifier of the pattern group member (string)
-    /// </summary>
-    internal string PatternGroupMemberStringID { get; set;}
-
-    /// <summary>
-    /// Flag indicating that the pattern group member is evaluable by the engine
-    /// </summary>
-    internal bool IsEvaluable { get; set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a pattern group member
-    /// </summary>
-    internal RDFPatternGroupMember()
+    public class RDFPatternGroupMember : IEquatable<RDFPatternGroupMember>
     {
-        PatternGroupMemberStringID = Guid.NewGuid().ToString("N");
-        LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(PatternGroupMemberStringID));
+        #region Properties
+        /// <summary>
+        /// Unique identifier of the pattern group member
+        /// </summary>
+        public long PatternGroupMemberID => LazyPatternGroupMemberID.Value;
+
+        /// <summary>
+        /// Lazy evaluation of the pattern group member identifier
+        /// </summary>
+        protected readonly Lazy<long> LazyPatternGroupMemberID;
+
+        /// <summary>
+        /// Unique identifier of the pattern group member (string)
+        /// </summary>
+        internal string PatternGroupMemberStringID { get; set;}
+
+        /// <summary>
+        /// Flag indicating that the pattern group member is evaluable by the engine
+        /// </summary>
+        internal bool IsEvaluable { get; set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Builds a pattern group member
+        /// </summary>
+        internal RDFPatternGroupMember()
+        {
+            PatternGroupMemberStringID = Guid.NewGuid().ToString("N");
+            LazyPatternGroupMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(PatternGroupMemberStringID));
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the pattern group member
+        /// </summary>
+        public override string ToString()
+            => string.Empty;
+
+        /// <summary>
+        /// Performs the equality comparison between two pattern group members
+        /// </summary>
+        public bool Equals(RDFPatternGroupMember other)
+            => other != null && PatternGroupMemberID.Equals(other.PatternGroupMemberID);
+        #endregion
     }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the pattern group member
-    /// </summary>
-    public override string ToString()
-        => string.Empty;
-
-    /// <summary>
-    /// Performs the equality comparison between two pattern group members
-    /// </summary>
-    public bool Equals(RDFPatternGroupMember other)
-        => other != null && PatternGroupMemberID.Equals(other.PatternGroupMemberID);
-    #endregion
 }

@@ -19,35 +19,36 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFNowExpression represents a datetime now function (represented in UTC) to be applied on a query results table.
-/// </summary>
-public sealed class RDFNowExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a datetime now function
+    /// RDFNowExpression represents a datetime now function (represented in UTC) to be applied on a query results table.
     /// </summary>
-    public RDFNowExpression() { }
-    #endregion
+    public sealed class RDFNowExpression : RDFExpression
+    {
+        #region Ctors
+        /// <summary>
+        /// Builds a datetime now function
+        /// </summary>
+        public RDFNowExpression() { }
+        #endregion
 
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the datetime now function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
-        => "(NOW())";
-    #endregion
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the datetime now function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+            => "(NOW())";
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Applies the now expression on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-        => new RDFTypedLiteral(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), RDFModelEnums.RDFDatatypes.XSD_DATETIME);
-    #endregion
+        #region Methods
+        /// <summary>
+        /// Applies the now expression on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+            => new RDFTypedLiteral(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), RDFModelEnums.RDFDatatypes.XSD_DATETIME);
+        #endregion
+    }
 }

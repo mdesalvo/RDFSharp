@@ -19,119 +19,139 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFContainsExpression represents a string contains function to be applied on a query results table.
-/// </summary>
-public sealed class RDFContainsExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a string contains function with given arguments
+    /// RDFContainsExpression represents a string contains function to be applied on a query results table.
     /// </summary>
-    public RDFContainsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
-
-    /// <summary>
-    /// Builds a string contains function with given arguments
-    /// </summary>
-    public RDFContainsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
-
-    /// <summary>
-    /// Builds a string contains function with given arguments
-    /// </summary>
-    public RDFContainsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
-
-    /// <summary>
-    /// Builds a string contains function with given arguments
-    /// </summary>
-    public RDFContainsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the string contains function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFContainsExpression : RDFExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Ctors
+        /// <summary>
+        /// Builds a string contains function with given arguments
+        /// </summary>
+        public RDFContainsExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-        //(CONTAINS(L,R))
-        sb.Append("(CONTAINS(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append(", ");
-        if (RightArgument is RDFExpression expRightArgument)
-            sb.Append(expRightArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-        sb.Append("))");
+        /// <summary>
+        /// Builds a string contains function with given arguments
+        /// </summary>
+        public RDFContainsExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
-        return sb.ToString();
-    }
-    #endregion
+        /// <summary>
+        /// Builds a string contains function with given arguments
+        /// </summary>
+        public RDFContainsExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-    #region Methods
-    /// <summary>
-    /// Applies the string contains function on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        RDFTypedLiteral expressionResult = null;
-
-        #region Guards
-        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-            return null;
-        if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-            return null;
+        /// <summary>
+        /// Builds a string contains function with given arguments
+        /// </summary>
+        public RDFContainsExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
 
-        try
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the string contains function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            #region Evaluate Arguments
-            //Evaluate left argument (Expression VS Variable)
-            RDFPatternMember leftArgumentPMember;
-            if (LeftArgument is RDFExpression leftArgumentExpression)
-                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-            else
-                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+            StringBuilder sb = new StringBuilder(32);
 
-            //Evaluate right argument (Expression VS Variable)
-            RDFPatternMember rightArgumentPMember;
-            if (RightArgument is RDFExpression rightArgumentExpression)
-                rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
+            //(CONTAINS(L,R))
+            sb.Append("(CONTAINS(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
             else
-                rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-            #endregion
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append(", ");
+            if (RightArgument is RDFExpression expRightArgument)
+                sb.Append(expRightArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            sb.Append("))");
 
-            #region Calculate Result
-            //Transform left argument result into a plain literal
-            leftArgumentPMember = leftArgumentPMember switch
-            {
-                RDFResource => new RDFPlainLiteral(leftArgumentPMember.ToString()),
-                RDFPlainLiteral plLeftArgumentPMember => new RDFPlainLiteral(plLeftArgumentPMember.Value),
-                RDFTypedLiteral tlLeftArgumentPMember when tlLeftArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlLeftArgumentPMember.Value),
-                _ => null //binding error => cleanup
-            };
-            //Transform right argument result into a plain literal
-            rightArgumentPMember = rightArgumentPMember switch
-            {
-                RDFResource => new RDFPlainLiteral(rightArgumentPMember.ToString()),
-                RDFPlainLiteral plRightArgumentPMember => new RDFPlainLiteral(plRightArgumentPMember.Value),
-                RDFTypedLiteral tlRightArgumentPMember when tlRightArgumentPMember.HasStringDatatype() => new RDFPlainLiteral(tlRightArgumentPMember.Value),
-                _ => null //binding error => cleanup
-            };
-            if (leftArgumentPMember != null && rightArgumentPMember != null)
-                expressionResult = leftArgumentPMember.ToString().Contains(rightArgumentPMember.ToString()) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
-            #endregion
+            return sb.ToString();
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+        #endregion
 
-        return expressionResult;
+        #region Methods
+        /// <summary>
+        /// Applies the string contains function on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            RDFTypedLiteral expressionResult = null;
+
+            #region Guards
+            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+                return null;
+            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
+                return null;
+            #endregion
+
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate left argument (Expression VS Variable)
+                RDFPatternMember leftArgumentPMember;
+                if (LeftArgument is RDFExpression leftArgumentExpression)
+                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+                else
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+
+                //Evaluate right argument (Expression VS Variable)
+                RDFPatternMember rightArgumentPMember;
+                if (RightArgument is RDFExpression rightArgumentExpression)
+                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
+                else
+                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+                #endregion
+
+                #region Calculate Result
+
+                switch (leftArgumentPMember)
+                {
+                    //Transform left argument result into a plain literal
+                    case RDFResource _:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMember.ToString());
+                        break;
+                    case RDFPlainLiteral plitLeftArgumentPMember:
+                        leftArgumentPMember = new RDFPlainLiteral(plitLeftArgumentPMember.Value);
+                        break;
+                    case RDFTypedLiteral tlitLeftArgumentPMember when tlitLeftArgumentPMember.HasStringDatatype():
+                        leftArgumentPMember = new RDFPlainLiteral(tlitLeftArgumentPMember.Value);
+                        break;
+                    default:
+                        leftArgumentPMember = null; //binding error => cleanup
+                        break;
+                }
+
+                switch (rightArgumentPMember)
+                {
+                    //Transform right argument result into a plain literal
+                    case RDFResource _:
+                        rightArgumentPMember = new RDFPlainLiteral(rightArgumentPMember.ToString());
+                        break;
+                    case RDFPlainLiteral plitRightArgumentPMember:
+                        rightArgumentPMember = new RDFPlainLiteral(plitRightArgumentPMember.Value);
+                        break;
+                    case RDFTypedLiteral tlitRightArgumentPMember when tlitRightArgumentPMember.HasStringDatatype():
+                        rightArgumentPMember = new RDFPlainLiteral(tlitRightArgumentPMember.Value);
+                        break;
+                    default:
+                        rightArgumentPMember = null; //binding error => cleanup
+                        break;
+                }
+
+                if (leftArgumentPMember != null && rightArgumentPMember != null)
+                    expressionResult = leftArgumentPMember.ToString().Contains(rightArgumentPMember.ToString()) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            return expressionResult;
+        }
+        #endregion
     }
-    #endregion
 }

@@ -145,12 +145,12 @@ public class RDFShapesGraphTest
 
         Assert.IsNotNull(graph);
         Assert.IsTrue(graph.Context.Equals(new Uri("ex:shapesGraph")));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.MESSAGE, new RDFPlainLiteral("This is an error", "en-US"))));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, new RDFResource("ex:class"))));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, new RDFResource("ex:class"))));
+        Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE)));
+        Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.SEVERITY_PROPERTY, RDFVocabulary.SHACL.VIOLATION)));
+        Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.DEACTIVATED, RDFTypedLiteral.False)));
+        Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.MESSAGE, new RDFPlainLiteral("This is an error", "en-US"))));
+        Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_CLASS, new RDFResource("ex:class"))));
+        Assert.IsTrue(await graph.ContainsTripleAsync(new RDFTriple(shape, RDFVocabulary.SHACL.CLASS, new RDFResource("ex:class"))));
     }
 
     [TestMethod]

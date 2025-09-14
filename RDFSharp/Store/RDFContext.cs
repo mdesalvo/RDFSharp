@@ -18,57 +18,58 @@ using System;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
-namespace RDFSharp.Store;
-
-/// <summary>
-/// RDFContext is an Uri representing the "provenance" of a triple in the worldwide LinkedData network.<br/>
-/// It cannot be a blank resource, since its meaning is to answer "where does this triple come from?".
-/// </summary>
-public sealed class RDFContext : RDFPatternMember
+namespace RDFSharp.Store
 {
-    #region Properties
     /// <summary>
-    /// Uri representing the context of the pattern
+    /// RDFContext is an Uri representing the "provenance" of a triple in the worldwide LinkedData network.<br/>
+    /// It cannot be a blank resource, since its meaning is to answer "where does this triple come from?".
     /// </summary>
-    public Uri Context { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a predefined context
-    /// </summary>
-    public RDFContext() : this(RDFNamespaceRegister.DefaultNamespace.NamespaceUri) { }
-
-    /// <summary>
-    /// String-based ctor to build a context from the given string
-    /// </summary>
-    /// <exception cref="RDFStoreException"></exception>
-    public RDFContext(string ctxUri)
+    public sealed class RDFContext : RDFPatternMember
     {
-        Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri)
-                      ?? throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter is null or does not represent a valid Uri.");
+        #region Properties
+        /// <summary>
+        /// Uri representing the context of the pattern
+        /// </summary>
+        public Uri Context { get; internal set; }
+        #endregion
 
-        //Do not accept a context starting with reserved "bnode:" or "xmlns:" prefixes
-        string tempUriString = tempUri.ToString();
-        if (tempUriString.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-            || tempUriString.StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+        #region Ctors
+        /// <summary>
+        /// Builds a predefined context
+        /// </summary>
+        public RDFContext() : this(RDFNamespaceRegister.DefaultNamespace.NamespaceUri) { }
+
+        /// <summary>
+        /// String-based ctor to build a context from the given string
+        /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
+        public RDFContext(string ctxUri)
         {
-            throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
+            Uri tempUri = RDFModelUtilities.GetUriFromString(ctxUri)
+                           ?? throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter is null or does not represent a valid Uri.");
+
+            //Do not accept a context starting with reserved "bnode:" or "xmlns:" prefixes
+            string tempUriString = tempUri.ToString();
+            if (tempUriString.StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
+                 || tempUriString.StartsWith("xmlns:", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new RDFStoreException("Cannot create RDFContext because given \"ctxUri\" parameter represents a blank node Uri.");
+            }
+
+            Context = tempUri;
         }
 
-        Context = tempUri;
+        /// <summary>
+        /// Uri-based ctor to build a context from the given Uri
+        /// </summary>
+        public RDFContext(Uri ctxUri) : this(ctxUri?.ToString()) { }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the store context
+        /// </summary>
+        public override string ToString() => Context.ToString();
+        #endregion
     }
-
-    /// <summary>
-    /// Uri-based ctor to build a context from the given Uri
-    /// </summary>
-    public RDFContext(Uri ctxUri) : this(ctxUri?.ToString()) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the store context
-    /// </summary>
-    public override string ToString() => Context.ToString();
-    #endregion
 }

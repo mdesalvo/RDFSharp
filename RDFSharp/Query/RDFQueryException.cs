@@ -16,28 +16,29 @@
 
 using System;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFQueryException represents an exception thrown during creation and execution of SPARQL queries
-/// </summary>
-[Serializable]
-public sealed class RDFQueryException : Exception
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Basic ctor to throw an empty RDFQueryException
+    /// RDFQueryException represents an exception thrown during creation and execution of SPARQL queries
     /// </summary>
-    public RDFQueryException() { }
+    [Serializable]
+    public sealed class RDFQueryException : Exception
+    {
+        #region Ctors
+        /// <summary>
+        /// Basic ctor to throw an empty RDFQueryException
+        /// </summary>
+        public RDFQueryException() { }
 
-    /// <summary>
-    /// Basic ctor to throw an RDFQueryException with message
-    /// </summary>
-    public RDFQueryException(string message) : base(message) { }
+        /// <summary>
+        /// Basic ctor to throw an RDFQueryException with message
+        /// </summary>
+        public RDFQueryException(string message) : base(message) { }
 
-    /// <summary>
-    /// Basic ctor to throw an RDFQueryException with message and inner exception
-    /// </summary>
-    public RDFQueryException(string message, Exception innerException) : base(message, innerException) { }
-    #endregion
+        /// <summary>
+        /// Basic ctor to throw an RDFQueryException with message and inner exception
+        /// </summary>
+        public RDFQueryException(string message, Exception innerException) : base(message, innerException) { }
+        #endregion
+    }
 }

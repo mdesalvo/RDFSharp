@@ -17,127 +17,128 @@
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-///  RDFValidationResult represents an evidence reported by a shape's validation.
-/// </summary>
-public sealed class RDFValidationResult : RDFResource
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Indicates the severity level of this validation result (sh:resultSeverity)
+    ///  RDFValidationResult represents an evidence reported by a shape's validation.
     /// </summary>
-    public RDFValidationEnums.RDFShapeSeverity Severity { get; internal set; }
-
-    /// <summary>
-    /// Indicates the shape which caused the validation result (sh:sourceShape)
-    /// </summary>
-    public RDFResource SourceShape { get; internal set; }
-
-    /// <summary>
-    /// Indicates the constraint component which caused the validation result (sh:sourceConstraintComponent)
-    /// </summary>
-    public RDFResource SourceConstraintComponent { get; internal set; }
-
-    /// <summary>
-    /// Indicates the node which caused the validation result (sh:focusNode)
-    /// </summary>
-    public RDFPatternMember FocusNode { get; internal set; }
-
-    /// <summary>
-    /// Indicates the property which caused the validation result (sh:resultPath)
-    /// </summary>
-    public RDFResource ResultPath { get; internal set; }
-
-    /// <summary>
-    /// Indicates the value which caused the validation result (sh:value)
-    /// </summary>
-    public RDFPatternMember ResultValue { get; internal set; }
-
-    /// <summary>
-    /// Indicates the human-readable messages of this validation result (sh:resultMessage)
-    /// </summary>
-    public List<RDFLiteral> ResultMessages { get; set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a validation result with the given properties
-    /// </summary>
-    internal RDFValidationResult(RDFResource sourceShape,
-        RDFResource sourceConstraintComponent,
-        RDFPatternMember focusNode,
-        RDFResource resultPath,
-        RDFPatternMember resultValue,
-        List<RDFLiteral> resultMessages,
-        RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation)
+    public sealed class RDFValidationResult : RDFResource
     {
-        SourceShape = sourceShape;
-        SourceConstraintComponent = sourceConstraintComponent;
-        FocusNode = focusNode;
-        ResultPath = resultPath;
-        ResultValue = resultValue;
-        ResultMessages = resultMessages ?? [];
-        Severity = severity;
-    }
-    #endregion
+        #region Properties
+        /// <summary>
+        /// Indicates the severity level of this validation result (sh:resultSeverity)
+        /// </summary>
+        public RDFValidationEnums.RDFShapeSeverity Severity { get; internal set; }
 
-    #region Methods
-    /// <summary>
-    /// Gets a graph representation of this validation result
-    /// </summary>
-    public RDFGraph ToRDFGraph()
-    {
-        RDFGraph result = new RDFGraph();
+        /// <summary>
+        /// Indicates the shape which caused the validation result (sh:sourceShape)
+        /// </summary>
+        public RDFResource SourceShape { get; internal set; }
 
-        //ValidationResult
-        result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT));
+        /// <summary>
+        /// Indicates the constraint component which caused the validation result (sh:sourceConstraintComponent)
+        /// </summary>
+        public RDFResource SourceConstraintComponent { get; internal set; }
 
-        //Severity
-        switch (Severity)
+        /// <summary>
+        /// Indicates the node which caused the validation result (sh:focusNode)
+        /// </summary>
+        public RDFPatternMember FocusNode { get; internal set; }
+
+        /// <summary>
+        /// Indicates the property which caused the validation result (sh:resultPath)
+        /// </summary>
+        public RDFResource ResultPath { get; internal set; }
+
+        /// <summary>
+        /// Indicates the value which caused the validation result (sh:value)
+        /// </summary>
+        public RDFPatternMember ResultValue { get; internal set; }
+
+        /// <summary>
+        /// Indicates the human-readable messages of this validation result (sh:resultMessage)
+        /// </summary>
+        public List<RDFLiteral> ResultMessages { get; set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Builds a validation result with the given properties
+        /// </summary>
+        internal RDFValidationResult(RDFResource sourceShape,
+                                     RDFResource sourceConstraintComponent,
+                                     RDFPatternMember focusNode,
+                                     RDFResource resultPath,
+                                     RDFPatternMember resultValue,
+                                     List<RDFLiteral> resultMessages,
+                                     RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation)
         {
-            case RDFValidationEnums.RDFShapeSeverity.Info:
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.INFO));
-                break;
-            case RDFValidationEnums.RDFShapeSeverity.Warning:
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.WARNING));
-                break;
-            case RDFValidationEnums.RDFShapeSeverity.Violation:
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.VIOLATION));
-                break;
+            SourceShape = sourceShape;
+            SourceConstraintComponent = sourceConstraintComponent;
+            FocusNode = focusNode;
+            ResultPath = resultPath;
+            ResultValue = resultValue;
+            ResultMessages = resultMessages ?? new List<RDFLiteral>();
+            Severity = severity;
         }
+        #endregion
 
-        //SourceShape
-        if (SourceShape != null)
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_SHAPE, SourceShape));
-
-        //SourceConstraintComponent
-        if (SourceConstraintComponent != null)
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, SourceConstraintComponent));
-
-        //FocusNode
-        if (FocusNode is RDFResource focusNodeResource)
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, focusNodeResource));
-
-        //ResultPath
-        if (ResultPath != null)
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, ResultPath));
-
-        //Value
-        if (ResultValue != null)
+        #region Methods
+        /// <summary>
+        /// Gets a graph representation of this validation result
+        /// </summary>
+        public RDFGraph ToRDFGraph()
         {
-            if (ResultValue is RDFLiteral resvalLit)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, resvalLit));
-            else
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFResource)ResultValue));
+            RDFGraph result = new RDFGraph();
+
+            //ValidationResult
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT));
+
+            //Severity
+            switch (Severity)
+            {
+                case RDFValidationEnums.RDFShapeSeverity.Info:
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.INFO));
+                    break;
+                case RDFValidationEnums.RDFShapeSeverity.Warning:
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.WARNING));
+                    break;
+                case RDFValidationEnums.RDFShapeSeverity.Violation:
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.VIOLATION));
+                    break;
+            }
+
+            //SourceShape
+            if (SourceShape != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_SHAPE, SourceShape));
+
+            //SourceConstraintComponent
+            if (SourceConstraintComponent != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, SourceConstraintComponent));
+
+            //FocusNode
+            if (FocusNode is RDFResource focusNodeResource)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.FOCUS_NODE, focusNodeResource));
+
+            //ResultPath
+            if (ResultPath != null)
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, ResultPath));
+
+            //Value
+            if (ResultValue != null)
+            {
+                if (ResultValue is RDFLiteral resvalLit)
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, resvalLit));
+                else
+                    result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.VALUE, (RDFResource)ResultValue));
+            }
+
+            //Messages
+            ResultMessages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_MESSAGE, message)));
+
+            result.SetContext(URI);
+            return result;
         }
-
-        //Messages
-        ResultMessages.ForEach(message => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_MESSAGE, message)));
-
-        result.SetContext(URI);
-        return result;
+        #endregion
     }
-    #endregion
 }

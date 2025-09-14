@@ -20,142 +20,151 @@ using System.Text;
 using System.Text.RegularExpressions;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFLangMatchesExpression represents a Language-checking function to be applied on a query results table.
-/// </summary>
-public sealed class RDFLangMatchesExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a Language-checking function with given arguments
+    /// RDFLangMatchesExpression represents a Language-checking function to be applied on a query results table.
     /// </summary>
-    public RDFLangMatchesExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+    public sealed class RDFLangMatchesExpression : RDFExpression
     {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-    }
-
-    /// <summary>
-    /// Builds a Language-checking function with given arguments
-    /// </summary>
-    public RDFLangMatchesExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
-    {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-    }
-
-    /// <summary>
-    /// Builds a Language-checking function with given arguments
-    /// </summary>
-    public RDFLangMatchesExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
-    {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-    }
-
-    /// <summary>
-    /// Builds a Language-checking function with given arguments
-    /// </summary>
-    public RDFLangMatchesExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
-    {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-    }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the Language-checking function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
-    {
-        StringBuilder sb = new StringBuilder(32);
-
-        //(LANGMATCHES(LANG(L),R))
-        sb.Append("(LANGMATCHES(LANG(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append("),");
-        if (RightArgument is RDFExpression expRightArgument)
-            sb.Append(expRightArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-        sb.Append("))");
-
-        return sb.ToString();
-    }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the Language-checking function on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        RDFTypedLiteral expressionResult = null;
-
-        #region Guards
-        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-            return null;
-        if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-            return null;
-        #endregion
-
-        try
+        #region Ctors
+        /// <summary>
+        /// Builds a Language-checking function with given arguments
+        /// </summary>
+        public RDFLangMatchesExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
         {
-            #region Evaluate Arguments
-            //Evaluate left argument (Expression VS Variable)
-            RDFPatternMember leftArgumentPMember;
-            if (LeftArgument is RDFExpression leftArgumentExpression)
-                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-            else
-                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-
-            //Evaluate right argument (Expression VS Variable)
-            RDFPatternMember rightArgumentPMember;
-            if (RightArgument is RDFExpression rightArgumentExpression)
-                rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-            else
-                rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-            #endregion
-
-            #region Calculate Result
-            if (leftArgumentPMember is RDFPlainLiteral leftArgPLit
-                && rightArgumentPMember is RDFPlainLiteral rightArgPLit)
-            {
-                string leftArgPLitString = leftArgPLit.ToString();
-                expressionResult = rightArgPLit.Value switch
-                {
-                    //NO language is acceptable in the evaluating left argument
-                    "" => RDFUtilities.EndingLangTagRegex().IsMatch(leftArgPLitString)
-                        ? RDFTypedLiteral.False : RDFTypedLiteral.True,
-                    //ANY language is acceptable in the evaluating left argument
-                    "*" => RDFUtilities.EndingLangTagRegex().IsMatch(leftArgPLitString)
-                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                    //GIVEN language is acceptable in the evaluating left argument
-                    _ => Regex.IsMatch(leftArgPLitString, $"@{rightArgPLit.Value}{RDFUtilities.LangTagSubMask}$", RegexOptions.IgnoreCase)
-                        ? RDFTypedLiteral.True : RDFTypedLiteral.False
-                };
-            }
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             #endregion
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
-        return expressionResult;
+        /// <summary>
+        /// Builds a Language-checking function with given arguments
+        /// </summary>
+        public RDFLangMatchesExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
+        }
+
+        /// <summary>
+        /// Builds a Language-checking function with given arguments
+        /// </summary>
+        public RDFLangMatchesExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
+        }
+
+        /// <summary>
+        /// Builds a Language-checking function with given arguments
+        /// </summary>
+        public RDFLangMatchesExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the Language-checking function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            //(LANGMATCHES(LANG(L),R))
+            sb.Append("(LANGMATCHES(LANG(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append("),");
+            if (RightArgument is RDFExpression expRightArgument)
+                sb.Append(expRightArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            sb.Append("))");
+
+            return sb.ToString();
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the Language-checking function on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            RDFTypedLiteral expressionResult = null;
+
+            #region Guards
+            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+                return null;
+            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
+                return null;
+            #endregion
+
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate left argument (Expression VS Variable)
+                RDFPatternMember leftArgumentPMember;
+                if (LeftArgument is RDFExpression leftArgumentExpression)
+                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+                else
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+
+                //Evaluate right argument (Expression VS Variable)
+                RDFPatternMember rightArgumentPMember;
+                if (RightArgument is RDFExpression rightArgumentExpression)
+                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
+                else
+                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+                #endregion
+
+                #region Calculate Result
+                if (leftArgumentPMember is RDFPlainLiteral leftArgPLit
+                     && rightArgumentPMember is RDFPlainLiteral rightArgPLit)
+                {
+                    string leftArgPLitString = leftArgPLit.ToString();
+                    switch (rightArgPLit.Value)
+                    {
+                        //NO language is acceptable in the evaluating left argument
+                        case "":
+                            expressionResult = RDFShims.EndingLangTagRegex.Value.IsMatch(leftArgPLitString)
+                                                 ? RDFTypedLiteral.False : RDFTypedLiteral.True;
+                            break;
+
+                        //ANY language is acceptable in the evaluating left argument
+                        case "*":
+                            expressionResult = RDFShims.EndingLangTagRegex.Value.IsMatch(leftArgPLitString)
+                                                 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                            break;
+
+                        //GIVEN language is acceptable in the evaluating left argument
+                        default:
+                            expressionResult = Regex.IsMatch(leftArgPLitString, $"@{rightArgPLit.Value}{RDFShims.LangTagSubMask}$", RegexOptions.IgnoreCase)
+                                                 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                            break;
+                    }
+                }
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            return expressionResult;
+        }
+        #endregion
     }
-    #endregion
 }

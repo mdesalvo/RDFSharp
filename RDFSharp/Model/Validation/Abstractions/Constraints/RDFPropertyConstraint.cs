@@ -17,62 +17,63 @@
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFPropertyConstraint represents a SHACL constraint requiring the specified property shape for a given RDF term
-/// </summary>
-public sealed class RDFPropertyConstraint : RDFConstraint
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Identifier of the property shape against which the given RDF term must be validated
+    /// RDFPropertyConstraint represents a SHACL constraint requiring the specified property shape for a given RDF term
     /// </summary>
-    public RDFResource PropertyShapeUri { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a property constraint with the given property shape identifier
-    /// </summary>
-    /// <exception cref="RDFModelException"></exception>
-    public RDFPropertyConstraint(RDFResource propertyShapeUri)
-        => PropertyShapeUri = propertyShapeUri ?? throw new RDFModelException("Cannot create RDFPropertyConstraint because given \"propertyShapeUri\" parameter is null.");
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Evaluates this constraint against the given data graph
-    /// </summary>
-    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+    public sealed class RDFPropertyConstraint : RDFConstraint
     {
-        RDFValidationReport report = new RDFValidationReport();
-
-        //Search for given property shape
-        if (shapesGraph.SelectShape(PropertyShapeUri.ToString()) is not RDFPropertyShape propertyShape)
-            return report;
-
-        #region Evaluation
-        RDFValidationReport propertyShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, propertyShape, valueNodes);
-        if (!propertyShapeReport.Conforms)
-            report.MergeResults(propertyShapeReport);
+        #region Properties
+        /// <summary>
+        /// Identifier of the property shape against which the given RDF term must be validated
+        /// </summary>
+        public RDFResource PropertyShapeUri { get; internal set; }
         #endregion
 
-        return report;
-    }
+        #region Ctors
+        /// <summary>
+        /// Builds a property constraint with the given property shape identifier
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        public RDFPropertyConstraint(RDFResource propertyShapeUri)
+            => PropertyShapeUri = propertyShapeUri ?? throw new RDFModelException("Cannot create RDFPropertyConstraint because given \"propertyShapeUri\" parameter is null.");
+        #endregion
 
-    /// <summary>
-    /// Gets a graph representation of this constraint
-    /// </summary>
-    internal override RDFGraph ToRDFGraph(RDFShape shape)
-    {
-        RDFGraph result = new RDFGraph();
-        if (shape != null)
+        #region Methods
+        /// <summary>
+        /// Evaluates this constraint against the given data graph
+        /// </summary>
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
-            //sh:property
-            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PROPERTY, PropertyShapeUri));
+            RDFValidationReport report = new RDFValidationReport();
+
+            //Search for given property shape
+            if (!(shapesGraph.SelectShape(PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape))
+                return report;
+
+            #region Evaluation
+            RDFValidationReport propertyShapeReport = RDFValidationEngine.ValidateShape(shapesGraph, dataGraph, propertyShape, valueNodes);
+            if (!propertyShapeReport.Conforms)
+                report.MergeResults(propertyShapeReport);
+            #endregion
+
+            return report;
         }
-        return result;
+
+        /// <summary>
+        /// Gets a graph representation of this constraint
+        /// </summary>
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
+            RDFGraph result = new RDFGraph();
+            if (shape != null)
+            {
+                //sh:property
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PROPERTY, PropertyShapeUri));
+            }
+            return result;
+        }
+        #endregion
     }
-    #endregion
 }

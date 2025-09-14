@@ -15,47 +15,49 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFMaxExclusiveFacet represents a constraint requiring the values of a literal to have a maximum numeric upper bound (excluded)
-/// </summary>
-public sealed class RDFMaxExclusiveFacet : RDFFacet
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Maximum numeric upper bound (excluded) required by the facet
+    /// RDFMaxExclusiveFacet represents a constraint requiring the values of a literal to have a maximum numeric upper bound (excluded)
     /// </summary>
-    public double ExclusiveUpperBound { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a facet requiring the given exclusive upper bound
-    /// </summary>
-    public RDFMaxExclusiveFacet(double exclusiveUpperBound)
-        => ExclusiveUpperBound = exclusiveUpperBound;
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Gives a graph representation of the MaxExclusive facet
-    /// </summary>
-    public override RDFGraph ToRDFGraph()
-        => new RDFGraph([
-            new RDFTriple(URI, RDFVocabulary.XSD.MAX_EXCLUSIVE, new RDFTypedLiteral(Convert.ToString(ExclusiveUpperBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) ]);
-
-    /// <summary>
-    /// Validates the given literal value against the MaxExclusive facet
-    /// </summary>
-    public override bool Validate(string literalValue)
+    public sealed class RDFMaxExclusiveFacet : RDFFacet
     {
-        if (double.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parseLiteralValue))
-            return parseLiteralValue < ExclusiveUpperBound;
+        #region Properties
+        /// <summary>
+        /// Maximum numeric upper bound (excluded) required by the facet
+        /// </summary>
+        public double ExclusiveUpperBound { get; internal set; }
+        #endregion
 
-        return false;
+        #region Ctors
+        /// <summary>
+        /// Builds a facet requiring the given exclusive upper bound
+        /// </summary>
+        public RDFMaxExclusiveFacet(double exclusiveUpperBound)
+          => ExclusiveUpperBound = exclusiveUpperBound;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Gives a graph representation of the MaxExclusive facet
+        /// </summary>
+        public override RDFGraph ToRDFGraph()
+          => new RDFGraph(new List<RDFTriple>(1) {
+              new RDFTriple(URI, RDFVocabulary.XSD.MAX_EXCLUSIVE, new RDFTypedLiteral(Convert.ToString(ExclusiveUpperBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) });
+
+        /// <summary>
+        /// Validates the given literal value against the MaxExclusive facet
+        /// </summary>
+        public override bool Validate(string literalValue)
+        {
+            if (double.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parseLiteralValue))
+                return parseLiteralValue < ExclusiveUpperBound;
+
+            return false;
+        }
+        #endregion
     }
-    #endregion
 }

@@ -16,42 +16,43 @@
 
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFAddExpression represents an arithmetical addition expression to be applied on a query results table.
-/// </summary>
-public sealed class RDFAddExpression : RDFMathExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds an arithmetical addition expression with given arguments
+    /// RDFAddExpression represents an arithmetical addition expression to be applied on a query results table.
     /// </summary>
-    public RDFAddExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+    public sealed class RDFAddExpression : RDFMathExpression
+    {
+        #region Ctors
+        /// <summary>
+        /// Builds an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical addition expression with given arguments
-    /// </summary>
-    public RDFAddExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical addition expression with given arguments
-    /// </summary>
-    public RDFAddExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical addition expression with given arguments
-    /// </summary>
-    public RDFAddExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical addition expression with given arguments
-    /// </summary>
-    public RDFAddExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical addition expression with given arguments
-    /// </summary>
-    public RDFAddExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
-    #endregion
+        /// <summary>
+        /// Builds an arithmetical addition expression with given arguments
+        /// </summary>
+        public RDFAddExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        #endregion
+    }
 }

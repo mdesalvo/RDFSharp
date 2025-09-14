@@ -15,47 +15,49 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFMinInclusiveFacet represents a constraint requiring the values of a literal to have a minimum numeric lower bound (included)
-/// </summary>
-public sealed class RDFMinInclusiveFacet : RDFFacet
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Minimum numeric lower bound (included) required by the facet
+    /// RDFMinInclusiveFacet represents a constraint requiring the values of a literal to have a minimum numeric lower bound (included)
     /// </summary>
-    public double InclusiveLowerBound { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a facet requiring the given inclusive lower bound
-    /// </summary>
-    public RDFMinInclusiveFacet(double inclusiveLowerBound)
-        => InclusiveLowerBound = inclusiveLowerBound;
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Gives a graph representation of the MinInclusive facet
-    /// </summary>
-    public override RDFGraph ToRDFGraph()
-        => new RDFGraph([
-            new RDFTriple(URI, RDFVocabulary.XSD.MIN_INCLUSIVE, new RDFTypedLiteral(Convert.ToString(InclusiveLowerBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) ]);
-
-    /// <summary>
-    /// Validates the given literal value against the MinInclusive facet
-    /// </summary>
-    public override bool Validate(string literalValue)
+    public sealed class RDFMinInclusiveFacet : RDFFacet
     {
-        if (double.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parseLiteralValue))
-            return parseLiteralValue >= InclusiveLowerBound;
+        #region Properties
+        /// <summary>
+        /// Minimum numeric lower bound (included) required by the facet
+        /// </summary>
+        public double InclusiveLowerBound { get; internal set; }
+        #endregion
 
-        return false;
+        #region Ctors
+        /// <summary>
+        /// Builds a facet requiring the given inclusive lower bound
+        /// </summary>
+        public RDFMinInclusiveFacet(double inclusiveLowerBound)
+          => InclusiveLowerBound = inclusiveLowerBound;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Gives a graph representation of the MinInclusive facet
+        /// </summary>
+        public override RDFGraph ToRDFGraph()
+          => new RDFGraph(new List<RDFTriple>(1) {
+              new RDFTriple(URI, RDFVocabulary.XSD.MIN_INCLUSIVE, new RDFTypedLiteral(Convert.ToString(InclusiveLowerBound, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE)) });
+
+        /// <summary>
+        /// Validates the given literal value against the MinInclusive facet
+        /// </summary>
+        public override bool Validate(string literalValue)
+        {
+            if (double.TryParse(literalValue, NumberStyles.Integer | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parseLiteralValue))
+                return parseLiteralValue >= InclusiveLowerBound;
+
+            return false;
+        }
+        #endregion
     }
-    #endregion
 }

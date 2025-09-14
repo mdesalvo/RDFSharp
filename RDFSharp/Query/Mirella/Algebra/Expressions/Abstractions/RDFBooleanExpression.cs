@@ -17,68 +17,70 @@
 using System.Data;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFBooleanExpression represents a boolean expression to be applied on a query results table.
-/// </summary>
-public abstract class RDFBooleanExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a boolean expression with given arguments
+    /// RDFBooleanExpression represents a boolean expression to be applied on a query results table.
     /// </summary>
-    protected RDFBooleanExpression(RDFExpression leftArgument, RDFExpression rightArgument)
-        : base(leftArgument, rightArgument)
+    public abstract class RDFBooleanExpression : RDFExpression
     {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-    }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the boolean "AND" expression on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        RDFTypedLiteral expressionResult = null;
-
-        try
+        #region Ctors
+        /// <summary>
+        /// Builds a boolean expression with given arguments
+        /// </summary>
+        protected RDFBooleanExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+            : base(leftArgument, rightArgument)
         {
-            #region Evaluate Arguments
-            //Evaluate left argument
-            RDFPatternMember leftArgumentPMember = ((RDFExpression)LeftArgument).ApplyExpression(row);
-
-            //Evaluate right argument
-            RDFPatternMember rightArgumentPMember = ((RDFExpression)RightArgument).ApplyExpression(row);
-            #endregion
-
-            #region Calculate Result
-            if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                && leftArgumentTypedLiteral.HasBooleanDatatype()
-                && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                && rightArgumentTypedLiteral.HasBooleanDatatype()
-                && bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
-                && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
-            {
-                expressionResult = this switch
-                {
-                    //Execute the boolean expression's comparison logics
-                    RDFBooleanAndExpression => leftArgumentBooleanValue && rightArgumentBooleanValue
-                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                    RDFBooleanOrExpression => leftArgumentBooleanValue || rightArgumentBooleanValue
-                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                    _ => null
-                };
-            }
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             #endregion
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+        #endregion
 
-        return expressionResult;
+        #region Methods
+        /// <summary>
+        /// Applies the boolean "AND" expression on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            RDFTypedLiteral expressionResult = null;
+
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate left argument
+                RDFPatternMember leftArgumentPMember = ((RDFExpression)LeftArgument).ApplyExpression(row);
+
+                //Evaluate right argument
+                RDFPatternMember rightArgumentPMember = ((RDFExpression)RightArgument).ApplyExpression(row);
+                #endregion
+
+                #region Calculate Result
+                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
+                     && leftArgumentTypedLiteral.HasBooleanDatatype()
+                     && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
+                     && rightArgumentTypedLiteral.HasBooleanDatatype()
+                     && bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
+                     && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
+                {
+                    switch (this)
+                    {
+                        //Execute the boolean expression's comparison logics
+                        case RDFBooleanAndExpression _:
+                            expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                            break;
+                        case RDFBooleanOrExpression _:
+                            expressionResult = leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                            break;
+                    }
+                }
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            return expressionResult;
+        }
+        #endregion
     }
-    #endregion
 }

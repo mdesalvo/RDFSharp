@@ -14,40 +14,41 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFVariable represents a named "hole" in a pattern, to be filled with values during queries.
-/// </summary>
-public sealed class RDFVariable : RDFPatternMember
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Name of the variable
+    /// RDFVariable represents a named "hole" in a pattern, to be filled with values during queries.
     /// </summary>
-    public string VariableName { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a named SPARQL variable
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFVariable(string variableName)
+    public sealed class RDFVariable : RDFPatternMember
     {
-        string trimmedVariableName = variableName?.Trim(' ', '?', '$');
-        if (string.IsNullOrWhiteSpace(trimmedVariableName))
-            throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
+        #region Properties
+        /// <summary>
+        /// Name of the variable
+        /// </summary>
+        public string VariableName { get; internal set; }
+        #endregion
 
-        VariableName = $"?{trimmedVariableName.ToUpperInvariant()}";
+        #region Ctors
+        /// <summary>
+        /// Builds a named SPARQL variable
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFVariable(string variableName)
+        {
+            string trimmedVariableName = variableName?.Trim(' ', '?', '$');
+            if (string.IsNullOrWhiteSpace(trimmedVariableName))
+                throw new RDFQueryException("Cannot create RDFVariable because given \"variableName\" parameter is null or empty or contains only whitespaces.");
+
+            VariableName = $"?{trimmedVariableName.ToUpperInvariant()}";
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the variable
+        /// </summary>
+        public override string ToString()
+            => VariableName;
+        #endregion
     }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the variable
-    /// </summary>
-    public override string ToString()
-        => VariableName;
-    #endregion
 }

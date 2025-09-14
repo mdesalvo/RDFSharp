@@ -137,17 +137,17 @@ public class RDFValidationReportTest
         Assert.IsNotNull(vrGraph);
         Assert.IsTrue(vrGraph.Context.Equals(new Uri("ex:validationReport")));
         Assert.IsTrue(vrGraph.TriplesCount.Equals(11));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT)));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.False)));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.SHACL.RESULT, vRes)));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT)));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.SHACL.SOURCE_SHAPE, new RDFResource("ex:sourceShape"))));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, constraint)));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.SHACL.FOCUS_NODE, new RDFResource("ex:focusNode"))));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.SHACL.RESULT_PATH, new RDFResource("ex:resultPath"))));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.SHACL.VALUE, new RDFPlainLiteral("resultValue"))));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.SHACL.RESULT_MESSAGE, new RDFPlainLiteral("resultMessage"))));
-        Assert.IsTrue(vrGraph.ContainsTriple(new RDFTriple(vRes, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.VIOLATION)));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_REPORT)));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.SHACL.CONFORMS, RDFTypedLiteral.False)));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(new RDFResource("ex:validationReport"), RDFVocabulary.SHACL.RESULT, vRes)));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.VALIDATION_RESULT)));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.SHACL.SOURCE_SHAPE, new RDFResource("ex:sourceShape"))));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.SHACL.SOURCE_CONSTRAINT_COMPONENT, constraint)));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.SHACL.FOCUS_NODE, new RDFResource("ex:focusNode"))));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.SHACL.RESULT_PATH, new RDFResource("ex:resultPath"))));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.SHACL.VALUE, new RDFPlainLiteral("resultValue"))));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.SHACL.RESULT_MESSAGE, new RDFPlainLiteral("resultMessage"))));
+        Assert.IsTrue(await vrGraph.ContainsTripleAsync(new RDFTriple(vRes, RDFVocabulary.SHACL.RESULT_SEVERITY, RDFVocabulary.SHACL.VIOLATION)));
     }
 
     [TestMethod]

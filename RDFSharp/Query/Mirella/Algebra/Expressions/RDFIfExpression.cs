@@ -19,84 +19,85 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFIfExpression represents an IF-THEN-ELSE expression to be applied on a query results table.
-/// </summary>
-public sealed class RDFIfExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Represents the condition argument given to the conditional expression
+    /// RDFIfExpression represents an IF-THEN-ELSE expression to be applied on a query results table.
     /// </summary>
-    public RDFExpression ConditionArgument { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a conditional expression with given arguments
-    /// </summary>
-    public RDFIfExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument)
-        : base(leftArgument, rightArgument)
+    public sealed class RDFIfExpression : RDFExpression
     {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        #region Properties
+        /// <summary>
+        /// Represents the condition argument given to the conditional expression
+        /// </summary>
+        public RDFExpression ConditionArgument { get; internal set; }
         #endregion
 
-        ConditionArgument = conditionArgument ?? throw new RDFQueryException("Cannot create expression because given \"conditionArgument\" parameter is null");
-    }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the conditional expression
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
-    {
-        StringBuilder sb = new StringBuilder(64);
-
-        //(IF(C, L, R))
-        sb.Append("(IF(");
-        sb.Append(ConditionArgument.ToString(prefixes));
-        sb.Append(", ");
-        sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
-        sb.Append(", ");
-        sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
-        sb.Append("))");
-
-        return sb.ToString();
-    }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the conditional expression on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        RDFPatternMember expressionResult = null;
-
-        try
+        #region Ctors
+        /// <summary>
+        /// Builds a conditional expression with given arguments
+        /// </summary>
+        public RDFIfExpression(RDFExpression conditionArgument, RDFExpression leftArgument, RDFExpression rightArgument)
+            : base(leftArgument, rightArgument)
         {
-            #region Evaluate Arguments
-            //Evaluate condition argument
-            RDFPatternMember conditionArgumentPMember = ConditionArgument.ApplyExpression(row);
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             #endregion
 
-            #region Calculate Result
-            if (conditionArgumentPMember is RDFTypedLiteral conditionArgumentTypedLiteral
-                && conditionArgumentTypedLiteral.HasBooleanDatatype()
-                && bool.TryParse(conditionArgumentTypedLiteral.Value, out bool conditionalArgumentBooleanValue))
-                expressionResult = conditionalArgumentBooleanValue ? ((RDFExpression)LeftArgument).ApplyExpression(row) : ((RDFExpression)RightArgument).ApplyExpression(row);
-            #endregion
+            ConditionArgument = conditionArgument ?? throw new RDFQueryException("Cannot create expression because given \"conditionArgument\" parameter is null");
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+        #endregion
 
-        return expressionResult;
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the conditional expression
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(64);
+
+            //(IF(C, L, R))
+            sb.Append("(IF(");
+            sb.Append(ConditionArgument.ToString(prefixes));
+            sb.Append(", ");
+            sb.Append(((RDFExpression)LeftArgument).ToString(prefixes));
+            sb.Append(", ");
+            sb.Append(((RDFExpression)RightArgument).ToString(prefixes));
+            sb.Append("))");
+
+            return sb.ToString();
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the conditional expression on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            RDFPatternMember expressionResult = null;
+
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate condition argument
+                RDFPatternMember conditionArgumentPMember = ConditionArgument.ApplyExpression(row);
+                #endregion
+
+                #region Calculate Result
+                if (conditionArgumentPMember is RDFTypedLiteral conditionArgumentTypedLiteral
+                     && conditionArgumentTypedLiteral.HasBooleanDatatype()
+                     && bool.TryParse(conditionArgumentTypedLiteral.Value, out bool conditionalArgumentBooleanValue))
+                    expressionResult = conditionalArgumentBooleanValue ? ((RDFExpression)LeftArgument).ApplyExpression(row) : ((RDFExpression)RightArgument).ApplyExpression(row);
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            return expressionResult;
+        }
+        #endregion
     }
-    #endregion
 }

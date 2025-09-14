@@ -20,55 +20,56 @@ using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// GEOBufferExpression represents "geof:buffer" geographic function to be applied on a query results table.<br/>
-/// The result of this function is a WKT typed literal representing a sf:Polygon expressed in WGS84 Lon/Lat.
-/// </summary>
-public sealed class RDFGeoBufferExpression : RDFGeoExpression
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Indicates the meters of the buffer polygon to be computed
+    /// GEOBufferExpression represents "geof:buffer" geographic function to be applied on a query results table.<br/>
+    /// The result of this function is a WKT typed literal representing a sf:Polygon expressed in WGS84 Lon/Lat.
     /// </summary>
-    public double BufferMeters { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a geof:buffer function with given arguments
-    /// </summary>
-    public RDFGeoBufferExpression(RDFExpression leftArgument, double bufferMeters) : base(leftArgument, null)
-        => BufferMeters = bufferMeters;
-
-    /// <summary>
-    /// Builds a geof:buffer function with given arguments
-    /// </summary>
-    public RDFGeoBufferExpression(RDFVariable leftArgument, double bufferMeters) : base(leftArgument, null)
-        => BufferMeters = bufferMeters;
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the geof:distance function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFGeoBufferExpression : RDFGeoExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Properties
+        /// <summary>
+        /// Indicates the meters of the buffer polygon to be computed
+        /// </summary>
+        public double BufferMeters { get; internal set; }
+        #endregion
 
-        //(geof:buffer(L,N))
-        sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.BUFFER, prefixes)}(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append($", {Convert.ToString(BufferMeters, CultureInfo.InvariantCulture)}");
-        sb.Append("))");
+        #region Ctors
+        /// <summary>
+        /// Builds a geof:buffer function with given arguments
+        /// </summary>
+        public RDFGeoBufferExpression(RDFExpression leftArgument, double bufferMeters) : base(leftArgument, null)
+            => BufferMeters = bufferMeters;
 
-        return sb.ToString();
+        /// <summary>
+        /// Builds a geof:buffer function with given arguments
+        /// </summary>
+        public RDFGeoBufferExpression(RDFVariable leftArgument, double bufferMeters) : base(leftArgument, null)
+            => BufferMeters = bufferMeters;
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the geof:distance function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            //(geof:buffer(L,N))
+            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.BUFFER, prefixes)}(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append($", {Convert.ToString(BufferMeters, CultureInfo.InvariantCulture)}");
+            sb.Append("))");
+
+            return sb.ToString();
+        }
+        #endregion
     }
-    #endregion
 }

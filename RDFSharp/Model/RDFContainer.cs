@@ -18,182 +18,183 @@ using System.Collections;
 using System.Collections.Generic;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFContainer represents a generic container in the RDF model.
-/// </summary>
-public sealed class RDFContainer : IEnumerable<RDFPatternMember>
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Type of the container
+    /// RDFContainer represents a generic container in the RDF model.
     /// </summary>
-    public RDFModelEnums.RDFContainerTypes ContainerType { get; internal set; }
-
-    /// <summary>
-    /// Type of the items of the container
-    /// </summary>
-    public RDFModelEnums.RDFItemTypes ItemType { get; internal set; }
-
-    /// <summary>
-    /// Subject of the container's reification
-    /// </summary>
-    public RDFResource ReificationSubject { get; internal set; }
-
-    /// <summary>
-    /// Count of the container's items
-    /// </summary>
-    public int ItemsCount
-        => Items.Count;
-
-    /// <summary>
-    /// Gets the enumerator on the container's items for iteration
-    /// </summary>
-    public IEnumerator<RDFPatternMember> ItemsEnumerator
-        => Items.GetEnumerator();
-
-    /// <summary>
-    /// List of the items contained in the container
-    /// </summary>
-    internal List<RDFPatternMember> Items { get; set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an empty container of the given flavor and given type
-    /// </summary>
-    public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
+    public sealed class RDFContainer : IEnumerable<RDFPatternMember>
     {
-        ContainerType = containerType;
-        ItemType = itemType;
-        ReificationSubject = new RDFResource();
-        Items = [];
-    }
-    #endregion
+        #region Properties
+        /// <summary>
+        /// Type of the container
+        /// </summary>
+        public RDFModelEnums.RDFContainerTypes ContainerType { get; internal set; }
 
-    #region Interfaces
-    /// <summary>
-    /// Exposes a typed enumerator on the container's items
-    /// </summary>
-    IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
-        => ItemsEnumerator;
+        /// <summary>
+        /// Type of the items of the container
+        /// </summary>
+        public RDFModelEnums.RDFItemTypes ItemType { get; internal set; }
 
-    /// <summary>
-    /// Exposes an untyped enumerator on the container's items
-    /// </summary>
-    IEnumerator IEnumerable.GetEnumerator()
-        => ItemsEnumerator;
-    #endregion
+        /// <summary>
+        /// Subject of the container's reification
+        /// </summary>
+        public RDFResource ReificationSubject { get; internal set; }
 
-    #region Methods
+        /// <summary>
+        /// Count of the container's items
+        /// </summary>
+        public int ItemsCount
+            => Items.Count;
 
-    #region Add
-    /// <summary>
-    /// Adds the given item to the container
-    /// </summary>
-    public RDFContainer AddItem(RDFResource item)
-    {
-        if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            AddItemInternal(item);
-        return this;
-    }
+        /// <summary>
+        /// Gets the enumerator on the container's items for iteration
+        /// </summary>
+        public IEnumerator<RDFPatternMember> ItemsEnumerator
+            => Items.GetEnumerator();
 
-    /// <summary>
-    /// Adds the given item to the container
-    /// </summary>
-    public RDFContainer AddItem(RDFLiteral item)
-    {
-        if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            AddItemInternal(item);
-        return this;
-    }
+        /// <summary>
+        /// List of the items contained in the container
+        /// </summary>
+        internal List<RDFPatternMember> Items { get; set; }
+        #endregion
 
-    /// <summary>
-    /// Adds the given item to the container
-    /// </summary>
-    internal void AddItemInternal(RDFPatternMember item)
-    {
-        switch (ContainerType)
+        #region Ctors
+        /// <summary>
+        /// Builds an empty container of the given flavor and given type
+        /// </summary>
+        public RDFContainer(RDFModelEnums.RDFContainerTypes containerType, RDFModelEnums.RDFItemTypes itemType)
         {
-            case RDFModelEnums.RDFContainerTypes.Alt:
-                //Avoid duplicates in case of "rdf:Alt" container
-                if (Items.Find(x => x.Equals(item)) == null)
+            ContainerType = containerType;
+            ItemType = itemType;
+            ReificationSubject = new RDFResource();
+            Items = new List<RDFPatternMember>();
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Exposes a typed enumerator on the container's items
+        /// </summary>
+        IEnumerator<RDFPatternMember> IEnumerable<RDFPatternMember>.GetEnumerator()
+            => ItemsEnumerator;
+
+        /// <summary>
+        /// Exposes an untyped enumerator on the container's items
+        /// </summary>
+        IEnumerator IEnumerable.GetEnumerator()
+            => ItemsEnumerator;
+        #endregion
+
+        #region Methods
+
+        #region Add
+        /// <summary>
+        /// Adds the given item to the container
+        /// </summary>
+        public RDFContainer AddItem(RDFResource item)
+        {
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                AddItemInternal(item);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given item to the container
+        /// </summary>
+        public RDFContainer AddItem(RDFLiteral item)
+        {
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                AddItemInternal(item);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given item to the container
+        /// </summary>
+        internal void AddItemInternal(RDFPatternMember item)
+        {
+            switch (ContainerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    //Avoid duplicates in case of "rdf:Alt" container
+                    if (Items.Find(x => x.Equals(item)) == null)
+                        Items.Add(item);
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                case RDFModelEnums.RDFContainerTypes.Seq:
                     Items.Add(item);
-                break;
-            case RDFModelEnums.RDFContainerTypes.Bag:
-            case RDFModelEnums.RDFContainerTypes.Seq:
-                Items.Add(item);
-                break;
+                    break;
+            }
         }
-    }
-    #endregion
+        #endregion
 
-    #region Remove
-    /// <summary>
-    /// Removes the given item from the container
-    /// </summary>
-    public RDFContainer RemoveItem(RDFResource item)
-    {
-        if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
-            Items.RemoveAll(x => x.Equals(item));
-        return this;
-    }
-
-    /// <summary>
-    /// Removes the given item from the container
-    /// </summary>
-    public RDFContainer RemoveItem(RDFLiteral item)
-    {
-        if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
-            Items.RemoveAll(x => x.Equals(item));
-        return this;
-    }
-
-    /// <summary>
-    /// Removes all the items from the container
-    /// </summary>
-    public void ClearItems()
-        => Items.Clear();
-    #endregion
-
-    #region Reify
-    /// <summary>
-    /// Builds the reification graph of the container:<br/>
-    /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]<br/>
-    /// Subject -> rdf:_N   -> item(N)
-    /// </summary>
-    public RDFGraph ReifyContainer()
-    {
-        RDFGraph reifCont = new RDFGraph();
-
-        //  Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]
-        switch (ContainerType)
+        #region Remove
+        /// <summary>
+        /// Removes the given item from the container
+        /// </summary>
+        public RDFContainer RemoveItem(RDFResource item)
         {
-            case RDFModelEnums.RDFContainerTypes.Bag:
-                reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
-                break;
-            case RDFModelEnums.RDFContainerTypes.Seq:
-                reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
-                break;
-            case RDFModelEnums.RDFContainerTypes.Alt:
-                reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
-                break;
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Resource)
+                Items.RemoveAll(x => x.Equals(item));
+            return this;
         }
 
-        //  Subject -> rdf:_N -> RDFContainer.ITEM(N)
-        int index = 0;
-        foreach (RDFPatternMember item in this)
+        /// <summary>
+        /// Removes the given item from the container
+        /// </summary>
+        public RDFContainer RemoveItem(RDFLiteral item)
         {
-            RDFResource ordPred = new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_{++index}");
-            reifCont.AddTriple(ItemType == RDFModelEnums.RDFItemTypes.Resource
-                ? new RDFTriple(ReificationSubject, ordPred, (RDFResource)item)
-                : new RDFTriple(ReificationSubject, ordPred, (RDFLiteral)item));
+            if (item != null && ItemType == RDFModelEnums.RDFItemTypes.Literal)
+                Items.RemoveAll(x => x.Equals(item));
+            return this;
         }
 
-        return reifCont;
-    }
-    #endregion
+        /// <summary>
+        /// Removes all the items from the container
+        /// </summary>
+        public void ClearItems()
+            => Items.Clear();
+        #endregion
 
-    #endregion
+        #region Reify
+        /// <summary>
+        /// Builds the reification graph of the container:<br/>
+        /// Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]<br/>
+        /// Subject -> rdf:_N   -> item(N)
+        /// </summary>
+        public RDFGraph ReifyContainer()
+        {
+            RDFGraph reifCont = new RDFGraph();
+
+            //  Subject -> rdf:type -> [rdf:Bag|rdf:Seq|rdf:Alt]
+            switch (ContainerType)
+            {
+                case RDFModelEnums.RDFContainerTypes.Bag:
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG));
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Seq:
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ));
+                    break;
+                case RDFModelEnums.RDFContainerTypes.Alt:
+                    reifCont.AddTriple(new RDFTriple(ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT));
+                    break;
+            }
+
+            //  Subject -> rdf:_N -> RDFContainer.ITEM(N)
+            int index = 0;
+            foreach (RDFPatternMember item in this)
+            {
+                RDFResource ordPred = new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_{++index}");
+                reifCont.AddTriple(ItemType == RDFModelEnums.RDFItemTypes.Resource
+                    ? new RDFTriple(ReificationSubject, ordPred, (RDFResource)item)
+                    : new RDFTriple(ReificationSubject, ordPred, (RDFLiteral)item));
+            }
+
+            return reifCont;
+        }
+        #endregion
+
+        #endregion
+    }
 }

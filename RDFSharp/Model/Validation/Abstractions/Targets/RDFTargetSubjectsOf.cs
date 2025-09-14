@@ -14,35 +14,36 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFTargetSubjectsOf represents a SHACL target of type "SubjectsOf" within a shape.
-/// </summary>
-public sealed class RDFTargetSubjectsOf : RDFTarget
+namespace RDFSharp.Model
 {
-    #region Ctors
     /// <summary>
-    /// Builds a subjectsOf target on the given property
+    /// RDFTargetSubjectsOf represents a SHACL target of type "SubjectsOf" within a shape.
     /// </summary>
-    /// <exception cref="RDFModelException"></exception>
-    public RDFTargetSubjectsOf(RDFResource targetProperty)
-        => TargetValue = targetProperty ?? throw new RDFModelException("Cannot create RDFTargetSubjectsOf because given \"targetProperty\" parameter is null.");
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Gets a graph representation of this target
-    /// </summary>
-    internal override RDFGraph ToRDFGraph(RDFShape shape)
+    public sealed class RDFTargetSubjectsOf : RDFTarget
     {
-        RDFGraph result = new RDFGraph();
+        #region Ctors
+        /// <summary>
+        /// Builds a subjectsOf target on the given property
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        public RDFTargetSubjectsOf(RDFResource targetProperty)
+            => TargetValue = targetProperty ?? throw new RDFModelException("Cannot create RDFTargetSubjectsOf because given \"targetProperty\" parameter is null.");
+        #endregion
 
-        //sh:targetSubjectsOf
-        if (shape != null)
-            result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, TargetValue));
+        #region Methods
+        /// <summary>
+        /// Gets a graph representation of this target
+        /// </summary>
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
+            RDFGraph result = new RDFGraph();
 
-        return result;
+            //sh:targetSubjectsOf
+            if (shape != null)
+                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.TARGET_SUBJECTS_OF, TargetValue));
+
+            return result;
+        }
+        #endregion
     }
-    #endregion
 }

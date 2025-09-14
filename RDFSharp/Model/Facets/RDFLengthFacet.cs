@@ -15,42 +15,44 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFLengthFacet represents a constraint requiring the values of a literal to have an exact length
-/// </summary>
-public sealed class RDFLengthFacet : RDFFacet
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Exact length required by the facet
+    /// RDFLengthFacet represents a constraint requiring the values of a literal to have an exact length
     /// </summary>
-    public uint Length { get; internal set; }
-    #endregion
+    public sealed class RDFLengthFacet : RDFFacet
+    {
+        #region Properties
+        /// <summary>
+        /// Exact length required by the facet
+        /// </summary>
+        public uint Length { get; internal set; }
+        #endregion
 
-    #region Ctors
-    /// <summary>
-    /// Builds a facet requiring the given exact length
-    /// </summary>
-    public RDFLengthFacet(uint length)
-        => Length = length;
-    #endregion
+        #region Ctors
+        /// <summary>
+        /// Builds a facet requiring the given exact length
+        /// </summary>
+        public RDFLengthFacet(uint length)
+          => Length = length;
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Gives a graph representation of the length facet
-    /// </summary>
-    public override RDFGraph ToRDFGraph()
-        => new RDFGraph([
-            new RDFTriple(URI, RDFVocabulary.XSD.LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) ]);
+        #region Methods
+        /// <summary>
+        /// Gives a graph representation of the length facet
+        /// </summary>
+        public override RDFGraph ToRDFGraph()
+          => new RDFGraph(new List<RDFTriple>(1) {
+              new RDFTriple(URI, RDFVocabulary.XSD.LENGTH, new RDFTypedLiteral(Convert.ToString(Length, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)) });
 
-    /// <summary>
-    /// Validates the given literal value against the length facet
-    /// </summary>
-    public override bool Validate(string literalValue)
-        => (string.IsNullOrEmpty(literalValue) && Length == 0) || literalValue?.Length == Length;
-    #endregion
+        /// <summary>
+        /// Validates the given literal value against the length facet
+        /// </summary>
+        public override bool Validate(string literalValue)
+          => (string.IsNullOrEmpty(literalValue) && Length == 0) || literalValue?.Length == Length;
+        #endregion
+    }
 }

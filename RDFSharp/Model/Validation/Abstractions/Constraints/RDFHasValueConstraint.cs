@@ -18,79 +18,80 @@ using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Query;
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFHasValueConstraint represents a SHACL constraint on a required value for a given RDF term
-/// </summary>
-public sealed class RDFHasValueConstraint : RDFConstraint
+namespace RDFSharp.Model
 {
-    #region Properties
     /// <summary>
-    /// Value required on the given RDF term
+    /// RDFHasValueConstraint represents a SHACL constraint on a required value for a given RDF term
     /// </summary>
-    public RDFPatternMember Value { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a hasValue constraint with the given resource value
-    /// </summary>
-    /// <exception cref="RDFModelException"></exception>
-    public RDFHasValueConstraint(RDFResource value)
-        => Value = value ?? throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
-
-    /// <summary>
-    /// Builds a hasValue constraint with the given literal value
-    /// </summary>
-    /// <exception cref="RDFModelException"></exception>
-    public RDFHasValueConstraint(RDFLiteral value)
-        => Value = value ?? throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Evaluates this constraint against the given data graph
-    /// </summary>
-    internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
+    public sealed class RDFHasValueConstraint : RDFConstraint
     {
-        RDFValidationReport report = new RDFValidationReport();
-        RDFPropertyShape pShape = shape as RDFPropertyShape;
-
-        //In case no shape messages have been provided, this constraint emits a default one (for usability)
-        List<RDFLiteral> shapeMessages = [.. shape.Messages];
-        if (shapeMessages.Count == 0)
-            shapeMessages.Add(new RDFPlainLiteral($"Does not have value <{Value}>"));
-
-        #region Evaluation
-        if (!valueNodes.Any(v => v.Equals(Value)))
-            report.AddResult(new RDFValidationResult(shape,
-                RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
-                focusNode,
-                pShape?.Path,
-                null,
-                shapeMessages,
-                shape.Severity));
+        #region Properties
+        /// <summary>
+        /// Value required on the given RDF term
+        /// </summary>
+        public RDFPatternMember Value { get; internal set; }
         #endregion
 
-        return report;
-    }
+        #region Ctors
+        /// <summary>
+        /// Builds a hasValue constraint with the given resource value
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        public RDFHasValueConstraint(RDFResource value)
+            => Value = value ?? throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
 
-    /// <summary>
-    /// Gets a graph representation of this constraint
-    /// </summary>
-    internal override RDFGraph ToRDFGraph(RDFShape shape)
-    {
-        RDFGraph result = new RDFGraph();
-        if (shape != null)
+        /// <summary>
+        /// Builds a hasValue constraint with the given literal value
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        public RDFHasValueConstraint(RDFLiteral value)
+            => Value = value ?? throw new RDFModelException("Cannot create RDFHasValueConstraint because given \"value\" parameter is null.");
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Evaluates this constraint against the given data graph
+        /// </summary>
+        internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
-            //sh:hasValue
-            if (Value is RDFResource resValue)
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, resValue));
-            else
-                result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFLiteral)Value));
+            RDFValidationReport report = new RDFValidationReport();
+            RDFPropertyShape pShape = shape as RDFPropertyShape;
+
+            //In case no shape messages have been provided, this constraint emits a default one (for usability)
+            List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
+            if (shapeMessages.Count == 0)
+                shapeMessages.Add(new RDFPlainLiteral($"Does not have value <{Value}>"));
+
+            #region Evaluation
+            if (!valueNodes.Any(v => v.Equals(Value)))
+                report.AddResult(new RDFValidationResult(shape,
+                                                         RDFVocabulary.SHACL.HAS_VALUE_CONSTRAINT_COMPONENT,
+                                                         focusNode,
+                                                         pShape?.Path,
+                                                         null,
+                                                         shapeMessages,
+                                                         shape.Severity));
+            #endregion
+
+            return report;
         }
-        return result;
+
+        /// <summary>
+        /// Gets a graph representation of this constraint
+        /// </summary>
+        internal override RDFGraph ToRDFGraph(RDFShape shape)
+        {
+            RDFGraph result = new RDFGraph();
+            if (shape != null)
+            {
+                //sh:hasValue
+                if (Value is RDFResource resValue)
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, resValue));
+                else
+                    result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.HAS_VALUE, (RDFLiteral)Value));
+            }
+            return result;
+        }
+        #endregion
     }
-    #endregion
 }

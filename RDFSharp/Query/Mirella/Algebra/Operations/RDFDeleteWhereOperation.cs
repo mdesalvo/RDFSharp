@@ -16,50 +16,51 @@
 
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFDeleteWhereOperation is the SPARQL "DELETE WHERE" operation implementation
-/// </summary>
-public sealed class RDFDeleteWhereOperation : RDFOperation
+namespace RDFSharp.Query
 {
-    #region Interfaces
     /// <summary>
-    /// Gives the string representation of the DELETE WHERE operation
+    /// RDFDeleteWhereOperation is the SPARQL "DELETE WHERE" operation implementation
     /// </summary>
-    public override string ToString()
-        => RDFOperationPrinter.PrintDeleteWhereOperation(this);
-    #endregion
+    public sealed class RDFDeleteWhereOperation : RDFOperation
+    {
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the DELETE WHERE operation
+        /// </summary>
+        public override string ToString()
+            => RDFOperationPrinter.PrintDeleteWhereOperation(this);
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Adds the given pattern to the templates of the operation
-    /// </summary>
-    public RDFDeleteWhereOperation AddDeleteTemplate(RDFPattern template)
-        => AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(template);
+        #region Methods
+        /// <summary>
+        /// Adds the given pattern to the templates of the operation
+        /// </summary>
+        public RDFDeleteWhereOperation AddDeleteTemplate(RDFPattern template)
+            => AddDeleteNonGroundTemplate<RDFDeleteWhereOperation>(template);
 
-    /// <summary>
-    /// Adds the given prefix declaration to the operation
-    /// </summary>
-    public RDFDeleteWhereOperation AddPrefix(RDFNamespace prefix)
-        => AddPrefix<RDFDeleteWhereOperation>(prefix);
+        /// <summary>
+        /// Adds the given prefix declaration to the operation
+        /// </summary>
+        public RDFDeleteWhereOperation AddPrefix(RDFNamespace prefix)
+            => AddPrefix<RDFDeleteWhereOperation>(prefix);
 
-    /// <summary>
-    /// Adds the given pattern group to the body of the operation
-    /// </summary>
-    public RDFDeleteWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
-        => AddPatternGroup<RDFDeleteWhereOperation>(patternGroup);
+        /// <summary>
+        /// Adds the given pattern group to the body of the operation
+        /// </summary>
+        public RDFDeleteWhereOperation AddPatternGroup(RDFPatternGroup patternGroup)
+            => AddPatternGroup<RDFDeleteWhereOperation>(patternGroup);
 
-    /// <summary>
-    /// Adds the given modifier to the operation
-    /// </summary>
-    public RDFDeleteWhereOperation AddModifier(RDFDistinctModifier modifier)
-        => AddModifier<RDFDeleteWhereOperation>(modifier);
+        /// <summary>
+        /// Adds the given modifier to the operation
+        /// </summary>
+        public RDFDeleteWhereOperation AddModifier(RDFDistinctModifier modifier)
+            => AddModifier<RDFDeleteWhereOperation>(modifier);
 
-    /// <summary>
-    /// Adds the given subquery to the operation
-    /// </summary>
-    public RDFDeleteWhereOperation AddSubQuery(RDFSelectQuery subQuery)
-        => AddSubQuery<RDFDeleteWhereOperation>(subQuery);
-    #endregion
+        /// <summary>
+        /// Adds the given subquery to the operation
+        /// </summary>
+        public RDFDeleteWhereOperation AddSubQuery(RDFSelectQuery subQuery)
+            => AddSubQuery<RDFDeleteWhereOperation>(subQuery);
+        #endregion
+    }
 }

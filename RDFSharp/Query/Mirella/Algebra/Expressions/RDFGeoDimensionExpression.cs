@@ -18,45 +18,46 @@ using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// GEODimensionExpression represents "geosparql:dimension" geographic function to be applied on a query results table.<br/>
-/// The result of this function is a numeric typed literal representing the dimension of the working geometry (0=Point,1=LineString,2=Polygon).
-/// </summary>
-public sealed class RDFGeoDimensionExpression : RDFGeoExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a geosparql:dimension function with given arguments
+    /// GEODimensionExpression represents "geosparql:dimension" geographic function to be applied on a query results table.<br/>
+    /// The result of this function is a numeric typed literal representing the dimension of the working geometry (0=Point,1=LineString,2=Polygon).
     /// </summary>
-    public RDFGeoDimensionExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
-
-    /// <summary>
-    /// Builds a geosparql:dimension function with given arguments
-    /// </summary>
-    public RDFGeoDimensionExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the geosparql:dimension function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFGeoDimensionExpression : RDFGeoExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Ctors
+        /// <summary>
+        /// Builds a geosparql:dimension function with given arguments
+        /// </summary>
+        public RDFGeoDimensionExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
-        //(geosparql:dimension(L))
-        sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.DIMENSION, prefixes)}(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append("))");
+        /// <summary>
+        /// Builds a geosparql:dimension function with given arguments
+        /// </summary>
+        public RDFGeoDimensionExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
+        #endregion
 
-        return sb.ToString();
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the geosparql:dimension function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            //(geosparql:dimension(L))
+            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.DIMENSION, prefixes)}(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append("))");
+
+            return sb.ToString();
+        }
+        #endregion
     }
-    #endregion
 }

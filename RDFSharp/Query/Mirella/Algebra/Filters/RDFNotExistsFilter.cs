@@ -18,43 +18,44 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFNotExistsFilter represents a filter for checking absence of given RDF pattern.
-/// </summary>
-public sealed class RDFNotExistsFilter : RDFExistsFilter
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a NotExists filter on the given pattern
+    /// RDFNotExistsFilter represents a filter for checking absence of given RDF pattern.
     /// </summary>
-    public RDFNotExistsFilter(RDFPattern pattern) : base(pattern) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the filter
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
-        => string.Concat("FILTER ( NOT EXISTS { ", Pattern.ToString(prefixes), " } )");
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the filter on the column corresponding to the pattern in the given datarow
-    /// </summary>
-    internal override bool ApplyFilter(DataRow row, bool applyNegation)
+    public sealed class RDFNotExistsFilter : RDFExistsFilter
     {
-        bool keepRow = base.ApplyFilter(row, true);
+        #region Ctors
+        /// <summary>
+        /// Builds a NotExists filter on the given pattern
+        /// </summary>
+        public RDFNotExistsFilter(RDFPattern pattern) : base(pattern) { }
+        #endregion
 
-        //Apply the eventual negation
-        if (applyNegation)
-            keepRow = !keepRow;
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the filter
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+            => string.Concat("FILTER ( NOT EXISTS { ", Pattern.ToString(prefixes), " } )");
+        #endregion
 
-        return keepRow;
+        #region Methods
+        /// <summary>
+        /// Applies the filter on the column corresponding to the pattern in the given datarow
+        /// </summary>
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
+        {
+            bool keepRow = base.ApplyFilter(row, true);
+
+            //Apply the eventual negation
+            if (applyNegation)
+                keepRow = !keepRow;
+
+            return keepRow;
+        }
+        #endregion
     }
-    #endregion
 }

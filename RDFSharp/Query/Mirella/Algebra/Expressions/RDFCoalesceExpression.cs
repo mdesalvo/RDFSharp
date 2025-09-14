@@ -19,98 +19,99 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFCoalesceExpression represents a string coalesce function to be applied on a query results table.
-/// </summary>
-public sealed class RDFCoalesceExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a string coalesce function with given arguments
+    /// RDFCoalesceExpression represents a string coalesce function to be applied on a query results table.
     /// </summary>
-    public RDFCoalesceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
-
-    /// <summary>
-    /// Builds a string coalesce function with given arguments
-    /// </summary>
-    public RDFCoalesceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
-
-    /// <summary>
-    /// Builds a string coalesce function with given arguments
-    /// </summary>
-    public RDFCoalesceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
-
-    /// <summary>
-    /// Builds a string coalesce function with given arguments
-    /// </summary>
-    public RDFCoalesceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the string coalesce function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFCoalesceExpression : RDFExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Ctors
+        /// <summary>
+        /// Builds a string coalesce function with given arguments
+        /// </summary>
+        public RDFCoalesceExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-        //(COALESCE(L,R))
-        sb.Append("(COALESCE(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append(", ");
-        if (RightArgument is RDFExpression expRightArgument)
-            sb.Append(expRightArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-        sb.Append("))");
+        /// <summary>
+        /// Builds a string coalesce function with given arguments
+        /// </summary>
+        public RDFCoalesceExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
-        return sb.ToString();
-    }
-    #endregion
+        /// <summary>
+        /// Builds a string coalesce function with given arguments
+        /// </summary>
+        public RDFCoalesceExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-    #region Methods
-    /// <summary>
-    /// Applies the string coalesce function on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        try
+        /// <summary>
+        /// Builds a string coalesce function with given arguments
+        /// </summary>
+        public RDFCoalesceExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the string coalesce function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            #region Evaluate Arguments
-            //Evaluate left argument (Expression VS Variable)
-            RDFPatternMember leftArgumentPMember = null;
-            if (LeftArgument is RDFExpression leftArgumentExpression)
-                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-            else if (row.Table.Columns.Contains(LeftArgument.ToString()))
-                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+            StringBuilder sb = new StringBuilder(32);
 
-            //Coalesce left argument
-            if (leftArgumentPMember != null)
-                return leftArgumentPMember;
+            //(COALESCE(L,R))
+            sb.Append("(COALESCE(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append(", ");
+            if (RightArgument is RDFExpression expRightArgument)
+                sb.Append(expRightArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
+            sb.Append("))");
 
-            //Evaluate right argument (Expression VS Variable)
-            RDFPatternMember rightArgumentPMember = null;
-            if (RightArgument is RDFExpression rightArgumentExpression)
-                rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-            else if (row.Table.Columns.Contains(RightArgument.ToString()))
-                rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-
-            //Coalesce right argument
-            if (rightArgumentPMember != null)
-                return rightArgumentPMember;
-            #endregion
+            return sb.ToString();
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+        #endregion
 
-        //Coalesce null => error
-        return null;
+        #region Methods
+        /// <summary>
+        /// Applies the string coalesce function on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate left argument (Expression VS Variable)
+                RDFPatternMember leftArgumentPMember = null;
+                if (LeftArgument is RDFExpression leftArgumentExpression)
+                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+                else if (row.Table.Columns.Contains(LeftArgument.ToString()))
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+
+                //Coalesce left argument
+                if (leftArgumentPMember != null)
+                    return leftArgumentPMember;
+
+                //Evaluate right argument (Expression VS Variable)
+                RDFPatternMember rightArgumentPMember = null;
+                if (RightArgument is RDFExpression rightArgumentExpression)
+                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
+                else if (row.Table.Columns.Contains(RightArgument.ToString()))
+                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+
+                //Coalesce right argument
+                if (rightArgumentPMember != null)
+                    return rightArgumentPMember;
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            //Coalesce null => error
+            return null;
+        }
+        #endregion
     }
-    #endregion
 }

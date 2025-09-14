@@ -17,57 +17,58 @@
 using System.Data;
 using System.Linq;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFOffsetModifier is a modifier which makes the first N query results to be not considered.
-/// </summary>
-public sealed class RDFOffsetModifier : RDFModifier
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Number of results not considered from the query
+    /// RDFOffsetModifier is a modifier which makes the first N query results to be not considered.
     /// </summary>
-    public int Offset { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an Offset modifier on a query
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFOffsetModifier(int offset)
+    public sealed class RDFOffsetModifier : RDFModifier
     {
-        #region Guards
-        if (offset < 0)
-            throw new RDFQueryException("Cannot create RDFOffsetModifier because given \"offset\" parameter (" + offset + ") is negative.");
+        #region Properties
+        /// <summary>
+        /// Number of results not considered from the query
+        /// </summary>
+        public int Offset { get; internal set; }
         #endregion
 
-        Offset = offset;
-    }
-    #endregion
+        #region Ctors
+        /// <summary>
+        /// Builds an Offset modifier on a query
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOffsetModifier(int offset)
+        {
+            #region Guards
+            if (offset < 0)
+                throw new RDFQueryException("Cannot create RDFOffsetModifier because given \"offset\" parameter (" + offset + ") is negative.");
+            #endregion
 
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the modifier
-    /// </summary>
-    public override string ToString()
-        => $"OFFSET {Offset}";
-    #endregion
+            Offset = offset;
+        }
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Applies the modifier on the given datatable
-    /// </summary>
-    internal override DataTable ApplyModifier(DataTable table)
-    {
-        string tableSort = table.DefaultView.Sort;
-        if (table.Rows.Count == 0 || Offset >= table.Rows.Count)
-            table = table.Clone();
-        else
-            table = table.AsEnumerable().Skip(Offset).CopyToDataTable();
-        table.DefaultView.Sort = tableSort;
-        return table;
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the modifier
+        /// </summary>
+        public override string ToString()
+            => $"OFFSET {Offset}";
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the modifier on the given datatable
+        /// </summary>
+        internal override DataTable ApplyModifier(DataTable table)
+        {
+            string tableSort = table.DefaultView.Sort;
+            if (table.Rows.Count == 0 || Offset >= table.Rows.Count)
+                table = table.Clone();
+            else
+                table = table.AsEnumerable().Skip(Offset).CopyToDataTable();
+            table.DefaultView.Sort = tableSort;
+            return table;
+        }
+        #endregion
     }
-    #endregion
 }

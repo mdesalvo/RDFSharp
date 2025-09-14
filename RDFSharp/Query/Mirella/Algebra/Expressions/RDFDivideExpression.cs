@@ -16,42 +16,43 @@
 
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFDivideExpression represents an arithmetical division expression to be applied on a query results table.
-/// </summary>
-public sealed class RDFDivideExpression : RDFMathExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds an arithmetical division expression with given arguments
+    /// RDFDivideExpression represents an arithmetical division expression to be applied on a query results table.
     /// </summary>
-    public RDFDivideExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+    public sealed class RDFDivideExpression : RDFMathExpression
+    {
+        #region Ctors
+        /// <summary>
+        /// Builds an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFExpression leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical division expression with given arguments
-    /// </summary>
-    public RDFDivideExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFExpression leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical division expression with given arguments
-    /// </summary>
-    public RDFDivideExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFExpression leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical division expression with given arguments
-    /// </summary>
-    public RDFDivideExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFVariable leftArgument, RDFExpression rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical division expression with given arguments
-    /// </summary>
-    public RDFDivideExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
+        /// <summary>
+        /// Builds an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFVariable leftArgument, RDFVariable rightArgument) : base(leftArgument, rightArgument) { }
 
-    /// <summary>
-    /// Builds an arithmetical division expression with given arguments
-    /// </summary>
-    public RDFDivideExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
-    #endregion
+        /// <summary>
+        /// Builds an arithmetical division expression with given arguments
+        /// </summary>
+        public RDFDivideExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
+        #endregion
+    }
 }

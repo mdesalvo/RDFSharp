@@ -21,92 +21,93 @@ using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFFloorExpression represents an arithmetical floor function to be applied on a query results table.
-/// </summary>
-public sealed class RDFFloorExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds an arithmetical floor function with given arguments
+    /// RDFFloorExpression represents an arithmetical floor function to be applied on a query results table.
     /// </summary>
-    public RDFFloorExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
-
-    /// <summary>
-    /// Builds an arithmetical floor function with given arguments
-    /// </summary>
-    public RDFFloorExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the arithmetical floor function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFFloorExpression : RDFExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Ctors
+        /// <summary>
+        /// Builds an arithmetical floor function with given arguments
+        /// </summary>
+        public RDFFloorExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
-        //(FLOOR(L))
-        sb.Append("(FLOOR(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append("))");
-
-        return sb.ToString();
-    }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the arithmetical floor function on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        RDFTypedLiteral expressionResult = null;
-
-        #region Guards
-        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-            return null;
+        /// <summary>
+        /// Builds an arithmetical floor function with given arguments
+        /// </summary>
+        public RDFFloorExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
-        try
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the arithmetical floor function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            #region Evaluate Arguments
-            //Evaluate left argument (Expression VS Variable)
-            RDFPatternMember leftArgumentPMember;
-            if (LeftArgument is RDFExpression leftArgumentExpression)
-                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+            StringBuilder sb = new StringBuilder(32);
+
+            //(FLOOR(L))
+            sb.Append("(FLOOR(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
             else
-                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-            #endregion
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append("))");
 
-            #region Calculate Result
-            if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                && leftArgumentTypedLiteral.HasDecimalDatatype())
-            {
-                //owl:rational needs parsing and evaluation before being compared
-                if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                {
-                    expressionResult = new RDFTypedLiteral(
-                        Convert.ToString(Math.Floor(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                }
-                else if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
-                {
-                    expressionResult = new RDFTypedLiteral(
-                        Convert.ToString(Math.Floor(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                }
-            }
-            #endregion
+            return sb.ToString();
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+        #endregion
 
-        return expressionResult;
+        #region Methods
+        /// <summary>
+        /// Applies the arithmetical floor function on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            RDFTypedLiteral expressionResult = null;
+
+            #region Guards
+            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+                return null;
+            #endregion
+
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate left argument (Expression VS Variable)
+                RDFPatternMember leftArgumentPMember;
+                if (LeftArgument is RDFExpression leftArgumentExpression)
+                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+                else
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+                #endregion
+
+                #region Calculate Result
+                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
+                     && leftArgumentTypedLiteral.HasDecimalDatatype())
+                {
+                    //owl:rational needs parsing and evaluation before being compared
+                    if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                    {
+                        expressionResult = new RDFTypedLiteral(
+                                                                Convert.ToString(Math.Floor(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    }
+                    else if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
+                    {
+                        expressionResult = new RDFTypedLiteral(
+                                                                Convert.ToString(Math.Floor(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    }
+                }
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            return expressionResult;
+        }
+        #endregion
     }
-    #endregion
 }

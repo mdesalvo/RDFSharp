@@ -474,7 +474,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -504,7 +504,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -536,7 +536,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -569,7 +569,7 @@ public class RDFAskQueryTest
                         </sparql>
                         """, encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -692,7 +692,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToGraphAsyncAndHaveTrueResult()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -707,7 +707,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToGraphAsyncAndHaveFalseResult()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -735,7 +735,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToStoreAsyncAndHaveTrueResult()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -750,7 +750,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToStoreAsyncAndHaveFalseResult()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -778,7 +778,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToFederationAsyncAndHaveTrueResult()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation().AddGraph(graph);
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -794,7 +794,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToFederationAsyncAndHaveFalseResult()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE));
         RDFFederation federation = new RDFFederation().AddGraph(graph);
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))

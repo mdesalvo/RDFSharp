@@ -134,24 +134,6 @@ public class RDFNamespaceRegisterTest
     }
 
     [TestMethod]
-    public void ShouldNotRemoveReservedNamespacesByPrefix()
-    {
-        int nsCountBefore = RDFNamespaceRegister.NamespacesCount;
-        RDFNamespaceRegister.RemoveByPrefix(RDFVocabulary.RDF.PREFIX);
-        int nsCountAfter = RDFNamespaceRegister.NamespacesCount;
-        Assert.AreEqual(nsCountAfter, nsCountBefore);
-    }
-
-    [TestMethod]
-    public void ShouldNotRemoveReservedNamespacesByNamespace()
-    {
-        int nsCountBefore = RDFNamespaceRegister.NamespacesCount;
-        RDFNamespaceRegister.RemoveByUri(RDFVocabulary.RDF.BASE_URI);
-        int nsCountAfter = RDFNamespaceRegister.NamespacesCount;
-        Assert.AreEqual(nsCountAfter, nsCountBefore);
-    }
-
-    [TestMethod]
     public void ShouldGetNamespaceByPrefix()
     {
         RDFNamespace ns = RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX);

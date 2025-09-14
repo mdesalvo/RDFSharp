@@ -18,45 +18,46 @@ using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// GEOGetSRIDExpression represents "geof:getSRID" geographic function to be applied on a query results table.<br/>
-/// The result of this function is xsd:anyURI typed literal representing the SRID of the working geometry.
-/// </summary>
-public sealed class RDFGeoGetSRIDExpression : RDFGeoExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a geof:getSRID function with given arguments
+    /// GEOGetSRIDExpression represents "geof:getSRID" geographic function to be applied on a query results table.<br/>
+    /// The result of this function is xsd:anyURI typed literal representing the SRID of the working geometry.
     /// </summary>
-    public RDFGeoGetSRIDExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
-
-    /// <summary>
-    /// Builds a geof:getSRID function with given arguments
-    /// </summary>
-    public RDFGeoGetSRIDExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the geof:getSRID function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFGeoGetSRIDExpression : RDFGeoExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Ctors
+        /// <summary>
+        /// Builds a geof:getSRID function with given arguments
+        /// </summary>
+        public RDFGeoGetSRIDExpression(RDFExpression leftArgument) : base(leftArgument, null) { }
 
-        //(geof:getSRID(L))
-        sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.GET_SRID, prefixes)}(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append("))");
+        /// <summary>
+        /// Builds a geof:getSRID function with given arguments
+        /// </summary>
+        public RDFGeoGetSRIDExpression(RDFVariable leftArgument) : base(leftArgument, null) { }
+        #endregion
 
-        return sb.ToString();
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the geof:getSRID function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            //(geof:getSRID(L))
+            sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.GET_SRID, prefixes)}(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
+            else
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append("))");
+
+            return sb.ToString();
+        }
+        #endregion
     }
-    #endregion
 }

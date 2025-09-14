@@ -165,8 +165,8 @@ public class RDFDeleteDataOperationTest
     public async Task ShouldApplyToGraphAsync()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-        graph.AddTriple(new RDFTriple(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+        await graph.AddTripleAsync(new RDFTriple(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
         RDFDeleteDataOperation operation = new RDFDeleteDataOperation();
         operation.AddDeleteTemplate(new RDFPattern(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
         operation.AddDeleteTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
@@ -264,8 +264,8 @@ public class RDFDeleteDataOperationTest
     public async Task ShouldApplyToStoreAsync()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-        store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
         RDFDeleteDataOperation operation = new RDFDeleteDataOperation();
         operation.AddDeleteTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
         operation.AddDeleteTemplate(new RDFPattern(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
@@ -425,7 +425,7 @@ public class RDFDeleteDataOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteDataOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 

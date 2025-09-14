@@ -19,186 +19,191 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFComparisonExpression represents an expression applying a comparison between the given arguments.
-/// </summary>
-public sealed class RDFComparisonExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Comparison to be applied between the expression arguments
+    /// RDFComparisonExpression represents an expression applying a comparison between the given arguments.
     /// </summary>
-    public RDFQueryEnums.RDFComparisonFlavors ComparisonFlavor { get; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a comparison expression of the given type on the given arguments
-    /// </summary>
-    public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFExpression rightArgument)
-        : base(leftArgument, rightArgument)
+    public sealed class RDFComparisonExpression : RDFExpression
     {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+        #region Properties
+        /// <summary>
+        /// Comparison to be applied between the expression arguments
+        /// </summary>
+        public RDFQueryEnums.RDFComparisonFlavors ComparisonFlavor { get; }
         #endregion
 
-        ComparisonFlavor = comparisonFlavor;
-    }
-
-    /// <summary>
-    /// Builds a comparison expression of the given type on the given arguments
-    /// </summary>
-    public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFVariable rightArgument)
-        : base(leftArgument, rightArgument)
-    {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-
-        ComparisonFlavor = comparisonFlavor;
-    }
-
-    /// <summary>
-    /// Builds a comparison expression of the given type on the given arguments
-    /// </summary>
-    public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFExpression rightArgument)
-        : base(leftArgument, rightArgument)
-    {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-
-        ComparisonFlavor = comparisonFlavor;
-    }
-
-    /// <summary>
-    /// Builds a comparison expression of the given type on the given arguments
-    /// </summary>
-    public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFVariable rightArgument)
-        : base(leftArgument, rightArgument)
-    {
-        #region Guards
-        if (rightArgument == null)
-            throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
-        #endregion
-
-        ComparisonFlavor = comparisonFlavor;
-    }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the unary expression
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
-    {
-        StringBuilder sb = new StringBuilder(32);
-
-        //(L OPERATOR R)
-        sb.Append('(');
-        string leftValue = LeftArgument is RDFExpression leftArgumentExpression ? leftArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes);
-        string rightValue = RightArgument is RDFExpression rightArgumentExpression ? rightArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes);
-        switch (ComparisonFlavor)
+        #region Ctors
+        /// <summary>
+        /// Builds a comparison expression of the given type on the given arguments
+        /// </summary>
+        public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFExpression rightArgument)
+            : base(leftArgument, rightArgument)
         {
-            case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                sb.Append($"{leftValue} < {rightValue}");
-                break;
-            case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                sb.Append($"{leftValue} <= {rightValue}");
-                break;
-            case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                sb.Append($"{leftValue} = {rightValue}");
-                break;
-            case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                sb.Append($"{leftValue} != {rightValue}");
-                break;
-            case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                sb.Append($"{leftValue} >= {rightValue}");
-                break;
-            case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                sb.Append($"{leftValue} > {rightValue}");
-                break;
-        }
-        sb.Append(')');
-
-        return sb.ToString();
-    }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the comparison expression on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        RDFPatternMember expressionResult = null;
-
-        #region Guards
-        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-            return null;
-        if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
-            return null;
-        #endregion
-
-        try
-        {
-            #region Evaluate Arguments
-            //Evaluate left argument (Expression VS Variable)
-            RDFPatternMember leftArgumentPMember;
-            if (LeftArgument is RDFExpression leftArgumentExpression)
-                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-            else
-                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-
-            //Evaluate right argument (Expression VS Variable)
-            RDFPatternMember rightArgumentPMember;
-            if (RightArgument is RDFExpression rightArgumentExpression)
-                rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-            else
-                rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
-
-            //Binding error from arguments
-            if (leftArgumentPMember == null || rightArgumentPMember == null)
-                return null;
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
             #endregion
 
-            #region Calculate Result
-            int comparison = RDFQueryUtilities.CompareRDFPatternMembers(leftArgumentPMember, rightArgumentPMember);
+            ComparisonFlavor = comparisonFlavor;
+        }
 
-            //Type Error
-            if (comparison == -99)
-                return null;
+        /// <summary>
+        /// Builds a comparison expression of the given type on the given arguments
+        /// </summary>
+        public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFExpression leftArgument, RDFVariable rightArgument)
+            : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
 
-            //Type Correct
-            expressionResult = ComparisonFlavor switch
+            ComparisonFlavor = comparisonFlavor;
+        }
+
+        /// <summary>
+        /// Builds a comparison expression of the given type on the given arguments
+        /// </summary>
+        public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFExpression rightArgument)
+            : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
+
+            ComparisonFlavor = comparisonFlavor;
+        }
+
+        /// <summary>
+        /// Builds a comparison expression of the given type on the given arguments
+        /// </summary>
+        public RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFVariable leftArgument, RDFVariable rightArgument)
+            : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create expression because given \"rightArgument\" parameter is null");
+            #endregion
+
+            ComparisonFlavor = comparisonFlavor;
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the unary expression
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            //(L OPERATOR R)
+            sb.Append('(');
+            string leftValue = LeftArgument is RDFExpression leftArgumentExpression ? leftArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes);
+            string rightValue = RightArgument is RDFExpression rightArgumentExpression ? rightArgumentExpression.ToString(prefixes) : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes);
+            switch (ComparisonFlavor)
             {
-                RDFQueryEnums.RDFComparisonFlavors.LessThan => comparison < 0
-                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan => comparison <= 0
-                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                RDFQueryEnums.RDFComparisonFlavors.EqualTo => comparison == 0
-                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                RDFQueryEnums.RDFComparisonFlavors.NotEqualTo => comparison != 0
-                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan => comparison >= 0
-                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                RDFQueryEnums.RDFComparisonFlavors.GreaterThan => comparison > 0
-                    ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                _ => null
-            };
+                case RDFQueryEnums.RDFComparisonFlavors.LessThan:
+                    sb.Append($"{leftValue} < {rightValue}");
+                    break;
+                case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
+                    sb.Append($"{leftValue} <= {rightValue}");
+                    break;
+                case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
+                    sb.Append($"{leftValue} = {rightValue}");
+                    break;
+                case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
+                    sb.Append($"{leftValue} != {rightValue}");
+                    break;
+                case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
+                    sb.Append($"{leftValue} >= {rightValue}");
+                    break;
+                case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
+                    sb.Append($"{leftValue} > {rightValue}");
+                    break;
+            }
+            sb.Append(')');
 
-            #endregion
+            return sb.ToString();
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+        #endregion
 
-        return expressionResult;
+        #region Methods
+        /// <summary>
+        /// Applies the comparison expression on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            RDFPatternMember expressionResult = null;
+
+            #region Guards
+            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+                return null;
+            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
+                return null;
+            #endregion
+
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate left argument (Expression VS Variable)
+                RDFPatternMember leftArgumentPMember;
+                if (LeftArgument is RDFExpression leftArgumentExpression)
+                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+                else
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+
+                //Evaluate right argument (Expression VS Variable)
+                RDFPatternMember rightArgumentPMember;
+                if (RightArgument is RDFExpression rightArgumentExpression)
+                    rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
+                else
+                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+
+                //Binding error from arguments
+                if (leftArgumentPMember == null || rightArgumentPMember == null)
+                    return null;
+                #endregion
+
+                #region Calculate Result
+                int comparison = RDFQueryUtilities.CompareRDFPatternMembers(leftArgumentPMember, rightArgumentPMember);
+
+                //Type Error
+                if (comparison == -99)
+                    return null;
+
+                //Type Correct
+                switch (ComparisonFlavor)
+                {
+                    case RDFQueryEnums.RDFComparisonFlavors.LessThan:
+                        expressionResult = comparison  < 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
+                        expressionResult = comparison <= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
+                        expressionResult = comparison == 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
+                        expressionResult = comparison != 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
+                        expressionResult = comparison >= 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        break;
+                    case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
+                        expressionResult = comparison  > 0 ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                        break;
+                }
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            return expressionResult;
+        }
+        #endregion
     }
-    #endregion
 }

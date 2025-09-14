@@ -14,22 +14,23 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFSecondsExpression represents a datetime seconds function to be applied on a query results table.
-/// </summary>
-public sealed class RDFSecondsExpression : RDFDateTimeExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a datetime seconds function with given arguments
+    /// RDFSecondsExpression represents a datetime seconds function to be applied on a query results table.
     /// </summary>
-    public RDFSecondsExpression(RDFExpression leftArgument) : base(leftArgument) { }
+    public sealed class RDFSecondsExpression : RDFDateTimeExpression
+    {
+        #region Ctors
+        /// <summary>
+        /// Builds a datetime seconds function with given arguments
+        /// </summary>
+        public RDFSecondsExpression(RDFExpression leftArgument) : base(leftArgument) { }
 
-    /// <summary>
-    /// Builds a datetime seconds function with given arguments
-    /// </summary>
-    public RDFSecondsExpression(RDFVariable leftArgument) : base(leftArgument) { }
-    #endregion
+        /// <summary>
+        /// Builds a datetime seconds function with given arguments
+        /// </summary>
+        public RDFSecondsExpression(RDFVariable leftArgument) : base(leftArgument) { }
+        #endregion
+    }
 }

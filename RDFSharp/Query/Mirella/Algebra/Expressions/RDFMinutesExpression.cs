@@ -14,22 +14,23 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFMinutesExpression represents a datetime minutes function to be applied on a query results table.
-/// </summary>
-public sealed class RDFMinutesExpression : RDFDateTimeExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a datetime minutes function with given arguments
+    /// RDFMinutesExpression represents a datetime minutes function to be applied on a query results table.
     /// </summary>
-    public RDFMinutesExpression(RDFExpression leftArgument) : base(leftArgument) { }
+    public sealed class RDFMinutesExpression : RDFDateTimeExpression
+    {
+        #region Ctors
+        /// <summary>
+        /// Builds a datetime minutes function with given arguments
+        /// </summary>
+        public RDFMinutesExpression(RDFExpression leftArgument) : base(leftArgument) { }
 
-    /// <summary>
-    /// Builds a datetime minutes function with given arguments
-    /// </summary>
-    public RDFMinutesExpression(RDFVariable leftArgument) : base(leftArgument) { }
-    #endregion
+        /// <summary>
+        /// Builds a datetime minutes function with given arguments
+        /// </summary>
+        public RDFMinutesExpression(RDFVariable leftArgument) : base(leftArgument) { }
+        #endregion
+    }
 }

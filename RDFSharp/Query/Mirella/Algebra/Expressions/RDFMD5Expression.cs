@@ -20,91 +20,100 @@ using System.Security.Cryptography;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFMD5Expression represents a MD5 hash function to be applied on a query results table.
-/// </summary>
-public sealed class RDFMD5Expression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a MD5 hash function with given arguments
+    /// RDFMD5Expression represents a MD5 hash function to be applied on a query results table.
     /// </summary>
-    public RDFMD5Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
-
-    /// <summary>
-    /// Builds a MD5 hash function with given arguments
-    /// </summary>
-    public RDFMD5Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the MD5 hash function
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFMD5Expression : RDFExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Ctors
+        /// <summary>
+        /// Builds a MD5 hash function with given arguments
+        /// </summary>
+        public RDFMD5Expression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
-        //(MD5(L))
-        sb.Append("(MD5(");
-        if (LeftArgument is RDFExpression expLeftArgument)
-            sb.Append(expLeftArgument.ToString(prefixes));
-        else
-            sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-        sb.Append("))");
-
-        return sb.ToString();
-    }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the string MD5 function on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-    {
-        RDFPlainLiteral expressionResult = null;
-
-        #region Guards
-        if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
-            return null;
+        /// <summary>
+        /// Builds a MD5 hash function with given arguments
+        /// </summary>
+        public RDFMD5Expression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
-        try
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the MD5 hash function
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
         {
-            #region Evaluate Arguments
-            //Evaluate left argument (Expression VS Variable)
-            RDFPatternMember leftArgumentPMember;
-            if (LeftArgument is RDFExpression leftArgumentExpression)
-                leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+            StringBuilder sb = new StringBuilder(32);
+
+            //(MD5(L))
+            sb.Append("(MD5(");
+            if (LeftArgument is RDFExpression expLeftArgument)
+                sb.Append(expLeftArgument.ToString(prefixes));
             else
-                leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
-            #endregion
+                sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+            sb.Append("))");
 
-            #region Calculate Result
-            leftArgumentPMember = leftArgumentPMember switch
-            {
-                RDFLiteral leftArgumentPMemberLiteral => new RDFPlainLiteral(leftArgumentPMemberLiteral.Value),
-                RDFResource leftArgumentPMemberResource => new RDFPlainLiteral(leftArgumentPMemberResource.ToString()),
-                _ => leftArgumentPMember
-            };
-            if (leftArgumentPMember == null)
-                return null;
-
-            string leftArgumentPMemberString = leftArgumentPMember.ToString();
-            StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
-            foreach (byte hashByte in MD5.HashData(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
-                sb.Append(hashByte.ToString("x2"));
-            expressionResult = new RDFPlainLiteral(sb.ToString());
-            #endregion
+            return sb.ToString();
         }
-        catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+        #endregion
 
-        return expressionResult;
+        #region Methods
+        /// <summary>
+        /// Applies the string MD5 function on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+        {
+            RDFPlainLiteral expressionResult = null;
+
+            #region Guards
+            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+                return null;
+            #endregion
+
+            try
+            {
+                #region Evaluate Arguments
+                //Evaluate left argument (Expression VS Variable)
+                RDFPatternMember leftArgumentPMember;
+                if (LeftArgument is RDFExpression leftArgumentExpression)
+                    leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
+                else
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+                #endregion
+
+                #region Calculate Result
+                switch (leftArgumentPMember)
+                {
+                    case RDFLiteral leftArgumentPMemberLiteral:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberLiteral.Value);
+                        break;
+                    case RDFResource leftArgumentPMemberResource:
+                        leftArgumentPMember = new RDFPlainLiteral(leftArgumentPMemberResource.ToString());
+                        break;
+                }
+
+                if (leftArgumentPMember == null)
+                    return null;
+
+                using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
+                {
+                    string leftArgumentPMemberString = leftArgumentPMember.ToString();
+                    StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
+                    foreach (byte hashByte in md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
+                        sb.Append(hashByte.ToString("x2"));
+
+                    expressionResult = new RDFPlainLiteral(sb.ToString());
+                }
+                #endregion
+            }
+            catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
+            return expressionResult;
+        }
+        #endregion
     }
-    #endregion
 }

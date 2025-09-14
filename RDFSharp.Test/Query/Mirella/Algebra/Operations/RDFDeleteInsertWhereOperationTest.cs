@@ -806,7 +806,7 @@ public class RDFDeleteInsertWhereOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteInsertWhereOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 

@@ -16,32 +16,33 @@
 
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFDeleteDataOperation is the SPARQL "DELETE DATA" operation implementation
-/// </summary>
-public sealed class RDFDeleteDataOperation : RDFOperation
+namespace RDFSharp.Query
 {
-    #region Interfaces
     /// <summary>
-    /// Gives the string representation of the DELETE DATA operation
+    /// RDFDeleteDataOperation is the SPARQL "DELETE DATA" operation implementation
     /// </summary>
-    public override string ToString()
-        => RDFOperationPrinter.PrintDeleteDataOperation(this);
-    #endregion
+    public sealed class RDFDeleteDataOperation : RDFOperation
+    {
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the DELETE DATA operation
+        /// </summary>
+        public override string ToString()
+            => RDFOperationPrinter.PrintDeleteDataOperation(this);
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Adds the given ground pattern to the templates of the operation
-    /// </summary>
-    public RDFDeleteDataOperation AddDeleteTemplate(RDFPattern template)
-        => AddDeleteGroundTemplate<RDFDeleteDataOperation>(template);
+        #region Methods
+        /// <summary>
+        /// Adds the given ground pattern to the templates of the operation
+        /// </summary>
+        public RDFDeleteDataOperation AddDeleteTemplate(RDFPattern template)
+            => AddDeleteGroundTemplate<RDFDeleteDataOperation>(template);
 
-    /// <summary>
-    /// Adds the given prefix declaration to the operation
-    /// </summary>
-    public RDFDeleteDataOperation AddPrefix(RDFNamespace prefix)
-        => AddPrefix<RDFDeleteDataOperation>(prefix);
-    #endregion
+        /// <summary>
+        /// Adds the given prefix declaration to the operation
+        /// </summary>
+        public RDFDeleteDataOperation AddPrefix(RDFNamespace prefix)
+            => AddPrefix<RDFDeleteDataOperation>(prefix);
+        #endregion
+    }
 }

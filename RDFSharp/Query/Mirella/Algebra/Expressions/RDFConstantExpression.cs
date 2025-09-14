@@ -19,51 +19,52 @@ using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFConstantExpression represents a single-argument constant expression to be applied on a query results table.
-/// </summary>
-public sealed class RDFConstantExpression : RDFExpression
+namespace RDFSharp.Query
 {
-    #region Ctors
     /// <summary>
-    /// Builds a constant expression with given argument
+    /// RDFConstantExpression represents a single-argument constant expression to be applied on a query results table.
     /// </summary>
-    public RDFConstantExpression(RDFResource leftArgument)
-        : base(leftArgument, null as RDFExpression) { }
-
-    /// <summary>
-    /// Builds a constant expression with given argument
-    /// </summary>
-    public RDFConstantExpression(RDFLiteral leftArgument)
-        : base(leftArgument, null as RDFExpression) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the unary expression
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
+    public sealed class RDFConstantExpression : RDFExpression
     {
-        StringBuilder sb = new StringBuilder(32);
+        #region Ctors
+        /// <summary>
+        /// Builds a constant expression with given argument
+        /// </summary>
+        public RDFConstantExpression(RDFResource leftArgument)
+            : base(leftArgument, null as RDFExpression) { }
 
-        //L
-        sb.Append(LeftArgument is RDFTypedLiteral tlLeftArgument && tlLeftArgument.HasDecimalDatatype()
-            ? tlLeftArgument.Value
-            : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+        /// <summary>
+        /// Builds a constant expression with given argument
+        /// </summary>
+        public RDFConstantExpression(RDFLiteral leftArgument)
+            : base(leftArgument, null as RDFExpression) { }
+        #endregion
 
-        return sb.ToString();
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the unary expression
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder(32);
+
+            //L
+            sb.Append(LeftArgument is RDFTypedLiteral tlLeftArgument && tlLeftArgument.HasDecimalDatatype()
+                        ? tlLeftArgument.Value
+                        : RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
+
+            return sb.ToString();
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the constant expression on the given datarow
+        /// </summary>
+        internal override RDFPatternMember ApplyExpression(DataRow row)
+            => (RDFPatternMember)LeftArgument;
+        #endregion
     }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the constant expression on the given datarow
-    /// </summary>
-    internal override RDFPatternMember ApplyExpression(DataRow row)
-        => (RDFPatternMember)LeftArgument;
-    #endregion
 }

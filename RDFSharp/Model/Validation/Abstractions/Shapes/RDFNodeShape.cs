@@ -14,37 +14,38 @@
    limitations under the License.
 */
 
-namespace RDFSharp.Model;
-
-/// <summary>
-/// RDFNodeShape represents a SHACL node shape definition
-/// </summary>
-public sealed class RDFNodeShape : RDFShape
+namespace RDFSharp.Model
 {
-    #region Ctors
     /// <summary>
-    /// Builds a named node shape
+    /// RDFNodeShape represents a SHACL node shape definition
     /// </summary>
-    public RDFNodeShape(RDFResource nodeShapeName) : base(nodeShapeName) { }
-
-    /// <summary>
-    /// Builds a blank node shape
-    /// </summary>
-    public RDFNodeShape() : this(new RDFResource()) { }
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Gets a graph representation of this node shape
-    /// </summary>
-    public override RDFGraph ToRDFGraph()
+    public sealed class RDFNodeShape : RDFShape
     {
-        RDFGraph result = base.ToRDFGraph();
+        #region Ctors
+        /// <summary>
+        /// Builds a named node shape
+        /// </summary>
+        public RDFNodeShape(RDFResource nodeShapeName) : base(nodeShapeName) { }
 
-        //NodeShape
-        result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE));
+        /// <summary>
+        /// Builds a blank node shape
+        /// </summary>
+        public RDFNodeShape() : this(new RDFResource()) { }
+        #endregion
 
-        return result;
+        #region Methods
+        /// <summary>
+        /// Gets a graph representation of this node shape
+        /// </summary>
+        public override RDFGraph ToRDFGraph()
+        {
+            RDFGraph result = base.ToRDFGraph();
+
+            //NodeShape
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE));
+
+            return result;
+        }
+        #endregion
     }
-    #endregion
 }

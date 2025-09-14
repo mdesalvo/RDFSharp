@@ -21,169 +21,193 @@ using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFConstructQuery is the SPARQL "CONSTRUCT" query implementation.
-/// </summary>
-public sealed class RDFConstructQuery : RDFQuery
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// List of template patterns carried by the query
+    /// RDFConstructQuery is the SPARQL "CONSTRUCT" query implementation.
     /// </summary>
-    internal List<RDFPattern> Templates { get; set; }
-
-    /// <summary>
-    /// List of variables carried by the template patterns of the query
-    /// </summary>
-    internal List<RDFVariable> Variables { get; set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an empty CONSTRUCT query
-    /// </summary>
-    public RDFConstructQuery()
+    public sealed class RDFConstructQuery : RDFQuery
     {
-        Templates = [];
-        Variables = [];
-    }
-    #endregion
+        #region Properties
+        /// <summary>
+        /// List of template patterns carried by the query
+        /// </summary>
+        internal List<RDFPattern> Templates { get; set; }
 
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the CONSTRUCT query
-    /// </summary>
-    public override string ToString()
-        => RDFQueryPrinter.PrintConstructQuery(this);
-    #endregion
+        /// <summary>
+        /// List of variables carried by the template patterns of the query
+        /// </summary>
+        internal List<RDFVariable> Variables { get; set; }
+        #endregion
 
-    #region Methods
-    /// <summary>
-    /// Adds the given pattern to the templates of the query
-    /// </summary>
-    public RDFConstructQuery AddTemplate(RDFPattern template)
-    {
-        string templateString = template?.ToString();
-        if (template != null && !Templates.Any(tp => string.Equals(tp.ToString(), templateString, StringComparison.Ordinal)))
+        #region Ctors
+        /// <summary>
+        /// Builds an empty CONSTRUCT query
+        /// </summary>
+        public RDFConstructQuery()
         {
-            Templates.Add(template);
-
-            //Context
-            if (template.Context is RDFVariable ctxVar && !Variables.Any(v => v.Equals(template.Context)))
-                Variables.Add(ctxVar);
-
-            //Subject
-            if (template.Subject is RDFVariable subjVar && !Variables.Any(v => v.Equals(template.Subject)))
-                Variables.Add(subjVar);
-
-            //Predicate
-            if (template.Predicate is RDFVariable predVar && !Variables.Any(v => v.Equals(template.Predicate)))
-                Variables.Add(predVar);
-
-            //Object
-            if (template.Object is RDFVariable objVar && !Variables.Any(v => v.Equals(template.Object)))
-                Variables.Add(objVar);
+            Templates = new List<RDFPattern>();
+            Variables = new List<RDFVariable>();
         }
-        return this;
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the CONSTRUCT query
+        /// </summary>
+        public override string ToString()
+            => RDFQueryPrinter.PrintConstructQuery(this);
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Adds the given pattern to the templates of the query
+        /// </summary>
+        public RDFConstructQuery AddTemplate(RDFPattern template)
+        {
+            string templateString = template?.ToString();
+            if (template != null && !Templates.Any(tp => string.Equals(tp.ToString(), templateString, StringComparison.Ordinal)))
+            {
+                Templates.Add(template);
+
+                //Context
+                if (template.Context is RDFVariable ctxVar && !Variables.Any(v => v.Equals(template.Context)))
+                    Variables.Add(ctxVar);
+
+                //Subject
+                if (template.Subject is RDFVariable subjVar && !Variables.Any(v => v.Equals(template.Subject)))
+                    Variables.Add(subjVar);
+
+                //Predicate
+                if (template.Predicate is RDFVariable predVar && !Variables.Any(v => v.Equals(template.Predicate)))
+                    Variables.Add(predVar);
+
+                //Object
+                if (template.Object is RDFVariable objVar && !Variables.Any(v => v.Equals(template.Object)))
+                    Variables.Add(objVar);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the given pattern group to the body of the query
+        /// </summary>
+        public RDFConstructQuery AddPatternGroup(RDFPatternGroup patternGroup)
+            => AddPatternGroup<RDFConstructQuery>(patternGroup);
+
+        /// <summary>
+        /// Adds the given modifier to the query
+        /// </summary>
+        public RDFConstructQuery AddModifier(RDFDistinctModifier modifier)
+            => AddModifier<RDFConstructQuery>(modifier);
+
+        /// <summary>
+        /// Adds the given modifier to the query
+        /// </summary>
+        public RDFConstructQuery AddModifier(RDFLimitModifier modifier)
+            => AddModifier<RDFConstructQuery>(modifier);
+
+        /// <summary>
+        /// Adds the given modifier to the query
+        /// </summary>
+        public RDFConstructQuery AddModifier(RDFOffsetModifier modifier)
+            => AddModifier<RDFConstructQuery>(modifier);
+
+        /// <summary>
+        /// Adds the given prefix declaration to the query
+        /// </summary>
+        public RDFConstructQuery AddPrefix(RDFNamespace prefix)
+            => AddPrefix<RDFConstructQuery>(prefix);
+
+        /// <summary>
+        /// Adds the given subquery to the query
+        /// </summary>
+        public RDFConstructQuery AddSubQuery(RDFSelectQuery subQuery)
+            => AddSubQuery<RDFConstructQuery>(subQuery);
+
+        /// <summary>
+        /// Applies the query to the given graph
+        /// </summary>
+        public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)
+            => graph != null ? new RDFQueryEngine().EvaluateConstructQuery(this, graph) : new RDFConstructQueryResult();
+
+        /// <summary>
+        /// Asynchronously applies the query to the given graph
+        /// </summary>
+        public Task<RDFConstructQueryResult> ApplyToGraphAsync(RDFGraph graph)
+            => Task.Run(() => ApplyToGraph(graph));
+
+        /// <summary>
+        /// Applies the query to the given store
+        /// </summary>
+        public RDFConstructQueryResult ApplyToStore(RDFStore store)
+            => store != null ? new RDFQueryEngine().EvaluateConstructQuery(this, store) : new RDFConstructQueryResult();
+
+        /// <summary>
+        /// Applies the query to the given asynchronous store
+        /// </summary>
+        public Task<RDFConstructQueryResult> ApplyToStoreAsync(RDFStore store)
+            => Task.Run(() => ApplyToStore(store));
+
+        /// <summary>
+        /// Applies the query to the given federation
+        /// </summary>
+        public RDFConstructQueryResult ApplyToFederation(RDFFederation federation)
+            => federation != null ? new RDFQueryEngine().EvaluateConstructQuery(this, federation) : new RDFConstructQueryResult();
+
+        /// <summary>
+        /// Asynchronously applies the query to the given federation
+        /// </summary>
+        public Task<RDFConstructQueryResult> ApplyToFederationAsync(RDFFederation federation)
+            => Task.Run(() => ApplyToFederation(federation));
+
+        /// <summary>
+        /// Applies the query to the given SPARQL endpoint
+        /// </summary>
+        public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Applies the query to the given SPARQL endpoint
+        /// </summary>
+        public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
+        /// </summary>
+        public static RDFConstructQueryResult ApplyRawToSPARQLEndpoint(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpoint(constructQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
+        /// </summary>
+        public static RDFConstructQueryResult ApplyRawToSPARQLEndpoint(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => sparqlEndpoint != null ? (RDFConstructQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("CONSTRUCT", constructQuery, sparqlEndpoint, sparqlEndpointQueryOptions) : new RDFConstructQueryResult();
+
+        /// <summary>
+        /// Asynchronously applies the query to the given SPARQL endpoint
+        /// </summary>
+        public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Asynchronously applies the query to the given SPARQL endpoint
+        /// </summary>
+        public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => ApplyRawToSPARQLEndpointAsync(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
+
+        /// <summary>
+        /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint
+        /// </summary>
+        public static Task<RDFConstructQueryResult> ApplyRawToSPARQLEndpointAsync(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint)
+            => ApplyRawToSPARQLEndpointAsync(constructQuery, sparqlEndpoint, new RDFSPARQLEndpointQueryOptions());
+
+        /// <summary>
+        /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint
+        /// </summary>
+        public static Task<RDFConstructQueryResult> ApplyRawToSPARQLEndpointAsync(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
+            => Task.Run(() => ApplyRawToSPARQLEndpoint(constructQuery, sparqlEndpoint, sparqlEndpointQueryOptions));
+        #endregion
     }
-
-    /// <summary>
-    /// Adds the given pattern group to the body of the query
-    /// </summary>
-    public RDFConstructQuery AddPatternGroup(RDFPatternGroup patternGroup)
-        => AddPatternGroup<RDFConstructQuery>(patternGroup);
-
-    /// <summary>
-    /// Adds the given modifier to the query
-    /// </summary>
-    public RDFConstructQuery AddModifier(RDFDistinctModifier modifier)
-        => AddModifier<RDFConstructQuery>(modifier);
-
-    /// <summary>
-    /// Adds the given modifier to the query
-    /// </summary>
-    public RDFConstructQuery AddModifier(RDFLimitModifier modifier)
-        => AddModifier<RDFConstructQuery>(modifier);
-
-    /// <summary>
-    /// Adds the given modifier to the query
-    /// </summary>
-    public RDFConstructQuery AddModifier(RDFOffsetModifier modifier)
-        => AddModifier<RDFConstructQuery>(modifier);
-
-    /// <summary>
-    /// Adds the given prefix declaration to the query
-    /// </summary>
-    public RDFConstructQuery AddPrefix(RDFNamespace prefix)
-        => AddPrefix<RDFConstructQuery>(prefix);
-
-    /// <summary>
-    /// Adds the given subquery to the query
-    /// </summary>
-    public RDFConstructQuery AddSubQuery(RDFSelectQuery subQuery)
-        => AddSubQuery<RDFConstructQuery>(subQuery);
-
-    /// <summary>
-    /// Applies the query to the given graph
-    /// </summary>
-    public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)
-        => graph != null ? new RDFQueryEngine().EvaluateConstructQuery(this, graph) : new RDFConstructQueryResult();
-
-    /// <summary>
-    /// Asynchronously applies the query to the given graph
-    /// </summary>
-    public Task<RDFConstructQueryResult> ApplyToGraphAsync(RDFGraph graph)
-        => Task.Run(() => ApplyToGraph(graph));
-
-    /// <summary>
-    /// Applies the query to the given store
-    /// </summary>
-    public RDFConstructQueryResult ApplyToStore(RDFStore store)
-        => store != null ? new RDFQueryEngine().EvaluateConstructQuery(this, store) : new RDFConstructQueryResult();
-
-    /// <summary>
-    /// Applies the query to the given asynchronous store
-    /// </summary>
-    public Task<RDFConstructQueryResult> ApplyToStoreAsync(RDFStore store)
-        => Task.Run(() => ApplyToStore(store));
-
-    /// <summary>
-    /// Applies the query to the given federation
-    /// </summary>
-    public RDFConstructQueryResult ApplyToFederation(RDFFederation federation)
-        => federation != null ? new RDFQueryEngine().EvaluateConstructQuery(this, federation) : new RDFConstructQueryResult();
-
-    /// <summary>
-    /// Asynchronously applies the query to the given federation
-    /// </summary>
-    public Task<RDFConstructQueryResult> ApplyToFederationAsync(RDFFederation federation)
-        => Task.Run(() => ApplyToFederation(federation));
-
-    /// <summary>
-    /// Applies the query to the given SPARQL endpoint
-    /// </summary>
-    public RDFConstructQueryResult ApplyToSPARQLEndpoint(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-        => ApplyRawToSPARQLEndpoint(ToString(), sparqlEndpoint, sparqlEndpointQueryOptions);
-
-    /// <summary>
-    /// Asynchronously applies the query to the given SPARQL endpoint
-    /// </summary>
-    public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-        => Task.Run(() => ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
-    
-    /// <summary>
-    /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
-    /// </summary>
-    public static RDFConstructQueryResult ApplyRawToSPARQLEndpoint(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-        => sparqlEndpoint != null ? (RDFConstructQueryResult)RDFQueryEngine.ApplyRawToSPARQLEndpoint("CONSTRUCT", constructQuery, sparqlEndpoint, sparqlEndpointQueryOptions)
-                                  : new RDFConstructQueryResult();
-
-    /// <summary>
-    /// Asynchronously applies the given raw string CONSTRUCT query to the given SPARQL endpoint
-    /// </summary>
-    public static Task<RDFConstructQueryResult> ApplyRawToSPARQLEndpointAsync(string constructQuery, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-        => Task.Run(() => ApplyRawToSPARQLEndpoint(constructQuery, sparqlEndpoint, sparqlEndpointQueryOptions));
-    #endregion
 }

@@ -18,120 +18,121 @@ using System.Collections.Generic;
 using System.Data;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFExpressionFilter represents a filter executing any kind of supported expressions
-/// </summary>
-public sealed class RDFExpressionFilter : RDFFilter
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Expression to be executed by the filtering (should return a boolean typed literal)
+    /// RDFExpressionFilter represents a filter executing any kind of supported expressions
     /// </summary>
-    public RDFExpression Expression { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Private-ctor to build a filter on the given expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    private RDFExpressionFilter(RDFExpression expression, bool _)
-        => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
-
-    /// <summary>
-    /// Builds a filter on the given Boolean expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFBooleanExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given Bound expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFBoundExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given Comparison expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFComparisonExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given In expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFInExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given IsBlank expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFIsBlankExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given IsLiteral expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFIsLiteralExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given IsNumeric expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFIsNumericExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given IsUri expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFIsUriExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given LangMatches expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFLangMatchesExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given Regex expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFRegexExpression expression) : this(expression, true) { }
-
-    /// <summary>
-    /// Builds a filter on the given SameTerm expression
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFExpressionFilter(RDFSameTermExpression expression) : this(expression, true) { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the filter
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal override string ToString(List<RDFNamespace> prefixes)
-        => $"FILTER ( {Expression.ToString(prefixes)} )";
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the filter to the given datarow
-    /// </summary>
-    internal override bool ApplyFilter(DataRow row, bool applyNegation)
+    public sealed class RDFExpressionFilter : RDFFilter
     {
-        //Execute the expression on the given datarow
-        RDFTypedLiteral expressionResult = Expression.ApplyExpression(row) as RDFTypedLiteral;
-        bool keepRow = expressionResult?.Equals(RDFTypedLiteral.True) ?? false;
+        #region Properties
+        /// <summary>
+        /// Expression to be executed by the filtering (should return a boolean typed literal)
+        /// </summary>
+        public RDFExpression Expression { get; internal set; }
+        #endregion
 
-        //Apply the eventual negation
-        if (applyNegation)
-            keepRow = !keepRow;
+        #region Ctors
+        /// <summary>
+        /// Private-ctor to build a filter on the given expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        private RDFExpressionFilter(RDFExpression expression, bool _)
+            => Expression = expression ?? throw new RDFQueryException("Cannot create RDFExpressionFilter because given \"expression\" parameter is null.");
 
-        return keepRow;
+        /// <summary>
+        /// Builds a filter on the given Boolean expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFBooleanExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given Bound expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFBoundExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given Comparison expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFComparisonExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given In expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFInExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given IsBlank expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFIsBlankExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given IsLiteral expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFIsLiteralExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given IsNumeric expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFIsNumericExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given IsUri expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFIsUriExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given LangMatches expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFLangMatchesExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given Regex expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFRegexExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given SameTerm expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFSameTermExpression expression) : this(expression, true) { }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the filter
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal override string ToString(List<RDFNamespace> prefixes)
+            => $"FILTER ( {Expression.ToString(prefixes)} )";
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the filter to the given datarow
+        /// </summary>
+        internal override bool ApplyFilter(DataRow row, bool applyNegation)
+        {
+            //Execute the expression on the given datarow
+            RDFTypedLiteral expressionResult = Expression.ApplyExpression(row) as RDFTypedLiteral;
+            bool keepRow = expressionResult?.Equals(RDFTypedLiteral.True) ?? false;
+
+            //Apply the eventual negation
+            if (applyNegation)
+                keepRow = !keepRow;
+
+            return keepRow;
+        }
+        #endregion
     }
-    #endregion
 }

@@ -17,61 +17,62 @@
 using System;
 using static RDFSharp.Query.RDFQueryEnums;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFClearOperation is the SPARQL "CLEAR" operation implementation
-/// </summary>
-public sealed class RDFClearOperation : RDFOperation
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Flag indicating that the operation will hide errors from the SPARQL UPDATE endpoint
+    /// RDFClearOperation is the SPARQL "CLEAR" operation implementation
     /// </summary>
-    public bool IsSilent { get; internal set; }
-
-    /// <summary>
-    /// Represents the Uri of the remote graph from which RDF data will be removed
-    /// </summary>
-    public Uri FromContext { get; internal set; }
-
-    /// <summary>
-    /// Represents the flavor adopted in case of an implicit SPARQL CLEAR operation
-    /// </summary>
-    public RDFClearOperationFlavor OperationFlavor { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an explicit CLEAR operation for the given remote graph Uri
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    public RDFClearOperation(Uri fromContext)
-        => FromContext = fromContext ?? throw new RDFQueryException("Cannot create RDFClearOperation because given \"fromContext\" parameter is null.");
-
-    /// <summary>
-    /// Builds an implicit CLEAR operation with the given flavor
-    /// </summary>
-    public RDFClearOperation(RDFClearOperationFlavor operationFlavor)
-        => OperationFlavor = operationFlavor;
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the CLEAR operation
-    /// </summary>
-    public override string ToString()
-        => RDFOperationPrinter.PrintClearOperation(this);
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Sets the operation as silent, so that errors will not be delivered to the application
-    /// </summary>
-    public RDFClearOperation Silent()
+    public sealed class RDFClearOperation : RDFOperation
     {
-        IsSilent = true;
-        return this;
+        #region Properties
+        /// <summary>
+        /// Flag indicating that the operation will hide errors from the SPARQL UPDATE endpoint
+        /// </summary>
+        public bool IsSilent { get; internal set; }
+
+        /// <summary>
+        /// Represents the Uri of the remote graph from which RDF data will be removed
+        /// </summary>
+        public Uri FromContext { get; internal set; }
+
+        /// <summary>
+        /// Represents the flavor adopted in case of an implicit SPARQL CLEAR operation
+        /// </summary>
+        public RDFClearOperationFlavor OperationFlavor { get; internal set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Builds an explicit CLEAR operation for the given remote graph Uri
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFClearOperation(Uri fromContext)
+            => FromContext = fromContext ?? throw new RDFQueryException("Cannot create RDFClearOperation because given \"fromContext\" parameter is null.");
+
+        /// <summary>
+        /// Builds an implicit CLEAR operation with the given flavor
+        /// </summary>
+        public RDFClearOperation(RDFClearOperationFlavor operationFlavor)
+            => OperationFlavor = operationFlavor;
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the CLEAR operation
+        /// </summary>
+        public override string ToString()
+            => RDFOperationPrinter.PrintClearOperation(this);
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Sets the operation as silent, so that errors will not be delivered to the application
+        /// </summary>
+        public RDFClearOperation Silent()
+        {
+            IsSilent = true;
+            return this;
+        }
+        #endregion
     }
-    #endregion
 }

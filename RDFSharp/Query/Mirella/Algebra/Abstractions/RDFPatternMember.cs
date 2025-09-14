@@ -17,45 +17,46 @@
 using System;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFPatternMember defines an object which can be member of a pattern
-/// </summary>
-public class RDFPatternMember : RDFExpressionArgument, IEquatable<RDFPatternMember>
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Unique identifier of the pattern member
+    /// RDFPatternMember defines an object which can be member of a pattern
     /// </summary>
-    public long PatternMemberID
-        => LazyPatternMemberID.Value;
+    public class RDFPatternMember : RDFExpressionArgument, IEquatable<RDFPatternMember>
+    {
+        #region Properties
+        /// <summary>
+        /// Unique identifier of the pattern member
+        /// </summary>
+        public long PatternMemberID
+            => LazyPatternMemberID.Value;
 
-    /// <summary>
-    /// Lazy evaluation of the pattern member identifier
-    /// </summary>
-    protected Lazy<long> LazyPatternMemberID;
-    #endregion
+        /// <summary>
+        /// Lazy evaluation of the pattern member identifier
+        /// </summary>
+        protected Lazy<long> LazyPatternMemberID;
+        #endregion
 
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the pattern member
-    /// </summary>
-    public override string ToString()
-        => string.Empty;
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the pattern member
+        /// </summary>
+        public override string ToString()
+            => string.Empty;
 
-    /// <summary>
-    /// Performs the equality comparison between two pattern members
-    /// </summary>
-    public bool Equals(RDFPatternMember other)
-        => other != null && PatternMemberID.Equals(other.PatternMemberID);
-    #endregion
+        /// <summary>
+        /// Performs the equality comparison between two pattern members
+        /// </summary>
+        public bool Equals(RDFPatternMember other)
+            => other != null && PatternMemberID.Equals(other.PatternMemberID);
+        #endregion
 
-    #region Ctors
-    /// <summary>
-    /// Builds a pattern member
-    /// </summary>
-    internal RDFPatternMember()
-        => LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
-    #endregion
+        #region Ctors
+        /// <summary>
+        /// Builds a pattern member
+        /// </summary>
+        internal RDFPatternMember()
+            => LazyPatternMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
+        #endregion
+    }
 }

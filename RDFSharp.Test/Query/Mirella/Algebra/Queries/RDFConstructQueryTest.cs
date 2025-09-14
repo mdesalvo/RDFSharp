@@ -156,7 +156,7 @@ public class RDFConstructQueryTest
                         .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?P"))
-                .Union());
+                .UnionWithNext());
         query.AddSubQuery(
             new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
@@ -1401,7 +1401,7 @@ public class RDFConstructQueryTest
                 Response.Create()
                     .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1425,7 +1425,7 @@ public class RDFConstructQueryTest
                 Response.Create()
                     .WithBody($"@prefix rdf: <{RDFVocabulary.RDF.BASE_URI}>.@base <{RDFNamespaceRegister.DefaultNamespace}>.<ex:flower> a <ex:plant>.", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1451,7 +1451,7 @@ public class RDFConstructQueryTest
                 Response.Create()
                     .WithBody("", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1479,7 +1479,7 @@ public class RDFConstructQueryTest
                 Response.Create()
                     .WithBody("", encoding: Encoding.UTF8)
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(300));
+                    .WithDelay(400));
 
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
@@ -1610,7 +1610,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToGraphAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
@@ -1631,7 +1631,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToGraphAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddTemplate(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
@@ -1663,7 +1663,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToStoreAsyncAndHaveResults()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddTemplate(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
@@ -1684,7 +1684,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToStoreAsyncAndNotHaveResults()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFConstructQuery query = new RDFConstructQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddTemplate(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
@@ -1716,7 +1716,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToFederationAsyncAndHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation();
         federation.AddGraph(graph);
         RDFConstructQuery query = new RDFConstructQuery()
@@ -1739,7 +1739,7 @@ public class RDFConstructQueryTest
     public async Task ShouldApplyConstructQueryToFederationAsyncAndNotHaveResults()
     {
         RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFFederation federation = new RDFFederation();
         federation.AddGraph(graph);
         RDFConstructQuery query = new RDFConstructQuery()

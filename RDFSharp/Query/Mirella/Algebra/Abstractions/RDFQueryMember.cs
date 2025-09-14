@@ -17,57 +17,58 @@
 using System;
 using RDFSharp.Model;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFQueryMember defines an object which can be member of a query
-/// </summary>
-public class RDFQueryMember : IEquatable<RDFQueryMember>
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Unique identifier of the query member
+    /// RDFQueryMember defines an object which can be member of a query
     /// </summary>
-    public long QueryMemberID => LazyQueryMemberID.Value;
-
-    /// <summary>
-    /// Lazy evaluation of the query member identifier
-    /// </summary>
-    protected readonly Lazy<long> LazyQueryMemberID;
-
-    /// <summary>
-    /// Unique identifier of the query member (string)
-    /// </summary>
-    internal string QueryMemberStringID { get; set;}
-
-    /// <summary>
-    /// Flag indicating that the query member is evaluable by the engine
-    /// </summary>
-    internal bool IsEvaluable { get; set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds a query member
-    /// </summary>
-    internal RDFQueryMember()
+    public class RDFQueryMember : IEquatable<RDFQueryMember>
     {
-        QueryMemberStringID = Guid.NewGuid().ToString("N");
-        LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(QueryMemberStringID));
+        #region Properties
+        /// <summary>
+        /// Unique identifier of the query member
+        /// </summary>
+        public long QueryMemberID => LazyQueryMemberID.Value;
+
+        /// <summary>
+        /// Lazy evaluation of the query member identifier
+        /// </summary>
+        protected readonly Lazy<long> LazyQueryMemberID;
+
+        /// <summary>
+        /// Unique identifier of the query member (string)
+        /// </summary>
+        internal string QueryMemberStringID { get; set;}
+
+        /// <summary>
+        /// Flag indicating that the query member is evaluable by the engine
+        /// </summary>
+        internal bool IsEvaluable { get; set; }
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Builds a query member
+        /// </summary>
+        internal RDFQueryMember()
+        {
+            QueryMemberStringID = Guid.NewGuid().ToString("N");
+            LazyQueryMemberID = new Lazy<long>(() => RDFModelUtilities.CreateHash(QueryMemberStringID));
+        }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the query member
+        /// </summary>
+        public override string ToString()
+            => string.Empty;
+
+        /// <summary>
+        /// Performs the equality comparison between two query members
+        /// </summary>
+        public bool Equals(RDFQueryMember other)
+            => other != null && QueryMemberID.Equals(other.QueryMemberID);
+        #endregion
     }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the query member
-    /// </summary>
-    public override string ToString()
-        => string.Empty;
-
-    /// <summary>
-    /// Performs the equality comparison between two query members
-    /// </summary>
-    public bool Equals(RDFQueryMember other)
-        => other != null && QueryMemberID.Equals(other.QueryMemberID);
-    #endregion
 }

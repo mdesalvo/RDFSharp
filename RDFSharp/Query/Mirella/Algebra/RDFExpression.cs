@@ -18,98 +18,99 @@ using RDFSharp.Model;
 using System.Collections.Generic;
 using System.Data;
 
-namespace RDFSharp.Query;
-
-/// <summary>
-/// RDFExpression represents an expression to be applied on a query results table.
-/// </summary>
-public abstract class RDFExpression : RDFExpressionArgument
+namespace RDFSharp.Query
 {
-    #region Properties
     /// <summary>
-    /// Represents the left argument given to the expression
+    /// RDFExpression represents an expression to be applied on a query results table.
     /// </summary>
-    public RDFExpressionArgument LeftArgument { get; internal set; }
-
-    /// <summary>
-    /// Represents the right argument given to the expression
-    /// </summary>
-    public RDFExpressionArgument RightArgument { get; internal set; }
-    #endregion
-
-    #region Ctors
-    /// <summary>
-    /// Builds an expression with given expression arguments
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    protected RDFExpression(RDFExpression leftArgument, RDFExpression rightArgument)
-        : this(leftArgument, rightArgument as RDFExpressionArgument) { }
-
-    /// <summary>
-    /// Builds an expression with given mixed arguments
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    protected RDFExpression(RDFExpression leftArgument, RDFPatternMember rightArgument)
-        : this(leftArgument, rightArgument as RDFExpressionArgument) { }
-
-    /// <summary>
-    /// Builds an expression with given mixed arguments
-    /// </summary>
-    /// <exception cref="RDFQueryException"></exception>
-    protected RDFExpression(RDFPatternMember leftArgument, RDFExpression rightArgument)
-        : this(leftArgument, rightArgument as RDFExpressionArgument) { }
-
-    /// <summary>
-    /// Builds an expression with given pattern member arguments
-    /// </summary>
-    /// <exception cref = "RDFQueryException" ></exception>
-    protected RDFExpression(RDFPatternMember leftArgument, RDFPatternMember rightArgument)
-        : this(leftArgument, rightArgument as RDFExpressionArgument) { }
-
-    /// <summary>
-    /// Internal-ctor to build an expression with given expression arguments
-    /// </summary>
-    /// <exception cref = "RDFQueryException" ></exception>
-    internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
+    public abstract class RDFExpression : RDFExpressionArgument
     {
-        #region Guards
-        bool isRandExpression = this is RDFRandExpression;
-        bool isBNodeExpression = this is RDFBNodeExpression;
-        bool isNowExpression = this is RDFNowExpression;
-        bool isUUIDExpression = this is RDFUUIDExpression;
-        bool isStrUUIDExpression = this is RDFStrUUIDExpression;
-        if (leftArgument == null && !isRandExpression && !isBNodeExpression && !isNowExpression && !isUUIDExpression && !isStrUUIDExpression)
-            throw new RDFQueryException("Cannot create expression because given \"leftArgument\" parameter is null");
+        #region Properties
+        /// <summary>
+        /// Represents the left argument given to the expression
+        /// </summary>
+        public RDFExpressionArgument LeftArgument { get; internal set; }
+
+        /// <summary>
+        /// Represents the right argument given to the expression
+        /// </summary>
+        public RDFExpressionArgument RightArgument { get; internal set; }
         #endregion
 
-        LeftArgument = leftArgument;
-        RightArgument = rightArgument;
+        #region Ctors
+        /// <summary>
+        /// Builds an expression with given expression arguments
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        protected RDFExpression(RDFExpression leftArgument, RDFExpression rightArgument)
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Builds an expression with given mixed arguments
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        protected RDFExpression(RDFExpression leftArgument, RDFPatternMember rightArgument)
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Builds an expression with given mixed arguments
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        protected RDFExpression(RDFPatternMember leftArgument, RDFExpression rightArgument)
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Builds an expression with given pattern member arguments
+        /// </summary>
+        /// <exception cref = "RDFQueryException" ></exception>
+        protected RDFExpression(RDFPatternMember leftArgument, RDFPatternMember rightArgument)
+            : this(leftArgument, rightArgument as RDFExpressionArgument) { }
+
+        /// <summary>
+        /// Internal-ctor to build an expression with given expression arguments
+        /// </summary>
+        /// <exception cref = "RDFQueryException" ></exception>
+        internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
+        {
+            #region Guards
+            bool isRandExpression = this is RDFRandExpression;
+            bool isBNodeExpression = this is RDFBNodeExpression;
+            bool isNowExpression = this is RDFNowExpression;
+            bool isUUIDExpression = this is RDFUUIDExpression;
+            bool isStrUUIDExpression = this is RDFStrUUIDExpression;
+            if (leftArgument == null && !isRandExpression && !isBNodeExpression && !isNowExpression && !isUUIDExpression && !isStrUUIDExpression)
+                throw new RDFQueryException("Cannot create expression because given \"leftArgument\" parameter is null");
+            #endregion
+
+            LeftArgument = leftArgument;
+            RightArgument = rightArgument;
+        }
+
+        /// <summary>
+        /// Internal-ctor to build an expression without arguments (e.g: RAND)
+        /// </summary>
+        internal RDFExpression() { }
+        #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// Gives the string representation of the expression
+        /// </summary>
+        public override string ToString()
+            => ToString(RDFModelUtilities.EmptyNamespaceList);
+        internal abstract string ToString(List<RDFNamespace> prefixes);
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Applies the expression on the given datarow
+        /// </summary>
+        internal abstract RDFPatternMember ApplyExpression(DataRow row);
+        #endregion
     }
 
     /// <summary>
-    /// Internal-ctor to build an expression without arguments (e.g: RAND)
+    /// RDFExpressionArgument represents an argument given to an expression
     /// </summary>
-    internal RDFExpression() { }
-    #endregion
-
-    #region Interfaces
-    /// <summary>
-    /// Gives the string representation of the expression
-    /// </summary>
-    public override string ToString()
-        => ToString(RDFModelUtilities.EmptyNamespaceList);
-    internal abstract string ToString(List<RDFNamespace> prefixes);
-    #endregion
-
-    #region Methods
-    /// <summary>
-    /// Applies the expression on the given datarow
-    /// </summary>
-    internal abstract RDFPatternMember ApplyExpression(DataRow row);
-    #endregion
+    public class RDFExpressionArgument { }
 }
-
-/// <summary>
-/// RDFExpressionArgument represents an argument given to an expression
-/// </summary>
-public class RDFExpressionArgument;
