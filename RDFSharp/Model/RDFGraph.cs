@@ -261,7 +261,6 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     /// Selects the triples which satisfy the given combination of SPOL accessors<br/>
     /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
-    /// <exception cref="RDFModelException"></exception>
     public List<RDFTriple> SelectTriples(RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
     {
         #region Guards
