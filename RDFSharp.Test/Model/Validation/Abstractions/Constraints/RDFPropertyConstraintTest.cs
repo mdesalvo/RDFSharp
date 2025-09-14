@@ -48,9 +48,9 @@ public class RDFPropertyConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.PROPERTY.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFResource("ex:PropertyShapeConstraint").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.PROPERTY.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFResource("ex:PropertyShapeConstraint").PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE

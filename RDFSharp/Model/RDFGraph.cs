@@ -57,9 +57,9 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             Dictionary<long, RDFLiteral> literals = (Dictionary<long, RDFLiteral>)Triples.ExtendedProperties["LIT"]!;
             foreach (DataRow triple in Triples.Rows)
             {
-                yield return triple.Field<byte>("TFV") == 1
-                    ? new RDFTriple(resources[triple.Field<long>("SID")], resources[triple.Field<long>("PID")], resources[triple.Field<long>("OID")])
-                    : new RDFTriple(resources[triple.Field<long>("SID")], resources[triple.Field<long>("PID")], literals[triple.Field<long>("OID")]);
+                yield return triple.Field<byte>("?TFV") == 1
+                    ? new RDFTriple(resources[triple.Field<long>("?SID")], resources[triple.Field<long>("?PID")], resources[triple.Field<long>("?OID")])
+                    : new RDFTriple(resources[triple.Field<long>("?SID")], resources[triple.Field<long>("?PID")], literals[triple.Field<long>("?OID")]);
             }
         }
     }
@@ -83,12 +83,12 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     {
         Context = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
         Triples = new DataTable();
-        Triples.Columns.Add("TID", typeof(long));
-        Triples.Columns.Add("SID", typeof(long));
-        Triples.Columns.Add("PID", typeof(long));
-        Triples.Columns.Add("OID", typeof(long));
-        Triples.Columns.Add("TFV", typeof(byte));
-        Triples.PrimaryKey = [Triples.Columns["TID"]];
+        Triples.Columns.Add("?TID", typeof(long));
+        Triples.Columns.Add("?SID", typeof(long));
+        Triples.Columns.Add("?PID", typeof(long));
+        Triples.Columns.Add("?OID", typeof(long));
+        Triples.Columns.Add("?TFV", typeof(byte));
+        Triples.PrimaryKey = [Triples.Columns["?TID"]];
         Triples.ExtendedProperties.Add("RES", new Dictionary<long, RDFResource>());
         Triples.ExtendedProperties.Add("LIT", new Dictionary<long, RDFLiteral>());
     }
@@ -195,11 +195,11 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
             //Merge the given triple into the table
             DataRow addRow = Triples.NewRow();
-            addRow["TID"] = triple.TripleID;
-            addRow["SID"] = triple.Subject.PatternMemberID;
-            addRow["PID"] = triple.Predicate.PatternMemberID;
-            addRow["OID"] = triple.Object.PatternMemberID;
-            addRow["TFV"] = triple.TripleFlavor;
+            addRow["?TID"] = triple.TripleID;
+            addRow["?SID"] = triple.Subject.PatternMemberID;
+            addRow["?PID"] = triple.Predicate.PatternMemberID;
+            addRow["?OID"] = triple.Object.PatternMemberID;
+            addRow["?TFV"] = triple.TripleFlavor;
             Triples.Rows.Add(addRow);
 
             //Update metadata with elements of the given triple
@@ -271,18 +271,18 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             Triples.Rows.Remove(delRow);
 
             //Update metadata with elements from the given triple
-            if (Triples.Select($"SID = {triple.Subject.PatternMemberID} OR PID = {triple.Subject.PatternMemberID} OR (OID = {triple.Subject.PatternMemberID} AND TFV = 1)").Length == 0)
+            if (Triples.Select($"[?SID] = {triple.Subject.PatternMemberID} OR [?PID] = {triple.Subject.PatternMemberID} OR ([?OID] = {triple.Subject.PatternMemberID} AND [?TFV] = 1)").Length == 0)
                 ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"])!.Remove(triple.Subject.PatternMemberID);
-            if (Triples.Select($"SID = {triple.Predicate.PatternMemberID} OR PID = {triple.Predicate.PatternMemberID} OR (OID = {triple.Predicate.PatternMemberID} AND TFV = 1)").Length == 0)
+            if (Triples.Select($"[?SID] = {triple.Predicate.PatternMemberID} OR [?PID] = {triple.Predicate.PatternMemberID} OR ([?OID] = {triple.Predicate.PatternMemberID} AND [?TFV] = 1)").Length == 0)
                 ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"])!.Remove(triple.Predicate.PatternMemberID);
             switch (triple.TripleFlavor)
             {
                 case RDFModelEnums.RDFTripleFlavors.SPO:
-                    if (Triples.Select($"SID = {triple.Object.PatternMemberID} OR PID = {triple.Object.PatternMemberID} OR (OID = {triple.Object.PatternMemberID} AND TFV = 1)").Length == 0)
+                    if (Triples.Select($"[?SID] = {triple.Object.PatternMemberID} OR [?PID] = {triple.Object.PatternMemberID} OR ([?OID] = {triple.Object.PatternMemberID} AND [?TFV] = 1)").Length == 0)
                         ((Dictionary<long, RDFResource>)Triples.ExtendedProperties["RES"])!.Remove(triple.Object.PatternMemberID);
                     break;
                 case RDFModelEnums.RDFTripleFlavors.SPL:
-                    if (Triples.Select($"OID = {triple.Object.PatternMemberID} AND TFV = 2").Length == 0)
+                    if (Triples.Select($"[?OID] = {triple.Object.PatternMemberID} AND [?TFV] = 2").Length == 0)
                         ((Dictionary<long, RDFLiteral>)Triples.ExtendedProperties["LIT"])!.Remove(triple.Object.PatternMemberID);
                     break;
             }
@@ -341,17 +341,17 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         if (l != null) queryFilters.Append('L');
         DataRow[] selectedTriples = queryFilters.ToString() switch
         {
-            "S"   => Triples.Select($"SID = {s!.PatternMemberID}"),
-            "P"   => Triples.Select($"PID = {p!.PatternMemberID}"),
-            "O"   => Triples.Select($"OID = {o!.PatternMemberID} AND TFV = 1"),
-            "L"   => Triples.Select($"OID = {l!.PatternMemberID} AND TFV = 2"),
-            "SP"  => Triples.Select($"SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID}"),
-            "SO"  => Triples.Select($"SID = {s!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "SL"  => Triples.Select($"SID = {s!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "PO"  => Triples.Select($"PID = {p!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "PL"  => Triples.Select($"PID = {p!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "SPO" => Triples.Select($"SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "SPL" => Triples.Select($"SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
+            "S"   => Triples.Select($"[?SID] = {s!.PatternMemberID}"),
+            "P"   => Triples.Select($"[?PID] = {p!.PatternMemberID}"),
+            "O"   => Triples.Select($"[?OID] = {o!.PatternMemberID} AND [?TFV] = 1"),
+            "L"   => Triples.Select($"[?OID] = {l!.PatternMemberID} AND [?TFV] = 2"),
+            "SP"  => Triples.Select($"[?SID] = {s!.PatternMemberID} AND [?PID] = {p!.PatternMemberID}"),
+            "SO"  => Triples.Select($"[?SID] = {s!.PatternMemberID} AND [?OID] = {o!.PatternMemberID} AND [?TFV] = 1"),
+            "SL"  => Triples.Select($"[?SID] = {s!.PatternMemberID} AND [?OID] = {l!.PatternMemberID} AND [?TFV] = 2"),
+            "PO"  => Triples.Select($"[?PID] = {p!.PatternMemberID} AND [?OID] = {o!.PatternMemberID} AND [?TFV] = 1"),
+            "PL"  => Triples.Select($"[?PID] = {p!.PatternMemberID} AND [?OID] = {l!.PatternMemberID} AND [?TFV] = 2"),
+            "SPO" => Triples.Select($"[?SID] = {s!.PatternMemberID} AND [?PID] = {p!.PatternMemberID} AND [?OID] = {o!.PatternMemberID} AND [?TFV] = 1"),
+            "SPL" => Triples.Select($"[?SID] = {s!.PatternMemberID} AND [?PID] = {p!.PatternMemberID} AND [?OID] = {l!.PatternMemberID} AND [?TFV] = 2"),
             _     => [.. Triples.Rows.Cast<DataRow>()]
         };
 
@@ -359,16 +359,16 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         List<RDFTriple> result = new List<RDFTriple>(selectedTriples.Length);
         foreach (DataRow selectedTriple in selectedTriples)
         {
-            RDFResource subj = resources[selectedTriple.Field<long>("SID")];
-            RDFResource pred = resources[selectedTriple.Field<long>("PID")];
-            switch (selectedTriple.Field<byte>("TFV"))
+            RDFResource subj = resources[selectedTriple.Field<long>("?SID")];
+            RDFResource pred = resources[selectedTriple.Field<long>("?PID")];
+            switch (selectedTriple.Field<byte>("?TFV"))
             {
                 case 1: //SPO
-                    RDFResource obj = resources[selectedTriple.Field<long>("OID")];
+                    RDFResource obj = resources[selectedTriple.Field<long>("?OID")];
                     result.Add(new RDFTriple(subj, pred, obj));
                     break;
                 case 2: //SPL
-                    RDFLiteral lit = literals[selectedTriple.Field<long>("OID")];
+                    RDFLiteral lit = literals[selectedTriple.Field<long>("?OID")];
                     result.Add(new RDFTriple(subj, pred, lit));
                     break;
             }

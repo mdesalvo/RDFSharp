@@ -47,9 +47,9 @@ public class RDFHasValueConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.HAS_VALUE.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFResource("ex:value").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.HAS_VALUE.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFResource("ex:value").PatternMemberID)));
     }
 
     [TestMethod]
@@ -73,9 +73,9 @@ public class RDFHasValueConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.HAS_VALUE.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFPlainLiteral("value").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.HAS_VALUE.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFPlainLiteral("value").PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE

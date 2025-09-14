@@ -52,9 +52,9 @@ public class RDFMaxLengthConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.MAX_LENGTH.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.MAX_LENGTH.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE

@@ -66,15 +66,15 @@ public class RDFQualifiedValueShapeConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(3, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFResource("ex:QVShape").PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(RDFTypedLiteral.One.PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFResource("ex:QVShape").PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(RDFTypedLiteral.One.PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE

@@ -48,12 +48,12 @@ public class RDFPatternConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(2, graph.TriplesCount);
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.PATTERN.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFTypedLiteral("^test$", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
-        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Field<long>("PID").Equals(RDFVocabulary.SHACL.FLAGS.PatternMemberID)
-                                                    && t.Field<long>("OID").Equals(new RDFTypedLiteral("ismx", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.PATTERN.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFTypedLiteral("^test$", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
+        Assert.IsTrue(graph.Triples.AsEnumerable().Any(t => t.Field<long>("?SID").Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Field<long>("?PID").Equals(RDFVocabulary.SHACL.FLAGS.PatternMemberID)
+                                                    && t.Field<long>("?OID").Equals(new RDFTypedLiteral("ismx", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
     }
 
     //NS-CONFORMS: TRUE
