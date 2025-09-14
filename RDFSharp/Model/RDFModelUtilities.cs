@@ -544,6 +544,110 @@ namespace RDFSharp.Model
         #endregion
 
         #region Datatypes
+        private readonly struct DateTimeFormatPair
+        {
+            internal readonly string InputFormat;
+            internal readonly string OutputFormat;
+
+            public DateTimeFormatPair(string inputFormat, string outputFormat)
+            {
+                InputFormat = inputFormat;
+                OutputFormat = outputFormat;
+            }
+        }
+        private static readonly DateTimeFormatPair[] SupportedDateTimeFormats = {
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ssZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.f", "yyyy-MM-ddTHH:mm:ss.fZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ff", "yyyy-MM-ddTHH:mm:ss.ffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fff", "yyyy-MM-ddTHH:mm:ss.fffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffff", "yyyy-MM-ddTHH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffff", "yyyy-MM-ddTHH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffff", "yyyy-MM-ddTHH:mm:ss.ffffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedDateTimeStampFormats = {
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ"),
+            new DateTimeFormatPair("yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedDateFormats = {
+            new DateTimeFormatPair("yyyy-MM-dd", "yyyy-MM-ddZ"),
+            new DateTimeFormatPair("yyyy-MM-ddZ", "yyyy-MM-ddZ"),
+            new DateTimeFormatPair("yyyy-MM-ddzzz", "yyyy-MM-ddZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedTimeFormats = {
+            new DateTimeFormatPair("HH:mm:ss", "HH:mm:ssZ"),
+            new DateTimeFormatPair("HH:mm:ssZ", "HH:mm:ssZ"),
+            new DateTimeFormatPair("HH:mm:sszzz", "HH:mm:ssZ"),
+            new DateTimeFormatPair("HH:mm:ss.f", "HH:mm:ss.fZ"),
+            new DateTimeFormatPair("HH:mm:ss.fZ", "HH:mm:ss.fZ"),
+            new DateTimeFormatPair("HH:mm:ss.fzzz", "HH:mm:ss.fZ"),
+            new DateTimeFormatPair("HH:mm:ss.ff", "HH:mm:ss.ffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffZ", "HH:mm:ss.ffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffzzz", "HH:mm:ss.ffZ"),
+            new DateTimeFormatPair("HH:mm:ss.fff", "HH:mm:ss.fffZ"),
+            new DateTimeFormatPair("HH:mm:ss.fffZ", "HH:mm:ss.fffZ"),
+            new DateTimeFormatPair("HH:mm:ss.fffzzz", "HH:mm:ss.fffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffff", "HH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffffZ", "HH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffffzzz", "HH:mm:ss.ffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.fffff", "HH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.fffffZ", "HH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.fffffzzz", "HH:mm:ss.fffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffffff", "HH:mm:ss.ffffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffffffZ", "HH:mm:ss.ffffffZ"),
+            new DateTimeFormatPair("HH:mm:ss.ffffffzzz", "HH:mm:ss.ffffffZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedGMonthDayFormats = {
+            new DateTimeFormatPair("--MM-dd", "--MM-ddZ"),
+            new DateTimeFormatPair("--MM-ddZ", "--MM-ddZ"),
+            new DateTimeFormatPair("--MM-ddzzz", "--MM-ddZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedGYearMonthFormats = {
+            new DateTimeFormatPair("yyyy-MM", "yyyy-MMZ"),
+            new DateTimeFormatPair("yyyy-MMZ", "yyyy-MMZ"),
+            new DateTimeFormatPair("yyyy-MMzzz", "yyyy-MMZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedGYearFormats = {
+            new DateTimeFormatPair("yyyy", "yyyyZ"),
+            new DateTimeFormatPair("yyyyZ", "yyyyZ"),
+            new DateTimeFormatPair("yyyyzzz", "yyyyZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedGMonthFormats = {
+            new DateTimeFormatPair("--MM", "--MMZ"),
+            new DateTimeFormatPair("--MMZ", "--MMZ"),
+            new DateTimeFormatPair("--MMzzz", "--MMZ")
+        };
+        private static readonly DateTimeFormatPair[] SupportedGDayFormats = {
+            new DateTimeFormatPair("---dd", "---ddZ"),
+            new DateTimeFormatPair("---ddZ", "---ddZ"),
+            new DateTimeFormatPair("---ddzzz", "---ddZ")
+        };
+        
         /// <summary>
         /// Gives the string representation of the given datatype
         /// </summary>
@@ -572,11 +676,17 @@ namespace RDFSharp.Model
         {
             //Tries to parse the given value into a DateTime having exactly the specified input/output formats.
             //RDFSharp datetime-based typed literals are automatically converted in UTC timezone (Z)
-            (bool,string) TryParseDateTime(string value, string formatToParse, string formatToConvert)
+            (bool, string) TryParseDateTime(string value, DateTimeFormatPair[] datetimeFormatPairs)
             {
-                return DateTime.TryParseExact(value, formatToParse, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime)
-                    ? (true, parsedDateTime.ToString(formatToConvert, CultureInfo.InvariantCulture))
-                    : (false, literalValue);
+                foreach (DateTimeFormatPair formatPair in datetimeFormatPairs)
+                {
+                    (bool, string) result = DateTime.TryParseExact(value, formatPair.InputFormat, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime)
+                        ? (true, parsedDateTime.ToString(formatPair.OutputFormat, CultureInfo.InvariantCulture))
+                        : (false, value);
+                    if (result.Item1)
+                        return result;
+                }
+                return (false, value);
             }
 
             switch (datatype)
@@ -714,105 +824,31 @@ namespace RDFSharp.Model
 
                 #region DATETIME CATEGORY
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
-                    (bool,string) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ssZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.f", "yyyy-MM-ddTHH:mm:ss.fZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ff", "yyyy-MM-ddTHH:mm:ss.ffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fff", "yyyy-MM-ddTHH:mm:ss.fffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffff", "yyyy-MM-ddTHH:mm:ss.ffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffff", "yyyy-MM-ddTHH:mm:ss.fffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffff", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
-                    if (!isValidDateTime.Item1) isValidDateTime = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
-                    return isValidDateTime;
+                    return TryParseDateTime(literalValue, SupportedDateTimeFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP:
-                    (bool,string) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ssZ", "yyyy-MM-ddTHH:mm:ssZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ssZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fZ", "yyyy-MM-ddTHH:mm:ss.fZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fzzz", "yyyy-MM-ddTHH:mm:ss.fZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffZ", "yyyy-MM-ddTHH:mm:ss.ffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffzzz", "yyyy-MM-ddTHH:mm:ss.ffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffZ", "yyyy-MM-ddTHH:mm:ss.fffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffzzz", "yyyy-MM-ddTHH:mm:ss.fffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffZ", "yyyy-MM-ddTHH:mm:ss.ffffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffZ", "yyyy-MM-ddTHH:mm:ss.fffffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.fffffzzz", "yyyy-MM-ddTHH:mm:ss.fffffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffZ", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
-                    if (!isValidDateTimeStamp.Item1) isValidDateTimeStamp = TryParseDateTime(literalValue, "yyyy-MM-ddTHH:mm:ss.ffffffzzz", "yyyy-MM-ddTHH:mm:ss.ffffffZ");
-                    return isValidDateTimeStamp;
+                    return TryParseDateTime(literalValue, SupportedDateTimeStampFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
-                    (bool,string) isValidDate = TryParseDateTime(literalValue, "yyyy-MM-dd", "yyyy-MM-ddZ");
-                    if (!isValidDate.Item1) isValidDate = TryParseDateTime(literalValue, "yyyy-MM-ddZ", "yyyy-MM-ddZ");
-                    if (!isValidDate.Item1) isValidDate = TryParseDateTime(literalValue, "yyyy-MM-ddzzz", "yyyy-MM-ddZ");
-                    return isValidDate;
+                    return TryParseDateTime(literalValue, SupportedDateFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_TIME:
-                    (bool,string) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss", "HH:mm:ssZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ssZ", "HH:mm:ssZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:sszzz", "HH:mm:ssZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.f", "HH:mm:ss.fZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fZ", "HH:mm:ss.fZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fzzz", "HH:mm:ss.fZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ff", "HH:mm:ss.ffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffZ", "HH:mm:ss.ffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffzzz", "HH:mm:ss.ffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fff", "HH:mm:ss.fffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fffZ", "HH:mm:ss.fffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fffzzz", "HH:mm:ss.fffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffff", "HH:mm:ss.ffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffZ", "HH:mm:ss.ffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffzzz", "HH:mm:ss.ffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fffff", "HH:mm:ss.fffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fffffZ", "HH:mm:ss.fffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.fffffzzz", "HH:mm:ss.fffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffff", "HH:mm:ss.ffffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffffZ", "HH:mm:ss.ffffffZ");
-                    if (!isValidTime.Item1) isValidTime = TryParseDateTime(literalValue, "HH:mm:ss.ffffffzzz", "HH:mm:ss.ffffffZ");
-                    return isValidTime;
+                    return TryParseDateTime(literalValue, SupportedTimeFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
-                    (bool,string) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-dd", "--MM-ddZ");
-                    if (!isValidGMonthDay.Item1) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-ddZ", "--MM-ddZ");
-                    if (!isValidGMonthDay.Item1) isValidGMonthDay = TryParseDateTime(literalValue, "--MM-ddzzz", "--MM-ddZ");
-                    return isValidGMonthDay;
+                    return TryParseDateTime(literalValue, SupportedGMonthDayFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
-                    (bool,string) isValidGYearMonth = TryParseDateTime(literalValue, "yyyy-MM", "yyyy-MMZ");
-                    if (!isValidGYearMonth.Item1) isValidGYearMonth = TryParseDateTime(literalValue, "yyyy-MMZ", "yyyy-MMZ");
-                    if (!isValidGYearMonth.Item1) isValidGYearMonth = TryParseDateTime(literalValue, "yyyy-MMzzz", "yyyy-MMZ");
-                    return isValidGYearMonth;
+                    return TryParseDateTime(literalValue, SupportedGYearMonthFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
-                    (bool,string) isValidGYear = TryParseDateTime(literalValue, "yyyy", "yyyyZ");
-                    if (!isValidGYear.Item1) isValidGYear = TryParseDateTime(literalValue, "yyyyZ", "yyyyZ");
-                    if (!isValidGYear.Item1) isValidGYear = TryParseDateTime(literalValue, "yyyyzzz", "yyyyZ");
-                    return isValidGYear;
+                    return TryParseDateTime(literalValue, SupportedGYearFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
-                    (bool,string) isValidGMonth = TryParseDateTime(literalValue, "--MM", "--MMZ");
-                    if (!isValidGMonth.Item1) isValidGMonth = TryParseDateTime(literalValue, "--MMZ", "--MMZ");
-                    if (!isValidGMonth.Item1) isValidGMonth = TryParseDateTime(literalValue, "--MMzzz", "--MMZ");
-                    return isValidGMonth;
+                    return TryParseDateTime(literalValue, SupportedGMonthFormats);
 
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
-                    (bool,string) isValidGDay = TryParseDateTime(literalValue, "---dd", "---ddZ");
-                    if (!isValidGDay.Item1) isValidGDay = TryParseDateTime(literalValue, "---ddZ", "---ddZ");
-                    if (!isValidGDay.Item1) isValidGDay = TryParseDateTime(literalValue, "---ddzzz", "---ddZ");
-                    return isValidGDay;
+                    return TryParseDateTime(literalValue, SupportedGDayFormats);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
                     return (RDFShims.TimeGeneralDayRegex.Value.IsMatch(literalValue), literalValue);
