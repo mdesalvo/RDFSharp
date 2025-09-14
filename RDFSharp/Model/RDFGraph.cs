@@ -344,14 +344,14 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             "S"   => Triples.Select($"?SID == {s!.PatternMemberID}"),
             "P"   => Triples.Select($"?PID == {p!.PatternMemberID}"),
             "O"   => Triples.Select($"?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "L"   => Triples.Select($"?OID == {l!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
+            "L"   => Triples.Select($"?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
             "SP"  => Triples.Select($"?SID == {s!.PatternMemberID} AND ?PID == {p!.PatternMemberID}"),
             "SO"  => Triples.Select($"?SID == {s!.PatternMemberID} AND ?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "SL"  => Triples.Select($"?SID == {s!.PatternMemberID} AND ?OID == {l!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
+            "SL"  => Triples.Select($"?SID == {s!.PatternMemberID} AND ?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
             "PO"  => Triples.Select($"?PID == {p!.PatternMemberID} AND ?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "PL"  => Triples.Select($"?PID == {p!.PatternMemberID} AND ?OID == {l!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
+            "PL"  => Triples.Select($"?PID == {p!.PatternMemberID} AND ?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
             "SPO" => Triples.Select($"?SID == {s!.PatternMemberID} AND ?PID == {p!.PatternMemberID} AND ?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "SPL" => Triples.Select($"?SID == {s!.PatternMemberID} AND ?PID == {p!.PatternMemberID} AND ?OID == {l!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
+            "SPL" => Triples.Select($"?SID == {s!.PatternMemberID} AND ?PID == {p!.PatternMemberID} AND ?OID == {o!.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
             _     => [.. Triples.Rows.Cast<DataRow>()]
         };
 
