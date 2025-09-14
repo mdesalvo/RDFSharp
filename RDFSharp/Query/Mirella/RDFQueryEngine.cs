@@ -671,10 +671,10 @@ internal class RDFQueryEngine
     {
         #region Utilities
         RDFGraph QueryGraph(RDFGraph dsGraph)
-            => dsGraph[l: describeLiteral];
+            => dsGraph[null, null, null, describeLiteral];
 
         RDFMemoryStore QueryStore(RDFStore dsStore)
-            => dsStore[l: describeLiteral];
+            => dsStore[null, null, null, null, describeLiteral];
 
         RDFSelectQuery BuildFederationOrSPARQLEndpointQuery()
             => new RDFSelectQuery()
