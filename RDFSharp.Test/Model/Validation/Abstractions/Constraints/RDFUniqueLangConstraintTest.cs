@@ -48,13 +48,13 @@ public class RDFUniqueLangConstraintTest
         Assert.AreEqual(1, graph.TriplesCount);
         if (uniqueLang)
         {
-            Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+            Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                                 && t.Value.pid.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
                                                                 && t.Value.oid.Equals(RDFTypedLiteral.True.PatternMemberID)));
         }
         else
         {
-            Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+            Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                                 && t.Value.pid.Equals(RDFVocabulary.SHACL.UNIQUE_LANG.PatternMemberID)
                                                                 && t.Value.oid.Equals(RDFTypedLiteral.False.PatternMemberID)));
         }

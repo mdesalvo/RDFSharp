@@ -59,16 +59,16 @@ public class RDFClosedConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(5, graph.TriplesCount);
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.CLOSED.PatternMemberID)
                                                     && t.Value.oid.Equals(RDFTypedLiteral.True.PatternMemberID)));
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.IGNORED_PROPERTIES.PatternMemberID)));
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.TYPE.PatternMemberID)
                                                     && t.Value.oid.Equals(RDFVocabulary.RDF.LIST.PatternMemberID)));
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.FIRST.PatternMemberID)
                                                     && t.Value.oid.Equals(RDFVocabulary.FOAF.KNOWS.PatternMemberID)));
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.pid.Equals(RDFVocabulary.RDF.REST.PatternMemberID)
                                                     && t.Value.oid.Equals(RDFVocabulary.RDF.NIL.PatternMemberID)));
     }
 

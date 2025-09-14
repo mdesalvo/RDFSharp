@@ -286,13 +286,13 @@ public class RDFContainerTest
         switch (containerType)
         {
             case RDFModelEnums.RDFContainerTypes.Alt:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT)));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT).TripleID));
                 break;
             case RDFModelEnums.RDFContainerTypes.Bag:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG)));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG).TripleID));
                 break;
             case RDFModelEnums.RDFContainerTypes.Seq:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ)));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ).TripleID));
                 break;
         }
     }
@@ -324,24 +324,24 @@ public class RDFContainerTest
         switch (containerType)
         {
             case RDFModelEnums.RDFContainerTypes.Alt:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT)));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT).TripleID));
                 break;
             case RDFModelEnums.RDFContainerTypes.Bag:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG)));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.BAG).TripleID));
                 break;
             case RDFModelEnums.RDFContainerTypes.Seq:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ)));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.SEQ).TripleID));
                 break;
         }
         switch (itemType)
         {
             case RDFModelEnums.RDFItemTypes.Literal:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_1"), new RDFPlainLiteral("lit1"))));
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_2"), new RDFPlainLiteral("lit2"))));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_1"), new RDFPlainLiteral("lit1")).TripleID));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_2"), new RDFPlainLiteral("lit2")).TripleID));
                 break;
             case RDFModelEnums.RDFItemTypes.Resource:
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_1"), new RDFResource("http://item1/"))));
-                Assert.IsTrue(graph.ContainsTriple(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_2"), new RDFResource("http://item2/"))));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_1"), new RDFResource("http://item1/")).TripleID));
+                Assert.IsTrue(graph.Index.Hashes.ContainsKey(new RDFTriple(cont.ReificationSubject, new RDFResource($"{RDFVocabulary.RDF.BASE_URI}_2"), new RDFResource("http://item2/")).TripleID));
                 break;
         }
     }

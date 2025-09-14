@@ -46,7 +46,7 @@ public class RDFMinInclusiveConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.MIN_INCLUSIVE.PatternMemberID)
                                                     && t.Value.oid.Equals(new RDFResource("ex:value").PatternMemberID)));
     }
@@ -72,7 +72,7 @@ public class RDFMinInclusiveConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.MIN_INCLUSIVE.PatternMemberID)
                                                     && t.Value.oid.Equals(new RDFPlainLiteral("value").PatternMemberID)));
     }

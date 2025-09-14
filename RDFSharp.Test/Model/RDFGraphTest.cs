@@ -35,20 +35,15 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
 
         Assert.IsNotNull(graph);
-        Assert.IsNotNull(graph.Triples);
+        Assert.IsNotNull(graph.Index);
+        Assert.IsNotNull(graph.Index.Hashes);
         Assert.AreEqual(0, graph.TriplesCount);
-        Assert.AreEqual(5, graph.Triples.Columns.Count);
-        Assert.IsTrue(graph.Triples.Columns.Contains("?TID"));
-        Assert.IsTrue(graph.Triples.Columns.Contains("?SID"));
-        Assert.IsTrue(graph.Triples.Columns.Contains("?PID"));
-        Assert.IsTrue(graph.Triples.Columns.Contains("?OID"));
-        Assert.IsTrue(graph.Triples.Columns.Contains("?TFV"));
-        Assert.IsNotNull(graph.Triples.PrimaryKey);
-        Assert.AreEqual("?TID", graph.Triples.PrimaryKey[0].ColumnName);
-        Assert.IsNotNull(graph.Triples.ExtendedProperties["RES"]);
-        Assert.IsNotNull(graph.Triples.ExtendedProperties["LIT"]);
-        Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!);
-        Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["LIT"]!);
+        Assert.IsEmpty(graph.Index.Resources);
+        Assert.IsEmpty(graph.Index.Literals);
+        Assert.IsEmpty(graph.Index.IDXSubjects);
+        Assert.IsEmpty(graph.Index.IDXPredicates);
+        Assert.IsEmpty(graph.Index.IDXObjects);
+        Assert.IsEmpty(graph.Index.IDXLiterals);
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
 
@@ -71,14 +66,15 @@ public class RDFGraphTest
         ]);
 
         Assert.IsNotNull(graph);
-        Assert.IsNotNull(graph.Triples);
+        Assert.IsNotNull(graph.Index);
+        Assert.IsNotNull(graph.Index.Hashes);
         Assert.AreEqual(2, graph.TriplesCount);
-        Assert.HasCount(3, (Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!);
-        Assert.IsTrue(((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!).ContainsKey(new RDFResource("http://subj/").PatternMemberID));
-        Assert.IsTrue(((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!).ContainsKey(new RDFResource("http://pred/").PatternMemberID));
-        Assert.IsTrue(((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!).ContainsKey(new RDFResource("http://obj/").PatternMemberID));
-        Assert.HasCount(1, (Dictionary<long, RDFLiteral>)graph.Triples.ExtendedProperties["LIT"]!);
-        Assert.IsTrue(((Dictionary<long, RDFLiteral>)graph.Triples.ExtendedProperties["LIT"]!).ContainsKey(new RDFPlainLiteral("lit").PatternMemberID));
+        Assert.HasCount(3, graph.Index.Resources);
+        Assert.HasCount(1, graph.Index.Literals);
+        Assert.HasCount(1, graph.Index.IDXSubjects);
+        Assert.HasCount(1, graph.Index.IDXPredicates);
+        Assert.HasCount(1, graph.Index.IDXObjects);
+        Assert.HasCount(1, graph.Index.IDXLiterals);
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
     }
@@ -87,17 +83,15 @@ public class RDFGraphTest
     public void ShouldDisposeGraphWithUsing()
     {
         RDFGraph graph;
-        using (graph = new RDFGraph(
-        [
-           new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
-           new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
-        ]))
+        using (graph = new RDFGraph([
+                   new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+                   new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit")) ]))
         {
             Assert.IsFalse(graph.Disposed);
-            Assert.IsNotNull(graph.Triples);
+            Assert.IsNotNull(graph.Index);
         }
         Assert.IsTrue(graph.Disposed);
-        Assert.IsNull(graph.Triples);
+        Assert.IsNull(graph.Index);
     }
 
     [TestMethod]
@@ -152,7 +146,8 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
         ]);
 
-        Assert.AreEqual(2, graph.Count());
+        int i = graph.Count();
+        Assert.AreEqual(2, i);
 
         int j = 0;
         IEnumerator<RDFTriple> triplesEnumerator = graph.TriplesEnumerator;
@@ -199,7 +194,7 @@ public class RDFGraphTest
     {
         RDFGraph graphA = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
         RDFGraph graphB = new RDFGraph().AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")))
-                                        .AddTriple(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")));
+            .AddTriple(new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/")));
 
         Assert.IsFalse(graphA.Equals(graphB));
     }
@@ -221,7 +216,7 @@ public class RDFGraphTest
         graph.AddTriple(triple);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -232,7 +227,7 @@ public class RDFGraphTest
         graph.AddTriple(triple).AddTriple(triple);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -336,8 +331,7 @@ public class RDFGraphTest
         graph.RemoveTriple(triple2);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple1.TripleID));
-        Assert.IsNull(graph.Triples.Rows.Find(triple2.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple1.TripleID));
     }
 
     [TestMethod]
@@ -349,7 +343,7 @@ public class RDFGraphTest
         graph.RemoveTriple(null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -358,7 +352,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples();
+        graph.RemoveTriples(null, null, null, null);
 
         Assert.IsEmpty(graph);
     }
@@ -369,7 +363,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: (RDFResource)triple.Subject);
+        graph.RemoveTriples((RDFResource)triple.Subject, null, null, null);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -380,10 +374,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: new RDFResource("http://subj2/"));
+        graph.RemoveTriples(new RDFResource("http://subj2/"), null, null, null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -392,7 +386,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: (RDFResource)triple.Predicate);
+        graph.RemoveTriples(null, (RDFResource)triple.Predicate, null, null);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -403,10 +397,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: new RDFResource("http://pred2/"));
+        graph.RemoveTriples(null, new RDFResource("http://pred2/"), null, null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -415,7 +409,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(o: (RDFResource)triple.Object);
+        graph.RemoveTriples(null, null, (RDFResource)triple.Object, null);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -426,10 +420,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(o: new RDFResource("http://obj2/"));
+        graph.RemoveTriples(null, null, new RDFResource("http://obj2/"), null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -438,7 +432,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en","US"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(l: (RDFLiteral)triple.Object);
+        graph.RemoveTriples(null, null, null, (RDFLiteral)triple.Object);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -449,10 +443,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("en", "US"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(l: new RDFPlainLiteral("en"));
+        graph.RemoveTriples(null, null, null, new RDFPlainLiteral("en"));
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -461,7 +455,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: (RDFResource)triple.Subject, p: (RDFResource)triple.Predicate);
+        graph.RemoveTriples((RDFResource)triple.Subject, (RDFResource)triple.Predicate, null, null);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -472,10 +466,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: new RDFResource("http://subj2/"), p: (RDFResource)triple.Predicate);
+        graph.RemoveTriples(new RDFResource("http://subj2/"), (RDFResource)triple.Predicate, null, null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -484,10 +478,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: (RDFResource)triple.Subject, p: new RDFResource("http://pred2/"));
+        graph.RemoveTriples((RDFResource)triple.Subject, new RDFResource("http://pred2/"), null, null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -496,7 +490,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: (RDFResource)triple.Subject, o: (RDFResource)triple.Object);
+        graph.RemoveTriples((RDFResource)triple.Subject, null, (RDFResource)triple.Object, null);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -507,10 +501,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: new RDFResource("http://subj2/"), o: (RDFResource)triple.Object);
+        graph.RemoveTriples(new RDFResource("http://subj2/"), null, (RDFResource)triple.Object, null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -519,10 +513,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: (RDFResource)triple.Subject, o: new RDFResource("http://obj2/"));
+        graph.RemoveTriples((RDFResource)triple.Subject, null, new RDFResource("http://obj2/"), null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -531,7 +525,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: (RDFResource)triple.Subject, l: (RDFLiteral)triple.Object);
+        graph.RemoveTriples((RDFResource)triple.Subject, null, null, (RDFLiteral)triple.Object);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -542,10 +536,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: new RDFResource("http://subj2/"), l: (RDFLiteral)triple.Object);
+        graph.RemoveTriples(new RDFResource("http://subj2/"), null, null, (RDFLiteral)triple.Object);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -554,10 +548,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(s: (RDFResource)triple.Subject, l: new RDFPlainLiteral("lit2"));
+        graph.RemoveTriples((RDFResource)triple.Subject, null, null, new RDFPlainLiteral("lit2"));
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -566,7 +560,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: (RDFResource)triple.Predicate, o: (RDFResource)triple.Object);
+        graph.RemoveTriples(null, (RDFResource)triple.Predicate, (RDFResource)triple.Object, null);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -577,10 +571,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: new RDFResource("http://pred2/"), o: (RDFResource)triple.Object);
+        graph.RemoveTriples(null, new RDFResource("http://pred2/"), (RDFResource)triple.Object, null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -589,10 +583,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: (RDFResource)triple.Predicate, o: new RDFResource("http://obj2/"));
+        graph.RemoveTriples(null, (RDFResource)triple.Predicate, new RDFResource("http://obj2/"), null);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -601,7 +595,7 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: (RDFResource)triple.Predicate, l: (RDFLiteral)triple.Object);
+        graph.RemoveTriples(null, (RDFResource)triple.Predicate, null, (RDFLiteral)triple.Object);
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
@@ -612,10 +606,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: new RDFResource("http://pred2/"), l: (RDFLiteral)triple.Object);
+        graph.RemoveTriples(null, new RDFResource("http://pred2/"), null, (RDFLiteral)triple.Object);
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -624,10 +618,10 @@ public class RDFGraphTest
         RDFGraph graph = new RDFGraph();
         RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
         graph.AddTriple(triple);
-        graph.RemoveTriples(p: (RDFResource)triple.Predicate, l: new RDFPlainLiteral("lit2"));
+        graph.RemoveTriples(null, (RDFResource)triple.Predicate, null, new RDFPlainLiteral("lit2"));
 
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsNotNull(graph.Triples.Rows.Find(triple.TripleID));
+        Assert.IsTrue(graph.Index.Hashes.ContainsKey(triple.TripleID));
     }
 
     [TestMethod]
@@ -639,8 +633,10 @@ public class RDFGraphTest
         graph.ClearTriples();
 
         Assert.AreEqual(0, graph.TriplesCount);
-        Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["RES"]!);
-        Assert.IsEmpty((Dictionary<long, RDFResource>)graph.Triples.ExtendedProperties["LIT"]!);
+        Assert.IsEmpty(graph.Index.IDXSubjects);
+        Assert.IsEmpty(graph.Index.IDXPredicates);
+        Assert.IsEmpty(graph.Index.IDXObjects);
+        Assert.IsEmpty(graph.Index.IDXLiterals);
     }
 
     [TestMethod]
@@ -684,7 +680,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"));
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -702,7 +698,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj6/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj6/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -718,7 +714,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred2/"));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred2/"));
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -736,7 +732,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred6/"));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred6/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -752,7 +748,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(null, null, new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -770,7 +766,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(o: new RDFResource("http://obj6/"));
+        List<RDFTriple> result = graph.SelectTriples(null, null, new RDFResource("http://obj6/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -786,7 +782,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(null, null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -804,7 +800,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(l: new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(null, null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -820,7 +816,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred2/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"));
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -837,7 +833,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj6/"), p: new RDFResource("http://pred2/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj6/"), new RDFResource("http://pred2/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -853,7 +849,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred6/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred6/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -869,7 +865,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), null, new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -886,7 +882,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj6/"), o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj6/"), null, new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -902,7 +898,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), o: new RDFResource("http://obj6/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), null, new RDFResource("http://obj6/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -918,7 +914,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -935,7 +931,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj6/"), l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj6/"), null, null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -951,7 +947,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), l: new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), null, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -967,7 +963,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred2/"), o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred2/"), new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -985,7 +981,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred6/"), o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred6/"), new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1001,7 +997,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred1/"), o: new RDFResource("http://obj6/"));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred1/"), new RDFResource("http://obj6/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1017,7 +1013,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred2/"), l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.HasCount(2, result);
@@ -1035,7 +1031,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred6/"), l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1051,7 +1047,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(p: new RDFResource("http://pred2/"), l: new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(null, new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1067,7 +1063,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred2/"), o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -1084,7 +1080,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj6/"), p: new RDFResource("http://pred2/"), o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1100,7 +1096,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred6/"), o: new RDFResource("http://obj2/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), new RDFResource("http://obj2/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1116,7 +1112,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFResource("http://obj1/")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFResource("http://obj2/"))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred1/"), o: new RDFResource("http://obj6/"));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred1/"), new RDFResource("http://obj6/"));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1132,7 +1128,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred2/"), l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.HasCount(1, result);
@@ -1149,7 +1145,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj6/"), p: new RDFResource("http://pred2/"), l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj6/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1165,7 +1161,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred6/"), l: new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred6/"), null, new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1181,7 +1177,7 @@ public class RDFGraphTest
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred1/"),new RDFPlainLiteral("lit1")),
             new RDFTriple(new RDFResource("http://subj2/"),new RDFResource("http://pred2/"),new RDFTypedLiteral("5",RDFModelEnums.RDFDatatypes.XSD_INTEGER))
         ]);
-        List<RDFTriple> result = graph.SelectTriples(s: new RDFResource("http://subj1/"), p: new RDFResource("http://pred2/"), l: new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+        List<RDFTriple> result = graph.SelectTriples(new RDFResource("http://subj1/"), new RDFResource("http://pred2/"), null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
@@ -1240,11 +1236,11 @@ public class RDFGraphTest
         RDFGraph intersect12 = graph1.IntersectWith(graph2);
         Assert.IsNotNull(intersect12);
         Assert.AreEqual(1, intersect12.TriplesCount);
-        Assert.IsNotNull(intersect12.Triples.Rows.Find(triple1.TripleID));
+        Assert.IsTrue(intersect12.Index.Hashes.ContainsKey(triple1.TripleID));
         RDFGraph intersect21 = graph2.IntersectWith(graph1);
         Assert.IsNotNull(intersect21);
         Assert.AreEqual(1, intersect21.TriplesCount);
-        Assert.IsNotNull(intersect21.Triples.Rows.Find(triple1.TripleID));
+        Assert.IsTrue(intersect21.Index.Hashes.ContainsKey(triple1.TripleID));
     }
 
     [TestMethod]
@@ -1414,11 +1410,11 @@ public class RDFGraphTest
         RDFGraph difference12 = graph1.DifferenceWith(graph2);
         Assert.IsNotNull(difference12);
         Assert.AreEqual(1, difference12.TriplesCount);
-        Assert.IsNotNull(difference12.Triples.Rows.Find(triple2.TripleID));
+        Assert.IsTrue(difference12.Index.Hashes.ContainsKey(triple2.TripleID));
         RDFGraph difference21 = graph2.DifferenceWith(graph1);
         Assert.IsNotNull(difference21);
         Assert.AreEqual(1, difference21.TriplesCount);
-        Assert.IsNotNull(difference21.Triples.Rows.Find(triple3.TripleID));
+        Assert.IsTrue(difference21.Index.Hashes.ContainsKey(triple3.TripleID));
     }
 
     [TestMethod]
@@ -1433,7 +1429,7 @@ public class RDFGraphTest
         RDFGraph difference12 = graph1.DifferenceWith(graph2);
         Assert.IsNotNull(difference12);
         Assert.AreEqual(2, difference12.TriplesCount);
-        Assert.IsNotNull(difference12.Triples.Rows.Find(triple2.TripleID));
+        Assert.IsTrue(difference12.Index.Hashes.ContainsKey(triple2.TripleID));
         RDFGraph difference21 = graph2.DifferenceWith(graph1);
         Assert.IsNotNull(difference21);
         Assert.AreEqual(0, difference21.TriplesCount);

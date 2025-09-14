@@ -47,7 +47,7 @@ public class RDFPropertyConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph..Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
                                                     && t.Value.pid.Equals(RDFVocabulary.SHACL.PROPERTY.PatternMemberID)
                                                     && t.Value.oid.Equals(new RDFResource("ex:PropertyShapeConstraint").PatternMemberID)));
     }
