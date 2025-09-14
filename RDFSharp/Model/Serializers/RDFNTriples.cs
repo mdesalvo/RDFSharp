@@ -37,7 +37,6 @@ internal static class RDFNTriples
     internal static readonly char[] ClosingBrackets = ['>'];
     internal static readonly char[] TrimmableChars = [' ', '\t', '\r', '\n'];
     internal static readonly char[] SpaceAndTabChars = [' ', '\t'];
-    internal static readonly char[] DotSpaceAndTabChars = ['.' , ' ', '\t'];
     #endregion
 
     #region Methods
@@ -70,8 +69,7 @@ internal static class RDFNTriples
                     #endregion
 
                     #region subj
-                    tripleTemplate = ((RDFResource)t.Subject).IsBlank
-                        ? tripleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"))
+                    tripleTemplate = ((RDFResource)t.Subject).IsBlank ? tripleTemplate.Replace("<{SUBJ}>", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()).Replace("bnode:", "_:"))
                         : tripleTemplate.Replace("{SUBJ}", RDFModelUtilities.Unicode_To_ASCII(t.Subject.ToString()));
                     #endregion
 
@@ -90,14 +88,13 @@ internal static class RDFNTriples
                     else
                     {
                         tripleTemplate = tripleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)t.Object).Value.Replace("\\", @"\\").Replace("\"", "\\\""))))
-                                                       .Replace("\n", "\\n")
-                                                       .Replace("\t", "\\t")
-                                                       .Replace("\r", "\\r");
+                            .Replace("\n", "\\n")
+                            .Replace("\t", "\\t")
+                            .Replace("\r", "\\r");
 
                         #region plain literal
                         if (t.Object is RDFPlainLiteral plitObj)
-                            tripleTemplate = plitObj.HasLanguage()
-                                ? tripleTemplate.Replace("{LANG}", plitObj.Language)
+                            tripleTemplate = plitObj.HasLanguage() ? tripleTemplate.Replace("{LANG}", plitObj.Language)
                                 : tripleTemplate.Replace("@{LANG}", string.Empty);
                         #endregion
 
@@ -171,14 +168,14 @@ internal static class RDFNTriples
 
                     #region subj
                     string subj = tokens[0].TrimStart(OpeningBrackets)
-                                           .TrimEnd(ClosingBrackets)
-                                           .Replace("_:", "bnode:");
+                        .TrimEnd(ClosingBrackets)
+                        .Replace("_:", "bnode:");
                     S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj), hashContext);
                     #endregion
 
                     #region pred
                     string pred = tokens[1].TrimStart(OpeningBrackets)
-                                           .TrimEnd(ClosingBrackets);
+                        .TrimEnd(ClosingBrackets);
                     P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred), hashContext);
                     #endregion
 
@@ -188,9 +185,9 @@ internal static class RDFNTriples
                         || tokens[2].StartsWith("_:", StringComparison.Ordinal))
                     {
                         string obj = tokens[2].TrimStart(OpeningBrackets)
-                                              .TrimEnd(ClosingBrackets)
-                                              .Replace("_:", "bnode:")
-                                              .Trim(TrimmableChars);
+                            .TrimEnd(ClosingBrackets)
+                            .Replace("_:", "bnode:")
+                            .Trim(TrimmableChars);
                         O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj), hashContext);
                     }
                     #endregion
@@ -202,11 +199,11 @@ internal static class RDFNTriples
                         tokens[2] = RDFUtilities.StartingQuoteRegex().Replace(tokens[2], string.Empty);
                         tokens[2] = RDFUtilities.EndingQuoteRegex().Replace(tokens[2], string.Empty);
                         tokens[2] = tokens[2].Replace(@"\\", "\\")
-                                             .Replace("\\\"", "\"")
-                                             .Replace("\\n", "\n")
-                                             .Replace("\\t", "\t")
-                                             .Replace("\\r", "\r")
-                                             .Replace("\"^^", "^^");
+                            .Replace("\\\"", "\"")
+                            .Replace("\\n", "\n")
+                            .Replace("\\t", "\t")
+                            .Replace("\\r", "\r")
+                            .Replace("\"^^", "^^");
                         tokens[2] = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
                         #endregion
 
@@ -238,8 +235,8 @@ internal static class RDFNTriples
                             tokens[2] = tokens[2].Replace("\"^^", "^^");
                             string tLitValue = tokens[2].Substring(0, lastIndexOfDatatype);
                             string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
-                                                           .TrimStart('<')
-                                                           .TrimEnd('>');
+                                .TrimStart('<')
+                                .TrimEnd('>');
                             L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), RDFDatatypeRegister.GetDatatype(tLitDatatype));
                         }
                         #endregion
@@ -273,7 +270,7 @@ internal static class RDFNTriples
             //S->P->O
             if (RDFUtilities.SPO().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
@@ -293,7 +290,7 @@ internal static class RDFNTriples
             //S->P->L(PLAIN)
             if (RDFUtilities.SPL().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
@@ -313,7 +310,7 @@ internal static class RDFNTriples
             //S->P->L(PLANG)
             if (RDFUtilities.SPLL().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
@@ -333,7 +330,7 @@ internal static class RDFNTriples
             //S->P->L(TLIT)
             if (RDFUtilities.SPLT().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
@@ -353,7 +350,7 @@ internal static class RDFNTriples
             //S->P->B
             if (RDFUtilities.SPB().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
@@ -379,7 +376,7 @@ internal static class RDFNTriples
             //B->P->O
             if (RDFUtilities.BPO().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
@@ -399,7 +396,7 @@ internal static class RDFNTriples
             //B->P->L(PLAIN)
             if (RDFUtilities.BPL().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
@@ -419,7 +416,7 @@ internal static class RDFNTriples
             //B->P->L(PLANG)
             if (RDFUtilities.BPLL().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
@@ -439,7 +436,7 @@ internal static class RDFNTriples
             //B->P->L(TLIT)
             if (RDFUtilities.BPLT().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
@@ -459,7 +456,7 @@ internal static class RDFNTriples
             //B->P->B
             if (RDFUtilities.BPB().IsMatch(ntriple))
             {
-                ntriple = ntriple.Trim(DotSpaceAndTabChars);
+                ntriple = ntriple.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));

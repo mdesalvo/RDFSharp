@@ -171,14 +171,14 @@ internal static class RDFNQuads
 
                     #region subj
                     string subj = tokens[0].TrimStart('<')
-                                           .TrimEnd('>')
-                                           .Replace("_:", "bnode:");
+                        .TrimEnd('>')
+                        .Replace("_:", "bnode:");
                     S = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(subj), hashContext);
                     #endregion
 
                     #region pred
                     string pred = tokens[1].TrimStart('<')
-                                           .TrimEnd('>');
+                        .TrimEnd('>');
                     P = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(pred), hashContext);
                     #endregion
 
@@ -188,9 +188,9 @@ internal static class RDFNQuads
                         || tokens[2].StartsWith("_:", StringComparison.Ordinal))
                     {
                         string obj = tokens[2].TrimStart('<')
-                                              .TrimEnd('>')
-                                              .Replace("_:", "bnode:")
-                                              .Trim(' ', '\n', '\t', '\r');
+                            .TrimEnd('>')
+                            .Replace("_:", "bnode:")
+                            .Trim(' ', '\n', '\t', '\r');
                         O = new RDFResource(RDFModelUtilities.ASCII_To_Unicode(obj), hashContext);
                     }
                     #endregion
@@ -202,11 +202,11 @@ internal static class RDFNQuads
                         tokens[2] = RDFUtilities.StartingQuoteRegex().Replace(tokens[2], string.Empty);
                         tokens[2] = RDFUtilities.EndingQuoteRegex().Replace(tokens[2], string.Empty);
                         tokens[2] = tokens[2].Replace(@"\\", "\\")
-                                             .Replace("\\\"", "\"")
-                                             .Replace("\\n", "\n")
-                                             .Replace("\\t", "\t")
-                                             .Replace("\\r", "\r")
-                                             .Replace("\"^^", "^^");
+                            .Replace("\\\"", "\"")
+                            .Replace("\\n", "\n")
+                            .Replace("\\t", "\t")
+                            .Replace("\\r", "\r")
+                            .Replace("\"^^", "^^");
                         tokens[2] = RDFModelUtilities.ASCII_To_Unicode(tokens[2]);
                         #endregion
 
@@ -238,8 +238,8 @@ internal static class RDFNQuads
                             tokens[2] = tokens[2].Replace("\"^^", "^^");
                             string tLitValue = tokens[2].Substring(0, lastIndexOfDatatype);
                             string tLitDatatype = tokens[2].Substring(lastIndexOfDatatype + 2)
-                                                           .TrimStart('<')
-                                                           .TrimEnd('>');
+                                .TrimStart('<')
+                                .TrimEnd('>');
                             L = new RDFTypedLiteral(HttpUtility.HtmlDecode(tLitValue), RDFDatatypeRegister.GetDatatype(tLitDatatype));
                         }
                         #endregion
@@ -250,7 +250,7 @@ internal static class RDFNQuads
                     if (!string.IsNullOrEmpty(tokens[3]))
                     {
                         string ctx = tokens[3].TrimStart('<')
-                                              .TrimEnd('>');
+                            .TrimEnd('>');
                         C = new RDFContext(RDFModelUtilities.ASCII_To_Unicode(ctx));
                     }
                     #endregion
@@ -282,7 +282,7 @@ internal static class RDFNQuads
             //S->P->O->C
             if (RDFUtilities.CSPO().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -307,7 +307,7 @@ internal static class RDFNQuads
             //S->P->L(PLAIN)->C
             if (RDFUtilities.CSPL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -332,7 +332,7 @@ internal static class RDFNQuads
             //S->P->L(PLANG)->C
             if (RDFUtilities.CSPLL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -382,7 +382,7 @@ internal static class RDFNQuads
             //S->P->B->C
             if (RDFUtilities.CSPB().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -407,7 +407,7 @@ internal static class RDFNQuads
             //S->P->O->
             if (RDFUtilities.SPO().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -427,7 +427,7 @@ internal static class RDFNQuads
             //S->P->L(PLAIN)->
             if (RDFUtilities.SPL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -447,7 +447,7 @@ internal static class RDFNQuads
             //S->P->L(PLANG)->
             if (RDFUtilities.SPLL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -467,7 +467,7 @@ internal static class RDFNQuads
             //S->P->L(TLIT)->
             if (RDFUtilities.SPLT().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -487,7 +487,7 @@ internal static class RDFNQuads
             //S->P->B->
             if (RDFUtilities.SPB().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
@@ -513,7 +513,7 @@ internal static class RDFNQuads
             //B->P->O->C
             if (RDFUtilities.CBPO().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -538,7 +538,7 @@ internal static class RDFNQuads
             //B->P->L(PLAIN)->C
             if (RDFUtilities.CBPL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -563,7 +563,7 @@ internal static class RDFNQuads
             //B->P->L(PLANG)->C
             if (RDFUtilities.CBPLL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -613,7 +613,7 @@ internal static class RDFNQuads
             //B->P->B->C
             if (RDFUtilities.CBPB().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -638,7 +638,7 @@ internal static class RDFNQuads
             //B->P->O->
             if (RDFUtilities.BPO().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -658,7 +658,7 @@ internal static class RDFNQuads
             //B->P->L(PLAIN)->
             if (RDFUtilities.BPL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -678,7 +678,7 @@ internal static class RDFNQuads
             //B->P->L(PLANG)->
             if (RDFUtilities.BPLL().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -698,7 +698,7 @@ internal static class RDFNQuads
             //B->P->L(TLIT)->
             if (RDFUtilities.BPLT().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
@@ -718,7 +718,7 @@ internal static class RDFNQuads
             //B->P->B->
             if (RDFUtilities.BPB().IsMatch(nquad))
             {
-                nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
+                nquad = nquad.Trim('.', ' ', '\t');
 
                 //subject
                 tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
