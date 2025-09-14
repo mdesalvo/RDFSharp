@@ -291,7 +291,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
     /// <summary>
     /// Removes the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
     /// </summary>
     public RDFGraph RemoveTriples(RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
     {
@@ -320,7 +320,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
     /// <summary>
     /// Selects the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
     public List<RDFTriple> SelectTriples(RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
@@ -377,7 +377,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
     /// <summary>
     /// Gets the subgraph containing the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
     public RDFGraph this[RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null]
