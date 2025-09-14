@@ -66,12 +66,13 @@ public sealed class RDFLowerCaseExpression : RDFExpression
     /// </summary>
     internal override RDFPatternMember ApplyExpression(DataRow row)
     {
+        RDFLiteral expressionResult = null;
+
         #region Guards
         if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
             return null;
         #endregion
 
-        RDFLiteral expressionResult = null;
         try
         {
             #region Evaluate Arguments
@@ -97,6 +98,7 @@ public sealed class RDFLowerCaseExpression : RDFExpression
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
         return expressionResult;
     }
     #endregion

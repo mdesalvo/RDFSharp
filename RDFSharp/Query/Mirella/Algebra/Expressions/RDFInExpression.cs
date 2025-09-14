@@ -130,6 +130,7 @@ public sealed class RDFInExpression : RDFExpression
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
         return keepRow ? RDFTypedLiteral.True : RDFTypedLiteral.False;
     }
     #endregion

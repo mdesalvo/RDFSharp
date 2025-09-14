@@ -67,8 +67,10 @@ public abstract class RDFBooleanExpression : RDFExpression
                 expressionResult = this switch
                 {
                     //Execute the boolean expression's comparison logics
-                    RDFBooleanAndExpression => leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False,
-                    RDFBooleanOrExpression  => leftArgumentBooleanValue || rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                    RDFBooleanAndExpression => leftArgumentBooleanValue && rightArgumentBooleanValue
+                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
+                    RDFBooleanOrExpression => leftArgumentBooleanValue || rightArgumentBooleanValue
+                        ? RDFTypedLiteral.True : RDFTypedLiteral.False,
                     _ => null
                 };
             }

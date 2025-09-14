@@ -81,6 +81,8 @@ public sealed class RDFContainsExpression : RDFExpression
     /// </summary>
     internal override RDFPatternMember ApplyExpression(DataRow row)
     {
+        RDFTypedLiteral expressionResult = null;
+
         #region Guards
         if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
             return null;
@@ -88,7 +90,6 @@ public sealed class RDFContainsExpression : RDFExpression
             return null;
         #endregion
 
-        RDFTypedLiteral expressionResult = null;
         try
         {
             #region Evaluate Arguments
@@ -129,6 +130,7 @@ public sealed class RDFContainsExpression : RDFExpression
             #endregion
         }
         catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
+
         return expressionResult;
     }
     #endregion
