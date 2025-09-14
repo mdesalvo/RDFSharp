@@ -91,22 +91,13 @@ public sealed class RDFTypedLiteral : RDFLiteral
     /// Checks if the datatype of this typed literal is compatible with datetime
     /// </summary>
     public bool HasDatetimeDatatype()
-        => Datatype.TargetDatatype switch
+    {
+        return Datatype.TargetDatatype switch
         {
-            RDFModelEnums.RDFDatatypes.XSD_DATE or 
-            RDFModelEnums.RDFDatatypes.XSD_DATETIME or
-            RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP or
-            RDFModelEnums.RDFDatatypes.XSD_GDAY or
-            RDFModelEnums.RDFDatatypes.XSD_GMONTH or
-            RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY or
-            RDFModelEnums.RDFDatatypes.XSD_GYEAR or
-            RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH or
-            RDFModelEnums.RDFDatatypes.XSD_TIME or
-            RDFModelEnums.RDFDatatypes.TIME_GENERALDAY or
-            RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH or
-            RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR => true,
+            RDFModelEnums.RDFDatatypes.XSD_DATE or RDFModelEnums.RDFDatatypes.XSD_DATETIME or RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP or RDFModelEnums.RDFDatatypes.XSD_GDAY or RDFModelEnums.RDFDatatypes.XSD_GMONTH or RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY or RDFModelEnums.RDFDatatypes.XSD_GYEAR or RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH or RDFModelEnums.RDFDatatypes.XSD_TIME or RDFModelEnums.RDFDatatypes.TIME_GENERALDAY or RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH or RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR => true,
             _ => false
         };
+    }
 
     /// <summary>
     /// Checks if the datatype of this typed literal is compatible with timespan
@@ -118,64 +109,36 @@ public sealed class RDFTypedLiteral : RDFLiteral
     /// Checks if the datatype of this typed literal is compatible with string
     /// </summary>
     public bool HasStringDatatype()
-        => Datatype.TargetDatatype switch
+    {
+        return Datatype.TargetDatatype switch
         {
-            RDFModelEnums.RDFDatatypes.RDFS_LITERAL or
-            RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL or
-            RDFModelEnums.RDFDatatypes.RDF_HTML or
-            RDFModelEnums.RDFDatatypes.RDF_JSON or
-            RDFModelEnums.RDFDatatypes.XSD_ANYURI or
-            RDFModelEnums.RDFDatatypes.XSD_ID or
-            RDFModelEnums.RDFDatatypes.XSD_LANGUAGE or
-            RDFModelEnums.RDFDatatypes.XSD_NAME or
-            RDFModelEnums.RDFDatatypes.XSD_NCNAME or
-            RDFModelEnums.RDFDatatypes.XSD_NMTOKEN or
-            RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING or
-            RDFModelEnums.RDFDatatypes.XSD_NOTATION or
-            RDFModelEnums.RDFDatatypes.XSD_QNAME or
-            RDFModelEnums.RDFDatatypes.XSD_STRING or
-            RDFModelEnums.RDFDatatypes.XSD_TOKEN or
-            RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY or
-            RDFModelEnums.RDFDatatypes.XSD_HEXBINARY => true,
+            RDFModelEnums.RDFDatatypes.RDFS_LITERAL or RDFModelEnums.RDFDatatypes.RDF_XMLLITERAL or RDFModelEnums.RDFDatatypes.RDF_HTML or RDFModelEnums.RDFDatatypes.RDF_JSON or RDFModelEnums.RDFDatatypes.XSD_ANYURI or RDFModelEnums.RDFDatatypes.XSD_ID or RDFModelEnums.RDFDatatypes.XSD_LANGUAGE or RDFModelEnums.RDFDatatypes.XSD_NAME or RDFModelEnums.RDFDatatypes.XSD_NCNAME or RDFModelEnums.RDFDatatypes.XSD_NMTOKEN or RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING or RDFModelEnums.RDFDatatypes.XSD_NOTATION or RDFModelEnums.RDFDatatypes.XSD_QNAME or RDFModelEnums.RDFDatatypes.XSD_STRING or RDFModelEnums.RDFDatatypes.XSD_TOKEN or RDFModelEnums.RDFDatatypes.XSD_BASE64BINARY or RDFModelEnums.RDFDatatypes.XSD_HEXBINARY => true,
             _ => false
         };
+    }
 
     /// <summary>
     /// Checks if the datatype of this typed literal is compatible with geosparql
     /// </summary>
     public bool HasGeographicDatatype()
-        => Datatype.TargetDatatype switch
+    {
+        return Datatype.TargetDatatype switch
         {
-            RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT or
-            RDFModelEnums.RDFDatatypes.GEOSPARQL_GML => true,
+            RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT or RDFModelEnums.RDFDatatypes.GEOSPARQL_GML => true,
             _ => false
         };
+    }
 
     /// <summary>
     /// Checks if the datatype of this typed literal is compatible with decimal
     /// </summary>
     public bool HasDecimalDatatype()
-        => Datatype.TargetDatatype switch
+    {
+        return Datatype.TargetDatatype switch
         {
-            RDFModelEnums.RDFDatatypes.XSD_DECIMAL or
-            RDFModelEnums.RDFDatatypes.XSD_DOUBLE or
-            RDFModelEnums.RDFDatatypes.XSD_FLOAT or
-            RDFModelEnums.RDFDatatypes.XSD_INTEGER or
-            RDFModelEnums.RDFDatatypes.XSD_LONG or
-            RDFModelEnums.RDFDatatypes.XSD_INT or
-            RDFModelEnums.RDFDatatypes.XSD_SHORT or
-            RDFModelEnums.RDFDatatypes.XSD_BYTE or
-            RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG or
-            RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT or
-            RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT or
-            RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE or
-            RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER or
-            RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER or
-            RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER or
-            RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER or
-            RDFModelEnums.RDFDatatypes.OWL_REAL or
-            RDFModelEnums.RDFDatatypes.OWL_RATIONAL => true,
+            RDFModelEnums.RDFDatatypes.XSD_DECIMAL or RDFModelEnums.RDFDatatypes.XSD_DOUBLE or RDFModelEnums.RDFDatatypes.XSD_FLOAT or RDFModelEnums.RDFDatatypes.XSD_INTEGER or RDFModelEnums.RDFDatatypes.XSD_LONG or RDFModelEnums.RDFDatatypes.XSD_INT or RDFModelEnums.RDFDatatypes.XSD_SHORT or RDFModelEnums.RDFDatatypes.XSD_BYTE or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDLONG or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDINT or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDSHORT or RDFModelEnums.RDFDatatypes.XSD_UNSIGNEDBYTE or RDFModelEnums.RDFDatatypes.XSD_NEGATIVEINTEGER or RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER or RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER or RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER or RDFModelEnums.RDFDatatypes.OWL_REAL or RDFModelEnums.RDFDatatypes.OWL_RATIONAL => true,
             _ => false
         };
+    }
     #endregion
 }
