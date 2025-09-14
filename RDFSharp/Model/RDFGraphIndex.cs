@@ -28,7 +28,7 @@ internal sealed class RDFGraphIndex : IDisposable
     /// <summary>
     /// Hashed representation of the triples
     /// </summary>
-    internal Dictionary<long, (long tid, long sid, long pid, long oid, byte tfv)> Hashes { get; set; }
+    internal Dictionary<long, RDFHashedTriple> Hashes { get; set; }
 
     /// <summary>
     /// Register of the resources
@@ -143,8 +143,7 @@ internal sealed class RDFGraphIndex : IDisposable
         #endregion
 
         //Triple (Hash)
-        Hashes.Add(triple.TripleID, (tid: triple.TripleID, sid: triple.Subject.PatternMemberID,
-            pid: triple.Predicate.PatternMemberID, oid: triple.Object.PatternMemberID, tfv: (byte)triple.TripleFlavor));
+        Hashes.Add(triple.TripleID, new RDFHashedTriple(triple));
 
         //Subject (Register)
         Resources.TryAdd(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);

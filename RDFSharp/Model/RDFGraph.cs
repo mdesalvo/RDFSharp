@@ -52,11 +52,11 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     {
         get
         {
-            foreach (var (_, sid, pid, oid, tfv) in Index.Hashes.Values)
+            foreach (RDFHashedTriple hashedTriple in Index.Hashes.Values)
             {
-                yield return tfv == 1 //SPO
-                    ? new RDFTriple(Index.Resources[sid], Index.Resources[pid], Index.Resources[oid])
-                    : new RDFTriple(Index.Resources[sid], Index.Resources[pid], Index.Literals[oid]);
+                yield return hashedTriple.TripleFlavor == 1 //SPO
+                    ? new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Resources[hashedTriple.ObjectID])
+                    : new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Literals[hashedTriple.ObjectID]);
             }
         }
     }
@@ -274,7 +274,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         if (p != null) queryFilters.Append('P');
         if (o != null) queryFilters.Append('O');
         if (l != null) queryFilters.Append('L');
-        List<(long tid, long sid, long pid, long oid, byte tfv)> hashes = queryFilters.ToString() switch
+        List<RDFHashedTriple> hashedTriples = queryFilters.ToString() switch
         {
             "S"   => [.. Index.LookupIndexBySubject(s).Select(t => Index.Hashes[t])],
             "P"   => [.. Index.LookupIndexByPredicate(p).Select(t => Index.Hashes[t])],
@@ -291,7 +291,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         };
 
         //Decompress hashed triples
-        return hashes!.ConvertAll(ht => new RDFTriple(ht, Index));
+        return hashedTriples!.ConvertAll(ht => new RDFTriple(ht, Index));
     }
 
     /// <summary>

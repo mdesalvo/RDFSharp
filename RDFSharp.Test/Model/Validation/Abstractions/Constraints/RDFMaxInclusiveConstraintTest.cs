@@ -46,9 +46,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE.PatternMemberID)
-                                                    && t.Value.oid.Equals(new RDFResource("ex:value").PatternMemberID)));
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE.PatternMemberID)
+                                                    && t.Value.ObjectID.Equals(new RDFResource("ex:value").PatternMemberID)));
     }
 
     [TestMethod]
@@ -72,9 +72,9 @@ public class RDFMaxInclusiveConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE.PatternMemberID)
-                                                    && t.Value.oid.Equals(new RDFPlainLiteral("value").PatternMemberID)));
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE.PatternMemberID)
+                                                    && t.Value.ObjectID.Equals(new RDFPlainLiteral("value").PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE

@@ -47,12 +47,12 @@ public class RDFPatternConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(2, graph.TriplesCount);
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.PATTERN.PatternMemberID)
-                                                    && t.Value.oid.Equals(new RDFTypedLiteral("^test$", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.FLAGS.PatternMemberID)
-                                                    && t.Value.oid.Equals(new RDFTypedLiteral("ismx", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.PATTERN.PatternMemberID)
+                                                    && t.Value.ObjectID.Equals(new RDFTypedLiteral("^test$", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.FLAGS.PatternMemberID)
+                                                    && t.Value.ObjectID.Equals(new RDFTypedLiteral("ismx", RDFModelEnums.RDFDatatypes.XSD_STRING).PatternMemberID)));
     }
 
     //NS-CONFORMS: TRUE

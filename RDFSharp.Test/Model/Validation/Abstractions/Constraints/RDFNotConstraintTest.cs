@@ -46,9 +46,9 @@ public class RDFNotConstraintTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(1, graph.TriplesCount);
-        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.sid.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
-                                                    && t.Value.pid.Equals(RDFVocabulary.SHACL.NOT.PatternMemberID)
-                                                    && t.Value.oid.Equals(new RDFResource("ex:NotShapeConstraint").PatternMemberID)));
+        Assert.IsTrue(graph.Index.Hashes.Any(t => t.Value.SubjectID.Equals(new RDFResource("ex:NodeShape").PatternMemberID)
+                                                    && t.Value.PredicateID.Equals(RDFVocabulary.SHACL.NOT.PatternMemberID)
+                                                    && t.Value.ObjectID.Equals(new RDFResource("ex:NotShapeConstraint").PatternMemberID)));
     }
 
     //NS-CONFORMS:TRUE
