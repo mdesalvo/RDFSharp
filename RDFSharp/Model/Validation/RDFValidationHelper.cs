@@ -183,10 +183,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectTypedNodeShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            RDFGraph declaredNodeShapes = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
-                                               .SelectTriplesByObject(RDFVocabulary.SHACL.NODE_SHAPE);
-
-            foreach (RDFTriple declaredNodeShape in declaredNodeShapes)
+            foreach (RDFTriple declaredNodeShape in graph.SelectTriples(p:RDFVocabulary.RDF.TYPE, o:RDFVocabulary.SHACL.NODE_SHAPE))
             {
                 RDFNodeShape nodeShape = new RDFNodeShape((RDFResource)declaredNodeShape.Subject);
 

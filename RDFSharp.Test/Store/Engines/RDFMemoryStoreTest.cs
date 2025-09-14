@@ -1216,11 +1216,10 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        await (await store1.AddQuadruple(quadruple1)
-                .AddQuadrupleAsync(quadruple2))
-            .MergeGraphAsync(await new RDFGraph()
-                .AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtP{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-                    new RDFPatternFacet("^ex$") ])));
+        store1.AddQuadruple(quadruple1)
+              .AddQuadruple(quadruple2)
+              .MergeGraph(new RDFGraph()
+                .AddDatatype(new RDFDatatype(new Uri($"ex:mydtP{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFPatternFacet("^ex$") ])));
         await store1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"));
         RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"), true);
 
@@ -1354,11 +1353,10 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        await (await store1.AddQuadruple(quadruple1)
-                .AddQuadrupleAsync(quadruple2))
-            .MergeGraphAsync(await new RDFGraph()
-                .AddDatatypeAsync(new RDFDatatype(new Uri($"ex:mydtQ{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-                    new RDFPatternFacet("^ex$") ])));
+        store1.AddQuadruple(quadruple1)
+              .AddQuadruple(quadruple2)
+              .MergeGraph(new RDFGraph()
+                .AddDatatype(new RDFDatatype(new Uri($"ex:mydtQ{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFPatternFacet("^ex$") ])));
         await store1.ToStreamAsync(format, stream);
         RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()), true);
 
@@ -1685,11 +1683,10 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        await (await store1.AddQuadruple(quadruple1)
-                .AddQuadrupleAsync(quadruple2))
-            .MergeGraphAsync(await new RDFGraph()
-                .AddDatatypeAsync(new RDFDatatype(new Uri("ex:mydtQG"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-                    new RDFPatternFacet("^ex$") ])));
+        store1.AddQuadruple(quadruple1)
+              .AddQuadruple(quadruple2)
+              .MergeGraph(new RDFGraph()
+                .AddDatatype(new RDFDatatype(new Uri("ex:mydtQG"), RDFModelEnums.RDFDatatypes.XSD_STRING, [new RDFPatternFacet("^ex$") ])));
         DataTable table = await store1.ToDataTableAsync();
         RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table, true);
 
@@ -1959,10 +1956,10 @@ public class RDFMemoryStoreTest
     [TestMethod]
     public async Task ShouldMergeGraphAsync()
     {
-        RDFGraph graph = await new RDFGraph([
+        RDFGraph graph = new RDFGraph([
             new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")),
             new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))
-        ]).SetContextAsync(new Uri("ex:ctx"));
+        ]).SetContext(new Uri("ex:ctx"));
         RDFMemoryStore store = new RDFMemoryStore();
         await store.MergeGraphAsync(graph);
 

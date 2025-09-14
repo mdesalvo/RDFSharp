@@ -84,8 +84,7 @@ namespace RDFSharp.Model
                 foreach (RDFPatternMember valueNode in valueNodes)
                     if (valueNode is RDFResource valueNodeResource)
                     {
-                        RDFGraph valuenodeResourceGraph = dataGraph.SelectTriplesBySubject(valueNodeResource);
-                        foreach (RDFTriple unallowedTriple in valuenodeResourceGraph.Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
+                        foreach (RDFTriple unallowedTriple in dataGraph.SelectTriples(s:valueNodeResource).Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT,
                                                                      valueNodeResource,

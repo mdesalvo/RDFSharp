@@ -86,15 +86,15 @@ namespace RDFSharp.Model
                     #endregion
 
                     #region containers/collections
-                    RDFGraph rdfType = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE);
-                    RDFGraph rdfFirst = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST);
-                    RDFGraph rdfRest = graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST);
+                    RDFGraph rdfType = graph[p:RDFVocabulary.RDF.TYPE];
+                    RDFGraph rdfFirst = graph[p:RDFVocabulary.RDF.FIRST];
+                    RDFGraph rdfRest = graph[p:RDFVocabulary.RDF.REST];
 
                     //Fetch data describing containers of the graph
                     var containersXML = new Dictionary<long, XmlNode>();
-                    var containers = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.ALT)
-                                            .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.BAG))
-                                            .UnionWith(rdfType.SelectTriplesByObject(RDFVocabulary.RDF.SEQ))
+                    var containers = rdfType.SelectTriples(o:RDFVocabulary.RDF.ALT)
+                                            .Union(rdfType.SelectTriples(o:RDFVocabulary.RDF.BAG))
+                                            .Union(rdfType.SelectTriples(o:RDFVocabulary.RDF.SEQ))
                                             .Select(t => new
                                             {
                                                 ContainerUri = (RDFResource)t.Subject,
@@ -105,13 +105,13 @@ namespace RDFSharp.Model
                                             }).ToList();
 
                     //Fetch data describing collections of the graph
-                    var collections = rdfType.SelectTriplesByObject(RDFVocabulary.RDF.LIST)
+                    var collections = rdfType.SelectTriples(o:RDFVocabulary.RDF.LIST)
                                              .Select(t => new
                                              {
                                                  CollectionUri = (RDFResource)t.Subject,
-                                                 CollectionValue = rdfFirst.SelectTriplesBySubject((RDFResource)t.Subject)
+                                                 CollectionValue = rdfFirst.SelectTriples(s:(RDFResource)t.Subject)
                                                                            .FirstOrDefault()?.Object,
-                                                 CollectionNext = rdfRest.SelectTriplesBySubject((RDFResource)t.Subject)
+                                                 CollectionNext = rdfRest.SelectTriples(s:(RDFResource)t.Subject)
                                                                          .FirstOrDefault()?.Object,
                                                  IsFloatingCollection = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID)),
                                                  HasAllResourceItems = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)t.Subject, RDFModelEnums.RDFTripleFlavors.SPO, true)

@@ -157,8 +157,8 @@ public class RDFClearOperationTest
     public async Task ShouldApplyToGraphAsync()
     {
         RDFGraph graph = new RDFGraph();
-        await graph.AddTripleAsync(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-        await graph.AddTripleAsync(new RDFTriple(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+        graph.AddTriple(new RDFTriple(RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
         RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
         RDFOperationResult result = await operation.ApplyToGraphAsync(graph); //When applied to a graph, CLEAR behavior is ALL
 

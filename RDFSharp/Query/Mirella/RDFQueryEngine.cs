@@ -826,22 +826,22 @@ namespace RDFSharp.Query
             switch (templateHoleDetector.ToString())
             {
                 case "S":
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingTriples = graph.SelectTriples(null, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, patternResultTable);
                     break;
 
                 case "P":
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingTriples = graph.SelectTriples((RDFResource)pattern.Subject, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, patternResultTable);
                     break;
 
                 case "O":
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
+                    matchingTriples = graph.SelectTriples((RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
                     PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, patternResultTable);
                     break;
 
                 case "SP":
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingTriples = graph.SelectTriples(null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
                     //In case of same S and P variable, must refine matching triples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
@@ -849,7 +849,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "SO":
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, (RDFResource)pattern.Predicate, null, null);
+                    matchingTriples = graph.SelectTriples(null, (RDFResource)pattern.Predicate, null, null);
                     //In case of same S and O variable, must refine matching triples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
@@ -857,7 +857,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "PO":
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, (RDFResource)pattern.Subject, null, null, null);
+                    matchingTriples = graph.SelectTriples((RDFResource)pattern.Subject, null, null, null);
                     //In case of same P and O variable, must refine matching triples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
@@ -865,7 +865,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "SPO":
-                    matchingTriples = RDFModelUtilities.SelectTriples(graph, null, null, null, null);
+                    matchingTriples = graph.SelectTriples(null, null, null, null);
                     //In case of same S and P variable, must refine matching triples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
