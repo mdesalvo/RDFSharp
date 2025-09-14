@@ -86,15 +86,15 @@ internal static class RDFXml
                 #endregion
 
                 #region containers/collections
-                RDFGraph rdfType = graph[p: RDFVocabulary.RDF.TYPE];
-                RDFGraph rdfFirst = graph[p:  RDFVocabulary.RDF.FIRST];
-                RDFGraph rdfRest = graph[p:  RDFVocabulary.RDF.REST];
+                RDFGraph rdfType = graph[null, RDFVocabulary.RDF.TYPE, null, null];
+                RDFGraph rdfFirst = graph[null, RDFVocabulary.RDF.FIRST, null, null];
+                RDFGraph rdfRest = graph[null, RDFVocabulary.RDF.REST, null, null];
 
                 //Fetch data describing containers of the graph
                 var containersXML = new Dictionary<long, XmlNode>();
-                var containers = rdfType[o: RDFVocabulary.RDF.ALT]
-                    .UnionWith(rdfType[o: RDFVocabulary.RDF.BAG])
-                    .UnionWith(rdfType[o: RDFVocabulary.RDF.SEQ])
+                var containers = rdfType[null, null, RDFVocabulary.RDF.ALT, null]
+                    .UnionWith(rdfType[null, null, RDFVocabulary.RDF.BAG, null])
+                    .UnionWith(rdfType[null, null, RDFVocabulary.RDF.SEQ, null])
                     .Select(t => new
                     {
                         ContainerUri = (RDFResource)t.Subject,
@@ -105,12 +105,12 @@ internal static class RDFXml
                     }).ToList();
 
                 //Fetch data describing collections of the graph
-                var collections = rdfType[o: RDFVocabulary.RDF.LIST]
+                var collections = rdfType[null, null, RDFVocabulary.RDF.LIST, null]
                     .Select(t => new
                     {
                         CollectionUri = (RDFResource)t.Subject,
-                        CollectionValue = rdfFirst[s: (RDFResource)t.Subject].FirstOrDefault()?.Object,
-                        CollectionNext = rdfRest[s: (RDFResource)t.Subject].FirstOrDefault()?.Object,
+                        CollectionValue = rdfFirst[(RDFResource)t.Subject, null, null, null].FirstOrDefault()?.Object,
+                        CollectionNext = rdfRest[(RDFResource)t.Subject, null, null, null].FirstOrDefault()?.Object,
                         IsFloatingCollection = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID)),
                         HasAllResourceItems = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)t.Subject, RDFModelEnums.RDFTripleFlavors.SPO, true)
                             .Items.TrueForAll(collItem => collItem is RDFResource)
