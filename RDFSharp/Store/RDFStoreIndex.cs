@@ -29,7 +29,7 @@ internal sealed class RDFStoreIndex : IDisposable
     /// <summary>
     /// Hashed representation of the quadruples
     /// </summary>
-    internal Dictionary<long, (long qid, long cid, long sid, long pid, long oid, byte tfv)> Hashes { get; set; }
+    internal Dictionary<long, RDFHashedQuadruple> Hashes { get; set; }
 
     /// <summary>
     /// Register of the contexts
@@ -152,14 +152,10 @@ internal sealed class RDFStoreIndex : IDisposable
     /// </summary>
     internal RDFStoreIndex Add(RDFQuadruple quadruple)
     {
-        #region Guards
+        //Quadruple (Hash)
         if (Hashes.ContainsKey(quadruple.QuadrupleID))
             return this;
-        #endregion
-
-        //Quadruple (Hash)
-        Hashes.Add(quadruple.QuadrupleID, (quadruple.QuadrupleID, quadruple.Context.PatternMemberID,
-            quadruple.Subject.PatternMemberID, quadruple.Predicate.PatternMemberID, quadruple.Object.PatternMemberID, (byte)quadruple.TripleFlavor));
+        Hashes.Add(quadruple.QuadrupleID, new RDFHashedQuadruple(quadruple));
 
         //Context (Register)
         Contexts.TryAdd(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);

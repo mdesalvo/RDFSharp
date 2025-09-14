@@ -290,7 +290,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             _     => [.. Index.Hashes.Values]
         };
 
-        //Decompress hashes
+        //Decompress hashed triples
         return hashes!.ConvertAll(ht => new RDFTriple(ht, Index));
     }
 
