@@ -95,7 +95,10 @@ public static class RDFStoreUtilities
     {
         #region Utilities
         void LookupIndex(HashSet<long> lookup, out List<RDFHashedQuadruple> result)
-            => result = [.. lookup.Select(q => store.Index.Hashes[q])];
+        {
+            result = [];
+            result.AddRange(lookup.Select(q => store.Index.Hashes[q]));
+        }
         #endregion
 
         if (store != null)
