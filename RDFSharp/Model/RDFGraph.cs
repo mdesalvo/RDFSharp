@@ -234,11 +234,11 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
     /// <summary>
     /// Removes the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
-    public RDFGraph RemoveTriples(RDFResource s, RDFResource p, RDFResource o, RDFLiteral l)
+    public RDFGraph RemoveTriples(RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
     {
-        foreach (RDFTriple triple in SelectTriples(s, p, o, l))
+        foreach (RDFTriple triple in SelectTriples(subj, pred, obj, lit))
             Index.Remove(triple);
         return this;
     }
@@ -259,34 +259,34 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
     /// <summary>
     /// Selects the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
-    public List<RDFTriple> SelectTriples(RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
+    public List<RDFTriple> SelectTriples(RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
     {
         #region Guards
-        if (o != null && l != null)
+        if (obj != null && lit != null)
             throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
         #endregion
 
         StringBuilder queryFilters = new StringBuilder(3);
-        if (s != null) queryFilters.Append('S');
-        if (p != null) queryFilters.Append('P');
-        if (o != null) queryFilters.Append('O');
-        if (l != null) queryFilters.Append('L');
+        if (subj != null) queryFilters.Append('S');
+        if (pred != null) queryFilters.Append('P');
+        if (obj != null)  queryFilters.Append('O');
+        if (lit != null)  queryFilters.Append('L');
         List<RDFHashedTriple> hashedTriples = queryFilters.ToString() switch
         {
-            "S"   => [.. Index.LookupIndexBySubject(s).Select(t => Index.Hashes[t])],
-            "P"   => [.. Index.LookupIndexByPredicate(p).Select(t => Index.Hashes[t])],
-            "O"   => [.. Index.LookupIndexByObject(o).Select(t => Index.Hashes[t])],
-            "L"   => [.. Index.LookupIndexByLiteral(l).Select(t => Index.Hashes[t])],
-            "SP"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p)).Select(t => Index.Hashes[t])],
-            "SO"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByObject(o)).Select(t => Index.Hashes[t])],
-            "SL"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByLiteral(l)).Select(t => Index.Hashes[t])],
-            "PO"  => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o)).Select(t => Index.Hashes[t])],
-            "PL"  => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l)).Select(t => Index.Hashes[t])],
-            "SPO" => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o))).Select(t => Index.Hashes[t])],
-            "SPL" => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l))).Select(t => Index.Hashes[t])],
+            "S"   => [.. Index.LookupIndexBySubject(subj).Select(t => Index.Hashes[t])],
+            "P"   => [.. Index.LookupIndexByPredicate(pred).Select(t => Index.Hashes[t])],
+            "O"   => [.. Index.LookupIndexByObject(obj).Select(t => Index.Hashes[t])],
+            "L"   => [.. Index.LookupIndexByLiteral(lit).Select(t => Index.Hashes[t])],
+            "SP"  => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred)).Select(t => Index.Hashes[t])],
+            "SO"  => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByObject(obj)).Select(t => Index.Hashes[t])],
+            "SL"  => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByLiteral(lit)).Select(t => Index.Hashes[t])],
+            "PO"  => [.. Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj)).Select(t => Index.Hashes[t])],
+            "PL"  => [.. Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit)).Select(t => Index.Hashes[t])],
+            "SPO" => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByObject(obj))).Select(t => Index.Hashes[t])],
+            "SPL" => [.. Index.LookupIndexBySubject(subj).Intersect(Index.LookupIndexByPredicate(pred).Intersect(Index.LookupIndexByLiteral(lit))).Select(t => Index.Hashes[t])],
             _     => [.. Index.Hashes.Values]
         };
 
@@ -296,11 +296,11 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
 
     /// <summary>
     /// Gets the subgraph containing the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
-    public RDFGraph this[RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null]
-        => new RDFGraph(SelectTriples(s, p, o, l));
+    public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
+        => new RDFGraph(SelectTriples(subj, pred, obj, lit));
     #endregion
 
     #region Set

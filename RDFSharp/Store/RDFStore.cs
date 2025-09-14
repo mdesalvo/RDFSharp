@@ -83,9 +83,9 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
 
     /// <summary>
     /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
-    public abstract RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
+    public abstract RDFStore RemoveQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
 
     /// <summary>
     /// Clears the quadruples of the store
@@ -101,18 +101,18 @@ public abstract class RDFStore : RDFDataSource, IEquatable<RDFStore>
 
     /// <summary>
     /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    public abstract List<RDFQuadruple> SelectQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
+    public abstract List<RDFQuadruple> SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
 
     /// <summary>
     /// Gets a memory store containing quadruples which satisfy the given combination of CSPOL accessors<br/>
-    /// (null values are handled as * selectors. Object and Literal params must be mutually exclusive!)
+    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
-    public RDFMemoryStore this[RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null]
-        => new RDFMemoryStore(SelectQuadruples(c, s, p, o, l));
+    public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
+        => new RDFMemoryStore(SelectQuadruples(ctx, subj, pred, obj, lit));
 
     /// <summary>
     /// Gets a list containing the graphs saved in the store
