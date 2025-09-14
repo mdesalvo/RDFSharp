@@ -186,13 +186,6 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Asynchronously builds the reification graph of the triple and includes the given annotations.<br/>
-        /// Use this method to assert knowledge about the triple when it IS NOT rdf:TripleTerm
-        /// </summary>
-        public Task<RDFGraph> ReifyTripleAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> tripleAnnotations = null)
-            => Task.Run(() => ReifyTriple(tripleAnnotations));
-
-        /// <summary>
         /// Builds the reification graph of the triple and includes the given annotations.<br/>
         /// Use this method to assert knowledge about the triple when it IS rdf:TripleTerm (RDF 1.2)
         /// </summary>
@@ -229,13 +222,6 @@ namespace RDFSharp.Model
 
             return reifGraph;
         }
-
-        /// <summary>
-        /// Asynchonously builds the reification graph of the triple and includes the given annotations.<br/>
-        /// Use this method to assert knowledge about the triple when it IS rdf:TripleTerm (RDF 1.2)
-        /// </summary>
-        public Task<RDFGraph> ReifyTripleTermAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> tripleAnnotations=null)
-            => Task.Run(() => ReifyTripleTerm(tripleAnnotations));
         #endregion
     }
 

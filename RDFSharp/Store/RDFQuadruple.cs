@@ -216,13 +216,6 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Asynchronously builds the reification store of the quadruple and includes the given annotations.<br/>
-        /// Use this method to assert knowledge about the quadruple when it IS NOT rdf:TripleTerm
-        /// </summary>
-        public Task<RDFMemoryStore> ReifyQuadrupleAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> quadrupleAnnotations=null)
-            => Task.Run(() => ReifyQuadruple(quadrupleAnnotations));
-
-        /// <summary>
         /// Builds the reification store of the quadruple and includes the given annotations.<br/>
         /// Use this method to assert knowledge about the quadruple when it IS rdf:TripleTerm
         /// </summary>
@@ -259,13 +252,6 @@ namespace RDFSharp.Store
 
             return reifStore;
         }
-
-        /// <summary>
-        /// Asynchronously builds the reification store of the quadruple and includes the given annotations.<br/>
-        /// Use this method to assert knowledge about the quadruple when it IS rdf:TripleTerm
-        /// </summary>
-        public Task<RDFMemoryStore> ReifyQuadrupleTermAsync(List<(RDFResource annPredicate, RDFPatternMember annObject)> quadrupleAnnotations = null)
-            => Task.Run(() => ReifyQuadrupleTerm(quadrupleAnnotations));
         #endregion
     }
 
