@@ -143,7 +143,8 @@ internal sealed class RDFGraphIndex : IDisposable
         Hashes.Add(triple.TripleID, new RDFHashedTriple(triple));
 
         //Subject (Register)
-        Resources.TryAdd(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
+        if (!Resources.ContainsKey(triple.Subject.PatternMemberID))
+            Resources.Add(triple.Subject.PatternMemberID, (RDFResource)triple.Subject);
         //Subject (Index)
         if (!IDXSubjects.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex))
             IDXSubjects.Add(triple.Subject.PatternMemberID, [triple.TripleID]);
@@ -151,7 +152,8 @@ internal sealed class RDFGraphIndex : IDisposable
             subjectsIndex.Add(triple.TripleID);
 
         //Predicate (Register)
-        Resources.TryAdd(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
+        if (!Resources.ContainsKey(triple.Predicate.PatternMemberID))
+            Resources.Add(triple.Predicate.PatternMemberID, (RDFResource)triple.Predicate);
         //Predicate (Index)
         if (!IDXPredicates.TryGetValue(triple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex))
             IDXPredicates.Add(triple.Predicate.PatternMemberID, [triple.TripleID]);
@@ -162,7 +164,8 @@ internal sealed class RDFGraphIndex : IDisposable
         if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
         {
             //Register
-            Resources.TryAdd(triple.Object.PatternMemberID, (RDFResource)triple.Object);
+            if (!Resources.ContainsKey(triple.Object.PatternMemberID))
+                Resources.Add(triple.Object.PatternMemberID, (RDFResource)triple.Object);
             //Index
             if (!IDXObjects.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> objectsIndex))
                 IDXObjects.Add(triple.Object.PatternMemberID, [triple.TripleID]);
@@ -174,7 +177,8 @@ internal sealed class RDFGraphIndex : IDisposable
         else
         {
             //Register
-            Literals.TryAdd(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
+            if (!Literals.ContainsKey(triple.Object.PatternMemberID))
+                Literals.Add(triple.Object.PatternMemberID, (RDFLiteral)triple.Object);
             //Index
             if (!IDXLiterals.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> literalsIndex))
                 IDXLiterals.Add(triple.Object.PatternMemberID, [triple.TripleID]);
@@ -197,7 +201,7 @@ internal sealed class RDFGraphIndex : IDisposable
 
         //Subject (Index)
         if (IDXSubjects.TryGetValue(triple.Subject.PatternMemberID, out HashSet<long> subjectsIndex)
-             && subjectsIndex.Contains(triple.TripleID))
+            && subjectsIndex.Contains(triple.TripleID))
         {
             subjectsIndex.Remove(triple.TripleID);
             if (subjectsIndex.Count == 0)
@@ -206,7 +210,7 @@ internal sealed class RDFGraphIndex : IDisposable
 
         //Predicate (Index)
         if (IDXPredicates.TryGetValue(triple.Predicate.PatternMemberID, out HashSet<long> predicatesIndex)
-             && predicatesIndex.Contains(triple.TripleID))
+            && predicatesIndex.Contains(triple.TripleID))
         {
             predicatesIndex.Remove(triple.TripleID);
             if (predicatesIndex.Count == 0)
@@ -217,7 +221,7 @@ internal sealed class RDFGraphIndex : IDisposable
         if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
         {
             if (IDXObjects.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> objectsIndex)
-                 && objectsIndex.Contains(triple.TripleID))
+                && objectsIndex.Contains(triple.TripleID))
             {
                 objectsIndex.Remove(triple.TripleID);
                 if (objectsIndex.Count == 0)
@@ -229,7 +233,7 @@ internal sealed class RDFGraphIndex : IDisposable
         else
         {
             if (IDXLiterals.TryGetValue(triple.Object.PatternMemberID, out HashSet<long> literalsIndex)
-                 && literalsIndex.Contains(triple.TripleID))
+                && literalsIndex.Contains(triple.TripleID))
             {
                 literalsIndex.Remove(triple.TripleID);
                 if (literalsIndex.Count == 0)
@@ -239,40 +243,32 @@ internal sealed class RDFGraphIndex : IDisposable
 
         //Subject (Register)
         if (!IDXSubjects.ContainsKey(triple.Subject.PatternMemberID)
-             && !IDXPredicates.ContainsKey(triple.Subject.PatternMemberID)
-             && !IDXObjects.ContainsKey(triple.Subject.PatternMemberID))
-        {
+            && !IDXPredicates.ContainsKey(triple.Subject.PatternMemberID)
+            && !IDXObjects.ContainsKey(triple.Subject.PatternMemberID))
             Resources.Remove(triple.Subject.PatternMemberID);
-        }
 
         //Predicate (Register)
         if (!IDXSubjects.ContainsKey(triple.Predicate.PatternMemberID)
-             && !IDXPredicates.ContainsKey(triple.Predicate.PatternMemberID)
-             && !IDXObjects.ContainsKey(triple.Predicate.PatternMemberID))
-        {
+            && !IDXPredicates.ContainsKey(triple.Predicate.PatternMemberID)
+            && !IDXObjects.ContainsKey(triple.Predicate.PatternMemberID))
             Resources.Remove(triple.Predicate.PatternMemberID);
-        }
 
         //Object (Register)
         if (triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
         {
             if (!IDXSubjects.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXPredicates.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXObjects.ContainsKey(triple.Object.PatternMemberID))
-            {
+                && !IDXPredicates.ContainsKey(triple.Object.PatternMemberID)
+                && !IDXObjects.ContainsKey(triple.Object.PatternMemberID))
                 Resources.Remove(triple.Object.PatternMemberID);
-            }
         }
 
         //Literal (Register)
         else
         {
             if (!IDXSubjects.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXPredicates.ContainsKey(triple.Object.PatternMemberID)
-                 && !IDXLiterals.ContainsKey(triple.Object.PatternMemberID))
-            {
+                && !IDXPredicates.ContainsKey(triple.Object.PatternMemberID)
+                && !IDXLiterals.ContainsKey(triple.Object.PatternMemberID))
                 Literals.Remove(triple.Object.PatternMemberID);
-            }
         }
 
         return this;
