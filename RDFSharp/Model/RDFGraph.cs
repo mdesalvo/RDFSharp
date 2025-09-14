@@ -22,7 +22,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
@@ -232,12 +231,120 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
         return this;
     }
 
-    /// Removes the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
-    public RDFGraph RemoveTriples(RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
+    /// <summary>
+    /// Removes the triples with the given subject
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubject(RDFResource subj)
     {
-        foreach (RDFTriple triple in SelectTriples(subj, pred, obj, lit))
-            Index.Remove(triple);
+        if (subj != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given predicate
+    /// </summary>
+    public RDFGraph RemoveTriplesByPredicate(RDFResource pred)
+    {
+        if (pred != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesByPredicate(pred))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given object
+    /// </summary>
+    public RDFGraph RemoveTriplesByObject(RDFResource obj)
+    {
+        if (obj != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesByObject(obj))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given literal
+    /// </summary>
+    public RDFGraph RemoveTriplesByLiteral(RDFLiteral lit)
+    {
+        if (lit != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesByLiteral(lit))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given subject and predicate
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubjectPredicate(RDFResource subj, RDFResource pred)
+    {
+        if (subj != null && pred != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByPredicate(pred))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given subject and object
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubjectObject(RDFResource subj, RDFResource obj)
+    {
+        if (subj != null && obj != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByObject(obj))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given subject and literal
+    /// </summary>
+    public RDFGraph RemoveTriplesBySubjectLiteral(RDFResource subj, RDFLiteral lit)
+    {
+        if (subj != null && lit != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesBySubject(subj).SelectTriplesByLiteral(lit))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given predicate and object
+    /// </summary>
+    public RDFGraph RemoveTriplesByPredicateObject(RDFResource pred, RDFResource obj)
+    {
+        if (pred != null && obj != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByObject(obj))
+                Index.Remove(triple);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the triples with the given predicate and literal
+    /// </summary>
+    public RDFGraph RemoveTriplesByPredicateLiteral(RDFResource pred, RDFLiteral lit)
+    {
+        if (pred != null && lit != null)
+        {
+            foreach (RDFTriple triple in SelectTriplesByPredicate(pred).SelectTriplesByLiteral(lit))
+                Index.Remove(triple);
+        }
         return this;
     }
 
@@ -255,81 +362,47 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     public bool ContainsTriple(RDFTriple triple)
         => triple != null && Index.Hashes.ContainsKey(triple.TripleID);
 
-    /// Selects the triples which satisfy the given combination of SPOL accessors<br/>
-    /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
-    public List<RDFTriple> SelectTriples(RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
-    {
-        #region Guards
-        if (obj != null && lit != null)
-            throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
-        #endregion
-
-        #region Utilities
-        void LookupIndex(HashSet<long> lookup, out List<RDFHashedTriple> result)
-        {
-            result = [];
-            result.AddRange(lookup.Select(t => Index.Hashes[t]));
-        }
-        #endregion
-
-        StringBuilder queryFilters = new StringBuilder(4);
-        List<RDFHashedTriple> S=null, P=null, O=null, L=null;
-
-        //Filter by Subject
-        if (subj != null)
-        {
-            queryFilters.Append('S');
-            LookupIndex(Index.LookupIndexBySubject(subj), out S);
-        }
-
-        //Filter by Predicate
-        if (pred != null)
-        {
-            queryFilters.Append('P');
-            LookupIndex(Index.LookupIndexByPredicate(pred), out P);
-        }
-
-        //Filter by Object
-        if (obj != null)
-        {
-            queryFilters.Append('O');
-            LookupIndex(Index.LookupIndexByObject(obj), out O);
-        }
-
-        //Filter by Literal
-        if (lit != null)
-        {
-            queryFilters.Append('L');
-            LookupIndex(Index.LookupIndexByLiteral(lit), out L);
-        }
-
-        List<RDFHashedTriple> hashedTriples = queryFilters.ToString() switch
-        {
-            "S" => S,
-            "P" => P,
-            "O" => O,
-            "L" => L,
-            "SP" => [.. S!.Intersect(P!)],
-            "SO" => [.. S!.Intersect(O!)],
-            "SL" => [.. S!.Intersect(L!)],
-            "PO" => [.. P!.Intersect(O!)],
-            "PL" => [.. P!.Intersect(L!)],
-            "SPO" => [.. S!.Intersect(P!).Intersect(O!)],
-            "SPL" => [.. S!.Intersect(P!).Intersect(L!)],
-            _ => [.. Index.Hashes.Values]
-        };
-
-        //Decompress hashed triples
-        return hashedTriples!.ConvertAll(ht => new RDFTriple(ht, Index));
-    }
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified subject
+    /// </summary>
+    public RDFGraph SelectTriplesBySubject(RDFResource subj)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, null, null, null));
 
     /// <summary>
-    /// Gets the subgraph containing the triples which satisfy the given combination of SPOL accessors<br/>
+    /// Gets the subgraph containing triples with the specified predicate
+    /// </summary>
+    public RDFGraph SelectTriplesByPredicate(RDFResource pred)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, pred, null, null));
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified object
+    /// </summary>
+    public RDFGraph SelectTriplesByObject(RDFResource obj)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, obj, null));
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified literal
+    /// </summary>
+    public RDFGraph SelectTriplesByLiteral(RDFLiteral lit)
+        => new RDFGraph(RDFModelUtilities.SelectTriples(this, null, null, null, lit));
+
+    /// <summary>
+    /// Gets the subgraph containing triples with the specified combination of SPOL accessors<br/>
     /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
     /// </summary>
     /// <exception cref="RDFModelException"></exception>
     public RDFGraph this[RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-        => new RDFGraph(SelectTriples(subj, pred, obj, lit));
+    {
+        get
+        {
+            #region Guards
+            if (obj != null && lit != null)
+                throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
+            #endregion
+
+            return new RDFGraph(RDFModelUtilities.SelectTriples(this, subj, pred, obj, lit));
+        }
+    }
     #endregion
 
     #region Set

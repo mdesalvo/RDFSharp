@@ -271,9 +271,13 @@ public class RDFCollectionTest
 
         Assert.IsNotNull(graph);
         Assert.AreEqual(6, graph.TriplesCount);
-        Assert.AreEqual(2, graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST, null].TriplesCount);
-        Assert.AreEqual(2, graph[null, RDFVocabulary.RDF.FIRST, null, null].TriplesCount);
-        Assert.AreEqual(2, graph[null, RDFVocabulary.RDF.REST, null, null].TriplesCount);
+        Assert.AreEqual(2, graph.SelectTriplesByPredicate(RDFVocabulary.RDF.TYPE)
+            .SelectTriplesByObject(RDFVocabulary.RDF.LIST)
+            .TriplesCount);
+        Assert.AreEqual(2, graph.SelectTriplesByPredicate(RDFVocabulary.RDF.FIRST)
+            .TriplesCount);
+        Assert.AreEqual(2, graph.SelectTriplesByPredicate(RDFVocabulary.RDF.REST)
+            .TriplesCount);
     }
     #endregion
 }

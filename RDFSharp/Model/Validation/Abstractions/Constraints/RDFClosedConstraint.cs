@@ -84,7 +84,8 @@ public sealed class RDFClosedConstraint : RDFConstraint
             foreach (RDFPatternMember valueNode in valueNodes)
                 if (valueNode is RDFResource valueNodeResource)
                 {
-                    foreach (RDFTriple unallowedTriple in dataGraph[valueNodeResource, null, null, null].Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
+                    RDFGraph valuenodeResourceGraph = dataGraph.SelectTriplesBySubject(valueNodeResource);
+                    foreach (RDFTriple unallowedTriple in valuenodeResourceGraph.Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
                         report.AddResult(new RDFValidationResult(shape,
                             RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT,
                             valueNodeResource,
