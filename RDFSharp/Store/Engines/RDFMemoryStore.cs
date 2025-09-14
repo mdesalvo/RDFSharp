@@ -566,7 +566,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
                 }
 
                 // Read response data
-                await using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+                using (Stream responseStream = await response.Content.ReadAsStreamAsync())
                 {
                     // N-QUADS
                     if (responseContentType.Contains("application/n-quads", StringComparison.Ordinal))

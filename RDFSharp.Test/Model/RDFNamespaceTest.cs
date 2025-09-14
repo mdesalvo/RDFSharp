@@ -136,7 +136,7 @@ public class RDFNamespaceTest
         ns.SetTemporary(true);
         Assert.IsTrue(ns.IsTemporary);
     }
-
+    
     [TestMethod]
     [DataRow("ex", "http://example.org/")]
     public void ShouldSetReservedNamespace(string prefix, string uri)

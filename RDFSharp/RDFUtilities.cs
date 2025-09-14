@@ -37,7 +37,7 @@ internal static partial class RDFUtilities
     internal const string StartingQuotePattern = @"^""";
     internal const string EndingQuotePattern = @"""$";
     internal const string LongLiteralPattern = "[\n\r\t\"]";
-    internal const string QueryStringStartPattern = @"^\?";
+    internal const string QueryStringStartPattern = @"^\?"; 
     /*Prefix*/
     internal const string PrefixPattern = @"^[a-zA-Z0-9_\-]+$";
     /*Unicode*/

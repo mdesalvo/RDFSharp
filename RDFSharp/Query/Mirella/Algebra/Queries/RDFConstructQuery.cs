@@ -172,7 +172,7 @@ public sealed class RDFConstructQuery : RDFQuery
     /// </summary>
     public Task<RDFConstructQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         => Task.Run(() => ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
-
+    
     /// <summary>
     /// Applies the given raw string CONSTRUCT query to the given SPARQL endpoint
     /// </summary>

@@ -98,7 +98,7 @@ internal static class RDFXml
                     .Select(t => new
                     {
                         ContainerUri = (RDFResource)t.Subject,
-                        ContainerType =
+                        ContainerType = 
                             t.Object.Equals(RDFVocabulary.RDF.ALT) ? RDFModelEnums.RDFContainerTypes.Alt :
                             t.Object.Equals(RDFVocabulary.RDF.BAG) ? RDFModelEnums.RDFContainerTypes.Bag : RDFModelEnums.RDFContainerTypes.Seq,
                         IsFloatingContainer = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID))

@@ -106,7 +106,7 @@ public sealed class RDFAskQuery : RDFQuery
     /// </summary>
     public Task<RDFAskQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions = null)
         => Task.Run(() => ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
-
+    
     /// <summary>
     /// Applies the given raw string ASK query to the given SPARQL endpoint
     /// </summary>

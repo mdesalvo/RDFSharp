@@ -180,7 +180,7 @@ public sealed class RDFSelectQuery : RDFQuery
     /// </summary>
     public Task<RDFSelectQueryResult> ApplyToSPARQLEndpointAsync(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
         => Task.Run(() => ApplyToSPARQLEndpoint(sparqlEndpoint, sparqlEndpointQueryOptions));
-
+    
     /// <summary>
     /// Applies the given raw string SELECT query to the given SPARQL endpoint
     /// </summary>

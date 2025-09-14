@@ -356,7 +356,7 @@ public class RDFGraphTest
 
         Assert.IsEmpty(graph);
     }
-
+    
     [TestMethod]
     public void ShouldRemoveTriplesBySubject()
     {
@@ -703,7 +703,7 @@ public class RDFGraphTest
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
     }
-
+    
     [TestMethod]
     public void ShouldSelectPTriples()
     {
@@ -1002,7 +1002,7 @@ public class RDFGraphTest
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
     }
-
+    
     [TestMethod]
     public void ShouldSelectPLTriples()
     {
@@ -1052,7 +1052,7 @@ public class RDFGraphTest
         Assert.IsNotNull(result);
         Assert.IsEmpty(result);
     }
-
+    
     [TestMethod]
     public void ShouldSelectSPOTriples()
     {
