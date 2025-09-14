@@ -127,6 +127,28 @@ public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
         LazyQuadrupleID = new Lazy<long>(() => RDFModelUtilities.CreateHash(ToString()));
         LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
     }
+
+    /// <summary>
+    /// Builds a quadruple from the given hashes
+    /// </summary>
+    internal RDFQuadruple((long qid, long cid, long sid, long pid, long oid, byte tfv) hashes, RDFStoreIndex index)
+    {
+        Context = index.Contexts[hashes.cid];
+        Subject = index.Resources[hashes.sid];
+        Predicate = index.Resources[hashes.pid];
+        if (hashes.tfv == 1) //SPO
+        {
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPO;
+            Object = index.Resources[hashes.oid];
+        }
+        else
+        {
+            TripleFlavor = RDFModelEnums.RDFTripleFlavors.SPL;
+            Object = index.Literals[hashes.oid];
+        }
+        LazyQuadrupleID = new Lazy<long>(() => hashes.qid);
+        LazyReificationSubject = new Lazy<RDFResource>(() => new RDFResource($"bnode:{QuadrupleID}"));
+    }
     #endregion
 
     #region Interfaces

@@ -24,7 +24,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +39,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     /// Count of the store's quadruples
     /// </summary>
     public override long QuadruplesCount
-        => Quadruples.Rows.Count;
+        => Index.Hashes.Count;
 
     /// <summary>
     /// Gets the enumerator on the store's quadruples for iteration
@@ -49,22 +48,19 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     {
         get
         {
-            Dictionary<long, RDFContext> contexts = (Dictionary<long, RDFContext>)Quadruples.ExtendedProperties["CTX"]!;
-            Dictionary<long, RDFResource> resources = (Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"]!;
-            Dictionary<long, RDFLiteral> literals = (Dictionary<long, RDFLiteral>)Quadruples.ExtendedProperties["LIT"]!;
-            foreach (DataRow quadruple in Quadruples.Rows)
+            foreach ((_, long cid, long sid, long pid, long oid, byte tfv) in Index.Hashes.Values)
             {
-                yield return quadruple.Field<byte>("TFV") == 1
-                    ? new RDFQuadruple(contexts[quadruple.Field<long>("CID")], resources[quadruple.Field<long>("SID")], resources[quadruple.Field<long>("PID")], resources[quadruple.Field<long>("OID")])
-                    : new RDFQuadruple(contexts[quadruple.Field<long>("CID")], resources[quadruple.Field<long>("SID")], resources[quadruple.Field<long>("PID")], literals[quadruple.Field<long>("OID")]);
+                yield return tfv == 1 //SPO
+                    ? new RDFQuadruple(Index.Contexts[cid], Index.Resources[sid], Index.Resources[pid], Index.Resources[oid])
+                    : new RDFQuadruple(Index.Contexts[cid], Index.Resources[sid], Index.Resources[pid], Index.Literals[oid]);
             }
         }
     }
 
     /// <summary>
-    /// Table storing the hashed representations of the quadruples
+    /// Index on the quadruples of the store
     /// </summary>
-    internal DataTable Quadruples { get; set; }
+    internal RDFStoreIndex Index { get; set; }
 
     /// <summary>
     /// Identifier of the store
@@ -86,17 +82,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         StoreType = "MEMORY";
         StoreGUID = Guid.NewGuid().ToString("N");
         StoreID = RDFModelUtilities.CreateHash(ToString());
-        Quadruples = new DataTable();
-        Quadruples.Columns.Add("QID", typeof(long));
-        Quadruples.Columns.Add("CID", typeof(long));
-        Quadruples.Columns.Add("SID", typeof(long));
-        Quadruples.Columns.Add("PID", typeof(long));
-        Quadruples.Columns.Add("OID", typeof(long));
-        Quadruples.Columns.Add("TFV", typeof(byte));
-        Quadruples.PrimaryKey = [Quadruples.Columns["QID"]];
-        Quadruples.ExtendedProperties.Add("CTX", new Dictionary<long, RDFContext>());
-        Quadruples.ExtendedProperties.Add("RES", new Dictionary<long, RDFResource>());
-        Quadruples.ExtendedProperties.Add("LIT", new Dictionary<long, RDFLiteral>());
+        Index = new RDFStoreIndex();
     }
 
     /// <summary>
@@ -160,10 +146,8 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
         if (disposing)
         {
-            Quadruples?.Clear();
-            Quadruples?.ExtendedProperties.Clear();
-            Quadruples?.Dispose();
-            Quadruples = null;
+            Index?.Dispose();
+            Index = null;
         }
 
         Disposed = true;
@@ -182,7 +166,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
         {
             RDFContext graphCtx = new RDFContext(graph.Context);
             foreach (RDFTriple triple in graph)
-                AddQuadruple(new RDFQuadruple(graphCtx, triple));
+                Index.Add(new RDFQuadruple(graphCtx, triple));
         }
         return this;
     }
@@ -193,31 +177,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     public override RDFStore AddQuadruple(RDFQuadruple quadruple)
     {
         if (quadruple != null)
-        {
-            #region Guards
-            if (Quadruples.Rows.Find(quadruple.QuadrupleID) is not null)
-                return this;
-            #endregion
-
-            //Merge the given quadruple into the table
-            DataRow addRow = Quadruples.NewRow();
-            addRow["QID"] = quadruple.QuadrupleID;
-            addRow["CID"] = quadruple.Context.PatternMemberID;
-            addRow["SID"] = quadruple.Subject.PatternMemberID;
-            addRow["PID"] = quadruple.Predicate.PatternMemberID;
-            addRow["OID"] = quadruple.Object.PatternMemberID;
-            addRow["TFV"] = quadruple.TripleFlavor;
-            Quadruples.Rows.Add(addRow);
-
-            //Update metadata with elements of the given quadruple
-            ((Dictionary<long, RDFContext>)Quadruples.ExtendedProperties["CTX"])!.TryAdd(quadruple.Context.PatternMemberID, (RDFContext)quadruple.Context);
-            ((Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"])!.TryAdd(quadruple.Subject.PatternMemberID, (RDFResource)quadruple.Subject);
-            ((Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"])!.TryAdd(quadruple.Predicate.PatternMemberID, (RDFResource)quadruple.Predicate);
-            if (quadruple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
-                ((Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"])!.TryAdd(quadruple.Object.PatternMemberID, (RDFResource)quadruple.Object);
-            else
-                ((Dictionary<long, RDFLiteral>)Quadruples.ExtendedProperties["LIT"])!.TryAdd(quadruple.Object.PatternMemberID, (RDFLiteral)quadruple.Object);
-        }
+            Index.Add(quadruple);
         return this;
     }
     #endregion
@@ -229,32 +189,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     public override RDFStore RemoveQuadruple(RDFQuadruple quadruple)
     {
         if (quadruple != null)
-        {
-            //Remove the given triple from the table
-            DataRow delRow = Quadruples.Rows.Find(quadruple.QuadrupleID);
-            if (delRow is null)
-                return this;
-            Quadruples.Rows.Remove(delRow);
-
-            //Update metadata with elements from the given triple
-            if (Quadruples.Select($"CID = {quadruple.Context.PatternMemberID}").Length == 0)
-                ((Dictionary<long, RDFContext>)Quadruples.ExtendedProperties["CTX"])!.Remove(quadruple.Context.PatternMemberID);
-            if (Quadruples.Select($"SID = {quadruple.Subject.PatternMemberID} OR PID = {quadruple.Subject.PatternMemberID} OR (OID = {quadruple.Subject.PatternMemberID} AND TFV = 1)").Length == 0)
-                ((Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"])!.Remove(quadruple.Subject.PatternMemberID);
-            if (Quadruples.Select($"SID = {quadruple.Predicate.PatternMemberID} OR PID = {quadruple.Predicate.PatternMemberID} OR (OID = {quadruple.Predicate.PatternMemberID} AND TFV = 1)").Length == 0)
-                ((Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"])!.Remove(quadruple.Predicate.PatternMemberID);
-            switch (quadruple.TripleFlavor)
-            {
-                case RDFModelEnums.RDFTripleFlavors.SPO:
-                    if (Quadruples.Select($"SID = {quadruple.Object.PatternMemberID} OR PID = {quadruple.Object.PatternMemberID} OR (OID = {quadruple.Object.PatternMemberID} AND TFV = 1)").Length == 0)
-                        ((Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"])!.Remove(quadruple.Object.PatternMemberID);
-                    break;
-                case RDFModelEnums.RDFTripleFlavors.SPL:
-                    if (Quadruples.Select($"OID = {quadruple.Object.PatternMemberID} AND TFV = 2").Length == 0)
-                        ((Dictionary<long, RDFLiteral>)Quadruples.ExtendedProperties["LIT"])!.Remove(quadruple.Object.PatternMemberID);
-                    break;
-            }
-        }
+            Index.Remove(quadruple);
         return this;
     }
 
@@ -265,7 +200,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     public override RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
     {
         foreach (RDFQuadruple quadruple in SelectQuadruples(c, s, p, o, l))
-            RemoveQuadruple(quadruple);
+            Index.Remove(quadruple);
         return this;
     }
 
@@ -273,12 +208,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     /// Clears the quadruples of the store
     /// </summary>
     public override void ClearQuadruples()
-    {
-        Quadruples.Clear();
-        ((Dictionary<long, RDFContext>)Quadruples.ExtendedProperties["CTX"])!.Clear();
-        ((Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"])!.Clear();
-        ((Dictionary<long, RDFLiteral>)Quadruples.ExtendedProperties["LIT"])!.Clear();
-    }
+        => Index.Clear();
     #endregion
 
     #region Select
@@ -286,7 +216,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
     /// Checks if the store contains the given quadruple
     /// </summary>
     public override bool ContainsQuadruple(RDFQuadruple quadruple)
-        => quadruple is not null && Quadruples.Rows.Find(quadruple.QuadrupleID) is not null;
+        => quadruple != null && Index.Hashes.ContainsKey(quadruple.QuadrupleID);
 
     /// <summary>
     /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
@@ -300,64 +230,42 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!");
         #endregion
 
-        //Query
-        Dictionary<long, RDFContext> contexts = (Dictionary<long, RDFContext>)Quadruples.ExtendedProperties["CTX"]!;
-        Dictionary<long, RDFResource> resources = (Dictionary<long, RDFResource>)Quadruples.ExtendedProperties["RES"]!;
-        Dictionary<long, RDFLiteral> literals = (Dictionary<long, RDFLiteral>)Quadruples.ExtendedProperties["LIT"]!;
         StringBuilder queryFilters = new StringBuilder(4);
         if (c != null) queryFilters.Append('C');
         if (s != null) queryFilters.Append('S');
         if (p != null) queryFilters.Append('P');
         if (o != null) queryFilters.Append('O');
         if (l != null) queryFilters.Append('L');
-        DataRow[] selectedQuadruples = queryFilters.ToString() switch
+        List<(long qid, long cid, long sid, long pid, long oid, byte tfv)> hashes = queryFilters.ToString() switch
         {
-            "C"    => Quadruples.Select($"CID = {c!.PatternMemberID}"),
-            "S"    => Quadruples.Select($"SID = {s!.PatternMemberID}"),
-            "P"    => Quadruples.Select($"PID = {p!.PatternMemberID}"),
-            "O"    => Quadruples.Select($"OID = {o!.PatternMemberID} AND TFV = 1"),
-            "L"    => Quadruples.Select($"OID = {l!.PatternMemberID} AND TFV = 2"),
-            "CS"   => Quadruples.Select($"CID = {c!.PatternMemberID} AND SID = {s!.PatternMemberID}"),
-            "CP"   => Quadruples.Select($"CID = {c!.PatternMemberID} AND PID = {p!.PatternMemberID}"),
-            "CO"   => Quadruples.Select($"CID = {c!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "CL"   => Quadruples.Select($"CID = {c!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "CSP"  => Quadruples.Select($"CID = {c!.PatternMemberID} AND SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID}"),
-            "CSO"  => Quadruples.Select($"CID = {c!.PatternMemberID} AND SID = {s!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "CSL"  => Quadruples.Select($"CID = {c!.PatternMemberID} AND SID = {s!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "CPO"  => Quadruples.Select($"CID = {c!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "CPL"  => Quadruples.Select($"CID = {c!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "CSPO" => Quadruples.Select($"CID = {c!.PatternMemberID} AND SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "CSPL" => Quadruples.Select($"CID = {c!.PatternMemberID} AND SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "SP"   => Quadruples.Select($"SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID}"),
-            "SO"   => Quadruples.Select($"SID = {s!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "SL"   => Quadruples.Select($"SID = {s!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "PO"   => Quadruples.Select($"PID = {p!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "PL"   => Quadruples.Select($"PID = {p!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            "SPO"  => Quadruples.Select($"SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {o!.PatternMemberID} AND TFV = 1"),
-            "SPL"  => Quadruples.Select($"SID = {s!.PatternMemberID} AND PID = {p!.PatternMemberID} AND OID = {l!.PatternMemberID} AND TFV = 2"),
-            _      => [.. Quadruples.Rows.Cast<DataRow>()]
+            "C"    => [.. Index.LookupIndexByContext(c).Select(q => Index.Hashes[q])],
+            "S"    => [.. Index.LookupIndexBySubject(s).Select(q => Index.Hashes[q])],
+            "P"    => [.. Index.LookupIndexByPredicate(p).Select(q => Index.Hashes[q])],
+            "O"    => [.. Index.LookupIndexByObject(o).Select(q => Index.Hashes[q])],
+            "L"    => [.. Index.LookupIndexByLiteral(l).Select(q => Index.Hashes[q])],
+            "CS"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s)).Select(q => Index.Hashes[q])],
+            "CP"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByPredicate(p)).Select(q => Index.Hashes[q])],
+            "CO"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByObject(o)).Select(q => Index.Hashes[q])],
+            "CL"   => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByLiteral(l)).Select(q => Index.Hashes[q])],
+            "CSP"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p))).Select(q => Index.Hashes[q])],
+            "CSO"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByObject(o))).Select(q => Index.Hashes[q])],
+            "CSL"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByLiteral(l))).Select(q => Index.Hashes[q])],
+            "CPO"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o))).Select(q => Index.Hashes[q])],
+            "CPL"  => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l))).Select(q => Index.Hashes[q])],
+            "CSPO" => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o)))).Select(t => Index.Hashes[t])],
+            "CSPL" => [.. Index.LookupIndexByContext(c).Intersect(Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l)))).Select(t => Index.Hashes[t])],
+            "SP"   => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p)).Select(q => Index.Hashes[q])],
+            "SO"   => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByObject(o)).Select(q => Index.Hashes[q])],
+            "SL"   => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByLiteral(l)).Select(q => Index.Hashes[q])],
+            "PO"   => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o)).Select(q => Index.Hashes[q])],
+            "PL"   => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l)).Select(q => Index.Hashes[q])],
+            "SPO"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o))).Select(q => Index.Hashes[q])],
+            "SPL"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l))).Select(q => Index.Hashes[q])],
+            _      => [.. Index.Hashes.Values]
         };
 
-        //Decompression
-        List<RDFQuadruple> result = new List<RDFQuadruple>(selectedQuadruples.Length);
-        foreach (DataRow selectedQuadruple in selectedQuadruples)
-        {
-            RDFContext ctx = contexts[selectedQuadruple.Field<long>("CID")];
-            RDFResource subj = resources[selectedQuadruple.Field<long>("SID")];
-            RDFResource pred = resources[selectedQuadruple.Field<long>("PID")];
-            switch (selectedQuadruple.Field<byte>("TFV"))
-            {
-                case 1: //SPO
-                    RDFResource obj = resources[selectedQuadruple.Field<long>("OID")];
-                    result.Add(new RDFQuadruple(ctx, subj, pred, obj));
-                    break;
-                case 2: //SPL
-                    RDFLiteral lit = literals[selectedQuadruple.Field<long>("OID")];
-                    result.Add(new RDFQuadruple(ctx, subj, pred, lit));
-                    break;
-            }
-        }
-        return result;
+        //Decompress hashes
+        return hashes!.ConvertAll(hq => new RDFQuadruple(hq, Index));
     }
     #endregion
 
@@ -374,7 +282,7 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             foreach (RDFQuadruple q in this)
             {
                 if (store.ContainsQuadruple(q))
-                    result.AddQuadruple(q);
+                    result.Index.Add(q);
             }
         }
         return result;
@@ -389,14 +297,14 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
 
         //Add quadruples from this store
         foreach (RDFQuadruple q in this)
-            result.AddQuadruple(q);
+            result.Index.Add(q);
 
         //Manage the given store
         if (store != null)
         {
             //Add quadruples from the given store
             foreach (RDFQuadruple q in store as RDFMemoryStore ?? store[null, null, null, null, null])
-                result.AddQuadruple(q);
+                result.Index.Add(q);
         }
 
         return result;
@@ -415,14 +323,14 @@ public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDispo
             foreach (RDFQuadruple q in this)
             {
                 if (!store.ContainsQuadruple(q))
-                    result.AddQuadruple(q);
+                    result.Index.Add(q);
             }
         }
         else
         {
             //Add quadruples from this store
             foreach (RDFQuadruple q in this)
-                result.AddQuadruple(q);
+                result.Index.Add(q);
         }
 
         return result;

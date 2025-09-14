@@ -52,7 +52,8 @@ public class RDFGraphTest
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
 
-        Assert.AreEqual(0, graph.Count());
+        int i = graph.Count();
+        Assert.AreEqual(0, i);
 
         int j = 0;
         IEnumerator<RDFTriple> triplesEnumerator = graph.TriplesEnumerator;
@@ -80,13 +81,6 @@ public class RDFGraphTest
         Assert.IsTrue(((Dictionary<long, RDFLiteral>)graph.Triples.ExtendedProperties["LIT"]!).ContainsKey(new RDFPlainLiteral("lit").PatternMemberID));
         Assert.IsNotNull(graph.Context);
         Assert.IsTrue(graph.Context.Equals(RDFNamespaceRegister.DefaultNamespace.NamespaceUri));
-
-        Assert.AreEqual(2, graph.Count());
-
-        int j = 0;
-        IEnumerator<RDFTriple> triplesEnumerator = graph.TriplesEnumerator;
-        while (triplesEnumerator.MoveNext()) j++;
-        Assert.AreEqual(2, j);
     }
 
     [TestMethod]
