@@ -110,7 +110,7 @@ public sealed class RDFQuadruple : IEquatable<RDFQuadruple>
     }
 
     /// <summary>
-    /// Initializes common quadruple properties
+    /// Initializer-ctor for common quadruple properties
     /// </summary>
     /// <exception cref="RDFStoreException"></exception>
     private RDFQuadruple(RDFContext context, RDFResource subj, RDFResource pred)

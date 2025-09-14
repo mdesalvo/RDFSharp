@@ -34,7 +34,7 @@ public sealed class RDFExpressionFilter : RDFFilter
 
     #region Ctors
     /// <summary>
-    /// Builds a filter on the given expression
+    /// Private-ctor to build a filter on the given expression
     /// </summary>
     /// <exception cref="RDFQueryException"></exception>
     private RDFExpressionFilter(RDFExpression expression, bool _)

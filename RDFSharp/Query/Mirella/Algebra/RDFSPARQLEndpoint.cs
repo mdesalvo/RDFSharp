@@ -205,7 +205,7 @@ public sealed class RDFSPARQLEndpointOperationOptions
 
     #region Ctors
     /// <summary>
-    /// Configures default options for a SPARQL UPDATE endpoint operation
+    /// Default-ctor to configure options for a SPARQL UPDATE endpoint operation
     /// </summary>
     public RDFSPARQLEndpointOperationOptions()
     {
@@ -214,13 +214,13 @@ public sealed class RDFSPARQLEndpointOperationOptions
     }
 
     /// <summary>
-    /// Configures custom options for a SPARQL UPDATE endpoint operation
+    /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
     /// </summary>
     public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds) : this()
         => TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
 
     /// <summary>
-    /// Configures custom options for a SPARQL UPDATE endpoint operation
+    /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
     /// </summary>
     public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes requestContentType) : this(timeoutMilliseconds)
         => RequestContentType = requestContentType;

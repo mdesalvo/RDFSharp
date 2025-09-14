@@ -26,17 +26,17 @@ public sealed class RDFStoreException : Exception
 {
     #region Ctors
     /// <summary>
-    /// Builds an empty RDFStoreException
+    /// Basic ctor to throw an empty RDFStoreException
     /// </summary>
     public RDFStoreException() { }
 
     /// <summary>
-    /// Builds a RDFStoreException with the given message
+    /// Basic ctor to throw an RDFStoreException with message
     /// </summary>
     public RDFStoreException(string message) : base(message) { }
 
     /// <summary>
-    /// Builds a RDFStoreException with the given message and inner exception
+    /// Basic ctor to throw an RDFStoreException with message and inner exception
     /// </summary>
     public RDFStoreException(string message, Exception innerException) : base(message, innerException) { }
     #endregion

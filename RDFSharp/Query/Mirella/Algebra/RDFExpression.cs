@@ -67,7 +67,7 @@ public abstract class RDFExpression : RDFExpressionArgument
         : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
     /// <summary>
-    /// Builds an expression with given expression arguments
+    /// Internal-ctor to build an expression with given expression arguments
     /// </summary>
     /// <exception cref = "RDFQueryException" ></exception>
     internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
@@ -87,7 +87,7 @@ public abstract class RDFExpression : RDFExpressionArgument
     }
 
     /// <summary>
-    /// Builds an expression without arguments (e.g: RAND)
+    /// Internal-ctor to build an expression without arguments (e.g: RAND)
     /// </summary>
     internal RDFExpression() { }
     #endregion
