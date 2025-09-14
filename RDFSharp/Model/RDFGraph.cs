@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,9 +22,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using RDFSharp.Query;
 
 namespace RDFSharp.Model;
 
@@ -44,7 +43,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     /// Count of the graph's triples
     /// </summary>
     public long TriplesCount
-        => Index.Triples.Rows.Count;
+        => Index.Hashes.Count;
 
     /// <summary>
     /// Gets the enumerator on the graph's triples for iteration
@@ -53,13 +52,11 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     {
         get
         {
-            Dictionary<long, RDFResource> resources = (Dictionary<long, RDFResource>)Index.Triples.ExtendedProperties["RES"];
-            Dictionary<long, RDFLiteral> literals = (Dictionary<long, RDFLiteral>)Index.Triples.ExtendedProperties["LIT"];
-            foreach (DataRow triple in Index.Triples.Rows)
+            foreach (var (_, sid, pid, oid, tfv) in Index.Hashes.Values)
             {
-                yield return triple.Field<RDFModelEnums.RDFTripleFlavors>("?TFV") == RDFModelEnums.RDFTripleFlavors.SPO
-                    ? new RDFTriple(resources[triple.Field<long>("?SID")], resources[triple.Field<long>("?PID")], resources[triple.Field<long>("?OID")])
-                    : new RDFTriple(resources[triple.Field<long>("?SID")], resources[triple.Field<long>("?PID")], literals[triple.Field<long>("?OID")]);
+                yield return tfv == 1 //SPO
+                    ? new RDFTriple(Index.Resources[sid], Index.Resources[pid], Index.Resources[oid])
+                    : new RDFTriple(Index.Resources[sid], Index.Resources[pid], Index.Literals[oid]);
             }
         }
     }
@@ -250,11 +247,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     /// Clears the triples and metadata of the graph
     /// </summary>
     public void ClearTriples()
-    {
-        Index.Triples.Clear();
-        ((Dictionary<long, RDFResource>)Index.Triples.ExtendedProperties["RES"]).Clear();
-        ((Dictionary<long, RDFLiteral>)Index.Triples.ExtendedProperties["LIT"]).Clear();
-    }
+        => Index.Clear();
     #endregion
 
     #region Select
@@ -262,7 +255,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
     /// Checks if the graph contains the given triple
     /// </summary>
     public bool ContainsTriple(RDFTriple triple)
-        => triple is not null && Index.Triples.Rows.Find(triple.TripleID) is not null;
+        => triple != null && Index.Hashes.ContainsKey(triple.TripleID);
 
     /// <summary>
     /// Selects the triples which satisfy the given combination of SPOL accessors<br/>
@@ -276,48 +269,29 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
         #endregion
 
-        Dictionary<long, RDFResource> resources = (Dictionary<long, RDFResource>)Index.Triples.ExtendedProperties["RES"];
-        Dictionary<long, RDFLiteral> literals = (Dictionary<long, RDFLiteral>)Index.Triples.ExtendedProperties["LIT"];
         StringBuilder queryFilters = new StringBuilder(3);
         if (s != null) queryFilters.Append('S');
         if (p != null) queryFilters.Append('P');
         if (o != null) queryFilters.Append('O');
         if (l != null) queryFilters.Append('L');
-        DataRow[] selectedTriples = queryFilters.ToString() switch
+        List<(long tid, long sid, long pid, long oid, byte tfv)> hashes = queryFilters.ToString() switch
         {
-            "S"   => Index.Triples.Select($"?SID == {s.PatternMemberID}"),
-            "P"   => Index.Triples.Select($"?PID == {p.PatternMemberID}"),
-            "O"   => Index.Triples.Select($"?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "L"   => Index.Triples.Select($"?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
-            "SP"  => Index.Triples.Select($"?SID == {s.PatternMemberID} AND ?PID == {p.PatternMemberID}"),
-            "SO"  => Index.Triples.Select($"?SID == {s.PatternMemberID} AND ?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "SL"  => Index.Triples.Select($"?SID == {s.PatternMemberID} AND ?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
-            "PO"  => Index.Triples.Select($"?PID == {p.PatternMemberID} AND ?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "PL"  => Index.Triples.Select($"?PID == {p.PatternMemberID} AND ?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
-            "SPO" => Index.Triples.Select($"?SID == {s.PatternMemberID} AND ?PID == {p.PatternMemberID} AND ?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPO}"),
-            "SPL" => Index.Triples.Select($"?SID == {s.PatternMemberID} AND ?PID == {p.PatternMemberID} AND ?OID == {o.PatternMemberID} AND ?TFV == {RDFModelEnums.RDFTripleFlavors.SPL}"),
-            _     => [.. Index.Triples.Rows.Cast<DataRow>()]
+            "S"   => [.. Index.LookupIndexBySubject(s).Select(t => Index.Hashes[t])],
+            "P"   => [.. Index.LookupIndexByPredicate(p).Select(t => Index.Hashes[t])],
+            "O"   => [.. Index.LookupIndexByObject(o).Select(t => Index.Hashes[t])],
+            "L"   => [.. Index.LookupIndexByLiteral(l).Select(t => Index.Hashes[t])],
+            "SP"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p)).Select(t => Index.Hashes[t])],
+            "SO"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByObject(o)).Select(t => Index.Hashes[t])],
+            "SL"  => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByLiteral(l)).Select(t => Index.Hashes[t])],
+            "PO"  => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o)).Select(t => Index.Hashes[t])],
+            "PL"  => [.. Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l)).Select(t => Index.Hashes[t])],
+            "SPO" => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByObject(o))).Select(t => Index.Hashes[t])],
+            "SPL" => [.. Index.LookupIndexBySubject(s).Intersect(Index.LookupIndexByPredicate(p).Intersect(Index.LookupIndexByLiteral(l))).Select(t => Index.Hashes[t])],
+            _     => [.. Index.Hashes.Values]
         };
 
         //Decompress hashes
-        List<RDFTriple> result = new List<RDFTriple>(selectedTriples.Length);
-        foreach (DataRow selectedTriple in selectedTriples)
-        {
-            RDFResource subj = resources[selectedTriple.Field<long>("?SID")];
-            RDFResource pred = resources[selectedTriple.Field<long>("?PID")];
-            switch (selectedTriple.Field<RDFModelEnums.RDFTripleFlavors>("?TFV"))
-            {
-                case RDFModelEnums.RDFTripleFlavors.SPO:
-                    RDFResource obj = resources[selectedTriple.Field<long>("?OID")];
-                    result.Add(new RDFTriple(subj, pred, obj));
-                    break;
-                case RDFModelEnums.RDFTripleFlavors.SPL:
-                    RDFLiteral lit = literals[selectedTriple.Field<long>("?OID")];
-                    result.Add(new RDFTriple(subj, pred, lit));
-                    break;
-            }
-        }
-        return result;
+        return hashes!.ConvertAll(ht => new RDFTriple(ht, Index));
     }
 
     /// <summary>
@@ -341,7 +315,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             //Add intersection triples
             foreach (RDFTriple t in this)
             {
-                if (graph.Index.Triples.Rows.Find(t.TripleID) is not null)
+                if (graph.Index.Hashes.ContainsKey(t.TripleID))
                     result.Index.Add(t);
             }
         }
@@ -382,7 +356,7 @@ public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<
             //Add difference triples
             foreach (RDFTriple t in this)
             {
-                if (graph.Index.Triples.Rows.Find(t.TripleID) is null)
+                if (!graph.Index.Hashes.ContainsKey(t.TripleID))
                     result.Index.Add(t);
             }
         }
