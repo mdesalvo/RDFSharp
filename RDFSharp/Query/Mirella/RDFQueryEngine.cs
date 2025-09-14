@@ -1141,9 +1141,9 @@ internal class RDFQueryEngine
 
         //Remove property path variables
         foreach (string ppColumn in (from DataColumn dtCol
-                                     in resultTable.Columns
-                                     where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal)
-                                     select dtCol.ColumnName).ToArray())
+                 in resultTable.Columns
+                 where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal)
+                 select dtCol.ColumnName).ToArray())
         {
             resultTable.Columns.Remove(ppColumn);
         }
