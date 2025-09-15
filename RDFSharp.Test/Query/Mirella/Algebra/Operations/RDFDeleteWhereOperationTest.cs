@@ -673,8 +673,7 @@ public class RDFDeleteWhereOperationTest
                     .WithPath("/RDFDeleteWhereOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteWhereOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
 
@@ -695,8 +694,7 @@ public class RDFDeleteWhereOperationTest
                     .WithBody(new RegexMatcher("update=.*")))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteWhereOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
 
@@ -717,8 +715,7 @@ public class RDFDeleteWhereOperationTest
                     .WithBody(new RegexMatcher("using-named-graph-uri=ex%3actx2&using-graph-uri=ex%3actx1&update=.*")))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteWhereOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
         endpoint.AddDefaultGraphUri("ex:ctx1");
@@ -741,14 +738,14 @@ public class RDFDeleteWhereOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(400));
+                    .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFDeleteWhereOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 
         RDFDeleteWhereOperation operation = new RDFDeleteWhereOperation();
         operation.AddDeleteTemplate(new RDFPattern(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
 
-        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(100)));
     }
 
     [TestMethod]

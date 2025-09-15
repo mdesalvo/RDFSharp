@@ -75,33 +75,33 @@ namespace RDFSharp.Model
             {
                 Register = new List<RDFNamespace>(32)
                 {
-                    RDFSharpNS,
+                    RDFSharpNS.SetReserved(true),
 
                     //Basic
-                    new RDFNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDF.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFS.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.XSD.PREFIX, RDFVocabulary.XSD.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.XSD.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.OWL.PREFIX, RDFVocabulary.OWL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.OWL.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SHACL.PREFIX, RDFVocabulary.SHACL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SHACL.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SWRL.PREFIX, RDFVocabulary.SWRL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SWRL.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SWRL.SWRLB.PREFIX, RDFVocabulary.SWRL.SWRLB.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SWRL.SWRLB.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.XML.PREFIX, RDFVocabulary.XML.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.XML.DEREFERENCE_URI)),
+                    new RDFNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDF.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFS.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.XSD.PREFIX, RDFVocabulary.XSD.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.XSD.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.OWL.PREFIX, RDFVocabulary.OWL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.OWL.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.SHACL.PREFIX, RDFVocabulary.SHACL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SHACL.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.SWRL.PREFIX, RDFVocabulary.SWRL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SWRL.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.SWRL.SWRLB.PREFIX, RDFVocabulary.SWRL.SWRLB.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SWRL.SWRLB.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.XML.PREFIX, RDFVocabulary.XML.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.XML.DEREFERENCE_URI)).SetReserved(true),
 
                     //Extended
-                    new RDFNamespace(RDFVocabulary.DC.PREFIX, RDFVocabulary.DC.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX, RDFVocabulary.DC.DCAM.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DCAM.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.DC.DCTERMS.PREFIX, RDFVocabulary.DC.DCTERMS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DCTERMS.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX, RDFVocabulary.DC.DCTYPE.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DCTYPE.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.FOAF.PREFIX, RDFVocabulary.FOAF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.FOAF.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.GEO.PREFIX, RDFVocabulary.GEO.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEO.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.GEOSPARQL.PREFIX, RDFVocabulary.GEOSPARQL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.GEOSPARQL.SF.PREFIX, RDFVocabulary.GEOSPARQL.SF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.SF.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.GEOSPARQL.GEOF.PREFIX, RDFVocabulary.GEOSPARQL.GEOF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.GEOF.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SKOS.PREFIX, RDFVocabulary.SKOS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.SKOSXL.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.TIME.PREFIX, RDFVocabulary.TIME.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.TIME.GREG.PREFIX, RDFVocabulary.TIME.GREG.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.GREG.DEREFERENCE_URI)),
-                    new RDFNamespace(RDFVocabulary.TIME.THORS.PREFIX, RDFVocabulary.TIME.THORS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.THORS.DEREFERENCE_URI))
+                    new RDFNamespace(RDFVocabulary.DC.PREFIX, RDFVocabulary.DC.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.DC.DCAM.PREFIX, RDFVocabulary.DC.DCAM.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DCAM.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.DC.DCTERMS.PREFIX, RDFVocabulary.DC.DCTERMS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DCTERMS.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.DC.DCTYPE.PREFIX, RDFVocabulary.DC.DCTYPE.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.DC.DCTYPE.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.FOAF.PREFIX, RDFVocabulary.FOAF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.FOAF.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.GEO.PREFIX, RDFVocabulary.GEO.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEO.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.GEOSPARQL.PREFIX, RDFVocabulary.GEOSPARQL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.GEOSPARQL.SF.PREFIX, RDFVocabulary.GEOSPARQL.SF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.SF.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.GEOSPARQL.GEOF.PREFIX, RDFVocabulary.GEOSPARQL.GEOF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.GEOF.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.SKOS.PREFIX, RDFVocabulary.SKOS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.SKOSXL.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.TIME.PREFIX, RDFVocabulary.TIME.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.TIME.GREG.PREFIX, RDFVocabulary.TIME.GREG.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.GREG.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.TIME.THORS.PREFIX, RDFVocabulary.TIME.THORS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.THORS.DEREFERENCE_URI)).SetReserved(true)
                 }
             };
 
@@ -166,7 +166,7 @@ namespace RDFSharp.Model
             if (uri != null)
             {
                 string uriToDelete = uri.Trim();
-                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespaceUri.ToString(), uriToDelete, StringComparison.OrdinalIgnoreCase));
+                Instance.Register.RemoveAll(ns => !ns.IsReserved && string.Equals(ns.NamespaceUri.ToString(), uriToDelete, StringComparison.OrdinalIgnoreCase));
             }
         }
 
@@ -178,7 +178,7 @@ namespace RDFSharp.Model
             if (prefix != null)
             {
                 string prefixToDelete = prefix.Trim();
-                Instance.Register.RemoveAll(ns => string.Equals(ns.NamespacePrefix, prefixToDelete, StringComparison.OrdinalIgnoreCase));
+                Instance.Register.RemoveAll(ns => !ns.IsReserved && string.Equals(ns.NamespacePrefix, prefixToDelete, StringComparison.OrdinalIgnoreCase));
             }
         }
 
@@ -193,7 +193,12 @@ namespace RDFSharp.Model
                 string uriToSearch = uri.Trim();
                 result = Instance.Register.Find(ns => string.Equals(ns.NamespaceUri.ToString(), uriToSearch, StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
+                {
                     result = LookupPrefixCC(uriToSearch.TrimEnd('#'), 2);
+                    //prefix.cc service correctly resolved the given namespace, but we must ensure we haven't a colliding prefix
+                    if (result != null && GetByPrefix(result.NamespacePrefix) == null)
+                        Instance.Register.Add(result);
+                }
             }
             return result;
         }
@@ -209,7 +214,12 @@ namespace RDFSharp.Model
                 string prefixToSearch = prefix.Trim();
                 result = Instance.Register.Find(ns => string.Equals(ns.NamespacePrefix, prefixToSearch, StringComparison.OrdinalIgnoreCase));
                 if (result == null && enablePrefixCCService)
+                {
                     result = LookupPrefixCC(prefixToSearch, 1);
+                    //prefix.cc service correctly resolved the given namespace, but we must ensure we haven't a colliding namespace
+                    if (result != null && GetByUri(result.NamespaceUri.ToString()) == null)
+                        Instance.Register.Add(result);
+                }
             }
             return result;
         }
@@ -225,9 +235,7 @@ namespace RDFSharp.Model
                     lookupMode == 1 ? $"http://prefix.cc/{data}.file.txt"
                                     : $"http://prefix.cc/reverse?uri={data}&format=txt");
                 string[] namespaceParts = serviceResponse.Split('\t');
-                RDFNamespace ns = new RDFNamespace(namespaceParts[0], namespaceParts[1].TrimEnd(Environment.NewLine));
-                AddNamespace(ns);
-                return ns;
+                return new RDFNamespace(namespaceParts[0], namespaceParts[1].TrimEnd(Environment.NewLine));
             }
             catch { return null; }
         }

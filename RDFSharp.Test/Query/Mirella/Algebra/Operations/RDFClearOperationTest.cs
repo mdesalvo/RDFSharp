@@ -495,8 +495,7 @@ public class RDFClearOperationTest
                     .WithPath("/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
 
@@ -516,8 +515,7 @@ public class RDFClearOperationTest
                     .WithBody(new RegexMatcher("update=.*")))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
 
@@ -537,8 +535,7 @@ public class RDFClearOperationTest
                     .WithBody(new RegexMatcher("using-named-graph-uri=ex%3actx2&using-graph-uri=ex%3actx1&update=.*")))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
         endpoint.AddDefaultGraphUri("ex:ctx1");
@@ -560,13 +557,13 @@ public class RDFClearOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(400));
+                    .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFClearOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 
         RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
 
-        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(100)));
     }
 
     [TestMethod]

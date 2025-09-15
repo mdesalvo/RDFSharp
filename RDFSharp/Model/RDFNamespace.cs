@@ -48,6 +48,11 @@ namespace RDFSharp.Model
         /// Flag indicating that the namespace is temporary
         /// </summary>
         internal bool IsTemporary { get; set; }
+
+        /// <summary>
+        /// Flag indicating that the namespace is reserved (cannot be removed)
+        /// </summary>
+        internal bool IsReserved { get; set; }
         #endregion
 
         #region Ctors
@@ -117,6 +122,15 @@ namespace RDFSharp.Model
         internal RDFNamespace SetTemporary(bool temporary)
         {
             IsTemporary = temporary;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets or unsets this namespace as reserved
+        /// </summary>
+        internal RDFNamespace SetReserved(bool reserved)
+        {
+            IsReserved = reserved;
             return this;
         }
         #endregion

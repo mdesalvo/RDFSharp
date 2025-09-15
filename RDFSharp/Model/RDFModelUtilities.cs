@@ -553,7 +553,7 @@ namespace RDFSharp.Model
             new DateTimeFormatPair("---ddZ", "---ddZ"),
             new DateTimeFormatPair("---ddzzz", "---ddZ")
         };
-        
+
         /// <summary>
         /// Gives the string representation of the given datatype
         /// </summary>

@@ -482,8 +482,7 @@ public class RDFLoadOperationTest
                     .WithBody(new RegexMatcher("update=.*")))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"));
 
@@ -511,8 +510,7 @@ public class RDFLoadOperationTest
                     .WithBody(new RegexMatcher("using-named-graph-uri=ex%3actx2&using-graph-uri=ex%3actx1&update=.*")))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"));
         endpoint.AddDefaultGraphUri("ex:ctx1");
@@ -541,8 +539,7 @@ public class RDFLoadOperationTest
                     .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(100));
+                    .WithStatusCode(HttpStatusCode.OK));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"));
 
@@ -570,13 +567,13 @@ public class RDFLoadOperationTest
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(400));
+                    .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 
         RDFLoadOperation operation = new RDFLoadOperation(new Uri("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"));
 
-        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(250)));
+        Assert.ThrowsExactly<RDFQueryException>(() => operation.ApplyToSPARQLUpdateEndpoint(endpoint, new RDFSPARQLEndpointOperationOptions(100)));
     }
 
     [TestMethod]

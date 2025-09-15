@@ -1832,7 +1832,7 @@ public class RDFQueryEngineTest
                         };
                     })
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(400));
+                    .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint1 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult1/sparql"));
         RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneGivingEmptyResult2/sparql"));
@@ -1841,7 +1841,7 @@ public class RDFQueryEngineTest
             .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions {
                 ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult,
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
-                TimeoutMilliseconds = 250 });
+                TimeoutMilliseconds = 100 });
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
@@ -1951,7 +1951,7 @@ public class RDFQueryEngineTest
                         }
                     })
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithDelay(750));
+                    .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint1 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException1/sparql"));
         RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnFederationWithResults_SPARQLEndpointsOneThrowingException2/sparql"));
@@ -1960,7 +1960,7 @@ public class RDFQueryEngineTest
             .AddSPARQLEndpoint(endpoint2, new RDFSPARQLEndpointQueryOptions {
                 ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException,
                 QueryMethod = RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post,
-                TimeoutMilliseconds = 250 });
+                TimeoutMilliseconds = 100 });
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));

@@ -685,7 +685,7 @@ public class RDFGraphTest
         Assert.IsNotNull(select);
         Assert.HasCount(3, select);
     }
-    
+
     [TestMethod]
     public void ShouldSelectTriplesBySubjectAccessor()
     {
@@ -929,7 +929,7 @@ public class RDFGraphTest
         Assert.IsNotNull(select);
         Assert.AreEqual(2, select.TriplesCount);
     }
-    
+
     [TestMethod]
     public void ShouldSelectTriplesByComplexAccessor3()
     {
