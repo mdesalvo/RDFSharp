@@ -34,7 +34,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Private-ctor to build a filter on the given expression
+        /// Builds a filter on the given expression
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         private RDFExpressionFilter(RDFExpression expression, bool _)

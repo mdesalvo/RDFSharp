@@ -67,7 +67,7 @@ namespace RDFSharp.Query
             : this(leftArgument, rightArgument as RDFExpressionArgument) { }
 
         /// <summary>
-        /// Internal-ctor to build an expression with given expression arguments
+        /// Builds an expression with given expression arguments
         /// </summary>
         /// <exception cref = "RDFQueryException" ></exception>
         internal RDFExpression(RDFExpressionArgument leftArgument, RDFExpressionArgument rightArgument)
@@ -87,7 +87,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Internal-ctor to build an expression without arguments (e.g: RAND)
+        /// Builds an expression without arguments (e.g: RAND)
         /// </summary>
         internal RDFExpression() { }
         #endregion

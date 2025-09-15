@@ -40,7 +40,7 @@ namespace RDFSharp.Store
         public RDFContext() : this(RDFNamespaceRegister.DefaultNamespace.NamespaceUri) { }
 
         /// <summary>
-        /// String-based ctor to build a context from the given string
+        /// Builds a context from the given string
         /// </summary>
         /// <exception cref="RDFStoreException"></exception>
         public RDFContext(string ctxUri)

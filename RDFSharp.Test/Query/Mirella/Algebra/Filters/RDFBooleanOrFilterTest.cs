@@ -102,7 +102,7 @@ public class RDFBooleanOrFilterTest
                     RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFDatatypeExpression(new RDFVariable("?A")),
                     new RDFConstantExpression(RDFVocabulary.XSD.BOOLEAN))),
-            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star))));
+            new RDFExpressionFilter(new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")))));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);

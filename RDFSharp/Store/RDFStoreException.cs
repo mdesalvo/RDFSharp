@@ -26,17 +26,17 @@ namespace RDFSharp.Store
     {
         #region Ctors
         /// <summary>
-        /// Basic ctor to throw an empty RDFStoreException
+        /// Builds an empty RDFStoreException
         /// </summary>
         public RDFStoreException() { }
 
         /// <summary>
-        /// Basic ctor to throw an RDFStoreException with message
+        /// Builds a RDFStoreException with the given message
         /// </summary>
         public RDFStoreException(string message) : base(message) { }
 
         /// <summary>
-        /// Basic ctor to throw an RDFStoreException with message and inner exception
+        /// Builds a RDFStoreException with the given message and inner exception
         /// </summary>
         public RDFStoreException(string message, Exception innerException) : base(message, innerException) { }
         #endregion

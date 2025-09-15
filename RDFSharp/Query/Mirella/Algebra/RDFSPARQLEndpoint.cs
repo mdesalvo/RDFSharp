@@ -208,7 +208,7 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Default-ctor to configure options for a SPARQL UPDATE endpoint operation
+        /// Configures default options for a SPARQL UPDATE endpoint operation
         /// </summary>
         public RDFSPARQLEndpointOperationOptions()
         {
@@ -217,13 +217,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
+        /// Configure custom options for a SPARQL UPDATE endpoint operation
         /// </summary>
         public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds) : this()
             => TimeoutMilliseconds = timeoutMilliseconds < -1 ? -1 : timeoutMilliseconds;
 
         /// <summary>
-        /// Custom-ctor to configure options for a SPARQL UPDATE endpoint operation
+        /// Configure custom options for a SPARQL UPDATE endpoint operation
         /// </summary>
         public RDFSPARQLEndpointOperationOptions(int timeoutMilliseconds, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes requestContentType) : this(timeoutMilliseconds)
             => RequestContentType = requestContentType;

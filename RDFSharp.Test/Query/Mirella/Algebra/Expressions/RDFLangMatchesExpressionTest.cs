@@ -373,7 +373,7 @@ public class RDFLangMatchesExpressionTest
        table.Rows.Add(row);
        table.AcceptChanges();
 
-       RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star));
+       RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")));
        RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
 
        Assert.IsNotNull(result);
@@ -387,7 +387,7 @@ public class RDFLangMatchesExpressionTest
         table.Columns.Add("?A", typeof(string));
         table.Columns.Add("?B", typeof(string));
         DataRow row = table.NewRow();
-        row["?A"] = RDFPlainLiteral.Star.ToString();
+        row["?A"] = new RDFPlainLiteral("*").ToString();
         row["?B"] = new RDFPlainLiteral("hello", "en-US--ltr").ToString();
         table.Rows.Add(row);
         table.AcceptChanges();
@@ -411,7 +411,7 @@ public class RDFLangMatchesExpressionTest
         table.Rows.Add(row);
         table.AcceptChanges();
 
-        RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Star));
+        RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")));
         RDFPatternMember result = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(result);
