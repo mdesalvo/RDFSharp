@@ -816,8 +816,8 @@ namespace RDFSharp.Query
             }
 
             //Analyze object of the pattern
-            bool patternObjectIsResource = pattern.Object is RDFResource;
-            bool patternObjectIsLiteral = pattern.Object is RDFLiteral;
+            bool pObjRes = pattern.Object is RDFResource;
+            bool pObjLit = pattern.Object is RDFLiteral;
             if (pattern.Object is RDFVariable)
             {
                 templateHoleDetector.Append('O');
@@ -829,12 +829,12 @@ namespace RDFSharp.Query
             switch (templateHoleDetector.ToString())
             {
                 case "S":
-                    matchingTriples = graph.SelectTriples(p: (RDFResource)pattern.Predicate, o: patternObjectIsResource ? (RDFResource)pattern.Object : null, l: patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingTriples = graph.SelectTriples(p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, patternResultTable);
                     break;
 
                 case "P":
-                    matchingTriples = graph.SelectTriples(s: (RDFResource)pattern.Subject, o: patternObjectIsResource ? (RDFResource)pattern.Object : null, l: patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingTriples = graph.SelectTriples(s: (RDFResource)pattern.Subject, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, patternResultTable);
                     break;
 
@@ -844,7 +844,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "SP":
-                    matchingTriples = graph.SelectTriples(o: patternObjectIsResource ? (RDFResource)pattern.Object : null, l: patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingTriples = graph.SelectTriples(o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     //In case of same S and P variable, must refine matching triples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
@@ -916,8 +916,8 @@ namespace RDFSharp.Query
             }
 
             //Analyze object of the pattern
-            bool patternObjectIsResource = pattern.Object is RDFResource;
-            bool patternObjectIsLiteral = pattern.Object is RDFLiteral;
+            bool pObjRes = pattern.Object is RDFResource;
+            bool pObjLit = pattern.Object is RDFLiteral;
             if (pattern.Object is RDFVariable)
             {
                 templateHoleDetector.Append('O');
@@ -929,27 +929,27 @@ namespace RDFSharp.Query
             switch (templateHoleDetector.ToString())
             {
                 case "C":
-                    matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingQuadruples = store.SelectQuadruples(s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.C, patternResultTable);
                     break;
 
                 case "S":
-                    matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.S, patternResultTable);
                     break;
 
                 case "P":
-                    matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, s: (RDFResource)pattern.Subject, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.P, patternResultTable);
                     break;
 
                 case "O":
-                    matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate);
                     PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.O, patternResultTable);
                     break;
 
                 case "CS":
-                    matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingQuadruples = store.SelectQuadruples(p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Subject));
@@ -957,7 +957,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "CP":
-                    matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingQuadruples = store.SelectQuadruples(s: (RDFResource)pattern.Subject, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Predicate));
@@ -965,7 +965,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "CO":
-                    matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, (RDFResource)pattern.Predicate, null, null);
+                    matchingQuadruples = store.SelectQuadruples(s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate);
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Object));
@@ -973,7 +973,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "SP":
-                    matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Subject.Equals(mq.Predicate));
@@ -981,7 +981,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "SO":
-                    matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, (RDFResource)pattern.Predicate, null, null);
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, p: (RDFResource)pattern.Predicate);
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Subject.Equals(mq.Object));
@@ -989,7 +989,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "PO":
-                    matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, (RDFResource)pattern.Subject, null, null, null);
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, s: (RDFResource)pattern.Subject);
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Predicate.Equals(mq.Object));
@@ -997,7 +997,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "CSP":
-                    matchingQuadruples = store.SelectQuadruples(null, null, null, patternObjectIsResource ? (RDFResource)pattern.Object : null, patternObjectIsLiteral ? (RDFLiteral)pattern.Object : null);
+                    matchingQuadruples = store.SelectQuadruples(o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Subject));
@@ -1011,7 +1011,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "CSO":
-                    matchingQuadruples = store.SelectQuadruples(null, null, (RDFResource)pattern.Predicate, null, null);
+                    matchingQuadruples = store.SelectQuadruples(p: (RDFResource)pattern.Predicate);
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Subject));
@@ -1025,7 +1025,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "CPO":
-                    matchingQuadruples = store.SelectQuadruples(null, (RDFResource)pattern.Subject, null, null, null);
+                    matchingQuadruples = store.SelectQuadruples(s: (RDFResource)pattern.Subject);
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Predicate));
@@ -1039,7 +1039,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "SPO":
-                    matchingQuadruples = store.SelectQuadruples(hasContext ? (RDFContext)pattern.Context : null, null, null, null, null);
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null);
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Subject.Equals(mq.Predicate));
@@ -1053,7 +1053,7 @@ namespace RDFSharp.Query
                     break;
 
                 case "CSPO":
-                    matchingQuadruples = store.SelectQuadruples(null, null, null, null, null);
+                    matchingQuadruples = store.SelectQuadruples();
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Subject));

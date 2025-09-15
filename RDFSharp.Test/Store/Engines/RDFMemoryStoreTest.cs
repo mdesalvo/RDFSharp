@@ -551,7 +551,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
         store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        RDFMemoryStore store2 = store[c: new RDFContext("ex:ctx3"), null, null, null, null];
+        RDFMemoryStore store2 = store[c: new RDFContext("ex:ctx3")];
 
         Assert.IsNotNull(store2);
         Assert.AreEqual(0, store2.QuadruplesCount);
@@ -1367,7 +1367,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), s: new RDFResource("http://subj/"), p: new RDFResource("http://pred/"), o: new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -1384,7 +1384,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), s: new RDFResource("http://subj/"), p: new RDFResource("http://pred/"), o: new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -1400,7 +1400,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), s: new RDFResource("http://subj/"), p: new RDFResource("http://pred/"), o: new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -1417,7 +1417,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[c: new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext("http://ctx/"), s: new RDFResource("http://subj/"), p: new RDFResource("http://pred/"), o: new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -1638,7 +1638,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), s: new RDFResource("http://subj/"), p: new RDFResource("http://pred/"), o: new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -1655,7 +1655,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[c: new RDFContext(), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext(), s: new RDFResource("http://subj/"), p: new RDFResource("http://pred/"), o: new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
@@ -1672,7 +1672,7 @@ public class RDFMemoryStoreTest
 
         Assert.IsNotNull(store);
         Assert.AreEqual(1, store.QuadruplesCount);
-        Assert.AreEqual(1, store[c: new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"), null].QuadruplesCount);
+        Assert.AreEqual(1, store[c: new RDFContext("http://ctx/"), s: new RDFResource("http://subj/"), p: new RDFResource("http://pred/"), o: new RDFResource("http://obj/")].QuadruplesCount);
     }
 
     [TestMethod]
