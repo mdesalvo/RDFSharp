@@ -283,75 +283,75 @@ namespace RDFSharp.Store
                 //S->P->O->C
                 if (RDFShims.CSPO.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(PLAIN)->C
                 if (RDFShims.CSPL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(PLANG)->C
                 if (RDFShims.CSPLL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal with language
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
@@ -362,146 +362,146 @@ namespace RDFSharp.Store
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //typed literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->B->C
                 if (RDFShims.CSPB.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->O->
                 if (RDFShims.SPO.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(PLAIN)->
                 if (RDFShims.SPL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(PLANG)->
                 if (RDFShims.SPLL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal with language
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(TLIT)->
                 if (RDFShims.SPLT.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //typed literal
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->B->
                 if (RDFShims.SPB.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
@@ -514,75 +514,75 @@ namespace RDFSharp.Store
                 //B->P->O->C
                 if (RDFShims.CBPO.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(PLAIN)->C
                 if (RDFShims.CBPL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(PLANG)->C
                 if (RDFShims.CBPLL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal with language
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
@@ -593,146 +593,146 @@ namespace RDFSharp.Store
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //typed literal
                     tokens[2] = nquad.Substring(0, nquad.LastIndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->B->C
                 if (RDFShims.CBPB.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
                     tokens[2] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[2].Length).Trim(' ', '\t');
-                    tokens[2] = tokens[2].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[2].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[2] = tokens[2].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //context
-                    tokens[3] = nquad.Trim(' ', '\t');
+                    tokens[3] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->O->
                 if (RDFShims.BPO.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(PLAIN)->
                 if (RDFShims.BPL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(PLANG)->
                 if (RDFShims.BPLL.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //plain literal with language
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(TLIT)->
                 if (RDFShims.BPLT.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //typed literal
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->B->
                 if (RDFShims.BPB.Value.IsMatch(nquad))
                 {
-                    nquad = nquad.Trim('.', ' ', '\t');
+                    nquad = nquad.Trim(RDFNTriples.DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = nquad.Substring(0, nquad.IndexOf('<'));
-                    nquad = nquad.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[0].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = nquad.Substring(0, nquad.IndexOf('>') + 1);
-                    nquad = nquad.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    nquad = nquad.Substring(tokens[1].Length).Trim(RDFNTriples.SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(RDFNTriples.SpaceAndTabChars);
 
                     //object
-                    tokens[2] = nquad.Trim(' ', '\t');
+                    tokens[2] = nquad.Trim(RDFNTriples.SpaceAndTabChars);
                     return;
                 }
 

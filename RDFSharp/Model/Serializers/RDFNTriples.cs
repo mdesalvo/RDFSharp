@@ -28,7 +28,7 @@ namespace RDFSharp.Model
     internal static class RDFNTriples
     {
         #region Properties
-        private const string TemplateSPO  = "<{SUBJ}> <{PRED}> <{OBJ}> .";
+        private const string TemplateSPO = "<{SUBJ}> <{PRED}> <{OBJ}> .";
         private const string TemplateSPLL = "<{SUBJ}> <{PRED}> \"{VAL}\"@{LANG} .";
         private const string TemplateSPLT = "<{SUBJ}> <{PRED}> \"{VAL}\"^^<{DTYPE}> .";
 
@@ -36,6 +36,8 @@ namespace RDFSharp.Model
         internal static readonly char[] openingBrackets = { '<' };
         internal static readonly char[] closingBrackets = { '>' };
         internal static readonly char[] trimmableChars = { ' ', '\t', '\r', '\n' };
+        internal static readonly char[] SpaceAndTabChars = { ' ', '\t' };
+        internal static readonly char[] DotSpaceAndTabChars = { '.', ' ', '\t' };
         #endregion
 
         #region Methods
@@ -270,100 +272,100 @@ namespace RDFSharp.Model
                 //S->P->O
                 if (RDFShims.SPO.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //object
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(PLAIN)
                 if (RDFShims.SPL.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //plain literal
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(PLANG)
                 if (RDFShims.SPLL.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //plain literal with language
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->L(TLIT)
                 if (RDFShims.SPLT.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //typed literal
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //S->P->B
                 if (RDFShims.SPB.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //object
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
@@ -376,100 +378,100 @@ namespace RDFSharp.Model
                 //B->P->O
                 if (RDFShims.BPO.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //object
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(PLAIN)
                 if (RDFShims.BPL.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //plain literal
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(PLANG)
                 if (RDFShims.BPLL.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //plain literal with language
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->L(TLIT)
                 if (RDFShims.BPLT.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //typed literal
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
                 //B->P->B
                 if (RDFShims.BPB.Value.IsMatch(ntriple))
                 {
-                    ntriple = ntriple.Trim('.', ' ', '\t');
+                    ntriple = ntriple.Trim(DotSpaceAndTabChars);
 
                     //subject
                     tokens[0] = ntriple.Substring(0, ntriple.IndexOf('<'));
-                    ntriple = ntriple.Substring(tokens[0].Length).Trim(' ', '\t');
-                    tokens[0] = tokens[0].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[0].Length).Trim(SpaceAndTabChars);
+                    tokens[0] = tokens[0].Trim(SpaceAndTabChars);
 
                     //predicate
                     tokens[1] = ntriple.Substring(0, ntriple.IndexOf('>') + 1);
-                    ntriple = ntriple.Substring(tokens[1].Length).Trim(' ', '\t');
-                    tokens[1] = tokens[1].Trim(' ', '\t');
+                    ntriple = ntriple.Substring(tokens[1].Length).Trim(SpaceAndTabChars);
+                    tokens[1] = tokens[1].Trim(SpaceAndTabChars);
 
                     //object
-                    tokens[2] = ntriple.Trim(' ', '\t');
+                    tokens[2] = ntriple.Trim(SpaceAndTabChars);
                     return;
                 }
 
