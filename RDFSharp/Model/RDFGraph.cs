@@ -310,18 +310,18 @@ namespace RDFSharp.Model
             //Intersect the filters
             switch (queryFilters.ToString())
             {
-                case "S": return S.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "P": return P.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "O": return O.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "L": return L.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SP": return S.Intersect(P).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SO": return S.Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SL": return S.Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "PO": return P.Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "PL": return P.Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
+                case "S":   return S.ConvertAll(ht => new RDFTriple(ht, Index));
+                case "P":   return P.ConvertAll(ht => new RDFTriple(ht, Index));
+                case "O":   return O.ConvertAll(ht => new RDFTriple(ht, Index));
+                case "L":   return L.ConvertAll(ht => new RDFTriple(ht, Index));
+                case "SP":  return S.Intersect(P).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
+                case "SO":  return S.Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
+                case "SL":  return S.Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
+                case "PO":  return P.Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
+                case "PL":  return P.Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
                 case "SPO": return S.Intersect(P).Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
                 case "SPL": return S.Intersect(P).Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                default: return Index.Hashes.Values.ToList().ConvertAll(ht => new RDFTriple(ht, Index));
+                default:    return Index.Hashes.Values.ToList().ConvertAll(ht => new RDFTriple(ht, Index));
             }
         }
 

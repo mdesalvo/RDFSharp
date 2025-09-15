@@ -327,8 +327,8 @@ public class RDFClearOperationTest
     public async Task ShouldApplyToStoreWithContextBehaviorAsync()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
         RDFClearOperation operation = new RDFClearOperation(new Uri("ex:ctx"));
         RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -354,8 +354,8 @@ public class RDFClearOperationTest
     public async Task ShouldApplyToStoreWithAllFlavorBehaviorAsync()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
         RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.ALL);
         RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -385,8 +385,8 @@ public class RDFClearOperationTest
     public async Task ShouldApplyToStoreWithDefaultFlavorBehaviorAsync()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
         RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.DEFAULT);
         RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 
@@ -412,8 +412,8 @@ public class RDFClearOperationTest
     public async Task ShouldApplyToStoreWithNamedFlavorBehaviorAsync()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"),new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext(),RDFVocabulary.RDFS.CLASS,RDFVocabulary.RDF.TYPE,RDFVocabulary.OWL.CLASS));
         RDFClearOperation operation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.NAMED);
         RDFOperationResult result = await operation.ApplyToStoreAsync(store);
 

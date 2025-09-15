@@ -55,7 +55,7 @@ namespace RDFSharp.Store
                 #region serialize
                 using (StreamWriter sw = new StreamWriter(outputStream, Encoding.ASCII))
                 {
-                    foreach (RDFQuadruple q in store.SelectAllQuadruples())
+                    foreach (RDFQuadruple q in store.SelectQuadruples())
                     {
                         #region template
                         string quadrupleTemplate = q.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO

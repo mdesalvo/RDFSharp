@@ -69,21 +69,9 @@ namespace RDFSharp.Store
         public abstract RDFStore MergeGraph(RDFGraph graph);
 
         /// <summary>
-        /// Asynchronously merges the given graph into the store, avoiding duplicate insertions
-        /// </summary>
-        public Task<RDFStore> MergeGraphAsync(RDFGraph graph)
-            => Task.Run(() => MergeGraph(graph));
-
-        /// <summary>
         /// Adds the given quadruple to the store, avoiding duplicate insertions
         /// </summary>
         public abstract RDFStore AddQuadruple(RDFQuadruple quadruple);
-
-        /// <summary>
-        /// Asynchronously adds the given quadruple to the store, avoiding duplicate insertions
-        /// </summary>
-        public Task<RDFStore> AddQuadrupleAsync(RDFQuadruple quadruple)
-            => Task.Run(() => AddQuadruple(quadruple));
         #endregion
 
         #region Remove
@@ -93,344 +81,37 @@ namespace RDFSharp.Store
         public abstract RDFStore RemoveQuadruple(RDFQuadruple quadruple);
 
         /// <summary>
-        /// Asynchronously removes the given quadruple from the store
+        /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
         /// </summary>
-        public Task<RDFStore> RemoveQuadrupleAsync(RDFQuadruple quadruple)
-            => Task.Run(() => RemoveQuadruple(quadruple));
-
-        /// <summary>
-        /// Removes the quadruples with the given context
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContext(RDFContext ctx);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextAsync(RDFContext ctx)
-            => Task.Run(() => RemoveQuadruplesByContext(ctx));
-
-        /// <summary>
-        /// Removes the quadruples with the given subject
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesBySubject(RDFResource subj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given subject from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesBySubjectAsync(RDFResource subj)
-            => Task.Run(() => RemoveQuadruplesBySubject(subj));
-
-        /// <summary>
-        /// Removes the quadruples with the given (non-blank) predicate
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByPredicate(RDFResource pred);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given (non-blank) predicate from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByPredicateAsync(RDFResource pred)
-            => Task.Run(() => RemoveQuadruplesByPredicate(pred));
-
-        /// <summary>
-        /// Removes the quadruples with the given resource as object
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByObject(RDFResource obj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given object from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByObjectAsync(RDFResource obj)
-            => Task.Run(() => RemoveQuadruplesByObject(obj));
-
-        /// <summary>
-        /// Removes the quadruples with the given literal as object
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByLiteral(RDFLiteral lit);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given literal from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByLiteralAsync(RDFLiteral lit)
-            => Task.Run(() => RemoveQuadruplesByLiteral(lit));
-
-        /// <summary>
-        /// Removes the quadruples with the given context and subject
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextSubject(RDFContext ctx, RDFResource subj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context and subject from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextSubjectAsync(RDFContext ctx, RDFResource subj)
-            => Task.Run(() => RemoveQuadruplesByContextSubject(ctx, subj));
-
-        /// <summary>
-        /// Removes the quadruples with the given context and predicate
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextPredicate(RDFContext ctx, RDFResource pred);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context and predicate from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextPredicateAsync(RDFContext ctx, RDFResource pred)
-            => Task.Run(() => RemoveQuadruplesByContextPredicate(ctx, pred));
-
-        /// <summary>
-        /// Removes the quadruples with the given context and object
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextObject(RDFContext ctx, RDFResource obj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context and object from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextObjectAsync(RDFContext ctx, RDFResource obj)
-            => Task.Run(() => RemoveQuadruplesByContextObject(ctx, obj));
-
-        /// <summary>
-        /// Removes the quadruples with the given context and literal
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextLiteral(RDFContext ctx, RDFLiteral lit);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context and literal from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextLiteralAsync(RDFContext ctx, RDFLiteral lit)
-            => Task.Run(() => RemoveQuadruplesByContextLiteral(ctx, lit));
-
-        /// <summary>
-        /// Removes the quadruples with the given context, subject and predicate
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextSubjectPredicate(RDFContext ctx, RDFResource subj, RDFResource pred);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context, subject and predicate from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextSubjectPredicateAsync(RDFContext ctx, RDFResource subj, RDFResource pred)
-            => Task.Run(() => RemoveQuadruplesByContextSubjectPredicate(ctx, subj, pred));
-
-        /// <summary>
-        /// Removes the quadruples with the given context, subject and object
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextSubjectObject(RDFContext ctx, RDFResource subj, RDFResource obj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context, subject and object from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextSubjectObjectAsync(RDFContext ctx, RDFResource subj, RDFResource obj)
-            => Task.Run(() => RemoveQuadruplesByContextSubjectObject(ctx, subj, obj));
-
-        /// <summary>
-        /// Removes the quadruples with the given context, subject and literal
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextSubjectLiteral(RDFContext ctx, RDFResource subj, RDFLiteral lit);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context, subject and literal from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextSubjectLiteralAsync(RDFContext ctx, RDFResource subj, RDFLiteral lit)
-            => Task.Run(() => RemoveQuadruplesByContextSubjectLiteral(ctx, subj, lit));
-
-        /// <summary>
-        /// Removes the quadruples with the given context, predicate and object
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextPredicateObject(RDFContext ctx, RDFResource pred, RDFResource obj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context, predicate and object from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextPredicateObjectAsync(RDFContext ctx, RDFResource pred, RDFResource obj)
-            => Task.Run(() => RemoveQuadruplesByContextPredicateObject(ctx, pred, obj));
-
-        /// <summary>
-        /// Removes the quadruples with the given context, predicate and literal
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByContextPredicateLiteral(RDFContext ctx, RDFResource pred, RDFLiteral lit);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given context, predicate and literal from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByContextPredicateLiteralAsync(RDFContext ctx, RDFResource pred, RDFLiteral lit)
-            => Task.Run(() => RemoveQuadruplesByContextPredicateLiteral(ctx, pred, lit));
-
-        /// <summary>
-        /// Removes the quadruples with the given subject and predicate
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesBySubjectPredicate(RDFResource subj, RDFResource pred);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given subject and predicate from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesBySubjectPredicateAsync(RDFResource subj, RDFResource pred)
-            => Task.Run(() => RemoveQuadruplesBySubjectPredicate(subj, pred));
-
-        /// <summary>
-        /// Removes the quadruples with the given subject and object
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesBySubjectObject(RDFResource subj, RDFResource obj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given subject and object from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesBySubjectObjectAsync(RDFResource subj, RDFResource obj)
-            => Task.Run(() => RemoveQuadruplesBySubjectObject(subj, obj));
-
-        /// <summary>
-        /// Removes the quadruples with the given subject and literal
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesBySubjectLiteral(RDFResource subj, RDFLiteral lit);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given subject and literal from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesBySubjectLiteralAsync(RDFResource subj, RDFLiteral lit)
-            => Task.Run(() => RemoveQuadruplesBySubjectLiteral(subj, lit));
-
-        /// <summary>
-        /// Removes the quadruples with the given predicate and object
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByPredicateObject(RDFResource pred, RDFResource obj);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given predicate and object from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByPredicateObjectAsync(RDFResource pred, RDFResource obj)
-            => Task.Run(() => RemoveQuadruplesByPredicateObject(pred, obj));
-
-        /// <summary>
-        /// Removes the quadruples with the given predicate and literal
-        /// </summary>
-        public abstract RDFStore RemoveQuadruplesByPredicateLiteral(RDFResource pred, RDFLiteral lit);
-
-        /// <summary>
-        /// Asynchronously removes the quadruples with the given predicate and literal from the store
-        /// </summary>
-        public Task<RDFStore> RemoveQuadruplesByPredicateLiteralAsync(RDFResource pred, RDFLiteral lit)
-            => Task.Run(() => RemoveQuadruplesByPredicateLiteral(pred, lit));
+        public abstract RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
 
         /// <summary>
         /// Clears the quadruples of the store
         /// </summary>
         public abstract void ClearQuadruples();
-
-        /// <summary>
-        /// Asynchronously clears the quadruples of the store
-        /// </summary>
-        public Task ClearQuadruplesAsync()
-            => Task.Run(ClearQuadruples);
         #endregion
 
         #region Select
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified combination of CSPOL accessors<br/>
-        /// (null values are handled as * selectors. Obj and Lit params must be mutually exclusive!)
-        /// </summary>
-        /// <exception cref="RDFStoreException"></exception>
-        public RDFMemoryStore this[RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit]
-        {
-            get
-            {
-                #region Guards
-                if (obj != null && lit != null)
-                    throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!");
-                #endregion
-
-                return SelectQuadruples(ctx, subj, pred, obj, lit);
-            }
-        }
-
         /// <summary>
         /// Checks if the store contains the given quadruple
         /// </summary>
         public abstract bool ContainsQuadruple(RDFQuadruple quadruple);
 
         /// <summary>
-        /// Asynchronously checks if the store contains the given quadruple
+        /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
         /// </summary>
-        public Task<bool> ContainsQuadrupleAsync(RDFQuadruple quadruple)
-            => Task.Run(() => ContainsQuadruple(quadruple));
+        /// <exception cref="RDFStoreException"></exception>
+        public abstract List<RDFQuadruple> SelectQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
 
         /// <summary>
-        /// Gets a memory store containing quadruples satisfying the given pattern
+        /// Gets a memory store containing quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
         /// </summary>
-        public abstract RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit);
-
-        /// <summary>
-        /// Asynchronously gets a memory store containing quadruples of the store satisfying the given pattern
-        /// </summary>
-        internal Task<RDFMemoryStore> SelectQuadruplesAsync(RDFContext ctx, RDFResource subj, RDFResource pred, RDFResource obj, RDFLiteral lit)
-            => Task.Run(() => SelectQuadruples(ctx, subj, pred, obj, lit));
-
-        /// <summary>
-        /// Gets a store containing all quadruples
-        /// </summary>
-        public RDFMemoryStore SelectAllQuadruples()
-            => SelectQuadruples(null, null, null, null, null);
-
-        /// <summary>
-        /// Asynchronously gets a memory store containing all quadruples of the store
-        /// </summary>
-        public Task<RDFMemoryStore> SelectAllQuadruplesAsync()
-            => SelectQuadruplesAsync(null, null, null, null, null);
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified context
-        /// </summary>
-        public RDFMemoryStore SelectQuadruplesByContext(RDFContext ctx)
-            => SelectQuadruples(ctx, null, null, null, null);
-
-        /// <summary>
-        /// Asynchronously gets a memory store containing quadruples of the store with the specified context
-        /// </summary>
-        public Task<RDFMemoryStore> SelectQuadruplesByContextAsync(RDFContext ctx)
-            => SelectQuadruplesAsync(ctx, null, null, null, null);
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified subject
-        /// </summary>
-        public RDFMemoryStore SelectQuadruplesBySubject(RDFResource subj)
-            => SelectQuadruples(null, subj, null, null, null);
-
-        /// <summary>
-        /// Asynchronously gets a memory store containing quadruples of the store with the specified subject
-        /// </summary>
-        public Task<RDFMemoryStore> SelectQuadruplesBySubjectAsync(RDFResource subj)
-            => SelectQuadruplesAsync(null, subj, null, null, null);
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified predicate
-        /// </summary>
-        public RDFMemoryStore SelectQuadruplesByPredicate(RDFResource pred)
-            => SelectQuadruples(null, null, pred, null, null);
-
-        /// <summary>
-        /// Asynchronously gets a memory store containing quadruples of the store with the specified predicate
-        /// </summary>
-        public Task<RDFMemoryStore> SelectQuadruplesByPredicateAsync(RDFResource pred)
-            => SelectQuadruplesAsync(null, null, pred, null, null);
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified object
-        /// </summary>
-        public RDFMemoryStore SelectQuadruplesByObject(RDFResource obj)
-            => SelectQuadruples(null, null, null, obj, null);
-
-        /// <summary>
-        /// Asynchronously gets a memory store containing quadruples of the store with the specified object
-        /// </summary>
-        public Task<RDFMemoryStore> SelectQuadruplesByObjectAsync(RDFResource obj)
-            => SelectQuadruplesAsync(null, null, null, obj, null);
-
-        /// <summary>
-        /// Gets a memory store containing quadruples with the specified literal
-        /// </summary>
-        public RDFMemoryStore SelectQuadruplesByLiteral(RDFLiteral lit)
-            => SelectQuadruples(null, null, null, null, lit);
-
-        /// <summary>
-        /// Asynchronously gets a memory store containing quadruples of the store with the specified literal
-        /// </summary>
-        public Task<RDFMemoryStore> SelectQuadruplesByLiteralAsync(RDFLiteral lit)
-            => SelectQuadruplesAsync(null, null, null, null, lit);
+        /// <exception cref="RDFStoreException"></exception>
+        public RDFMemoryStore this[RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null]
+            => new RDFMemoryStore(SelectQuadruples(c, s, p, o, l));
 
         /// <summary>
         /// Gets a list containing the graphs saved in the store
@@ -438,7 +119,7 @@ namespace RDFSharp.Store
         public List<RDFGraph> ExtractGraphs()
         {
             Dictionary<long, RDFGraph> graphs = new Dictionary<long, RDFGraph>();
-            foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
+            foreach (RDFQuadruple q in SelectQuadruples())
             {
                 // Step 1: Cache-Update
                 if (!graphs.TryGetValue(q.Context.PatternMemberID, out RDFGraph graph))
@@ -456,30 +137,18 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Asynchronously gets a list containing the graphs saved in the store
-        /// </summary>
-        public Task<List<RDFGraph>> ExtractGraphsAsync()
-            => Task.Run(ExtractGraphs);
-
-        /// <summary>
         /// Gets a list containing the contexts saved in the store
         /// </summary>
         public List<RDFContext> ExtractContexts()
         {
             Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
-            foreach (RDFQuadruple q in this as RDFMemoryStore ?? SelectAllQuadruples())
+            foreach (RDFQuadruple q in SelectQuadruples())
             {
                 if (!contexts.ContainsKey(q.Context.PatternMemberID))
                     contexts.Add(q.Context.PatternMemberID, q.Context);
             }
             return contexts.Values.OfType<RDFContext>().ToList();
         }
-
-        /// <summary>
-        /// Asynchronously gets a list containing the contexts saved in the store
-        /// </summary>
-        public Task<List<RDFContext>> ExtractContextsAsync()
-            => Task.Run(ExtractContexts);
         #endregion
 
         #region Convert
@@ -563,7 +232,7 @@ namespace RDFSharp.Store
 
             //Iterate the quadruples of the store to populate the result datatable
             result.BeginLoadData();
-            foreach (RDFQuadruple q in SelectAllQuadruples())
+            foreach (RDFQuadruple q in SelectQuadruples())
             {
                 DataRow newRow = result.NewRow();
                 newRow["?CONTEXT"] = q.Context.ToString();

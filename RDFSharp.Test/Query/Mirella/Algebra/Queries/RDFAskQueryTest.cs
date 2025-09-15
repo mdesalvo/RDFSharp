@@ -735,7 +735,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToStoreAsyncAndHaveTrueResult()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
@@ -750,7 +750,7 @@ public class RDFAskQueryTest
     public async Task ShouldApplyAskQueryToStoreAsyncAndHaveFalseResult()
     {
         RDFMemoryStore store = new RDFMemoryStore();
-        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         RDFAskQuery query = new RDFAskQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()

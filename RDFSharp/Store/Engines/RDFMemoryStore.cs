@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using RDFSharp.Model;
+using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,9 +23,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
-using RDFSharp.Model;
-using RDFSharp.Query;
 
 namespace RDFSharp.Store
 {
@@ -164,7 +165,7 @@ namespace RDFSharp.Store
             {
                 RDFContext graphCtx = new RDFContext(graph.Context);
                 foreach (RDFTriple triple in graph)
-                    Index.Add(new RDFQuadruple(graphCtx, triple));
+                    AddQuadruple(new RDFQuadruple(graphCtx, triple));
             }
             return this;
         }
@@ -192,249 +193,13 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Removes the quadruples with the given context
+        /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
         /// </summary>
-        public override RDFStore RemoveQuadruplesByContext(RDFContext ctx)
+        public override RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
         {
-            if (ctx != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given subject
-        /// </summary>
-        public override RDFStore RemoveQuadruplesBySubject(RDFResource subj)
-        {
-            if (subj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given predicate
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByPredicate(RDFResource pred)
-        {
-            if (pred != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByPredicate(pred))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given resource as object
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByObject(RDFResource obj)
-        {
-            if (obj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByObject(obj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given literal as object
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByLiteral(RDFLiteral lit)
-        {
-            if (lit != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByLiteral(lit))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context and subject
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextSubject(RDFContext ctx, RDFResource subj)
-        {
-            if (ctx != null && subj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesBySubject(subj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context and predicate
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextPredicate(RDFContext ctx, RDFResource pred)
-        {
-            if (ctx != null && pred != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesByPredicate(pred))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context and object
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextObject(RDFContext ctx, RDFResource obj)
-        {
-            if (ctx != null && obj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesByObject(obj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context and literal
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextLiteral(RDFContext ctx, RDFLiteral lit)
-        {
-            if (ctx != null && lit != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesByLiteral(lit))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context, subject and predicate
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextSubjectPredicate(RDFContext ctx, RDFResource subj, RDFResource pred)
-        {
-            if (ctx != null && subj != null && pred != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesBySubject(subj).SelectQuadruplesByPredicate(pred))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context, subject and object
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextSubjectObject(RDFContext ctx, RDFResource subj, RDFResource obj)
-        {
-            if (ctx != null && subj != null && obj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesBySubject(subj).SelectQuadruplesByObject(obj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context, subject and literal
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextSubjectLiteral(RDFContext ctx, RDFResource subj, RDFLiteral lit)
-        {
-            if (ctx != null && subj != null && lit != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesBySubject(subj).SelectQuadruplesByLiteral(lit))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context, predicate and object
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextPredicateObject(RDFContext ctx, RDFResource pred, RDFResource obj)
-        {
-            if (ctx != null && pred != null && obj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesByPredicate(pred).SelectQuadruplesByObject(obj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given context, predicate and literal
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByContextPredicateLiteral(RDFContext ctx, RDFResource pred, RDFLiteral lit)
-        {
-            if (ctx != null && pred != null && lit != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByContext(ctx).SelectQuadruplesByPredicate(pred).SelectQuadruplesByLiteral(lit))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given subject and predicate
-        /// </summary>
-        public override RDFStore RemoveQuadruplesBySubjectPredicate(RDFResource subj, RDFResource pred)
-        {
-            if (subj != null && pred != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subj).SelectQuadruplesByPredicate(pred))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given subject and object
-        /// </summary>
-        public override RDFStore RemoveQuadruplesBySubjectObject(RDFResource subj, RDFResource obj)
-        {
-            if (subj != null && obj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subj).SelectQuadruplesByObject(obj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given subject and literal
-        /// </summary>
-        public override RDFStore RemoveQuadruplesBySubjectLiteral(RDFResource subj, RDFLiteral lit)
-        {
-            if (subj != null && lit != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesBySubject(subj).SelectQuadruplesByLiteral(lit))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given predicate and object
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByPredicateObject(RDFResource pred, RDFResource obj)
-        {
-            if (pred != null && obj != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByPredicate(pred).SelectQuadruplesByObject(obj))
-                    Index.Remove(quad);
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Removes the quadruples with the given predicate and literal
-        /// </summary>
-        public override RDFStore RemoveQuadruplesByPredicateLiteral(RDFResource pred, RDFLiteral lit)
-        {
-            if (pred != null && lit != null)
-            {
-                foreach (RDFQuadruple quad in SelectQuadruplesByPredicate(pred).SelectQuadruplesByLiteral(lit))
-                    Index.Remove(quad);
-            }
+            foreach (RDFQuadruple quadruple in SelectQuadruples(c, s, p, o, l))
+                RemoveQuadruple(quadruple);
             return this;
         }
 
@@ -453,10 +218,92 @@ namespace RDFSharp.Store
             => quadruple != null && Index.Hashes.ContainsKey(quadruple.QuadrupleID);
 
         /// <summary>
-        /// Gets a store containing quadruples satisfying the given pattern
+        /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
         /// </summary>
-        public override RDFMemoryStore SelectQuadruples(RDFContext ctx, RDFResource subj, RDFResource pred,RDFResource obj, RDFLiteral lit)
-            => new RDFMemoryStore(RDFStoreUtilities.SelectQuadruples(this, ctx, subj, pred, obj, lit));
+        /// <exception cref="RDFStoreException"></exception>
+        public override List<RDFQuadruple> SelectQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
+        {
+            #region Guards
+            if (o != null && l != null)
+                throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!");
+            #endregion
+
+            #region Utilities
+            void LookupIndex(HashSet<long> lookup, out List<RDFHashedQuadruple> result)
+            {
+                result = new List<RDFHashedQuadruple>(lookup.Count);
+                result.AddRange(lookup.Select(q => Index.Hashes[q]));
+            }
+            #endregion
+
+            StringBuilder queryFilters = new StringBuilder(4);
+            List<RDFHashedQuadruple> C=null, S=null, P=null, O=null, L=null;
+
+            //Filter by Context
+            if (c != null)
+            {
+                queryFilters.Append('C');
+                LookupIndex(Index.LookupIndexByContext(c), out C);
+            }
+
+            //Filter by Subject
+            if (s != null)
+            {
+                queryFilters.Append('S');
+                LookupIndex(Index.LookupIndexBySubject(s), out S);
+            }
+
+            //Filter by Predicate
+            if (p != null)
+            {
+                queryFilters.Append('P');
+                LookupIndex(Index.LookupIndexByPredicate(p), out P);
+            }
+
+            //Filter by Object
+            if (o != null)
+            {
+                queryFilters.Append('O');
+                LookupIndex(Index.LookupIndexByObject(o), out O);
+            }
+
+            //Filter by Literal
+            if (l != null)
+            {
+                queryFilters.Append('L');
+                LookupIndex(Index.LookupIndexByLiteral(l), out L);
+            }
+
+            //Intersect the filters
+            switch (queryFilters.ToString())
+            {
+                case "C":    return C.ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "S":    return S.ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "P":    return P.ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "O":    return O.ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "L":    return L.ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CS":   return C.Intersect(S).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CP":   return C.Intersect(P).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CO":   return C.Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CL":   return C.Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CSP":  return C.Intersect(S).Intersect(P).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CSO":  return C.Intersect(S).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CSL":  return C.Intersect(S).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CPO":  return C.Intersect(P).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CPL":  return C.Intersect(P).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CSPO": return C.Intersect(S).Intersect(P).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "CSPL": return C.Intersect(S).Intersect(P).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "SP":   return S.Intersect(P).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "SO":   return S.Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "SL":   return S.Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "SPO":  return S.Intersect(P).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "SPL":  return S.Intersect(P).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "PO":   return P.Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                case "PL":   return P.Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                default:     return Index.Hashes.Values.ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+            }
+        }
         #endregion
 
         #region Set
@@ -472,17 +319,11 @@ namespace RDFSharp.Store
                 foreach (RDFQuadruple q in this)
                 {
                     if (store.ContainsQuadruple(q))
-                        result.Index.Add(q);
+                        result.AddQuadruple(q);
                 }
             }
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously builds a new intersection store from this store and a given one
-        /// </summary>
-        public Task<RDFMemoryStore> IntersectWithAsync(RDFStore store)
-            => Task.Run(() => IntersectWith(store));
 
         /// <summary>
         /// Builds a new union store from this store and a given one
@@ -493,24 +334,18 @@ namespace RDFSharp.Store
 
             //Add quadruples from this store
             foreach (RDFQuadruple q in this)
-                result.Index.Add(q);
+                result.AddQuadruple(q);
 
             //Manage the given store
             if (store != null)
             {
                 //Add quadruples from the given store
-                foreach (RDFQuadruple q in store.SelectAllQuadruples())
-                    result.Index.Add(q);
+                foreach (RDFQuadruple q in store.SelectQuadruples())
+                    result.AddQuadruple(q);
             }
 
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously builds a new union store from this store and a given one
-        /// </summary>
-        public Task<RDFMemoryStore> UnionWithAsync(RDFStore store)
-            => Task.Run(() => UnionWith(store));
 
         /// <summary>
         /// Builds a new difference store from this store and a given one
@@ -525,24 +360,18 @@ namespace RDFSharp.Store
                 foreach (RDFQuadruple q in this)
                 {
                     if (!store.ContainsQuadruple(q))
-                        result.Index.Add(q);
+                        result.AddQuadruple(q);
                 }
             }
             else
             {
                 //Add quadruples from this store
                 foreach (RDFQuadruple q in this)
-                    result.Index.Add(q);
+                    result.AddQuadruple(q);
             }
 
             return result;
         }
-
-        /// <summary>
-        /// Asynchronously builds a new difference store from this store and a given one
-        /// </summary>
-        public Task<RDFMemoryStore> DifferenceWithAsync(RDFStore store)
-            => Task.Run(() => DifferenceWith(store));
         #endregion
 
         #region Convert
