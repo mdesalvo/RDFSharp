@@ -41,19 +41,18 @@ public class RDFDatatypeTest
     [TestMethod]
     public void ShouldConvertFacetedDatatypeToGraph()
     {
-        RDFDatatype length6 = new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [
-            new RDFLengthFacet(6) ]);
+        RDFDatatype length6 = new RDFDatatype(new Uri("ex:length6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFLengthFacet(6) ]);
         RDFGraph length6Graph = length6.ToRDFGraph();
 
         Assert.IsNotNull(length6Graph);
         Assert.AreEqual(7, length6Graph.TriplesCount);
-        Assert.AreEqual(1, length6Graph[new RDFResource("ex:length6"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null].TriplesCount);
-        Assert.AreEqual(1, length6Graph[new RDFResource("ex:length6"), RDFVocabulary.OWL.WITH_RESTRICTIONS, null, null].TriplesCount);
-        Assert.AreEqual(1, length6Graph[new RDFResource("ex:length6"), RDFVocabulary.OWL.ON_DATATYPE, RDFVocabulary.XSD.STRING, null].TriplesCount);
-        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST, null].TriplesCount);
-        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.RDF.FIRST, null, null].TriplesCount);
-        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.XSD.LENGTH, null, new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)].TriplesCount);
-        Assert.AreEqual(1, length6Graph[null, RDFVocabulary.RDF.REST, null, null].TriplesCount);
+        Assert.AreEqual(1, length6Graph[s: new RDFResource("ex:length6"), p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDFS.DATATYPE].TriplesCount);
+        Assert.AreEqual(1, length6Graph[s: new RDFResource("ex:length6"), p: RDFVocabulary.OWL.WITH_RESTRICTIONS].TriplesCount);
+        Assert.AreEqual(1, length6Graph[s: new RDFResource("ex:length6"), p: RDFVocabulary.OWL.ON_DATATYPE, o: RDFVocabulary.XSD.STRING].TriplesCount);
+        Assert.AreEqual(1, length6Graph[p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDF.LIST].TriplesCount);
+        Assert.AreEqual(1, length6Graph[p: RDFVocabulary.RDF.FIRST].TriplesCount);
+        Assert.AreEqual(1, length6Graph[p: RDFVocabulary.XSD.LENGTH, l: new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER)].TriplesCount);
+        Assert.AreEqual(1, length6Graph[p: RDFVocabulary.RDF.REST].TriplesCount);
     }
 
     [TestMethod]
@@ -85,8 +84,8 @@ public class RDFDatatypeTest
 
         Assert.IsNotNull(exStringGraph);
         Assert.AreEqual(2, exStringGraph.TriplesCount);
-        Assert.AreEqual(1, exStringGraph[new RDFResource("ex:string"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.DATATYPE, null].TriplesCount);
-        Assert.AreEqual(1, exStringGraph[new RDFResource("ex:string"), RDFVocabulary.OWL.EQUIVALENT_CLASS, RDFVocabulary.XSD.STRING, null].TriplesCount);
+        Assert.AreEqual(1, exStringGraph[s: new RDFResource("ex:string"), p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDFS.DATATYPE, null].TriplesCount);
+        Assert.AreEqual(1, exStringGraph[s: new RDFResource("ex:string"), p: RDFVocabulary.OWL.EQUIVALENT_CLASS, o: RDFVocabulary.XSD.STRING, null].TriplesCount);
     }
 
     [TestMethod]
