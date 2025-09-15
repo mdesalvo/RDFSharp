@@ -203,13 +203,13 @@ public class RDFNamespaceRegisterTest
     [TestMethod]
     public void ShouldGetNamespaceByUriWithLookupService()
     {
-        RDFNamespace ns = RDFNamespaceRegister.GetByUri("http://dbpedia.org/ontology/", true); //Intentionally not mocked, since we want to monitor if the service is still alive or has been retired...
+        RDFNamespace ns = RDFNamespaceRegister.GetByUri("http://dbpedia.org/property/", true); //Intentionally not mocked, since we want to monitor if the service is still alive or has been retired...
 
         Assert.IsNotNull(ns);
-        Assert.IsTrue(ns.NamespacePrefix.Equals("dbo", StringComparison.Ordinal));
-        Assert.IsTrue(ns.NamespaceUri.Equals(new Uri("http://dbpedia.org/ontology/")));
+        Assert.IsTrue(ns.NamespacePrefix.Equals("dbp", StringComparison.Ordinal));
+        Assert.IsTrue(ns.NamespaceUri.Equals(new Uri("http://dbpedia.org/property/")));
         Assert.IsTrue(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
-        RDFNamespaceRegister.RemoveByPrefix("dbo");
+        RDFNamespaceRegister.RemoveByPrefix("dbp");
         Assert.IsFalse(RDFNamespaceRegister.Instance.Register.Any(x => x.Equals(ns)));
     }
 
