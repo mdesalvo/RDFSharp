@@ -47,7 +47,7 @@ namespace RDFSharp.Query
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder(32);
+            StringBuilder sb = new StringBuilder();
 
             //(MD5(L))
             sb.Append("(MD5(");
@@ -101,9 +101,8 @@ namespace RDFSharp.Query
 
                 using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
                 {
-                    string leftArgumentPMemberString = leftArgumentPMember.ToString();
-                    StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
-                    foreach (byte hashByte in md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
+                    StringBuilder sb = new StringBuilder();
+                    foreach (byte hashByte in md5Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString())))
                         sb.Append(hashByte.ToString("x2"));
 
                     expressionResult = new RDFPlainLiteral(sb.ToString());

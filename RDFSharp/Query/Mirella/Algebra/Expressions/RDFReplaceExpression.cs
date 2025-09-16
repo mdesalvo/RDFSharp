@@ -98,10 +98,10 @@ namespace RDFSharp.Query
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder(64);
+            StringBuilder sb = new StringBuilder();
 
             //Serialize supported flags
-            StringBuilder flags = new StringBuilder(4);
+            StringBuilder flags = new StringBuilder();
             if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
                 flags.Append('i');
             if (RegEx.Options.HasFlag(RegexOptions.Singleline))

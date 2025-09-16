@@ -276,7 +276,7 @@ namespace RDFSharp.Model
             }
             #endregion
 
-            StringBuilder queryFilters = new StringBuilder(4);
+            StringBuilder queryFilters = new StringBuilder();
             List<RDFHashedTriple> S=null, P=null, O=null, L=null;
 
             //Filter by Subject

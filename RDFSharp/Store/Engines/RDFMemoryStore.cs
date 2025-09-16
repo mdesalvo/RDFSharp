@@ -237,7 +237,7 @@ namespace RDFSharp.Store
             }
             #endregion
 
-            StringBuilder queryFilters = new StringBuilder(4);
+            StringBuilder queryFilters = new StringBuilder();
             List<RDFHashedQuadruple> C=null, S=null, P=null, O=null, L=null;
 
             //Filter by Context

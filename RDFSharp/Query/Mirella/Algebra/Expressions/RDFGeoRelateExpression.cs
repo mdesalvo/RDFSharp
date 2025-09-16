@@ -139,7 +139,7 @@ namespace RDFSharp.Query
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder(32);
+            StringBuilder sb = new StringBuilder();
 
             //(geof:sfRelate(L,R,DE9IM))
             sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.RELATE, prefixes)}(");

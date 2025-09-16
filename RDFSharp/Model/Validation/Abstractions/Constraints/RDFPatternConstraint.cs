@@ -105,7 +105,7 @@ namespace RDFSharp.Model
                 result.AddTriple(new RDFTriple(shape, RDFVocabulary.SHACL.PATTERN, new RDFTypedLiteral(RegEx.ToString(), RDFModelEnums.RDFDatatypes.XSD_STRING)));
 
                 //sh:flags
-                StringBuilder regexFlags = new StringBuilder(4);
+                StringBuilder regexFlags = new StringBuilder();
                 if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
                     regexFlags.Append('i');
                 if (RegEx.Options.HasFlag(RegexOptions.Singleline))

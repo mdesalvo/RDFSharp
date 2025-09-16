@@ -249,7 +249,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static void ParseStatement(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            StringBuilder sb = new StringBuilder(8);
+            StringBuilder sb = new StringBuilder();
             do
             {
                 int codePoint = ReadCodePoint(turtleData, turtleContext);
@@ -623,7 +623,7 @@ namespace RDFSharp.Model
             SkipWhitespace(turtleData, turtleContext);
 
             // Read prefix ID (e.g. "rdf:" or ":")
-            StringBuilder prefixID = new StringBuilder(8);
+            StringBuilder prefixID = new StringBuilder();
             while (true)
             {
                 int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -685,7 +685,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static Uri ParseURI(string turtleData, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            StringBuilder uriBuf = new StringBuilder(32);
+            StringBuilder uriBuf = new StringBuilder();
 
             // First character should be '<'
             int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -780,7 +780,7 @@ namespace RDFSharp.Model
             if (!IsBLANK_NODE_LABEL_StartChar(bufChar))
                 throw new RDFModelException("Expected a letter, found '" + (char)bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
 
-            StringBuilder name = new StringBuilder(32);
+            StringBuilder name = new StringBuilder();
             name.Append(char.ConvertFromUtf32(bufChar));
 
             // Read all following letter and numbers, they are part of the name
@@ -813,7 +813,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static RDFTypedLiteral ParseNumber(string turtleData, RDFTurtleContext turtleContext)
         {
-            StringBuilder value = new StringBuilder(32);
+            StringBuilder value = new StringBuilder();
             RDFModelEnums.RDFDatatypes dt = RDFModelEnums.RDFDatatypes.XSD_INTEGER;
 
             int bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -923,7 +923,7 @@ namespace RDFSharp.Model
             else
             {
                 // bufChar is the first letter of the prefix
-                StringBuilder prefix = new StringBuilder(16);
+                StringBuilder prefix = new StringBuilder();
                 prefix.Append(char.ConvertFromUtf32(bufChar));
 
                 previousChar = bufChar;
@@ -968,7 +968,7 @@ namespace RDFSharp.Model
             }
 
             // bufChar == ':', read optional local name
-            StringBuilder localName = new StringBuilder(16);
+            StringBuilder localName = new StringBuilder();
             bufChar = ReadCodePoint(turtleData, turtleContext);
             if (IsNameStartChar(bufChar))
             {
@@ -1035,7 +1035,7 @@ namespace RDFSharp.Model
                         throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
 
                     // Read language
-                    StringBuilder lang = new StringBuilder(16);
+                    StringBuilder lang = new StringBuilder();
                     lang.Append(char.ConvertFromUtf32(bufChar));
 
                     bufChar = ReadCodePoint(turtleData, turtleContext);
@@ -1115,7 +1115,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static string ParseString(string turtleData, RDFTurtleContext turtleContext, int closingCharacter)
         {
-            StringBuilder sb = new StringBuilder(32);
+            StringBuilder sb = new StringBuilder();
 
             while (true)
             {
@@ -1153,7 +1153,7 @@ namespace RDFSharp.Model
         /// </summary>
         internal static string ParseLongString(string turtleData, RDFTurtleContext turtleContext, int closingCharacter)
         {
-            StringBuilder sb = new StringBuilder(64);
+            StringBuilder sb = new StringBuilder();
 
             int doubleQuoteCount = 0;
             while (doubleQuoteCount < 3)
@@ -1194,7 +1194,7 @@ namespace RDFSharp.Model
 
             int startIdx = 0;
             int sLength = s.Length;
-            StringBuilder sb = new StringBuilder(sLength);
+            StringBuilder sb = new StringBuilder();
 
             while (backSlashIdx != -1)
             {
@@ -1340,7 +1340,6 @@ namespace RDFSharp.Model
             if (expected.IndexOf(supplied, StringComparison.Ordinal) == -1)
             {
                 StringBuilder msg = new StringBuilder("Unexpected character found" + GetTurtleContextCoordinates(turtleContext) + ": expected ");
-
                 for (int i = 0; i < expected.Length; i++)
                 {
                     if (i > 0)
@@ -1352,7 +1351,6 @@ namespace RDFSharp.Model
                 msg.Append(", found '");
                 msg.Append(supplied);
                 msg.Append('\'');
-
                 throw new RDFModelException(msg.ToString());
             }
         }
@@ -1514,7 +1512,7 @@ namespace RDFSharp.Model
             string actualPredicate = string.Empty;
             string abbreviatedPredicate = string.Empty;
             const string spaceConst = " ";
-            StringBuilder result = new StringBuilder(256);
+            StringBuilder result = new StringBuilder();
 
             //Iterate over the calculated groups
             foreach (var triplesGroup in triplesGroupedBySubjectAndPredicate)

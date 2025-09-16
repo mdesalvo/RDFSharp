@@ -57,7 +57,7 @@ namespace RDFSharp.Query
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder(64);
+            StringBuilder sb = new StringBuilder();
 
             //(IF(C, L, R))
             sb.Append("(IF(");

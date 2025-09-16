@@ -47,7 +47,7 @@ namespace RDFSharp.Query
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            StringBuilder sb = new StringBuilder(32);
+            StringBuilder sb = new StringBuilder();
 
             //(SHA512(L))
             sb.Append("(SHA512(");
@@ -101,9 +101,8 @@ namespace RDFSharp.Query
 
                 using (SHA512CryptoServiceProvider SHA512Encryptor = new SHA512CryptoServiceProvider())
                 {
-                    string leftArgumentPMemberString = leftArgumentPMember.ToString();
-                    StringBuilder sb = new StringBuilder(leftArgumentPMemberString.Length);
-                    foreach (byte hashByte in SHA512Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMemberString)))
+                    StringBuilder sb = new StringBuilder();
+                    foreach (byte hashByte in SHA512Encryptor.ComputeHash(RDFModelUtilities.UTF8_NoBOM.GetBytes(leftArgumentPMember.ToString())))
                         sb.Append(hashByte.ToString("x2"));
                     expressionResult = new RDFPlainLiteral(sb.ToString());
                 }

@@ -172,7 +172,7 @@ namespace RDFSharp.Store
         /// <exception cref="RDFStoreException"></exception>
         internal static void ParseStatement(string trigData, RDFTriGContext trigContext)
         {
-            StringBuilder sb = new StringBuilder(8);
+            StringBuilder sb = new StringBuilder();
             do
             {
                 int codePoint = ReadCodePoint(trigData, trigContext);

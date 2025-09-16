@@ -105,11 +105,11 @@ namespace RDFSharp.Model
                 return asciiString;
 
             //UNICODE (UTF-16)
-            StringBuilder sbRegexU8 = new StringBuilder(asciiString.Length);
+            StringBuilder sbRegexU8 = new StringBuilder();
             sbRegexU8.Append(RDFShims.EightBytesUnicodeRegex.Value.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             //UNICODE (UTF-8)
-            StringBuilder sbRegexU4 = new StringBuilder(sbRegexU8.Length);
+            StringBuilder sbRegexU4 = new StringBuilder();
             sbRegexU4.Append(RDFShims.FourBytesUnicodeRegex.Value.Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
 
             return sbRegexU4.ToString();
@@ -125,7 +125,7 @@ namespace RDFSharp.Model
                 return unicodeString;
 
             //https://docs.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-5.0&viewFallbackFrom=netstandard-2.0
-            StringBuilder b = new StringBuilder(unicodeString.Length);
+            StringBuilder b = new StringBuilder();
             for (int i = 0; i < unicodeString.Length; i++)
             {
                 //ASCII
@@ -159,7 +159,7 @@ namespace RDFSharp.Model
             if (string.IsNullOrEmpty(data))
                 return data;
 
-            StringBuilder b = new StringBuilder(data.Length);
+            StringBuilder b = new StringBuilder();
             foreach (char c in data)
             {
                 if (char.IsControl(c) && c != '\u0009' && c != '\u000A' && c != '\u000D')

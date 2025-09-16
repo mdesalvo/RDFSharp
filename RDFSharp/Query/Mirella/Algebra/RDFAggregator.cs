@@ -149,7 +149,7 @@ namespace RDFSharp.Query
         {
             if (HavingClause.Item1)
             {
-                StringBuilder result = new StringBuilder(64);
+                StringBuilder result = new StringBuilder();
                 result.Append('(');
                 result.Append(ToString(), 1, ToString().LastIndexOf(" AS ?", StringComparison.Ordinal));
                 switch (HavingClause.Item2)

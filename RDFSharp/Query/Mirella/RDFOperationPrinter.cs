@@ -32,7 +32,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintInsertDataOperation(RDFInsertDataOperation insertDataOperation)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
 
             if (insertDataOperation != null)
             {
@@ -52,7 +52,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintInsertWhereOperation(RDFInsertWhereOperation insertWhereOperation)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
 
             if (insertWhereOperation != null)
             {
@@ -74,7 +74,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDeleteDataOperation(RDFDeleteDataOperation deleteDataOperation)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
 
             if (deleteDataOperation != null)
             {
@@ -94,7 +94,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDeleteWhereOperation(RDFDeleteWhereOperation deleteWhereOperation)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
 
             if (deleteWhereOperation != null)
             {
@@ -116,7 +116,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDeleteInsertWhereOperation(RDFDeleteInsertWhereOperation deleteInsertWhereOperation)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
 
             if (deleteInsertWhereOperation != null)
             {
@@ -141,7 +141,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintLoadOperation(RDFLoadOperation loadOperation)
         {
-            StringBuilder sb = new StringBuilder(256);
+            StringBuilder sb = new StringBuilder();
 
             if (loadOperation != null)
             {
@@ -164,7 +164,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintClearOperation(RDFClearOperation clearOperation)
         {
-            StringBuilder sb = new StringBuilder(64);
+            StringBuilder sb = new StringBuilder();
 
             if (clearOperation != null)
             {
@@ -208,7 +208,7 @@ namespace RDFSharp.Query
         {
             if (operationPrefixes.Count > 0)
             {
-                StringBuilder sb = new StringBuilder(128);
+                StringBuilder sb = new StringBuilder();
                 operationPrefixes.ForEach(pf => sb.AppendLine($"PREFIX {pf.NamespacePrefix}: <{pf.NamespaceUri}>"));
                 sb.AppendLine();
                 return sb.ToString();

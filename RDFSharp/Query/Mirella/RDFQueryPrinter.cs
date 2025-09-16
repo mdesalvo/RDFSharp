@@ -34,7 +34,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintSelectQuery(RDFSelectQuery selectQuery, double indentLevel, bool fromUnionOrMinus)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
             if (selectQuery == null)
                 return sb.ToString();
 
@@ -160,7 +160,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintDescribeQuery(RDFDescribeQuery describeQuery)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
             if (describeQuery == null)
                 return sb.ToString();
 
@@ -204,7 +204,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintConstructQuery(RDFConstructQuery constructQuery)
         {
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
             if (constructQuery == null)
                 return sb.ToString();
 
@@ -264,7 +264,7 @@ namespace RDFSharp.Query
             if (askQuery == null)
                 return string.Empty;
 
-            StringBuilder sb = new StringBuilder(512);
+            StringBuilder sb = new StringBuilder();
             List<RDFNamespace> prefixes = PrintPrefixes(askQuery, sb, true);
             sb.AppendLine("ASK");
             PrintWhereClause(askQuery, sb, prefixes, string.Empty, 0, false);
@@ -491,8 +491,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder(256);
-            string spaces = new StringBuilder(spaceIndent).Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
+            StringBuilder result = new StringBuilder();
+            string spaces = new StringBuilder().Append(' ', spaceIndent < 0 ? 0 : spaceIndent).ToString();
 
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
@@ -725,7 +725,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder(64);
+            StringBuilder result = new StringBuilder();
             result.Append(PrintPatternMember(propertyPath.Start, prefixes));
             result.Append(' ');
 
@@ -813,7 +813,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string PrintValues(RDFValues values, List<RDFNamespace> prefixes, string spaces)
         {
-            StringBuilder result = new StringBuilder(64);
+            StringBuilder result = new StringBuilder();
 
             //Compact representation
             if (values.Bindings.Keys.Count == 1)
