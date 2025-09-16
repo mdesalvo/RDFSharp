@@ -1048,7 +1048,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydtPP{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtPP{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtPP{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -1116,7 +1116,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydtP{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtP{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtP{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -1187,7 +1187,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydtQQ{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQQ{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQQ{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -1253,7 +1253,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydtQ{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQ{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtQ{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -1312,7 +1312,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype("ex:mydtQ").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQ").Facets.Single() is RDFPatternFacet { Pattern: "^ex$" });
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQ").Facets[0] is RDFPatternFacet { Pattern: "^ex$" });
     }
 
     [TestMethod]
@@ -1583,7 +1583,7 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(store2.Equals(store1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype("ex:mydtQG").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQG").Facets.Single() is RDFPatternFacet { Pattern: "^ex$" });
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtQG").Facets[0] is RDFPatternFacet { Pattern: "^ex$" });
     }
 
     [TestMethod]

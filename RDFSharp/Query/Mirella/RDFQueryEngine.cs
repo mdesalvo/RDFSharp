@@ -382,7 +382,7 @@ namespace RDFSharp.Query
             if (query is RDFSelectQuery selectQuery)
             {
                 #region GROUPBY
-                RDFGroupByModifier groupByModifier = modifiers.OfType<RDFGroupByModifier>().SingleOrDefault();
+                RDFGroupByModifier groupByModifier = modifiers.OfType<RDFGroupByModifier>().FirstOrDefault();
                 if (groupByModifier != null)
                 {
                     table = groupByModifier.ApplyModifier(table);
@@ -401,19 +401,19 @@ namespace RDFSharp.Query
             #endregion
 
             #region DISTINCT
-            RDFDistinctModifier distinctModifier = modifiers.OfType<RDFDistinctModifier>().SingleOrDefault();
+            RDFDistinctModifier distinctModifier = modifiers.OfType<RDFDistinctModifier>().FirstOrDefault();
             if (distinctModifier != null)
                 table = distinctModifier.ApplyModifier(table);
             #endregion
 
             #region OFFSET
-            RDFOffsetModifier offsetModifier = modifiers.OfType<RDFOffsetModifier>().SingleOrDefault();
+            RDFOffsetModifier offsetModifier = modifiers.OfType<RDFOffsetModifier>().FirstOrDefault();
             if (offsetModifier != null)
                 table = offsetModifier.ApplyModifier(table);
             #endregion
 
             #region  LIMIT
-            RDFLimitModifier limitModifier = modifiers.OfType<RDFLimitModifier>().SingleOrDefault();
+            RDFLimitModifier limitModifier = modifiers.OfType<RDFLimitModifier>().FirstOrDefault();
             if (limitModifier != null)
                 table = limitModifier.ApplyModifier(table);
             #endregion

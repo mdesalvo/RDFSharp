@@ -96,13 +96,13 @@ public class RDFValidationEngineTest
         Assert.IsNotNull(validationReport);
         Assert.IsFalse(validationReport.Conforms);
         Assert.AreEqual(1, validationReport.ResultsCount);
-        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results.Single().Severity);
-        Assert.IsTrue(validationReport.Results.Single().ResultMessages.Single().Equals(new RDFPlainLiteral("ErrorMessage")));
-        Assert.IsTrue(validationReport.Results.Single().FocusNode.Equals(new RDFResource("ex:Alice")));
-        Assert.IsTrue(validationReport.Results.Single().ResultValue.Equals(new RDFResource("ex:Alice")));
-        Assert.IsNull(validationReport.Results.Single().ResultPath);
-        Assert.IsTrue(validationReport.Results.Single().SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
-        Assert.IsTrue(validationReport.Results.Single().SourceShape.Equals(new RDFResource("ex:NodeShape")));
+        Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[0].Severity);
+        Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("ErrorMessage")));
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
+        Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
+        Assert.IsNull(validationReport.Results[0].ResultPath);
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
     }
 
     [TestMethod]

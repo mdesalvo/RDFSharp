@@ -173,11 +173,11 @@ public class RDFShapesGraphTest
         Assert.IsFalse(shapesGraph2.SelectShape("ex:shape").Deactivated);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, shapesGraph2.SelectShape("ex:shape").Severity);
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").MessagesCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages.Single().Equals(new RDFPlainLiteral("This is an error", "en-US")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages[0].Equals(new RDFPlainLiteral("This is an error", "en-US")));
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").TargetsCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Targets.Single().TargetValue.Equals(new RDFResource("ex:class")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Targets[0].TargetValue.Equals(new RDFResource("ex:class")));
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").ConstraintsCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Constraints.Single() is RDFClassConstraint classContstraint && classContstraint.ClassType.Equals(new RDFResource("ex:class")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Constraints[0] is RDFClassConstraint classContstraint && classContstraint.ClassType.Equals(new RDFResource("ex:class")));
     }
 
     [TestMethod]
@@ -201,11 +201,11 @@ public class RDFShapesGraphTest
         Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Deactivated);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, shapesGraph2.SelectShape("ex:shape").Severity);
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").MessagesCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages.Single().Equals(new RDFPlainLiteral("This is an error", "en-US")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages[0].Equals(new RDFPlainLiteral("This is an error", "en-US")));
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").TargetsCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Targets.Single().TargetValue.Equals(new RDFResource("ex:class")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Targets[0].TargetValue.Equals(new RDFResource("ex:class")));
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").ConstraintsCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Constraints.Single() is RDFClassConstraint classContstraint && classContstraint.ClassType.Equals(new RDFResource("ex:class")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Constraints[0] is RDFClassConstraint classContstraint && classContstraint.ClassType.Equals(new RDFResource("ex:class")));
     }
 
     [TestMethod]
@@ -228,11 +228,11 @@ public class RDFShapesGraphTest
         Assert.IsFalse(shapesGraph2.SelectShape("ex:shape").Deactivated);
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, shapesGraph2.SelectShape("ex:shape").Severity);
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").MessagesCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages.Single().Equals(new RDFPlainLiteral("This is an error", "en-US")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Messages[0].Equals(new RDFPlainLiteral("This is an error", "en-US")));
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").TargetsCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Targets.Single().TargetValue.Equals(new RDFResource("ex:class")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Targets[0].TargetValue.Equals(new RDFResource("ex:class")));
         Assert.AreEqual(1, shapesGraph2.SelectShape("ex:shape").ConstraintsCount);
-        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Constraints.Single() is RDFClassConstraint classContstraint && classContstraint.ClassType.Equals(new RDFResource("ex:class")));
+        Assert.IsTrue(shapesGraph2.SelectShape("ex:shape").Constraints[0] is RDFClassConstraint classContstraint && classContstraint.ClassType.Equals(new RDFResource("ex:class")));
     }
     #endregion
 }

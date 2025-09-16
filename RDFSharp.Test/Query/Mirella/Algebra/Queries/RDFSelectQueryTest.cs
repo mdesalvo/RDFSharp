@@ -239,7 +239,7 @@ public class RDFSelectQueryTest
         Assert.AreEqual(3, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery { IsOptional: true });
+        Assert.IsTrue(query.GetSubQueries().First() is RDFSelectQuery { IsOptional: true });
         Assert.AreEqual(5, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }

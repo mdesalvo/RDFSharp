@@ -131,7 +131,7 @@ public class RDFConstructQueryTest
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.IsTrue(query.GetSubQueries().Single() is RDFSelectQuery { IsOptional: true });
+        Assert.IsTrue(query.GetSubQueries().First() is RDFSelectQuery { IsOptional: true });
         Assert.AreEqual(3, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }

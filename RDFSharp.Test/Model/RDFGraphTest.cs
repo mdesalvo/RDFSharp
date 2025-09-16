@@ -1384,7 +1384,7 @@ public class RDFGraphTest
         }
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydt{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydt{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydt{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -1480,7 +1480,7 @@ public class RDFGraphTest
         }
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydtT{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtT{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtT{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -1539,7 +1539,7 @@ public class RDFGraphTest
         Assert.IsTrue(graph2.Equals(graph1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype("ex:mydtZ").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtZ").Facets.Single() is RDFPatternFacet { Pattern: "^ex$" });
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtZ").Facets[0] is RDFPatternFacet { Pattern: "^ex$" });
     }
 
     [TestMethod]
@@ -1751,31 +1751,31 @@ public class RDFGraphTest
 
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:length6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
-                                          && dt.Facets.Single() is RDFLengthFacet { Length: 6 }));
+                                          && dt.Facets[0] is RDFLengthFacet { Length: 6 }));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minlength6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
-                                          && dt.Facets.Single() is RDFMinLengthFacet { Length: 6 }));
+                                          && dt.Facets[0] is RDFMinLengthFacet { Length: 6 }));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxlength6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
-                                          && dt.Facets.Single() is RDFMaxLengthFacet { Length: 6 }));
+                                          && dt.Facets[0] is RDFMaxLengthFacet { Length: 6 }));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxinclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
-                                          && dt.Facets.Single() is RDFMaxInclusiveFacet { InclusiveUpperBound: 6 }));
+                                          && dt.Facets[0] is RDFMaxInclusiveFacet { InclusiveUpperBound: 6 }));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:mininclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
-                                          && dt.Facets.Single() is RDFMinInclusiveFacet { InclusiveLowerBound: 6 }));
+                                          && dt.Facets[0] is RDFMinInclusiveFacet { InclusiveLowerBound: 6 }));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:maxexclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
-                                          && dt.Facets.Single() is RDFMaxExclusiveFacet { ExclusiveUpperBound: 6 }));
+                                          && dt.Facets[0] is RDFMaxExclusiveFacet { ExclusiveUpperBound: 6 }));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:minexclusive6", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
-                                          && dt.Facets.Single() is RDFMinExclusiveFacet { ExclusiveLowerBound: 6 }));
+                                          && dt.Facets[0] is RDFMinExclusiveFacet { ExclusiveLowerBound: 6 }));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:aliasRational", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
                                           && dt.Facets.Count == 0));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:patternex", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_STRING
-                                          && dt.Facets.Single() is RDFPatternFacet patternFacet
+                                          && dt.Facets[0] is RDFPatternFacet patternFacet
                                           && string.Equals(patternFacet.Pattern, "^ex", StringComparison.Ordinal)));
         Assert.IsTrue(datatypes.Any(dt => string.Equals(dt.URI.ToString(), "ex:integer", StringComparison.Ordinal)
                                           && dt.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_INTEGER
@@ -1933,7 +1933,7 @@ public class RDFGraphTest
         }
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydtK{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtK{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtK{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -2028,7 +2028,7 @@ public class RDFGraphTest
         }
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype($"ex:mydtKK{(int)format}").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtKK{(int)format}").Facets.Single() is RDFPatternFacet
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype($"ex:mydtKK{(int)format}").Facets[0] is RDFPatternFacet
         {
             Pattern: "^ex$"
         });
@@ -2085,7 +2085,7 @@ public class RDFGraphTest
         Assert.IsTrue(graph2.Equals(graph1));
         //Test that automatic datatype discovery happened successfully
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, RDFDatatypeRegister.GetDatatype("ex:mydtR").TargetDatatype);
-        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtR").Facets.Single() is RDFPatternFacet { Pattern: "^ex$" });
+        Assert.IsTrue(RDFDatatypeRegister.GetDatatype("ex:mydtR").Facets[0] is RDFPatternFacet { Pattern: "^ex$" });
     }
 
     [TestMethod]

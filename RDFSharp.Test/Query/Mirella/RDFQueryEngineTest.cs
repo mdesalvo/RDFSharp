@@ -3228,7 +3228,7 @@ public class RDFQueryEngineTest
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(patternGroup.GetFilters().Single() is RDFValuesFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFValuesFilter);
     }
 
     [TestMethod]
@@ -3258,7 +3258,7 @@ public class RDFQueryEngineTest
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), string.Empty, StringComparison.Ordinal));
-        Assert.IsTrue(patternGroup.GetFilters().Single() is RDFValuesFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFValuesFilter);
     }
 
     [TestMethod]
@@ -3281,9 +3281,9 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
         Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
-        Assert.IsTrue(patternGroup.GetFilters().Single() is RDFExistsFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExistsFilter);
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().Single();
+        RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().First();
         Assert.IsNotNull(existsFilter.PatternResults);
         Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.IsOptional]);
@@ -3319,9 +3319,9 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
         Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
-        Assert.IsTrue(patternGroup.GetFilters().Single() is RDFExistsFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExistsFilter);
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().Single();
+        RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().First();
         Assert.IsNotNull(existsFilter.PatternResults);
         Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
         Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.IsOptional]);
@@ -3512,9 +3512,9 @@ public class RDFQueryEngineTest
             .AddModifier(new RDFDistinctModifier())
             .AddProjectionVariable(new RDFVariable("?N")); //Will be overridden by GroupBy operator
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        queryEngine.EvaluatePatternGroup(query.GetPatternGroups().Single(), graph); //Just to obtain real pattern tables (instead of mocking them)
-        queryEngine.FinalizePatternGroup(query.GetPatternGroups().Single()); //Just to obtain real pattern group table  (instead of mocking it)
-        queryEngine.ApplyFilters(query.GetPatternGroups().Single()); //Just to obtain real filtered table (instead of mocking it)
+        queryEngine.EvaluatePatternGroup(query.GetPatternGroups().First(), graph); //Just to obtain real pattern tables (instead of mocking them)
+        queryEngine.FinalizePatternGroup(query.GetPatternGroups().First()); //Just to obtain real pattern group table  (instead of mocking it)
+        queryEngine.ApplyFilters(query.GetPatternGroups().First()); //Just to obtain real filtered table (instead of mocking it)
         DataTable resultTable = queryEngine.ApplyModifiers(query, queryEngine.QueryMemberResultTables.ElementAt(0).Value);
 
         Assert.AreEqual(2, resultTable.Columns.Count);

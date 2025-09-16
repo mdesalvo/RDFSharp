@@ -34,7 +34,7 @@ public class RDFDatatypeTest
         Assert.IsNotNull(length6);
         Assert.AreEqual(RDFModelEnums.RDFDatatypes.XSD_STRING, length6.TargetDatatype);
         Assert.IsTrue(length6.URI.Equals(new Uri("ex:length6")));
-        Assert.IsTrue(length6.Facets.Single() is RDFLengthFacet { Length: 6 });
+        Assert.IsTrue(length6.Facets[0] is RDFLengthFacet { Length: 6 });
         Assert.IsTrue(string.Equals(length6.ToString(), "ex:length6", StringComparison.Ordinal));
     }
 
