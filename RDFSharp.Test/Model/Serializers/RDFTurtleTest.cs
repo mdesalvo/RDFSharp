@@ -8782,6 +8782,33 @@ public class RDFTurtleTest
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred2/"), new RDFResource("http://obj2/"))));
     }
 
+    //E2E: RDF4J-5407
+
+    [TestMethod]
+    public void ShouldDeserializeTripleEndingWithDigitAndDotEOF()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}:alice :age 30.");
+        RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource($"{RDFNamespaceRegister.DefaultNamespace}alice"), new RDFResource($"{RDFNamespaceRegister.DefaultNamespace}age"), new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+    }
+    [TestMethod]
+    public void ShouldDeserializeTripleEndingWithLetterAndDotEOF()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine($"@base <{RDFNamespaceRegister.DefaultNamespace}>.{Environment.NewLine}:alice :age \"a\".");
+        RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource($"{RDFNamespaceRegister.DefaultNamespace}alice"), new RDFResource($"{RDFNamespaceRegister.DefaultNamespace}age"), new RDFPlainLiteral("a"))));
+    }
+
     [TestCleanup]
     public void Cleanup()
     {
