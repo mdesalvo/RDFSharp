@@ -32,7 +32,6 @@ using RDFSharp.Store;
 using WireMock.Util;
 using WireMock.Types;
 using System.Web;
-using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Query;
 

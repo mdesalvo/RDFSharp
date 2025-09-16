@@ -16,7 +16,6 @@
 
 using RDFSharp.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Model;
 

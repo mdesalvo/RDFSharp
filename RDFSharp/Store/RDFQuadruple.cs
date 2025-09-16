@@ -18,7 +18,6 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace RDFSharp.Store
 {
