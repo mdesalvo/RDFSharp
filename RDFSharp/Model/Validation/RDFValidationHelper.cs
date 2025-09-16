@@ -49,14 +49,14 @@ namespace RDFSharp.Model
 
                         //sh:targetSubjectsOf
                         case RDFTargetSubjectsOf _:
-                            result.AddRange(dataGraph[p: target.TargetValue]
+                            result.AddRange(dataGraph.SelectTriples(p: target.TargetValue)
                                   .Select(x => x.Subject)
                                   .OfType<RDFResource>());
                             break;
 
                         //sh:targetObjectsOf
                         case RDFTargetObjectsOf _:
-                            result.AddRange(dataGraph[p: target.TargetValue]
+                            result.AddRange(dataGraph.SelectTriples(p: target.TargetValue)
                                   .Select(x => x.Object)
                                   .OfType<RDFResource>());
                             break;
@@ -86,7 +86,7 @@ namespace RDFSharp.Model
                         {
                             #region inversePath
                             if (propertyShape.IsInversePath)
-                                result.AddRange(dataGraph[p: propertyShape.Path, o: focusNodeResource]
+                                result.AddRange(dataGraph.SelectTriples(p: propertyShape.Path, o: focusNodeResource)
                                       .Select(t => t.Object));
                             #endregion
 
@@ -120,7 +120,7 @@ namespace RDFSharp.Model
 
                             #region path
                             else
-                                result.AddRange(dataGraph[s: focusNodeResource, p: propertyShape.Path]
+                                result.AddRange(dataGraph.SelectTriples(s: focusNodeResource, p: propertyShape.Path)
                                       .Select(t => t.Object));
                             #endregion
                         }
@@ -146,11 +146,11 @@ namespace RDFSharp.Model
                 #endregion
 
                 //rdf:type
-                result.AddRange(dataGraph[p: RDFVocabulary.RDF.TYPE, o: className]
+                result.AddRange(dataGraph.SelectTriples(p: RDFVocabulary.RDF.TYPE, o: className)
                       .Select(triple => triple.Subject));
 
                 //rdfs:subClassOf
-                foreach (RDFTriple triple in dataGraph[p: RDFVocabulary.RDFS.SUB_CLASS_OF, o: className])
+                foreach (RDFTriple triple in dataGraph.SelectTriples(p: RDFVocabulary.RDFS.SUB_CLASS_OF, o: className))
                     result.AddRange(dataGraph.GetInstancesOfClass((RDFResource)triple.Subject, visitContext));
             }
             return result;
@@ -195,16 +195,16 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectTypedPropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            foreach (RDFTriple declaredPropertyShape in graph[p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.SHACL.PROPERTY_SHAPE])
+            foreach (RDFTriple declaredPropertyShape in graph.SelectTriples(p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.SHACL.PROPERTY_SHAPE))
             {
-                RDFTriple declaredPropertyShapePath = graph[s: (RDFResource)declaredPropertyShape.Subject, p: RDFVocabulary.SHACL.PATH].FirstOrDefault();
+                RDFTriple declaredPropertyShapePath = graph.SelectTriples(s: (RDFResource)declaredPropertyShape.Subject, p: RDFVocabulary.SHACL.PATH).FirstOrDefault();
                 if (declaredPropertyShapePath?.Object is RDFResource declaredPropertyShapePathObject)
                 {
                     RDFPropertyShape propertyShape;
                     if (declaredPropertyShapePathObject.IsBlank)
                     {
                         #region inverse
-                        RDFTriple inversePath = graph[s: declaredPropertyShapePathObject, p: RDFVocabulary.SHACL.INVERSE_PATH].FirstOrDefault();
+                        RDFTriple inversePath = graph.SelectTriples(s: declaredPropertyShapePathObject, p: RDFVocabulary.SHACL.INVERSE_PATH).FirstOrDefault();
                         if (inversePath?.Object is RDFResource inversePathObject)
                         {
                             propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, inversePathObject, true);
@@ -220,7 +220,7 @@ namespace RDFSharp.Model
                         #endregion
 
                         #region alternative
-                        RDFTriple alternativePath = graph[s: declaredPropertyShapePathObject, p: RDFVocabulary.SHACL.ALTERNATIVE_PATH].FirstOrDefault();
+                        RDFTriple alternativePath = graph.SelectTriples(s: declaredPropertyShapePathObject, p: RDFVocabulary.SHACL.ALTERNATIVE_PATH).FirstOrDefault();
                         if (alternativePath?.Object is RDFResource alternativePathObject)
                         {
                             RDFCollection alternativePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph,
@@ -274,14 +274,14 @@ namespace RDFSharp.Model
         /// </summary>
         private static void DetectInlinePropertyShapes(RDFGraph graph, RDFShapesGraph shapesGraph)
         {
-            foreach (RDFTriple inlinePropertyShape in graph[p: RDFVocabulary.SHACL.PROPERTY])
+            foreach (RDFTriple inlinePropertyShape in graph.SelectTriples(p: RDFVocabulary.SHACL.PROPERTY))
                 //Inline property shapes are blank objects of "sh:property" constraints:
-                //we wont find their explicit shape definition within the shapes graph.
+                //we won't find their explicit shape definition within the shapes graph
                 if (inlinePropertyShape.Object is RDFResource inlinePropertyShapeResource
                      && inlinePropertyShapeResource.IsBlank
                      && shapesGraph.SelectShape(inlinePropertyShapeResource.ToString()) == null)
                 {
-                    RDFTriple inlinePropertyShapePath = graph[s: inlinePropertyShapeResource, p: RDFVocabulary.SHACL.PATH].FirstOrDefault();
+                    RDFTriple inlinePropertyShapePath = graph.SelectTriples(s: inlinePropertyShapeResource, p: RDFVocabulary.SHACL.PATH).FirstOrDefault();
                     if (inlinePropertyShapePath?.Object is RDFResource inlinePropertyShapePathObject)
                     {
                         RDFPropertyShape propertyShape = new RDFPropertyShape(inlinePropertyShapeResource, inlinePropertyShapePathObject);
@@ -304,23 +304,23 @@ namespace RDFSharp.Model
             RDFGraph shapeDefinition = graph[s: shape];
 
             //sh:TargetClass (accepted occurrences: N)
-            RDFGraph targetClasses = shapeDefinition[p: RDFVocabulary.SHACL.TARGET_CLASS];
-            foreach (RDFTriple targetClass in targetClasses.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple targetClass in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.TARGET_CLASS)
+                                                             .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetClass((RDFResource)targetClass.Object));
 
             //sh:TargetNode (accepted occurrences: N)
-            RDFGraph targetNodes = shapeDefinition[p: RDFVocabulary.SHACL.TARGET_NODE];
-            foreach (RDFTriple targetNode in targetNodes.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple targetNode in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.TARGET_NODE)
+                                                            .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetNode((RDFResource)targetNode.Object));
 
             //sh:TargetSubjectsOf (accepted occurrences: N)
-            RDFGraph targetSubjectsOf = shapeDefinition[p: RDFVocabulary.SHACL.TARGET_SUBJECTS_OF];
-            foreach (RDFTriple targetSubjectOf in targetSubjectsOf.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple targetSubjectOf in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.TARGET_SUBJECTS_OF)
+                                                                 .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetSubjectsOf((RDFResource)targetSubjectOf.Object));
 
             //sh:TargetObjectsOf (accepted occurrences: N)
-            RDFGraph targetObjectsOf = shapeDefinition[p: RDFVocabulary.SHACL.TARGET_OBJECTS_OF];
-            foreach (RDFTriple targetObjectOf in targetObjectsOf.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple targetObjectOf in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.TARGET_OBJECTS_OF)
+                                                                .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetObjectsOf((RDFResource)targetObjectOf.Object));
         }
 
@@ -332,7 +332,7 @@ namespace RDFSharp.Model
             RDFGraph shapeDefinition = graph[s: shape];
 
             //sh:severity (accepted occurrences: 1)
-            RDFTriple shapeSeverity = shapeDefinition[p: RDFVocabulary.SHACL.SEVERITY_PROPERTY].FirstOrDefault();
+            RDFTriple shapeSeverity = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.SEVERITY_PROPERTY).FirstOrDefault();
             if (shapeSeverity != null)
             {
                 if (shapeSeverity.Object.Equals(RDFVocabulary.SHACL.INFO))
@@ -342,15 +342,15 @@ namespace RDFSharp.Model
             }
 
             //sh:deactivated (accepted occurrences: 1)
-            RDFTriple shapeDeactivated = shapeDefinition[p: RDFVocabulary.SHACL.DEACTIVATED].FirstOrDefault();
+            RDFTriple shapeDeactivated = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.DEACTIVATED).FirstOrDefault();
             if (shapeDeactivated?.Object is RDFTypedLiteral shapeDeactivatedLiteral
                     && shapeDeactivatedLiteral.HasBooleanDatatype()
                     && bool.Parse(shapeDeactivatedLiteral.Value))
                 shape.Deactivate();
 
             //sh:message (accepted occurrences: N)
-            RDFGraph shapeMessages = shapeDefinition[p: RDFVocabulary.SHACL.MESSAGE];
-            foreach (RDFTriple shapeMessage in shapeMessages.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
+            foreach (RDFTriple shapeMessage in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MESSAGE)
+                                                              .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
                 shape.AddMessage((RDFLiteral)shapeMessage.Object);
         }
 
@@ -362,22 +362,22 @@ namespace RDFSharp.Model
             RDFGraph shapeDefinition = graph[s: shape];
 
             //sh:description (accepted occurrences: N)
-            RDFGraph shapeDescriptions = shapeDefinition[p: RDFVocabulary.SHACL.DESCRIPTION];
-            foreach (RDFTriple shapeDescription in shapeDescriptions.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
+            foreach (RDFTriple shapeDescription in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.DESCRIPTION)
+                                                                  .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
                 shape.AddDescription((RDFLiteral)shapeDescription.Object);
 
             //sh:name (accepted occurrences: N)
-            RDFGraph shapeNames = shapeDefinition[p: RDFVocabulary.SHACL.NAME];
-            foreach (RDFTriple shapeName in shapeNames.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
+            foreach (RDFTriple shapeName in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.NAME)
+                                                           .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL))
                 shape.AddName((RDFLiteral)shapeName.Object);
 
             //sh:group (accepted occurrences: 1)
-            RDFTriple shapeGroup = shapeDefinition[p: RDFVocabulary.SHACL.GROUP].FirstOrDefault();
+            RDFTriple shapeGroup = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.GROUP).FirstOrDefault();
             if (shapeGroup?.Object is RDFResource shapeGroupObject)
                 shape.SetGroup(shapeGroupObject);
 
             //sh:order (accepted occurrences: 1)
-            RDFTriple shapeOrder = shapeDefinition[p: RDFVocabulary.SHACL.ORDER].FirstOrDefault();
+            RDFTriple shapeOrder = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.ORDER).FirstOrDefault();
             if (shapeOrder?.Object is RDFTypedLiteral shapeOrderLiteral
                   && shapeOrderLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.SetOrder(int.Parse(shapeOrderLiteral.Value));
@@ -391,8 +391,8 @@ namespace RDFSharp.Model
             RDFGraph shapeDefinition = graph[s: shape];
 
             //sh:and (accepted occurrences: N)
-            RDFGraph shapeAndConstraints = shapeDefinition[p: RDFVocabulary.SHACL.AND];
-            foreach (RDFTriple shapeAndConstraint in shapeAndConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeAndConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.AND)
+                                                                    .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
                 RDFAndConstraint andConstraint = new RDFAndConstraint();
                 RDFCollection andConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeAndConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPO);
@@ -401,19 +401,19 @@ namespace RDFSharp.Model
             }
 
             //sh:class (accepted occurrences: N)
-            RDFGraph shapeClassConstraints = shapeDefinition[p: RDFVocabulary.SHACL.CLASS];
-            foreach (RDFTriple shapeClassConstraint in shapeClassConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeClassConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.CLASS)
+                                                                      .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFClassConstraint((RDFResource)shapeClassConstraint.Object));
 
             //sh:closed (accepted occurrences: 1)
-            RDFTriple shapeClosedConstraint = shapeDefinition[p: RDFVocabulary.SHACL.CLOSED].FirstOrDefault();
+            RDFTriple shapeClosedConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.CLOSED).FirstOrDefault();
             if (shapeClosedConstraint?.Object is RDFTypedLiteral shapeClosedConstraintLiteral
                  && shapeClosedConstraintLiteral.HasBooleanDatatype())
             {
                 RDFClosedConstraint closedConstraint = new RDFClosedConstraint(bool.Parse(shapeClosedConstraintLiteral.Value));
 
                 //sh:ignoredProperties (accepted occurrences: 1)
-                RDFTriple shapeIgnoredPropertiesConstraint = shapeDefinition[p: RDFVocabulary.SHACL.IGNORED_PROPERTIES].FirstOrDefault();
+                RDFTriple shapeIgnoredPropertiesConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.IGNORED_PROPERTIES).FirstOrDefault();
                 if (shapeIgnoredPropertiesConstraint?.Object is RDFResource shapeIgnoredPropertiesConstraintResource)
                 {
                     RDFCollection shapeIgnoredPropertiesConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, shapeIgnoredPropertiesConstraintResource, RDFModelEnums.RDFTripleFlavors.SPO);
@@ -424,22 +424,22 @@ namespace RDFSharp.Model
             }
 
             //sh:datatype (accepted occurrences: N)
-            RDFGraph shapeDatatypeConstraints = shapeDefinition[p: RDFVocabulary.SHACL.DATATYPE];
-            foreach (RDFTriple shapeDatatypeConstraint in shapeDatatypeConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeDatatypeConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.DATATYPE)
+                                                                         .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFDatatypeConstraint(RDFDatatypeRegister.GetDatatype(shapeDatatypeConstraint.Object.ToString())));
 
             //sh:disjoint (accepted occurrences: N)
-            RDFGraph shapeDisjointConstraints = shapeDefinition[p: RDFVocabulary.SHACL.DISJOINT];
-            foreach (RDFTriple shapeDisjointConstraint in shapeDisjointConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeDisjointConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.DISJOINT)
+                                                                         .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFDisjointConstraint((RDFResource)shapeDisjointConstraint.Object));
 
             //sh:equals (accepted occurrences: N)
-            RDFGraph shapeEqualsConstraints = shapeDefinition[p: RDFVocabulary.SHACL.EQUALS];
-            foreach (RDFTriple shapeEqualsConstraint in shapeEqualsConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeEqualsConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.EQUALS)
+                                                                       .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFEqualsConstraint((RDFResource)shapeEqualsConstraint.Object));
 
             //sh:hasValue (accepted occurrences: N)
-            foreach (RDFTriple shapeHasValueConstraint in shapeDefinition[p: RDFVocabulary.SHACL.HAS_VALUE])
+            foreach (RDFTriple shapeHasValueConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.HAS_VALUE))
                 switch (shapeHasValueConstraint.Object)
                 {
                     case RDFResource shapeHasValueConstraintObject:
@@ -451,8 +451,8 @@ namespace RDFSharp.Model
                 }
 
             //sh:in (accepted occurrences: N)
-            RDFGraph shapeInConstraints = shapeDefinition[p: RDFVocabulary.SHACL.IN];
-            foreach (RDFTriple shapeInConstraint in shapeInConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeInConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.IN)
+                                                                   .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
                 RDFModelEnums.RDFTripleFlavors shapeInConstraintCollectionFlavor = RDFModelUtilities.DetectCollectionFlavorFromGraph(graph, (RDFResource)shapeInConstraint.Object);
                 RDFCollection shapeInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeInConstraint.Object, shapeInConstraintCollectionFlavor);
@@ -473,74 +473,74 @@ namespace RDFSharp.Model
             }
 
             //sh:languageIn (accepted occurrences: N)
-            RDFGraph shapeLanguageInConstraints = shapeDefinition[p: RDFVocabulary.SHACL.LANGUAGE_IN];
-            foreach (RDFTriple shapeLanguageInConstraint in shapeLanguageInConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeLanguageInConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.LANGUAGE_IN)
+                                                                           .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
                 RDFCollection shapeLanguageInConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeLanguageInConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPL);
                 shape.AddConstraint(new RDFLanguageInConstraint(shapeLanguageInConstraintCollection.Select(x => x.ToString()).ToList()));
             }
 
             //sh:lessThan (accepted occurrences: N)
-            RDFGraph shapeLessThanConstraints = shapeDefinition[p: RDFVocabulary.SHACL.LESS_THAN];
-            foreach (RDFTriple shapeLessThanConstraint in shapeLessThanConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeLessThanConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.LESS_THAN)
+                                                                         .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFLessThanConstraint((RDFResource)shapeLessThanConstraint.Object));
 
             //sh:lessThanOrEquals (accepted occurrences: N)
-            RDFGraph shapeLessThanOrEqualsConstraints = shapeDefinition[p: RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS];
-            foreach (RDFTriple shapeLessThanOrEqualsConstraint in shapeLessThanOrEqualsConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeLessThanOrEqualsConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS)
+                                                                                 .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFLessThanOrEqualsConstraint((RDFResource)shapeLessThanOrEqualsConstraint.Object));
 
             //sh:maxCount (accepted occurrences: 1)
-            RDFTriple shapeMaxCountConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MAX_COUNT].FirstOrDefault();
+            RDFTriple shapeMaxCountConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MAX_COUNT).FirstOrDefault();
             if (shapeMaxCountConstraint?.Object is RDFTypedLiteral shaclMaxCountConstraintLiteral
                   && shaclMaxCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMaxCountConstraint(int.Parse(shaclMaxCountConstraintLiteral.Value)));
 
             //sh:maxExclusive (accepted occurrences: 1)
-            RDFTriple shapeMaxExclusiveConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MAX_EXCLUSIVE].FirstOrDefault();
+            RDFTriple shapeMaxExclusiveConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MAX_EXCLUSIVE).FirstOrDefault();
             if (shapeMaxExclusiveConstraint?.Object is RDFLiteral shapeMaxExclusiveConstraintLiteral)
                 shape.AddConstraint(new RDFMaxExclusiveConstraint(shapeMaxExclusiveConstraintLiteral));
 
             //sh:maxInclusive (accepted occurrences: 1)
-            RDFTriple shapeMaxInclusiveConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MAX_INCLUSIVE].FirstOrDefault();
+            RDFTriple shapeMaxInclusiveConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MAX_INCLUSIVE).FirstOrDefault();
             if (shapeMaxInclusiveConstraint?.Object is RDFLiteral shapeMaxInclusiveConstraintLiteral)
                 shape.AddConstraint(new RDFMaxInclusiveConstraint(shapeMaxInclusiveConstraintLiteral));
 
             //sh:maxLength (accepted occurrences: 1)
-            RDFTriple shapeMaxLengthConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MAX_LENGTH].FirstOrDefault();
+            RDFTriple shapeMaxLengthConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MAX_LENGTH).FirstOrDefault();
             if (shapeMaxLengthConstraint?.Object is RDFTypedLiteral shaclMaxLengthConstraintLiteral
                   && shaclMaxLengthConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMaxLengthConstraint(int.Parse(shaclMaxLengthConstraintLiteral.Value)));
 
             //sh:minCount (accepted occurrences: 1)
-            RDFTriple shapeMinCountConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MIN_COUNT].FirstOrDefault();
+            RDFTriple shapeMinCountConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MIN_COUNT).FirstOrDefault();
             if (shapeMinCountConstraint?.Object is RDFTypedLiteral shaclMinCountConstraintLiteral
                   && shaclMinCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMinCountConstraint(int.Parse(shaclMinCountConstraintLiteral.Value)));
 
             //sh:minExclusive (accepted occurrences: 1)
-            RDFTriple shapeMinExclusiveConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MIN_EXCLUSIVE].FirstOrDefault();
+            RDFTriple shapeMinExclusiveConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MIN_EXCLUSIVE).FirstOrDefault();
             if (shapeMinExclusiveConstraint?.Object is RDFLiteral shapeMinExclusiveConstraintLiteral)
                 shape.AddConstraint(new RDFMinExclusiveConstraint(shapeMinExclusiveConstraintLiteral));
 
             //sh:minInclusive (accepted occurrences: 1)
-            RDFTriple shapeMinInclusiveConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MIN_INCLUSIVE].FirstOrDefault();
+            RDFTriple shapeMinInclusiveConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MIN_INCLUSIVE).FirstOrDefault();
             if (shapeMinInclusiveConstraint?.Object is RDFLiteral shapeMinInclusiveConstraintLiteral)
                 shape.AddConstraint(new RDFMinInclusiveConstraint(shapeMinInclusiveConstraintLiteral));
 
             //sh:minLength (accepted occurrences: 1)
-            RDFTriple shapeMinLengthConstraint = shapeDefinition[p: RDFVocabulary.SHACL.MIN_LENGTH].FirstOrDefault();
+            RDFTriple shapeMinLengthConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.MIN_LENGTH).FirstOrDefault();
             if (shapeMinLengthConstraint?.Object is RDFTypedLiteral shaclMinLengthConstraintLiteral
                   && shaclMinLengthConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                 shape.AddConstraint(new RDFMinLengthConstraint(int.Parse(shaclMinLengthConstraintLiteral.Value)));
 
             //sh:node (accepted occurrences: N)
-            RDFGraph shapeNodeConstraints = shapeDefinition[p: RDFVocabulary.SHACL.NODE];
-            foreach (RDFTriple shapeNodeConstraint in shapeNodeConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeNodeConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.NODE)
+                                                                     .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFNodeConstraint((RDFResource)shapeNodeConstraint.Object));
 
             //sh:nodeKind (accepted occurrences: 1)
-            RDFTriple shapeNodeKindConstraint = shapeDefinition[p: RDFVocabulary.SHACL.NODE_KIND].FirstOrDefault();
+            RDFTriple shapeNodeKindConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.NODE_KIND).FirstOrDefault();
             if (shapeNodeKindConstraint?.Object.Equals(RDFVocabulary.SHACL.BLANK_NODE) ?? false)
                 shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.BlankNode));
             else if (shapeNodeKindConstraint?.Object.Equals(RDFVocabulary.SHACL.BLANK_NODE_OR_IRI) ?? false)
@@ -555,13 +555,13 @@ namespace RDFSharp.Model
                 shape.AddConstraint(new RDFNodeKindConstraint(RDFValidationEnums.RDFNodeKinds.Literal));
 
             //sh:not (accepted occurrences: N)
-            RDFGraph shapeNotConstraints = shapeDefinition[p: RDFVocabulary.SHACL.NOT];
-            foreach (RDFTriple shapeNotConstraint in shapeNotConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeNotConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.NOT)
+                                                                    .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFNotConstraint((RDFResource)shapeNotConstraint.Object));
 
             //sh:or (accepted occurrences: N)
-            RDFGraph shapeOrConstraints = shapeDefinition[p: RDFVocabulary.SHACL.OR];
-            foreach (RDFTriple shapeOrConstraint in shapeOrConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeOrConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.OR)
+                                                                   .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
                 RDFOrConstraint orConstraint = new RDFOrConstraint();
                 RDFCollection orConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeOrConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPO);
@@ -570,13 +570,13 @@ namespace RDFSharp.Model
             }
 
             //sh:pattern (accepted occurrences: 1)
-            RDFTriple shapePatternConstraint = shapeDefinition[p: RDFVocabulary.SHACL.PATTERN].FirstOrDefault();
+            RDFTriple shapePatternConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.PATTERN).FirstOrDefault();
             if (shapePatternConstraint?.Object is RDFTypedLiteral shapePatternConstraintLiteral
                   && shapePatternConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
             {
                 //sh:flags (accepted occurrences: 1)
                 RegexOptions regexOptions = RegexOptions.None;
-                RDFTriple shapeFlagsConstraint = shapeDefinition[p: RDFVocabulary.SHACL.FLAGS].FirstOrDefault();
+                RDFTriple shapeFlagsConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.FLAGS).FirstOrDefault();
                 if (shapeFlagsConstraint?.Object is RDFTypedLiteral shapeFlagsConstraintLiteral
                       && shapeFlagsConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.STRING.ToString()))
                 {
@@ -593,24 +593,24 @@ namespace RDFSharp.Model
             }
 
             //sh:property (accepted occurrences: N)
-            RDFGraph shapePropertyConstraints = shapeDefinition[p: RDFVocabulary.SHACL.PROPERTY];
-            foreach (RDFTriple shapePropertyConstraint in shapePropertyConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapePropertyConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.PROPERTY)
+                                                                         .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddConstraint(new RDFPropertyConstraint((RDFResource)shapePropertyConstraint.Object));
 
             //sh:qualifiedValueShape (accepted occurrences: 1)
-            RDFTriple shapeQualifiedValueConstraint = shapeDefinition[p: RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE].FirstOrDefault();
+            RDFTriple shapeQualifiedValueConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.QUALIFIED_VALUE_SHAPE).FirstOrDefault();
             if (shapeQualifiedValueConstraint?.Object is RDFResource qualifiedValueShapeUri)
             {
                 //sh:qualifiedMinCount (accepted occurrences: 1)
                 int? qualifiedMinCountValue = null;
-                RDFTriple shapeQualifiedMinCountConstraint = shapeDefinition[p: RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT].FirstOrDefault();
+                RDFTriple shapeQualifiedMinCountConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT).FirstOrDefault();
                 if (shapeQualifiedMinCountConstraint?.Object is RDFTypedLiteral shapeQualifiedMinCountConstraintLiteral
                       && shapeQualifiedMinCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                     qualifiedMinCountValue = int.Parse(shapeQualifiedMinCountConstraintLiteral.Value);
 
                 //sh:qualifiedMaxCount (accepted occurrences: 1)
                 int? qualifiedMaxCountValue = null;
-                RDFTriple shapeQualifiedMaxCountConstraint = shapeDefinition[p: RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT].FirstOrDefault();
+                RDFTriple shapeQualifiedMaxCountConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT).FirstOrDefault();
                 if (shapeQualifiedMaxCountConstraint?.Object is RDFTypedLiteral shapeQualifiedMaxCountConstraintLiteral
                       && shapeQualifiedMaxCountConstraintLiteral.Datatype.ToString().Equals(RDFVocabulary.XSD.INTEGER.ToString()))
                     qualifiedMaxCountValue = int.Parse(shapeQualifiedMaxCountConstraintLiteral.Value);
@@ -619,14 +619,14 @@ namespace RDFSharp.Model
             }
 
             //sh:uniqueLang (accepted occurrences: 1)
-            RDFTriple shapeUniqueLangConstraint = shapeDefinition[p: RDFVocabulary.SHACL.UNIQUE_LANG].FirstOrDefault();
+            RDFTriple shapeUniqueLangConstraint = shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.UNIQUE_LANG).FirstOrDefault();
             if (shapeUniqueLangConstraint?.Object is RDFTypedLiteral shapeUniqueLangConstraintLiteral
                   && shapeUniqueLangConstraintLiteral.HasBooleanDatatype())
                 shape.AddConstraint(new RDFUniqueLangConstraint(bool.Parse(shapeUniqueLangConstraintLiteral.Value)));
 
             //sh:xone (accepted occurrences: N)
-            RDFGraph shapeXoneConstraints = shapeDefinition[p: RDFVocabulary.SHACL.XONE];
-            foreach (RDFTriple shapeXoneConstraint in shapeXoneConstraints.Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            foreach (RDFTriple shapeXoneConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.XONE)
+                                                                     .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
                 RDFXoneConstraint xoneConstraint = new RDFXoneConstraint();
                 RDFCollection xoneConstraintCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)shapeXoneConstraint.Object, RDFModelEnums.RDFTripleFlavors.SPO);
