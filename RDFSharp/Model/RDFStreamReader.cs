@@ -20,9 +20,9 @@ using System.IO;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// BufferedStreamReader wraps a StreamReader with a sliding buffer for efficient reading of large streams
+    /// RDFStreamReader wraps a StreamReader with a sliding buffer for efficient reading of large streams
     /// </summary>
-    internal class BufferedStreamReader : IDisposable
+    internal class RDFStreamReader : IDisposable
     {
         #region Fields
         private readonly StreamReader _reader;
@@ -43,17 +43,17 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Builds a BufferedStreamReader wrapping the given StreamReader with the given size of buffer
+        /// Builds a RDFStreamReader on the given StreamReader with the given buffer size
         /// </summary>
-        public BufferedStreamReader(StreamReader reader, int bufferSize=8192)
+        public RDFStreamReader(StreamReader reader, int bufferSize=8192)
         {
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
             _bufferSize = bufferSize;
             _buffer = new char[bufferSize];
             _bufferStart = 0;
             _bufferLength = 0;
-            Position = 0;
             _endOfStream = false;
+            Position = 0;
 
             FillBuffer();
         }
@@ -61,7 +61,7 @@ namespace RDFSharp.Model
 
         #region Interfaces
         /// <summary>
-        /// Disposes the BufferedStreamReader
+        /// Disposes the RDFStreamReader
         /// </summary>
         public void Dispose()
             => _reader?.Dispose();
@@ -71,7 +71,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Reads the next Unicode codepoint
         /// </summary>
-        public int ReadCodePoint()
+        public int Read()
         {
             if (IsEndOfFile)
                 return -1;
@@ -107,12 +107,12 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Peek at the next code point without advancing position
+        /// Peeks at the next code point without advancing position
         /// </summary>
-        public int PeekCodePoint()
+        public int Peek()
         {
             int currentPos = Position;
-            int codePoint = ReadCodePoint();
+            int codePoint = Read();
             Position = currentPos; // Restore the position
             return codePoint;
         }
@@ -120,7 +120,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Goes back one codepoint (or 2, depending if it represents a surrogate pair)
         /// </summary>
-        public void UnreadCodePoint(int codePoint)
+        public void Unread(int codePoint)
         {
             if (codePoint == -1)
                 return;
@@ -137,14 +137,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Goes back the given string of characters
         /// </summary>
-        public void UnreadString(string str)
+        public void Unread(string str)
         {
             if (string.IsNullOrEmpty(str))
                 return;
 
             // Go back character by character (starting from the last)
             for (int i = str.Length - 1; i >= 0; i--)
-                UnreadCodePoint(str[i]);
+                Unread(str[i]);
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace RDFSharp.Model
 
                 // Advance to the desired position
                 while (Position < position && !IsEndOfFile)
-                    ReadCodePoint();
+                    Read();
                 Position = position;
             }
             else

@@ -90,17 +90,17 @@ namespace RDFSharp.Model
             try
             {
                 #region deserialize
-                using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
+                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    using (BufferedStreamReader sBuffer = new BufferedStreamReader(sReader))
+                    using (RDFStreamReader rdfStreamReader = new RDFStreamReader(streamReader))
                     {
-                        int bufferChar = SkipWhitespace(sBuffer, turtleContext);
+                        int bufferChar = SkipWhitespace(rdfStreamReader, turtleContext);
                         while (bufferChar != -1)
                         {
-                            ParseStatement(sBuffer, turtleContext, result);
+                            ParseStatement(rdfStreamReader, turtleContext, result);
                             //After parsing of a statement we discard spaces and comments
                             //and seek for the next eventual statement, until finally EOL
-                            bufferChar = SkipWhitespace(sBuffer, turtleContext);
+                            bufferChar = SkipWhitespace(rdfStreamReader, turtleContext);
                         }
                     }
                 }
@@ -154,49 +154,41 @@ namespace RDFSharp.Model
         /// <summary>
         /// Peeks at the next Unicode code point without advancing the reader
         /// </summary>
-        internal static int PeekCodePoint(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
-            => sBuffer.PeekCodePoint();
+        internal static int PeekCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
+            => rdfStreamReader.Peek();
 
         /// <summary>
         /// Reads the next Unicode code point from the reader
         /// </summary>
-        internal static int ReadCodePoint(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
-            => sBuffer.ReadCodePoint();
+        internal static int ReadCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
+            => rdfStreamReader.Read();
 
         /// <summary>
         /// Unreads the given Unicode code point from the reader
         /// </summary>
-        internal static void UnreadCodePoint(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, int codePoint)
-            => sBuffer.UnreadCodePoint(codePoint);
+        internal static void UnreadCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, int codePoint)
+            => rdfStreamReader.Unread(codePoint);
 
         /// <summary>
         /// Unreads the given Unicode code point from the reader
         /// </summary>
-        internal static void UnreadCodePoint(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, string codePoints)
-        => sBuffer.UnreadString(codePoints);
-        #endregion
-
-        #region Parse.TurtleContext
-        /// <summary>
-        /// Gets the actual coordinates within Turtle context
-        /// </summary>
-        internal static string GetTurtleContextCoordinates(BufferedStreamReader buffer, RDFTurtleContext turtleContext)
-            => $"[POSITION:{buffer.Position}]";
+        internal static void UnreadCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, string codePoints)
+        => rdfStreamReader.Unread(codePoints);
         #endregion
 
         #region Parse.Grammar
         /// <summary>
         /// Parses the Turtle data in order to detect a valid directive or statement
         /// </summary>
-        internal static void ParseStatement(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParseStatement(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
             StringBuilder sb = new StringBuilder();
             do
             {
-                int codePoint = ReadCodePoint(sBuffer, turtleContext);
+                int codePoint = ReadCodePoint(rdfStreamReader, turtleContext);
                 if (codePoint == -1 || IsWhitespace(codePoint))
                 {
-                    UnreadCodePoint(sBuffer, turtleContext, codePoint);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, codePoint);
                     break;
                 }
                 sb.Append(char.ConvertFromUtf32(codePoint));
@@ -208,44 +200,44 @@ namespace RDFSharp.Model
                  || directive.Equals("base", StringComparison.OrdinalIgnoreCase)
                  || directive.Equals("version", StringComparison.OrdinalIgnoreCase))
             {
-                ParseDirective(sBuffer, turtleContext, result, directive);
-                SkipWhitespace(sBuffer, turtleContext);
+                ParseDirective(rdfStreamReader, turtleContext, result, directive);
+                SkipWhitespace(rdfStreamReader, turtleContext);
                 // Turtle @base and @prefix directives MUST end with "."
                 if (directive[0] == '@')
                 {
-                    VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), ".");
+                    VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), ".");
                 }
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
                 else
                 {
-                    if (PeekCodePoint(sBuffer, turtleContext) == '.')
-                        throw new RDFModelException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                    if (PeekCodePoint(rdfStreamReader, turtleContext) == '.')
+                        throw new RDFModelException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                 }
             }
             else
             {
-                UnreadCodePoint(sBuffer, turtleContext, directive);
-                ParseTriples(sBuffer, turtleContext, result);
-                SkipWhitespace(sBuffer, turtleContext);
-                VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), ".");
+                UnreadCodePoint(rdfStreamReader, turtleContext, directive);
+                ParseTriples(rdfStreamReader, turtleContext, result);
+                SkipWhitespace(rdfStreamReader, turtleContext);
+                VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), ".");
             }
         }
 
         /// <summary>
         /// Parses the Turtle data in order to detect a valid directive
         /// </summary>
-        internal static void ParseDirective(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result, string directive)
+        internal static void ParseDirective(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result, string directive)
         {
             switch (directive.ToLowerInvariant())
             {
                 case "@prefix":
                 case "prefix":
-                    ParsePrefixID(sBuffer, turtleContext, result);
+                    ParsePrefixID(rdfStreamReader, turtleContext, result);
                     break;
 
                 case "@base":
                 case "base":
-                    ParseBase(sBuffer, turtleContext, result);
+                    ParseBase(rdfStreamReader, turtleContext, result);
                     break;
 
                 case "@version":
@@ -254,30 +246,30 @@ namespace RDFSharp.Model
 
                 //Any other directives are not allowed
                 default:
-                    throw new RDFModelException($"Found unknown directive: {directive} {GetTurtleContextCoordinates(sBuffer, turtleContext)}");
+                    throw new RDFModelException($"Found unknown directive: {directive} {GetTurtleContextCoordinates(rdfStreamReader, turtleContext)}");
             }
         }
 
         /// <summary>
         /// Parses the Turtle data in order to detect a valid statement
         /// </summary>
-        internal static void ParseTriples(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParseTriples(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            int bufChar = PeekCodePoint(sBuffer, turtleContext);
+            int bufChar = PeekCodePoint(rdfStreamReader, turtleContext);
 
             // If the first character is an open bracket we need to decide which of
             // the two parsing methods for blank nodes to use
             if (bufChar == '[')
             {
-                ReadCodePoint(sBuffer, turtleContext);
-                SkipWhitespace(sBuffer, turtleContext);
-                bufChar = PeekCodePoint(sBuffer, turtleContext);
+                ReadCodePoint(rdfStreamReader, turtleContext);
+                SkipWhitespace(rdfStreamReader, turtleContext);
+                bufChar = PeekCodePoint(rdfStreamReader, turtleContext);
                 if (bufChar == ']')
                 {
-                    ReadCodePoint(sBuffer, turtleContext);
+                    ReadCodePoint(rdfStreamReader, turtleContext);
                     turtleContext.Subject = new RDFResource();
-                    SkipWhitespace(sBuffer, turtleContext);
-                    ParsePredicateObjectList(sBuffer, turtleContext, result);
+                    SkipWhitespace(rdfStreamReader, turtleContext);
+                    ParsePredicateObjectList(rdfStreamReader, turtleContext, result);
                 }
                 else
                 {
@@ -285,25 +277,25 @@ namespace RDFSharp.Model
                     //initial '[' character in order for the method to work
                     while (bufChar != '[')
                     {
-                        UnreadCodePoint(sBuffer, turtleContext, bufChar);
-                        bufChar = PeekCodePoint(sBuffer, turtleContext);
+                        UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
+                        bufChar = PeekCodePoint(rdfStreamReader, turtleContext);
                     }
-                    turtleContext.Subject = ParseImplicitBlank(sBuffer, turtleContext, result);
+                    turtleContext.Subject = ParseImplicitBlank(rdfStreamReader, turtleContext, result);
                 }
-                SkipWhitespace(sBuffer, turtleContext);
-                bufChar = PeekCodePoint(sBuffer, turtleContext);
+                SkipWhitespace(rdfStreamReader, turtleContext);
+                bufChar = PeekCodePoint(rdfStreamReader, turtleContext);
 
                 // if this is not the end of the statement, recurse into the list of
                 // predicate and objects, using the subject parsed above as the subject
                 // of the statement.
                 if (bufChar != '.')
-                    ParsePredicateObjectList(sBuffer, turtleContext, result);
+                    ParsePredicateObjectList(rdfStreamReader, turtleContext, result);
             }
             else
             {
-                ParseSubject(sBuffer, turtleContext, result);
-                SkipWhitespace(sBuffer, turtleContext);
-                ParsePredicateObjectList(sBuffer, turtleContext, result);
+                ParseSubject(rdfStreamReader, turtleContext, result);
+                SkipWhitespace(rdfStreamReader, turtleContext);
+                ParsePredicateObjectList(rdfStreamReader, turtleContext, result);
             }
 
             turtleContext.Subject = null;
@@ -314,19 +306,19 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the Turtle data in order to detect a valid statement subject
         /// </summary>
-        internal static void ParseSubject(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParseSubject(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            switch (PeekCodePoint(sBuffer, turtleContext))
+            switch (PeekCodePoint(rdfStreamReader, turtleContext))
             {
                 case '(':
-                    turtleContext.Subject = ParseCollection(sBuffer, turtleContext, result);
+                    turtleContext.Subject = ParseCollection(rdfStreamReader, turtleContext, result);
                     break;
                 case '[':
-                    turtleContext.Subject = ParseImplicitBlank(sBuffer, turtleContext, result);
+                    turtleContext.Subject = ParseImplicitBlank(rdfStreamReader, turtleContext, result);
                     break;
                 default:
                 {
-                    object value = ParseValue(sBuffer, turtleContext, result);
+                    object value = ParseValue(rdfStreamReader, turtleContext, result);
                     switch (value)
                     {
                         case Uri _:
@@ -338,7 +330,7 @@ namespace RDFSharp.Model
                         default:
                         {
                             if (value != null)
-                                throw new RDFModelException("Illegal subject value: " + value + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                                throw new RDFModelException("Illegal subject value: " + value + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                             break;
                         }
                     }
@@ -350,25 +342,25 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the Turtle data in order to detect a valid statement predicate
         /// </summary>
-        internal static RDFResource ParsePredicate(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static RDFResource ParsePredicate(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
             // Check if the short-cut 'a' is used
-            int bufChar1 = ReadCodePoint(sBuffer, turtleContext);
+            int bufChar1 = ReadCodePoint(rdfStreamReader, turtleContext);
             if (bufChar1 == 'a')
             {
-                int bufChar2 = ReadCodePoint(sBuffer, turtleContext);
+                int bufChar2 = ReadCodePoint(rdfStreamReader, turtleContext);
 
                 if (IsWhitespace(bufChar2))
                     // Short-cut is used, return the rdf:type URI
                     return RDFVocabulary.RDF.TYPE;
 
                 // Short-cut is not used, unread all characters
-                UnreadCodePoint(sBuffer, turtleContext, bufChar2);
+                UnreadCodePoint(rdfStreamReader, turtleContext, bufChar2);
             }
-            UnreadCodePoint(sBuffer, turtleContext, bufChar1);
+            UnreadCodePoint(rdfStreamReader, turtleContext, bufChar1);
 
             // Predicate is a normal resource
-            object predicate = ParseValue(sBuffer, turtleContext, result);
+            object predicate = ParseValue(rdfStreamReader, turtleContext, result);
             switch (predicate)
             {
                 case Uri _:
@@ -376,70 +368,70 @@ namespace RDFSharp.Model
                 case RDFResource predRes:
                     return predRes;
                 default:
-                    throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                    throw new RDFModelException("Illegal predicate value: " + predicate + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
             }
         }
 
         /// <summary>
         /// Parses the Turtle data in order to detect a valid statement predicate-object list
         /// </summary>
-        internal static void ParsePredicateObjectList(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParsePredicateObjectList(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            turtleContext.Predicate = ParsePredicate(sBuffer, turtleContext, result);
+            turtleContext.Predicate = ParsePredicate(rdfStreamReader, turtleContext, result);
 
-            SkipWhitespace(sBuffer, turtleContext);
+            SkipWhitespace(rdfStreamReader, turtleContext);
 
-            ParseObjectList(sBuffer, turtleContext, result);
+            ParseObjectList(rdfStreamReader, turtleContext, result);
 
-            while (SkipWhitespace(sBuffer, turtleContext) == ';')
+            while (SkipWhitespace(rdfStreamReader, turtleContext) == ';')
             {
-                ReadCodePoint(sBuffer, turtleContext);
+                ReadCodePoint(rdfStreamReader, turtleContext);
 
-                int bufChar = SkipWhitespace(sBuffer, turtleContext);
+                int bufChar = SkipWhitespace(rdfStreamReader, turtleContext);
                 if (bufChar == '.' || bufChar == ']' || bufChar == '}') break;
 
                 if (bufChar == ';')
                     // empty predicateObjectList, skip to next
                     continue;
 
-                turtleContext.Predicate = ParsePredicate(sBuffer, turtleContext, result);
+                turtleContext.Predicate = ParsePredicate(rdfStreamReader, turtleContext, result);
 
-                SkipWhitespace(sBuffer, turtleContext);
+                SkipWhitespace(rdfStreamReader, turtleContext);
 
-                ParseObjectList(sBuffer, turtleContext, result);
+                ParseObjectList(rdfStreamReader, turtleContext, result);
             }
         }
 
         /// <summary>
         /// Parses the Turtle data in order to detect a valid statement object list
         /// </summary>
-        internal static void ParseObjectList(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParseObjectList(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            ParseObject(sBuffer, turtleContext, result);
+            ParseObject(rdfStreamReader, turtleContext, result);
 
-            while (SkipWhitespace(sBuffer, turtleContext) == ',')
+            while (SkipWhitespace(rdfStreamReader, turtleContext) == ',')
             {
-                ReadCodePoint(sBuffer, turtleContext);
-                SkipWhitespace(sBuffer, turtleContext);
-                ParseObject(sBuffer, turtleContext, result);
+                ReadCodePoint(rdfStreamReader, turtleContext);
+                SkipWhitespace(rdfStreamReader, turtleContext);
+                ParseObject(rdfStreamReader, turtleContext, result);
             }
         }
 
         /// <summary>
         /// Parses the Turtle data in order to detect a valid statement object
         /// </summary>
-        internal static void ParseObject(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParseObject(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            switch (PeekCodePoint(sBuffer, turtleContext))
+            switch (PeekCodePoint(rdfStreamReader, turtleContext))
             {
                 case '(':
-                    turtleContext.Object = ParseCollection(sBuffer, turtleContext, result);
+                    turtleContext.Object = ParseCollection(rdfStreamReader, turtleContext, result);
                     break;
                 case '[':
-                    turtleContext.Object = ParseImplicitBlank(sBuffer, turtleContext, result);
+                    turtleContext.Object = ParseImplicitBlank(rdfStreamReader, turtleContext, result);
                     break;
                 default:
-                    object value = ParseValue(sBuffer, turtleContext, result); //Uri or RDFPatternMember
+                    object value = ParseValue(rdfStreamReader, turtleContext, result); //Uri or RDFPatternMember
                     switch (value)
                     {
                         case Uri _:
@@ -462,15 +454,15 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses a collection, e.g. ( item1 item2 item3 )
         /// </summary>
-        internal static RDFResource ParseCollection(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static RDFResource ParseCollection(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), "(");
+            VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), "(");
 
-            int bufChar = SkipWhitespace(sBuffer, turtleContext);
+            int bufChar = SkipWhitespace(rdfStreamReader, turtleContext);
             if (bufChar == ')')
             {
                 // Empty list (rdf:Nil)
-                ReadCodePoint(sBuffer, turtleContext);
+                ReadCodePoint(rdfStreamReader, turtleContext);
                 return RDFVocabulary.RDF.NIL;
             }
 
@@ -486,10 +478,10 @@ namespace RDFSharp.Model
             turtleContext.Subject = listRoot;
             turtleContext.Predicate = RDFVocabulary.RDF.FIRST;
 
-            ParseObject(sBuffer, turtleContext, result);
+            ParseObject(rdfStreamReader, turtleContext, result);
 
             RDFResource bNode = listRoot;
-            while (SkipWhitespace(sBuffer, turtleContext) != ')')
+            while (SkipWhitespace(rdfStreamReader, turtleContext) != ')')
             {
                 // Create another list node and link it to the previous
                 RDFResource newNode = new RDFResource();
@@ -501,11 +493,11 @@ namespace RDFSharp.Model
                 // New node becomes the current
                 turtleContext.Subject = bNode = newNode;
 
-                ParseObject(sBuffer, turtleContext, result);
+                ParseObject(rdfStreamReader, turtleContext, result);
             }
 
             // Skip ')'
-            ReadCodePoint(sBuffer, turtleContext);
+            ReadCodePoint(rdfStreamReader, turtleContext);
 
             // Close the list
             result.AddTriple(new RDFTriple(bNode, RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.LIST));
@@ -522,16 +514,16 @@ namespace RDFSharp.Model
         /// Parses an implicit blank node. This method parses the token []
         /// and predicateObjectLists that are surrounded by square brackets.
         /// </summary>
-        internal static RDFResource ParseImplicitBlank(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static RDFResource ParseImplicitBlank(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), "[");
+            VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), "[");
             RDFResource bNode = new RDFResource(); // createBNode()
 
-            SkipWhitespace(sBuffer, turtleContext);
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
+            SkipWhitespace(rdfStreamReader, turtleContext);
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             if (bufChar != ']')
             {
-                UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
 
                 // Remember current subject and predicate
                 RDFResource oldSubject = turtleContext.Subject;
@@ -541,12 +533,12 @@ namespace RDFSharp.Model
                 turtleContext.Subject = bNode;
 
                 // Enter recursion with nested predicate-object list
-                SkipWhitespace(sBuffer, turtleContext);
-                ParsePredicateObjectList(sBuffer, turtleContext, result);
-                SkipWhitespace(sBuffer, turtleContext);
+                SkipWhitespace(rdfStreamReader, turtleContext);
+                ParsePredicateObjectList(rdfStreamReader, turtleContext, result);
+                SkipWhitespace(rdfStreamReader, turtleContext);
 
                 // Read closing bracket
-                VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), "]");
+                VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), "]");
 
                 // Restore previous subject and predicate
                 turtleContext.Subject = oldSubject;
@@ -559,18 +551,18 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the Turtle data in order to detect a valid namespace prefix
         /// </summary>
-        internal static void ParsePrefixID(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParsePrefixID(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            SkipWhitespace(sBuffer, turtleContext);
+            SkipWhitespace(rdfStreamReader, turtleContext);
 
             // Read prefix ID (e.g. "rdf:" or ":")
             StringBuilder prefixID = new StringBuilder();
             while (true)
             {
-                int bufChar = ReadCodePoint(sBuffer, turtleContext);
+                int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 if (bufChar == ':')
                 {
-                    UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
                     break;
                 }
 
@@ -578,17 +570,17 @@ namespace RDFSharp.Model
                     break;
 
                 if (bufChar == -1)
-                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                 prefixID.Append(char.ConvertFromUtf32(bufChar));
             }
 
-            SkipWhitespace(sBuffer, turtleContext);
-            VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), ":");
-            SkipWhitespace(sBuffer, turtleContext);
+            SkipWhitespace(rdfStreamReader, turtleContext);
+            VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), ":");
+            SkipWhitespace(rdfStreamReader, turtleContext);
 
             // Read the namespace URI
-            Uri nspace = ParseURI(sBuffer, turtleContext, result);
+            Uri nspace = ParseURI(rdfStreamReader, turtleContext, result);
 
             // Store and report this namespace mapping
             string prefixStr = prefixID.ToString();
@@ -614,37 +606,37 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses the Turtle data in order to detect a valid base directive
         /// </summary>
-        internal static void ParseBase(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static void ParseBase(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            SkipWhitespace(sBuffer, turtleContext);
-            Uri baseURI = ParseURI(sBuffer, turtleContext, result);
+            SkipWhitespace(rdfStreamReader, turtleContext);
+            Uri baseURI = ParseURI(rdfStreamReader, turtleContext, result);
             result.SetContext(baseURI);
         }
 
         /// <summary>
         /// Parses the Turtle data in order to detect a valid Uri
         /// </summary>
-        internal static Uri ParseURI(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static Uri ParseURI(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
             StringBuilder uriBuf = new StringBuilder();
 
             // First character should be '<'
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
-            VerifyCharacterOrFail(sBuffer, turtleContext, bufChar, "<");
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
+            VerifyCharacterOrFail(rdfStreamReader, turtleContext, bufChar, "<");
 
             // Read up to the next '>' character
             while (true)
             {
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 if (bufChar == '>')
                     break;
 
                 switch (bufChar)
                 {
                     case -1:
-                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                     case ' ':
-                        throw new RDFModelException("Uri included an unencoded space: '" + bufChar + "'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Uri included an unencoded space: '" + bufChar + "'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                 }
 
                 uriBuf.Append(char.ConvertFromUtf32(bufChar));
@@ -652,17 +644,17 @@ namespace RDFSharp.Model
                 if (bufChar == '\\')
                 {
                     // This escapes the next character, which might be a '>'
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     if (bufChar == -1)
-                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                     if (bufChar != 'u' && bufChar != 'U')
-                        throw new RDFModelException("Uri includes string escapes: '\\" + bufChar + "'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Uri includes string escapes: '\\" + bufChar + "'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                     uriBuf.Append(char.ConvertFromUtf32(bufChar));
                 }
             }
 
-            string uriString = DecodeString(sBuffer, turtleContext, uriBuf.ToString());
+            string uriString = DecodeString(rdfStreamReader, turtleContext, uriBuf.ToString());
             //Absolute: use as found
             if (Uri.IsWellFormedUriString(uriString, UriKind.Absolute))
                 return new Uri(uriString);
@@ -673,77 +665,77 @@ namespace RDFSharp.Model
             return uriString.Equals("#")
                 ? new Uri(string.Concat(result.ToString().TrimEnd('#'), uriString))
                 //Error: not well-formed, so throw exception
-                : throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                : throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
         }
 
         /// <summary>
         /// Parses an RDF value. This method parses uriref, qname, node ID, quoted
         /// literal, integer, double and boolean.
         /// </summary>
-        internal static object ParseValue(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static object ParseValue(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            int bufChar = PeekCodePoint(sBuffer, turtleContext);
+            int bufChar = PeekCodePoint(rdfStreamReader, turtleContext);
             if (bufChar == '<')
-                return ParseURI(sBuffer, turtleContext, result); // uriref, e.g. <foo://bar>
+                return ParseURI(rdfStreamReader, turtleContext, result); // uriref, e.g. <foo://bar>
             if (bufChar == ':' || IsPrefixStartChar(bufChar))
-                return ParseQNameOrBoolean(sBuffer, turtleContext, result); // qname or boolean
+                return ParseQNameOrBoolean(rdfStreamReader, turtleContext, result); // qname or boolean
 
             switch (bufChar)
             {
                 case '_':
-                    return ParseNodeID(sBuffer, turtleContext); // node ID, e.g. _:n1
+                    return ParseNodeID(rdfStreamReader, turtleContext); // node ID, e.g. _:n1
                 case '"':
                 case '\'':
-                    return ParseQuotedLiteral(sBuffer, turtleContext, result); // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
+                    return ParseQuotedLiteral(rdfStreamReader, turtleContext, result); // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
             }
             if (IsNumber(bufChar) || bufChar == '.' || bufChar == '+' || bufChar == '-')
-                return ParseNumber(sBuffer, turtleContext); // integer or double, e.g. 123 or 1.2e3
+                return ParseNumber(rdfStreamReader, turtleContext); // integer or double, e.g. 123 or 1.2e3
 
             if (bufChar == -1)
-                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
-            throw new RDFModelException("Expected an RDF value here, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+            throw new RDFModelException("Expected an RDF value here, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
         }
 
         /// <summary>
         /// Parses a blank node ID, e.g. _:node1
         /// </summary>
-        internal static RDFResource ParseNodeID(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
+        internal static RDFResource ParseNodeID(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
         {
             // Node ID should start with "_:"
-            VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), "_");
-            VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), ":");
+            VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), "_");
+            VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), ":");
 
             // Read the node ID
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             if (bufChar == -1)
-                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
             if (!IsBLANK_NODE_LABEL_StartChar(bufChar))
-                throw new RDFModelException("Expected a letter, found '" + (char)bufChar + "'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                throw new RDFModelException("Expected a letter, found '" + (char)bufChar + "'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
             StringBuilder name = new StringBuilder();
             name.Append(char.ConvertFromUtf32(bufChar));
 
             // Read all following letter and numbers, they are part of the name
-            bufChar = ReadCodePoint(sBuffer, turtleContext);
+            bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
 
             // If we would never go into the loop we must unread now
             if (!IsBLANK_NODE_LABEL_Char(bufChar))
-                UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
 
             while (IsBLANK_NODE_LABEL_Char(bufChar))
             {
                 int previous = bufChar;
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 if (previous == '.' && (bufChar == -1 || IsWhitespace(bufChar) || bufChar == '<' || bufChar == '_'))
                 {
-                    UnreadCodePoint(sBuffer, turtleContext, bufChar);
-                    UnreadCodePoint(sBuffer, turtleContext, previous);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, previous);
                     break;
                 }
                 name.Append((char)previous);
                 if (!IsBLANK_NODE_LABEL_Char(bufChar))
-                    UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
             }
 
             return new RDFResource($"bnode:{name}");
@@ -752,24 +744,24 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses a number
         /// </summary>
-        internal static RDFTypedLiteral ParseNumber(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
+        internal static RDFTypedLiteral ParseNumber(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
         {
             StringBuilder value = new StringBuilder();
             RDFModelEnums.RDFDatatypes dt = RDFModelEnums.RDFDatatypes.XSD_INTEGER;
 
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
 
             // read optional sign character
             if (bufChar == '+' || bufChar == '-')
             {
                 value.Append(char.ConvertFromUtf32(bufChar));
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             }
 
             while (IsNumber(bufChar))
             {
                 value.Append(char.ConvertFromUtf32(bufChar));
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             }
 
             if (bufChar == '.' || bufChar == 'e' || bufChar == 'E')
@@ -777,11 +769,11 @@ namespace RDFSharp.Model
                 // read optional fractional digits
                 if (bufChar == '.')
                 {
-                    int next = PeekCodePoint(sBuffer, turtleContext);
+                    int next = PeekCodePoint(rdfStreamReader, turtleContext);
                     // Treat '.' as statement terminator at EOF only when we already parsed at least one digit
                     // (e.g., "30.") or when whitespace follows. Otherwise, attempt to parse as decimal
                     // which will surface a useful error for a stray '.' token.
-                    if ((value.Length > 0 && next == -1) || IsWhitespace(PeekCodePoint(sBuffer, turtleContext)))
+                    if ((value.Length > 0 && next == -1) || IsWhitespace(PeekCodePoint(rdfStreamReader, turtleContext)))
                     {
                         // We're parsing an integer that did not have a space before the period to end the statement
                     }
@@ -789,17 +781,17 @@ namespace RDFSharp.Model
                     {
                         value.Append(char.ConvertFromUtf32(bufChar));
 
-                        bufChar = ReadCodePoint(sBuffer, turtleContext);
+                        bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
 
                         while (IsNumber(bufChar))
                         {
                             value.Append(char.ConvertFromUtf32(bufChar));
-                            bufChar = ReadCodePoint(sBuffer, turtleContext);
+                            bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                         }
 
                         if (value.Length == 1)
                             // We've only parsed a '.'
-                            throw new RDFModelException("Object for statement missing" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                            throw new RDFModelException("Object for statement missing" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                         // We're parsing a decimal or a double
                         dt = RDFModelEnums.RDFDatatypes.XSD_DECIMAL;
@@ -809,7 +801,7 @@ namespace RDFSharp.Model
                 {
                     if (value.Length == 0)
                         // We've only parsed a '.'
-                        throw new RDFModelException("Object for statement missing" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Object for statement missing" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                 }
 
                 // read optional exponent
@@ -818,29 +810,29 @@ namespace RDFSharp.Model
                     dt = RDFModelEnums.RDFDatatypes.XSD_DOUBLE;
                     value.Append(char.ConvertFromUtf32(bufChar));
 
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     if (bufChar == '+' || bufChar == '-')
                     {
                         value.Append(char.ConvertFromUtf32(bufChar));
-                        bufChar = ReadCodePoint(sBuffer, turtleContext);
+                        bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     }
 
                     if (!IsNumber(bufChar))
-                        throw new RDFModelException("Exponent value missing" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Exponent value missing" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                     value.Append(char.ConvertFromUtf32(bufChar));
 
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     while (IsNumber(bufChar))
                     {
                         value.Append(char.ConvertFromUtf32(bufChar));
-                        bufChar = ReadCodePoint(sBuffer, turtleContext);
+                        bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     }
                 }
             }
 
             // Unread last character, it isn't part of the number
-            UnreadCodePoint(sBuffer, turtleContext, bufChar);
+            UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
 
             // Return result as a typed literal
             return new RDFTypedLiteral(value.ToString(), dt);
@@ -849,14 +841,14 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses qnames and boolean values, which have equivalent starting characters
         /// </summary>
-        internal static object ParseQNameOrBoolean(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static object ParseQNameOrBoolean(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
             // First character should be a ':' or a letter
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             if (bufChar == -1)
-                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
             if (bufChar != ':' && !IsPrefixStartChar(bufChar))
-                throw new RDFModelException("Expected a ':' or a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                throw new RDFModelException("Expected a ':' or a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
             int previousChar;
             string nspace;
@@ -872,18 +864,18 @@ namespace RDFSharp.Model
                 prefix.Append(char.ConvertFromUtf32(bufChar));
 
                 previousChar = bufChar;
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 while (IsPrefixChar(bufChar))
                 {
                     prefix.Append(char.ConvertFromUtf32(bufChar));
                     previousChar = bufChar;
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 }
 
                 while (previousChar == '.' && prefix.Length > 0)
                 {
                     // '.' is a legal prefix name char, but can not appear at the end
-                    UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
                     bufChar = previousChar;
                     prefix.Remove(prefix.Length - 1, 1);
                     previousChar = prefix.ToString().Last();
@@ -896,7 +888,7 @@ namespace RDFSharp.Model
                     if (value.Equals("true", StringComparison.OrdinalIgnoreCase)
                          || value.Equals("false", StringComparison.OrdinalIgnoreCase))
                     {
-                        UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                        UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
                         return new RDFTypedLiteral(value, RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
                     }
                 }
@@ -904,117 +896,117 @@ namespace RDFSharp.Model
                 {
                     if (previousChar == '.')
                         // '.' is a legal prefix name char, but can not appear at the end
-                        throw new RDFModelException("prefix can not end with with '.'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("prefix can not end with with '.'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                 }
 
-                VerifyCharacterOrFail(sBuffer, turtleContext, bufChar, ":");
+                VerifyCharacterOrFail(rdfStreamReader, turtleContext, bufChar, ":");
 
                 nspace = RDFNamespaceRegister.GetByPrefix(prefix.ToString())?.ToString();
             }
 
             // bufChar == ':', read optional local name
             StringBuilder localName = new StringBuilder();
-            bufChar = ReadCodePoint(sBuffer, turtleContext);
+            bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             if (IsNameStartChar(bufChar))
             {
                 if (bufChar == '\\')
-                    localName.Append(ReadLocalEscapedChar(sBuffer, turtleContext));
+                    localName.Append(ReadLocalEscapedChar(rdfStreamReader, turtleContext));
                 else
                     localName.Append(char.ConvertFromUtf32(bufChar));
 
                 previousChar = bufChar;
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 while (IsNameChar(bufChar))
                 {
                     if (bufChar == '\\')
-                        localName.Append(ReadLocalEscapedChar(sBuffer, turtleContext));
+                        localName.Append(ReadLocalEscapedChar(rdfStreamReader, turtleContext));
                     else
                         localName.Append(char.ConvertFromUtf32(bufChar));
                     previousChar = bufChar;
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 }
 
                 // Unread last character
-                UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
 
                 if (previousChar == '.')
                 {
                     // '.' is a legal name char, but can not appear at the end, so is not actually part of the name
-                    UnreadCodePoint(sBuffer, turtleContext, previousChar);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, previousChar);
                     localName.Remove(localName.Length - 1, 1);
                 }
             }
             else
             {
                 // Unread last character
-                UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
             }
 
             string localNameString = localName.ToString();
             return localNameString.Where((t, i) => t == '%' && (i > localNameString.Length - 3
                                                                 || !Uri.IsHexDigit(localNameString[i + 1])
                                                                 || !Uri.IsHexDigit(localNameString[i + 2]))).Any()
-                ? throw new RDFModelException("Found incomplete percent-encoded sequence: " + localNameString + GetTurtleContextCoordinates(sBuffer, turtleContext))
+                ? throw new RDFModelException("Found incomplete percent-encoded sequence: " + localNameString + GetTurtleContextCoordinates(rdfStreamReader, turtleContext))
                 : new Uri(string.Concat(nspace ?? result.Context.ToString(), localNameString));
         }
 
         /// <summary>
         /// Parses a quoted string, optionally followed by a language tag or datatype.
         /// </summary>
-        internal static RDFLiteral ParseQuotedLiteral(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, RDFGraph result)
+        internal static RDFLiteral ParseQuotedLiteral(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, RDFGraph result)
         {
-            string label = ParseQuotedString(sBuffer, turtleContext);
+            string label = ParseQuotedString(rdfStreamReader, turtleContext);
 
             // Check for presence of a language tag or datatype
-            int bufChar = PeekCodePoint(sBuffer, turtleContext);
+            int bufChar = PeekCodePoint(rdfStreamReader, turtleContext);
             switch (bufChar)
             {
                 case '@':
                 {
-                    ReadCodePoint(sBuffer, turtleContext);
+                    ReadCodePoint(rdfStreamReader, turtleContext);
 
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     if (bufChar == -1)
-                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                     if (!IsLanguageStartChar(bufChar))
-                        throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Expected a letter, found '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                     // Read language
                     StringBuilder lang = new StringBuilder();
                     lang.Append(char.ConvertFromUtf32(bufChar));
 
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     while (!IsWhitespace(bufChar))
                     {
                         if (bufChar == '.' || bufChar == ';' || bufChar == ',' || bufChar == ')' || bufChar == ']' || bufChar == -1)
                             break;
 
                         if (!IsLanguageChar(bufChar))
-                            throw new RDFModelException("Illegal language tag char: '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                            throw new RDFModelException("Illegal language tag char: '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                         lang.Append(char.ConvertFromUtf32(bufChar));
-                        bufChar = ReadCodePoint(sBuffer, turtleContext);
+                        bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     }
 
-                    UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
 
                     return new RDFPlainLiteral(label, lang.ToString());
                 }
                 case '^':
                 {
-                    ReadCodePoint(sBuffer, turtleContext);
+                    ReadCodePoint(rdfStreamReader, turtleContext);
 
                     // next character should be another '^'
-                    VerifyCharacterOrFail(sBuffer, turtleContext, ReadCodePoint(sBuffer, turtleContext), "^");
+                    VerifyCharacterOrFail(rdfStreamReader, turtleContext, ReadCodePoint(rdfStreamReader, turtleContext), "^");
 
-                    SkipWhitespace(sBuffer, turtleContext);
+                    SkipWhitespace(rdfStreamReader, turtleContext);
 
                     // Read datatype
-                    object datatype = ParseValue(sBuffer, turtleContext, result);
+                    object datatype = ParseValue(rdfStreamReader, turtleContext, result);
                     if (datatype is Uri datatypeUri)
                         return new RDFTypedLiteral(label, RDFDatatypeRegister.GetDatatype(datatypeUri.ToString()));
 
-                    throw new RDFModelException("Illegal datatype value: " + datatype + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                    throw new RDFModelException("Illegal datatype value: " + datatype + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                 }
                 default:
                     return new RDFPlainLiteral(label);
@@ -1024,54 +1016,54 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses a quoted string, which is either a "normal string" or a """long string"""
         /// </summary>
-        internal static string ParseQuotedString(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
+        internal static string ParseQuotedString(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
         {
             string result;
 
-            int c1 = ReadCodePoint(sBuffer, turtleContext);
+            int c1 = ReadCodePoint(rdfStreamReader, turtleContext);
 
             // First character should be '"' or "'"
-            VerifyCharacterOrFail(sBuffer, turtleContext, c1, "\"\'");
+            VerifyCharacterOrFail(rdfStreamReader, turtleContext, c1, "\"\'");
 
             // Check for long-string, which starts and ends with three double quotes
-            int c2 = ReadCodePoint(sBuffer, turtleContext);
-            int c3 = ReadCodePoint(sBuffer, turtleContext);
+            int c2 = ReadCodePoint(rdfStreamReader, turtleContext);
+            int c3 = ReadCodePoint(rdfStreamReader, turtleContext);
 
             if ((c1 == '"' && c2 == '"' && c3 == '"') || (c1 == '\'' && c2 == '\'' && c3 == '\''))
             {
                 // Long string
-                result = ParseLongString(sBuffer, turtleContext, c2);
+                result = ParseLongString(rdfStreamReader, turtleContext, c2);
             }
             else
             {
                 // Normal string
-                UnreadCodePoint(sBuffer, turtleContext, c3);
-                UnreadCodePoint(sBuffer, turtleContext, c2);
+                UnreadCodePoint(rdfStreamReader, turtleContext, c3);
+                UnreadCodePoint(rdfStreamReader, turtleContext, c2);
 
-                result = ParseString(sBuffer, turtleContext, c1);
+                result = ParseString(rdfStreamReader, turtleContext, c1);
             }
 
             // Unescape any escape sequences
-            return DecodeString(sBuffer, turtleContext, result);
+            return DecodeString(rdfStreamReader, turtleContext, result);
         }
 
         /// <summary>
         /// Parses a "normal string". This method requires that the opening character has already been parsed.
         /// </summary>
-        internal static string ParseString(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, int closingCharacter)
+        internal static string ParseString(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, int closingCharacter)
         {
             StringBuilder sb = new StringBuilder();
 
             while (true)
             {
-                int bufChar = ReadCodePoint(sBuffer, turtleContext);
+                int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 if (bufChar == closingCharacter)
                     break;
 
                 switch (bufChar)
                 {
                     case -1:
-                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                     //Unquoted literals cannot contain carriage return
                     case '\r':
                     case '\n':
@@ -1082,9 +1074,9 @@ namespace RDFSharp.Model
                 if (bufChar == '\\')
                 {
                     // This escapes the next character, which might be a '"'
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     if (bufChar == -1)
-                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                     sb.Append(char.ConvertFromUtf32(bufChar));
                 }
@@ -1096,16 +1088,16 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses a """long string""". This method requires that the first three characters have already been parsed.
         /// </summary>
-        internal static string ParseLongString(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, int closingCharacter)
+        internal static string ParseLongString(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, int closingCharacter)
         {
             StringBuilder sb = new StringBuilder();
 
             int doubleQuoteCount = 0;
             while (doubleQuoteCount < 3)
             {
-                int bufChar = ReadCodePoint(sBuffer, turtleContext);
+                int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 if (bufChar == -1)
-                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                 if (bufChar == closingCharacter)
                     doubleQuoteCount++;
@@ -1117,9 +1109,9 @@ namespace RDFSharp.Model
                 if (bufChar == '\\')
                 {
                     // This escapes the next character, which might be a '"'
-                    bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                     if (bufChar == -1)
-                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                     sb.Append(char.ConvertFromUtf32(bufChar));
                 }
@@ -1131,7 +1123,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Decodes an encoded Turtle string. Any \-escape sequences are substituted with their decoded value.
         /// </summary>
-        internal static string DecodeString(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, string s)
+        internal static string DecodeString(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, string s)
         {
             int backSlashIdx = s.IndexOf('\\');
             if (backSlashIdx == -1)
@@ -1146,7 +1138,7 @@ namespace RDFSharp.Model
                 sb.Append(s, startIdx, backSlashIdx - startIdx);
 
                 if (backSlashIdx + 1 >= sLength)
-                    throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                    throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
                 switch (s[backSlashIdx + 1])
                 {
@@ -1188,7 +1180,7 @@ namespace RDFSharp.Model
                         break;
                     /*  \\uxxxx  */
                     case 'u' when backSlashIdx + 5 >= sLength:
-                        throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                     case 'u':
                     {
                         string uValue = s.Substring(backSlashIdx + 2, 4);
@@ -1200,14 +1192,14 @@ namespace RDFSharp.Model
                         }
                         catch
                         {
-                            throw new RDFModelException("Illegal Unicode escape sequence '\\u" + uValue + "' in: " + s + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                            throw new RDFModelException("Illegal Unicode escape sequence '\\u" + uValue + "' in: " + s + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                         }
 
                         break;
                     }
                     /*  \\Uxxxxxxxx  */
                     case 'U' when backSlashIdx + 9 >= sLength:
-                        throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Incomplete Unicode escape sequence in: " + s + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                     case 'U':
                     {
                         string UValue = s.Substring(backSlashIdx + 2, 8);
@@ -1219,13 +1211,13 @@ namespace RDFSharp.Model
                         }
                         catch
                         {
-                            throw new RDFModelException("Illegal Unicode escape sequence '\\U" + UValue + "' in: " + s + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                            throw new RDFModelException("Illegal Unicode escape sequence '\\U" + UValue + "' in: " + s + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                         }
 
                         break;
                     }
                     default:
-                        throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                        throw new RDFModelException("Unescaped backslash in: " + s + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
                 }
 
                 backSlashIdx = s.IndexOf('\\', startIdx);
@@ -1240,35 +1232,35 @@ namespace RDFSharp.Model
         /// Consumes any whitespace characters (space, tab, line feed, newline) and comments(#-style) from the Turtle data.
         /// After this method has been called, the first character that is returned is either a non-ignorable character or EOF.
         /// </summary>
-        internal static int SkipWhitespace(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
+        internal static int SkipWhitespace(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
         {
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             while (IsWhitespace(bufChar) || bufChar == '#')
             {
                 if (bufChar == '#')
-                    SkipComment(sBuffer, turtleContext);
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                    SkipComment(rdfStreamReader, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             }
-            UnreadCodePoint(sBuffer, turtleContext, bufChar);
+            UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
             return bufChar;
         }
 
         /// <summary>
         /// Consumes characters from reader until the first EOL has been read.
         /// </summary>
-        internal static void SkipComment(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
+        internal static void SkipComment(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
         {
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             while (bufChar != -1 && bufChar != 0xD && bufChar != 0xA)
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
 
             // bufChar is equal to -1, \r or \n.
             // In case bufChar is equal to \r, we should also read a following \n.
             if (bufChar == 0xD)
             {
-                bufChar = ReadCodePoint(sBuffer, turtleContext);
+                bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
                 if (bufChar != 0xA)
-                    UnreadCodePoint(sBuffer, turtleContext, bufChar);
+                    UnreadCodePoint(rdfStreamReader, turtleContext, bufChar);
             }
         }
 
@@ -1276,15 +1268,15 @@ namespace RDFSharp.Model
         /// Verifies that the supplied character code point is one of the expected chars.
         /// This method will throw an exception if this is not the case.
         /// </summary>
-        internal static void VerifyCharacterOrFail(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext, int codePoint, string expected)
+        internal static void VerifyCharacterOrFail(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, int codePoint, string expected)
         {
             if (codePoint == -1)
-                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+                throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
 
             string supplied = char.ConvertFromUtf32(codePoint);
             if (expected.IndexOf(supplied, StringComparison.Ordinal) == -1)
             {
-                StringBuilder msg = new StringBuilder("Unexpected character found" + GetTurtleContextCoordinates(sBuffer, turtleContext) + ": expected ");
+                StringBuilder msg = new StringBuilder("Unexpected character found" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext) + ": expected ");
                 for (int i = 0; i < expected.Length; i++)
                 {
                     if (i > 0)
@@ -1300,13 +1292,13 @@ namespace RDFSharp.Model
             }
         }
 
-        internal static char ReadLocalEscapedChar(BufferedStreamReader sBuffer, RDFTurtleContext turtleContext)
+        internal static char ReadLocalEscapedChar(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
         {
-            int bufChar = ReadCodePoint(sBuffer, turtleContext);
+            int bufChar = ReadCodePoint(rdfStreamReader, turtleContext);
             if (IsLocalEscapedChar(bufChar))
                 return (char)bufChar;
 
-            throw new RDFModelException("Found '" + char.ConvertFromUtf32(bufChar) + "', expected one of: _~.-!$&\'()*+,;=/?#@%" + GetTurtleContextCoordinates(sBuffer, turtleContext));
+            throw new RDFModelException("Found '" + char.ConvertFromUtf32(bufChar) + "', expected one of: _~.-!$&\'()*+,;=/?#@%" + GetTurtleContextCoordinates(rdfStreamReader, turtleContext));
         }
         #endregion
 
@@ -1423,6 +1415,12 @@ namespace RDFSharp.Model
                 || (codePoint >= 0xF900 && codePoint <= 0xFDCF)
                 || (codePoint >= 0xFDF0 && codePoint <= 0xFFFD)
                 || (codePoint >= 0x10000 && codePoint <= 0xEFFFF);
+
+        /// <summary>
+        /// Gets the actual coordinates within Turtle context
+        /// </summary>
+        internal static string GetTurtleContextCoordinates(RDFStreamReader rdfSBuffer, RDFTurtleContext turtleContext)
+            => $"[POSITION:{rdfSBuffer.Position}]";
         #endregion
 
         #region Write.Graph
