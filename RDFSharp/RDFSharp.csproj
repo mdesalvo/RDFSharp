@@ -51,7 +51,7 @@
         <PackageReference Include="NetTopologySuite" Version="2.6.0" />
         <PackageReference Include="ProjNet" Version="2.1.0" />
     </ItemGroup>
-    <ItemGroup  Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     </ItemGroup>
 </Project>
