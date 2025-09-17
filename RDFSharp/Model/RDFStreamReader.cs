@@ -30,27 +30,32 @@ namespace RDFSharp.Model
         private readonly char[] _buffer;
         private readonly int _bufferSize;
 
-        private int _bufferStart;      // Absolute file position of the first character in the buffer
+        private int _bufferStart;      // Absolute position of the first character in the buffer
         private int _bufferLength;     // Number of valid characters in the buffer
         private bool _endOfStream;
 
         // Cache to handle backward seek without having to reseek on the stream
         private readonly List<char> _readHistory;
-        private const int MAX_HISTORY_SIZE = 1024;
+        private const int MAX_HISTORY_SIZE = 4096;
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Indicates the current position into the buffer
+        /// </summary>
         public int Position { get; set; }
 
-        public bool IsEndOfFile
-            => _endOfStream && Position >= _bufferStart + _bufferLength;
+        /// <summary>
+        /// Flag indicating that we have reached the end of file
+        /// </summary>
+        public bool IsEndOfFile => _endOfStream && Position >= _bufferStart + _bufferLength;
         #endregion
 
         #region Ctors
         /// <summary>
         /// Builds a RDFStreamReader on the given StreamReader with the given buffer size
         /// </summary>
-        internal RDFStreamReader(StreamReader reader, int bufferSize = 8192)
+        internal RDFStreamReader(StreamReader reader, int bufferSize=8192)
         {
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
             _bufferSize = bufferSize;
@@ -84,7 +89,7 @@ namespace RDFSharp.Model
                 return -1;
 
             // Ensure that the current character is in the buffer
-            // and, if possibile, feed the buffer with new data
+            // and, if possible, feed the buffer with new data
             EnsureBufferContainsPosition();
 
             // Update position after buffering of new data
@@ -122,28 +127,26 @@ namespace RDFSharp.Model
         /// </summary>
         public int PeekCodePoint()
         {
+            // Grab the next character without impacting the position
             int currentPos = Position;
             int codePoint = ReadCodePoint();
             Position = currentPos;
 
-            // Rimuovi dalla history quello che abbiamo appena aggiunto per il peek
+            // Remove from seek history the character we have peeked
             if (codePoint != -1)
             {
-                if (IsSupplementaryCodePoint(codePoint))
+                // Supplementary character (UTF16 surrogate pair): remove 2 chars from the seek history
+                if ((codePoint & ~char.MaxValue) != 0)
                 {
-                    // Rimuovi 2 caratteri per surrogate pair
                     if (_readHistory.Count >= 2)
-                    {
                         _readHistory.RemoveRange(_readHistory.Count - 2, 2);
-                    }
                 }
+
+                //Normal character (UTF8): remove 1 char from the seek history
                 else
                 {
-                    // Rimuovi 1 carattere
                     if (_readHistory.Count >= 1)
-                    {
                         _readHistory.RemoveAt(_readHistory.Count - 1);
-                    }
                 }
             }
 
@@ -151,26 +154,27 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Goes back one codepoint (or 2, depending if it represents a surrogate pair)
+        /// Goes back the given codepoint
         /// </summary>
         public void UnreadCodePoint(int codePoint)
         {
             if (codePoint == -1)
                 return;
 
-            if (IsSupplementaryCodePoint(codePoint))
+            // Supplementary character (UTF16 surrogate pair): go back 2 positions
+            if ((codePoint & ~char.MaxValue) != 0)
             {
-                // Carattere supplementare (surrogate pair) - torna indietro di 2 posizioni
                 Position = Math.Max(0, Position - 2);
-                // Rimuovi dalla history
+                // Remove 2 chars from seek history
                 if (_readHistory.Count >= 2)
                     _readHistory.RemoveRange(_readHistory.Count - 2, 2);
             }
+
+            //Normal character (UTF8): go back 1 position
             else
             {
-                // Carattere normale - torna indietro di 1 posizione
                 Position = Math.Max(0, Position - 1);
-                // Rimuovi dalla history
+                // Remove 1 char from seek history
                 if (_readHistory.Count >= 1)
                     _readHistory.RemoveAt(_readHistory.Count - 1);
             }
@@ -184,18 +188,16 @@ namespace RDFSharp.Model
             if (string.IsNullOrEmpty(str))
                 return;
 
-            // Calcola quanti caratteri tornare indietro
+            // Compute hoiw many characters must go back
             int charsToUnread = str.Length;
 
-            // Aggiorna la posizione (assicurati di non andare prima dell'inizio)
+            // Update the position
             Position = Math.Max(0, Position - charsToUnread);
 
-            // Rimuovi dalla history il numero corretto di caratteri
+            // Remove from the seek history the correct number of characters
             int historyToRemove = Math.Min(charsToUnread, _readHistory.Count);
             if (historyToRemove > 0)
-            {
                 _readHistory.RemoveRange(_readHistory.Count - historyToRemove, historyToRemove);
-            }
         }
 
         /// <summary>
@@ -203,26 +205,22 @@ namespace RDFSharp.Model
         /// </summary>
         private void EnsureBufferContainsPosition()
         {
-            // Se la posizione è oltre la fine del buffer corrente, carica nuovo buffer
+            // If the position exceeds the end of the buffer, load new buffer
             if (Position >= _bufferStart + _bufferLength && !_endOfStream)
             {
                 FillBuffer();
+                return;
             }
-            // Se la posizione è prima dell'inizio del buffer, usa la cache history se possibile
-            else if (Position < _bufferStart)
+
+            // If the position is before the start of the buffer, exploit the cache if possible
+            if (Position < _bufferStart)
             {
-                // Per backward seek limitato, possiamo usare la history
-                // Per seek più grandi, dovremmo ricaricare (implementazione semplificata)
+                // If we can seek beyond the buffer, let's do it
                 if (_reader.BaseStream.CanSeek)
-                {
                     ReloadFromPosition(Position);
-                }
+                // Otherwise throw an error because we cannot proceed
                 else
-                {
-                    // Se non possiamo fare seek e la posizione è troppo indietro, errore
-                    if (Position < _bufferStart)
-                        throw new InvalidOperationException("Cannot seek backward beyond buffer on non-seekable stream");
-                }
+                    throw new InvalidOperationException("Cannot seek backward beyond buffer on non-seekable stream");
             }
         }
 
@@ -234,16 +232,14 @@ namespace RDFSharp.Model
             if (_endOfStream)
                 return;
 
-            // Se stiamo per leggere oltre il buffer corrente
+            // If we are going to read outside the buffer
             if (Position >= _bufferStart + _bufferLength)
             {
                 _bufferStart = Position;
                 _bufferLength = _reader.Read(_buffer, 0, _bufferSize);
 
                 if (_bufferLength == 0)
-                {
                     _endOfStream = true;
-                }
             }
         }
 
@@ -255,51 +251,38 @@ namespace RDFSharp.Model
             if (!_reader.BaseStream.CanSeek)
                 throw new InvalidOperationException("Cannot seek backward on non-seekable stream");
 
-            // Reset the stream to begin from the given position
-            // Reset dello stream
+            // We are going to reset the stream to begin from the given position
             _reader.BaseStream.Seek(0, SeekOrigin.Begin);
             _reader.DiscardBufferedData();
-
-            // Reset delle variabili
             _bufferStart = 0;
             Position = 0;
             _endOfStream = false;
             _readHistory.Clear();
 
-            // Leggi il primo buffer
+            // Read the first buffer
             _bufferLength = _reader.Read(_buffer, 0, _bufferSize);
             if (_bufferLength == 0)
                 _endOfStream = true;
 
-            // Avanza fino alla posizione desiderata
+            // Advance to the desired position
             while (Position < position && !IsEndOfFile)
-            {
                 ReadCodePoint();
-            }
 
-            // Imposta la posizione esatta
+            // Save exact position
             Position = position;
         }
 
         /// <summary>
-        /// Aggiunge un carattere alla history per il backward seek
+        /// Adds the given character to the seek history (for backward seek)
         /// </summary>
         private void AddToHistory(char c)
         {
             _readHistory.Add(c);
 
-            // Mantieni la history sotto il limite
+            // Keep history under the limit size
             if (_readHistory.Count > MAX_HISTORY_SIZE)
-            {
                 _readHistory.RemoveAt(0);
-            }
         }
-
-        /// <summary>
-        /// Determina se il code point richiede surrogate pair
-        /// </summary>
-        private bool IsSupplementaryCodePoint(int codePoint)
-            => (codePoint & ~char.MaxValue) != 0;
         #endregion
     }
 }
