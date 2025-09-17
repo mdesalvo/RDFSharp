@@ -155,25 +155,25 @@ namespace RDFSharp.Model
         /// Peeks at the next Unicode code point without advancing the reader
         /// </summary>
         internal static int PeekCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
-            => rdfStreamReader.Peek();
+            => rdfStreamReader.PeekCodePoint();
 
         /// <summary>
         /// Reads the next Unicode code point from the reader
         /// </summary>
         internal static int ReadCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext)
-            => rdfStreamReader.Read();
+            => rdfStreamReader.ReadCodePoint();
 
         /// <summary>
         /// Unreads the given Unicode code point from the reader
         /// </summary>
         internal static void UnreadCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, int codePoint)
-            => rdfStreamReader.Unread(codePoint);
+            => rdfStreamReader.UnreadCodePoint(codePoint);
 
         /// <summary>
         /// Unreads the given Unicode code point from the reader
         /// </summary>
         internal static void UnreadCodePoint(RDFStreamReader rdfStreamReader, RDFTurtleContext turtleContext, string codePoints)
-        => rdfStreamReader.Unread(codePoints);
+        => rdfStreamReader.UnreadString(codePoints);
         #endregion
 
         #region Parse.Grammar
