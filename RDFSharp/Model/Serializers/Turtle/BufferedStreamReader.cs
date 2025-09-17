@@ -20,29 +20,32 @@ using System.IO;
 namespace RDFSharp.Model
 {
     /// <summary>
-    /// Buffer scorrevole per la lettura efficiente di stream di grandi dimensioni durante il parsing Turtle
+    /// BufferedStreamReader wraps a StreamReader with a sliding buffer for efficient reading of large streams
     /// </summary>
-    internal class TurtleStreamBuffer : IDisposable
+    internal class BufferedStreamReader : IDisposable
     {
+        #region Fields
         private readonly StreamReader _reader;
         private readonly char[] _buffer;
         private readonly int _bufferSize;
 
-        private int _bufferStart;      // Posizione assoluta nel file del primo carattere nel buffer
-        private int _bufferLength;     // Numero di caratteri validi nel buffer
+        private int _bufferStart;      // Absolute file position of the first character in the buffer
+        private int _bufferLength;     // Number of valid characters in the buffer
         private bool _endOfStream;
+        #endregion
 
+        #region Properties
+        internal int Position { get; set; }
+
+        private bool IsEndOfFile
+            => _endOfStream && Position >= _bufferStart + _bufferLength;
+        #endregion
+
+        #region Ctors
         /// <summary>
-        /// Posizione corrente nel file
+        /// Builds a BufferedStreamReader wrapping the given StreamReader with the given size of buffer
         /// </summary>
-        public int Position { get; set; }
-
-        /// <summary>
-        /// Indica se abbiamo raggiunto la fine del file
-        /// </summary>
-        public bool IsEndOfFile => _endOfStream && Position >= _bufferStart + _bufferLength;
-
-        public TurtleStreamBuffer(StreamReader reader, int bufferSize = 8192)
+        public BufferedStreamReader(StreamReader reader, int bufferSize=8192)
         {
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
             _bufferSize = bufferSize;
@@ -52,29 +55,39 @@ namespace RDFSharp.Model
             Position = 0;
             _endOfStream = false;
 
-            // Carica il primo blocco
             FillBuffer();
         }
+        #endregion
 
+        #region Interfaces
         /// <summary>
-        /// Legge il prossimo code point Unicode
+        /// Disposes the BufferedStreamReader
+        /// </summary>
+        public void Dispose()
+            => _reader?.Dispose();
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Reads the next Unicode codepoint
         /// </summary>
         public int ReadCodePoint()
         {
             if (IsEndOfFile)
                 return -1;
 
-            // Assicurati che il carattere corrente sia nel buffer
+            // Ensure that the current character is in the buffer
+            // and, if possibile, feed the buffer with new data
             EnsureBufferContainsPosition();
 
+            // Update position after buffering of new data
             if (Position >= _bufferStart + _bufferLength)
                 return -1; // EOF
-
             int bufferIndex = Position - _bufferStart;
             char highSurrogate = _buffer[bufferIndex];
             Position++;
 
-            // Gestione surrogate pairs per caratteri Unicode supplementari
+            // Handle eventual presence of surrogate pairs
             if (char.IsHighSurrogate(highSurrogate))
             {
                 EnsureBufferContainsPosition();
@@ -94,99 +107,84 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Sbircia il prossimo code point senza avanzare la posizione
+        /// Peek at the next code point without advancing position
         /// </summary>
         public int PeekCodePoint()
         {
             int currentPos = Position;
             int codePoint = ReadCodePoint();
-            Position = currentPos; // Ripristina posizione
+            Position = currentPos; // Restore the position
             return codePoint;
         }
 
         /// <summary>
-        /// Torna indietro di un code point
+        /// Goes back one codepoint (or 2, depending if it represents a surrogate pair)
         /// </summary>
         public void UnreadCodePoint(int codePoint)
         {
             if (codePoint == -1)
                 return;
 
-            if (IsSupplementaryCodePoint(codePoint))
-            {
-                // Carattere supplementare (surrogate pair) - torna indietro di 2 posizioni
+            // Surrogate character (represented in UTF-16 as pair of 2 chars): move back 2 positions
+            if ((codePoint & ~char.MaxValue) != 0)
                 Position = Math.Max(0, Position - 2);
-            }
+
+            // Normal character: move back 1 position
             else
-            {
-                // Carattere normale - torna indietro di 1 posizione
                 Position = Math.Max(0, Position - 1);
-            }
         }
 
         /// <summary>
-        /// Torna indietro per una stringa di caratteri
+        /// Goes back the given string of characters
         /// </summary>
         public void UnreadString(string str)
         {
             if (string.IsNullOrEmpty(str))
                 return;
 
-            // Torna indietro carattere per carattere (dal fondo)
+            // Go back character by character (starting from the last)
             for (int i = str.Length - 1; i >= 0; i--)
-            {
                 UnreadCodePoint(str[i]);
-            }
         }
 
         /// <summary>
-        /// Assicura che il buffer contenga la posizione corrente
+        /// Ensures that the buffer contains the current position
         /// </summary>
         private void EnsureBufferContainsPosition()
         {
-            // Se la posizione è oltre la fine del buffer corrente, carica nuovo buffer
+            // If position is beyond the end of the current buffer, load a new buffer
             if (Position >= _bufferStart + _bufferLength && !_endOfStream)
-            {
                 FillBuffer();
-            }
-            // Se la posizione è prima dell'inizio del buffer, dobbiamo gestire backward seek
+
+            // If position is before the start of the buffer, we need to handle backward seek
             else if (Position < _bufferStart)
-            {
-                // Per semplicità, ricarica dall'inizio (può essere ottimizzato se necessario)
                 ReloadFromPosition(Position);
-            }
         }
 
         /// <summary>
-        /// Riempie il buffer dalla posizione corrente
+        /// Fills the buffer from the current position
         /// </summary>
         private void FillBuffer()
         {
             if (_endOfStream)
                 return;
 
-            // Se siamo alla fine del buffer corrente, shift del buffer
+            // If we are at the end of the current buffer, shift the file position of the buffer
             if (Position >= _bufferStart + _bufferLength)
-            {
                 _bufferStart = Position;
-            }
 
-            // Leggi il prossimo blocco
+            // Read the next block of data from the stream
             _bufferLength = _reader.Read(_buffer, 0, _bufferSize);
-
             if (_bufferLength == 0)
-            {
                 _endOfStream = true;
-            }
         }
 
         /// <summary>
-        /// Ricarica il buffer da una posizione specifica (per backward seeks)
+        /// Reloads the buffer from a specific location (for backward seeks)
         /// </summary>
         private void ReloadFromPosition(int position)
         {
-            // Questo è un caso limite - per semplicità resettiamo lo stream
-            // In un'implementazione più sofisticata si potrebbe mantenere un buffer circolare
+            // Reset the stream to begin from the given position
             if (_reader.BaseStream.CanSeek)
             {
                 _reader.BaseStream.Seek(0, SeekOrigin.Begin);
@@ -195,11 +193,9 @@ namespace RDFSharp.Model
                 Position = 0;
                 _endOfStream = false;
 
-                // Avanza fino alla posizione desiderata
+                // Advance to the desired position
                 while (Position < position && !IsEndOfFile)
-                {
                     ReadCodePoint();
-                }
                 Position = position;
             }
             else
@@ -207,16 +203,6 @@ namespace RDFSharp.Model
                 throw new InvalidOperationException("Cannot seek backward on non-seekable stream");
             }
         }
-
-        /// <summary>
-        /// Determina se il code point richiede surrogate pair
-        /// </summary>
-        private static bool IsSupplementaryCodePoint(int codePoint)
-            => (codePoint & ~char.MaxValue) != 0;
-
-        public void Dispose()
-        {
-            _reader?.Dispose();
-        }
+        #endregion
     }
 }

@@ -116,7 +116,7 @@ namespace RDFSharp.Store
                 RDFTriGContext trigContext = new RDFTriGContext();
                 using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    using (TurtleStreamBuffer sBuffer = new TurtleStreamBuffer(sReader))
+                    using (BufferedStreamReader sBuffer = new BufferedStreamReader(sReader))
                     {
                         int bufferChar = SkipWhitespace(sBuffer, trigContext);
                         while (bufferChar != -1)
@@ -165,7 +165,7 @@ namespace RDFSharp.Store
         /// Parses the TriG data in order to detect a valid directive or statement
         /// </summary>
         /// <exception cref="RDFStoreException"></exception>
-        internal static void ParseStatement(TurtleStreamBuffer sBuffer, RDFTriGContext trigContext)
+        internal static void ParseStatement(BufferedStreamReader sBuffer, RDFTriGContext trigContext)
         {
             StringBuilder sb = new StringBuilder();
             do
@@ -227,7 +227,7 @@ namespace RDFSharp.Store
         /// Parses the TriG data in order to detect a valid graph
         /// </summary>
         /// <exception cref="RDFStoreException"></exception>
-        internal static void ParseGraph(TurtleStreamBuffer sBuffer, RDFTriGContext trigContext)
+        internal static void ParseGraph(BufferedStreamReader sBuffer, RDFTriGContext trigContext)
         {
             RDFResource contextOrSubject = null;
             bool foundContextOrSubject = false;
@@ -334,7 +334,7 @@ namespace RDFSharp.Store
         /// <summary>
         /// Parses the TriG data in order to detect a valid statement
         /// </summary>
-        internal static void ParseTriples(TurtleStreamBuffer sBuffer, RDFTriGContext trigContext)
+        internal static void ParseTriples(BufferedStreamReader sBuffer, RDFTriGContext trigContext)
         {
             int bufChar = PeekCodePoint(sBuffer, trigContext);
 
