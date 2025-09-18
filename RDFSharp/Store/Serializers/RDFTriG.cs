@@ -110,37 +110,35 @@ namespace RDFSharp.Store
         /// <exception cref="RDFStoreException"></exception>
         internal static RDFMemoryStore Deserialize(Stream inputStream)
         {
+            RDFTriGContext trigContext = new RDFTriGContext();
+
             try
             {
                 #region deserialize
-
-                //Initialize TriG context
-                RDFTriGContext trigContext = new RDFTriGContext();
-
-                //Fetch TriG data
-                string trigData;
                 using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
-                    trigData = sReader.ReadToEnd();
-
-                //Parse TriG data
-                int bufferChar = SkipWhitespace(trigData, trigContext);
-                while (bufferChar != -1)
                 {
-                    ParseStatement(trigData, trigContext);
-                    //After parsing of a statement we discard spaces and comments
-                    //and seek for the next eventual statement, until finally EOL
-                    bufferChar = SkipWhitespace(trigData, trigContext);
+                    //Fetch TriG data
+                    trigContext.Data = sReader.ReadToEnd();
+                    
+                    //Parse TriG data
+                    int bufferChar = SkipWhitespace(trigContext);
+                    while (bufferChar != -1)
+                    {
+                        ParseStatement(trigContext);
+                        //After parsing of a statement we discard spaces and comments
+                        //and seek for the next eventual statement, until finally EOL
+                        bufferChar = SkipWhitespace(trigContext);
+                    }
                 }
                 RDFNamespaceRegister.RemoveTemporaryNamespaces();
-
-                return trigContext.Store;
-
                 #endregion deserialize
             }
             catch (Exception ex)
             {
                 throw new RDFStoreException("Cannot deserialize TriG because: " + ex.Message, ex);
             }
+
+            return trigContext.Store;
         }
         #endregion
 
@@ -158,24 +156,24 @@ namespace RDFSharp.Store
             /// <summary>
             /// Indicates the current TriG graph
             /// </summary>
-            internal RDFGraph Graph { get; set; } = new RDFGraph();
+            internal RDFGraph Graph { get; } = new RDFGraph();
 
             /// <summary>
             /// Indicates the result TriG store
             /// </summary>
-            internal RDFMemoryStore Store { get; set; } = new RDFMemoryStore();
+            internal RDFMemoryStore Store { get; } = new RDFMemoryStore();
         }
 
         /// <summary>
         /// Parses the TriG data in order to detect a valid directive or statement
         /// </summary>
         /// <exception cref="RDFStoreException"></exception>
-        internal static void ParseStatement(string trigData, RDFTriGContext trigContext)
+        internal static void ParseStatement(RDFTriGContext trigContext)
         {
             StringBuilder sb = new StringBuilder(8);
             do
             {
-                int codePoint = ReadCodePoint(trigData, trigContext);
+                int codePoint = ReadCodePoint(trigContext);
                 if (codePoint == -1 || IsWhitespace(codePoint))
                 {
                     UnreadCodePoint(trigContext, codePoint);
@@ -190,15 +188,15 @@ namespace RDFSharp.Store
                  || directive.Equals("base", StringComparison.OrdinalIgnoreCase)
                  || directive.Equals("version", StringComparison.OrdinalIgnoreCase))
             {
-                ParseDirective(trigData, trigContext, trigContext.Graph, directive);
-                SkipWhitespace(trigData, trigContext);
+                ParseDirective(trigContext, trigContext.Graph, directive);
+                SkipWhitespace(trigContext);
 
                 // Turtle @base and @prefix directives MUST end with "."
                 if (directive[0] == '@')
-                    VerifyCharacterOrFail(trigContext, ReadCodePoint(trigData, trigContext), ".");
+                    VerifyCharacterOrFail(trigContext, ReadCodePoint(trigContext), ".");
 
                 // SPARQL BASE and PREFIX directives MUST NOT end with "."
-                else if (PeekCodePoint(trigData, trigContext) == '.')
+                else if (PeekCodePoint(trigContext) == '.')
                     throw new RDFStoreException("SPARQL directive '" + directive + "' must not end with '.'" + GetTurtleContextCoordinates(trigContext));
             }
             else if (directive.StartsWith("graph:", StringComparison.OrdinalIgnoreCase))
@@ -206,25 +204,25 @@ namespace RDFSharp.Store
                 // If there was a colon immediately after the graph keyword then
                 // assume it was a pname and not the SPARQL GRAPH keyword
                 UnreadCodePoint(trigContext, directive);
-                ParseGraph(trigData, trigContext);
+                ParseGraph(trigContext);
             }
             else if (directive.StartsWith("graph", StringComparison.OrdinalIgnoreCase))
             {
                 // Do not unread the directive if it was SPARQL GRAPH
                 // Just continue with TriG parsing at this point
-                SkipWhitespace(trigData, trigContext);
+                SkipWhitespace(trigContext);
 
                 //Clear context in preparation of next graph's parsing
                 trigContext.Context = null;
 
-                ParseGraph(trigData, trigContext);
+                ParseGraph(trigContext);
                 if (trigContext.Context == null)
                     throw new RDFStoreException("Missing GRAPH label or subject");
             }
             else
             {
                 UnreadCodePoint(trigContext, directive);
-                ParseGraph(trigData, trigContext);
+                ParseGraph(trigContext);
             }
         }
 
@@ -232,35 +230,35 @@ namespace RDFSharp.Store
         /// Parses the TriG data in order to detect a valid graph
         /// </summary>
         /// <exception cref="RDFStoreException"></exception>
-        internal static void ParseGraph(string trigData, RDFTriGContext trigContext)
+        internal static void ParseGraph(RDFTriGContext trigContext)
         {
             RDFResource contextOrSubject = null;
             bool foundContextOrSubject = false;
-            int c = ReadCodePoint(trigData, trigContext);
-            int c2 = PeekCodePoint(trigData, trigContext);
+            int c = ReadCodePoint(trigContext);
+            int c2 = PeekCodePoint(trigContext);
 
             if (c == '[')
             {
-                SkipWhitespace(trigData, trigContext);
-                c2 = ReadCodePoint(trigData, trigContext);
+                SkipWhitespace(trigContext);
+                c2 = ReadCodePoint(trigContext);
                 if (c2 == ']')
                 {
                     contextOrSubject = new RDFResource(); //createNode()
                     foundContextOrSubject = true;
-                    SkipWhitespace(trigData, trigContext);
+                    SkipWhitespace(trigContext);
                 }
                 else
                 {
                     UnreadCodePoint(trigContext, c2);
                     UnreadCodePoint(trigContext, c);
                 }
-                c = ReadCodePoint(trigData, trigContext);
+                c = ReadCodePoint(trigContext);
             }
             else if (c == '<' || IsPrefixStartChar(c) || (c == ':' && c2 != '-') || (c == '_' && c2 == ':'))
             {
                 UnreadCodePoint(trigContext, c);
 
-                object value = ParseValue(trigData, trigContext, trigContext.Graph);
+                object value = ParseValue(trigContext, trigContext.Graph);
 
                 if (value is Uri || (value is RDFResource resValue && !resValue.IsBlank)) //We don't accept blank contexts
                 {
@@ -274,8 +272,8 @@ namespace RDFSharp.Store
                     throw new RDFStoreException("Illegal (or blank-node) graph name: " + value);
                 }
 
-                SkipWhitespace(trigData, trigContext);
-                c = ReadCodePoint(trigData, trigContext);
+                SkipWhitespace(trigContext);
+                c = ReadCodePoint(trigContext);
             }
             else
             {
@@ -286,21 +284,21 @@ namespace RDFSharp.Store
             {
                 trigContext.Context = contextOrSubject;
 
-                c = SkipWhitespace(trigData, trigContext);
+                c = SkipWhitespace(trigContext);
                 if (c != '}')
                 {
-                    ParseTriples(trigData, trigContext);
-                    c = SkipWhitespace(trigData, trigContext);
+                    ParseTriples(trigContext);
+                    c = SkipWhitespace(trigContext);
 
                     while (c == '.')
                     {
-                        ReadCodePoint(trigData, trigContext);
-                        c = SkipWhitespace(trigData, trigContext);
+                        ReadCodePoint(trigContext);
+                        c = SkipWhitespace(trigContext);
                         if (c == '}')
                             break;
 
-                        ParseTriples(trigData, trigContext);
-                        c = SkipWhitespace(trigData, trigContext);
+                        ParseTriples(trigContext);
+                        c = SkipWhitespace(trigContext);
                     }
                 }
 
@@ -316,13 +314,13 @@ namespace RDFSharp.Store
                 {
                     trigContext.Subject = contextOrSubject;
                     UnreadCodePoint(trigContext, c);
-                    ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+                    ParsePredicateObjectList(trigContext, trigContext.Graph);
                 }
                 // Or if we didn't recognise anything, just parse as Turtle
                 else
                 {
                     UnreadCodePoint(trigContext, c);
-                    ParseTriples(trigData, trigContext);
+                    ParseTriples(trigContext);
                 }
             }
 
@@ -333,29 +331,29 @@ namespace RDFSharp.Store
             trigContext.Graph.SetContext(backupGraphContext);
             trigContext.Graph.ClearTriples();
 
-            ReadCodePoint(trigData, trigContext);
+            ReadCodePoint(trigContext);
         }
 
         /// <summary>
         /// Parses the TriG data in order to detect a valid statement
         /// </summary>
-        internal static void ParseTriples(string trigData, RDFTriGContext trigContext)
+        internal static void ParseTriples(RDFTriGContext trigContext)
         {
-            int bufChar = PeekCodePoint(trigData, trigContext);
+            int bufChar = PeekCodePoint(trigContext);
 
             // If the first character is an open bracket we need to decide which of
             // the two parsing methods for blank nodes to use
             if (bufChar == '[')
             {
-                ReadCodePoint(trigData, trigContext);
-                SkipWhitespace(trigData, trigContext);
-                bufChar = PeekCodePoint(trigData, trigContext);
+                ReadCodePoint(trigContext);
+                SkipWhitespace(trigContext);
+                bufChar = PeekCodePoint(trigContext);
                 if (bufChar == ']')
                 {
-                    ReadCodePoint(trigData, trigContext);
+                    ReadCodePoint(trigContext);
                     trigContext.Subject = new RDFResource();
-                    SkipWhitespace(trigData, trigContext);
-                    ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+                    SkipWhitespace(trigContext);
+                    ParsePredicateObjectList(trigContext, trigContext.Graph);
                 }
                 else
                 {
@@ -364,24 +362,24 @@ namespace RDFSharp.Store
                     while (bufChar != '[')
                     {
                         UnreadCodePoint(trigContext, bufChar);
-                        bufChar = PeekCodePoint(trigData, trigContext);
+                        bufChar = PeekCodePoint(trigContext);
                     }
-                    trigContext.Subject = ParseImplicitBlank(trigData, trigContext, trigContext.Graph);
+                    trigContext.Subject = ParseImplicitBlank(trigContext, trigContext.Graph);
                 }
-                SkipWhitespace(trigData, trigContext);
-                bufChar = PeekCodePoint(trigData, trigContext);
+                SkipWhitespace(trigContext);
+                bufChar = PeekCodePoint(trigContext);
 
                 // if this is not the end of the statement, recurse into the list of
                 // predicate and objects, using the subject parsed above as the subject
                 // of the statement.
                 if (bufChar != '.' && bufChar != '}')
-                    ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+                    ParsePredicateObjectList(trigContext, trigContext.Graph);
             }
             else
             {
-                ParseSubject(trigData, trigContext, trigContext.Graph);
-                SkipWhitespace(trigData, trigContext);
-                ParsePredicateObjectList(trigData, trigContext, trigContext.Graph);
+                ParseSubject(trigContext, trigContext.Graph);
+                SkipWhitespace(trigContext);
+                ParsePredicateObjectList(trigContext, trigContext.Graph);
             }
 
             trigContext.Subject = null;
