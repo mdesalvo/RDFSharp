@@ -106,7 +106,7 @@ namespace RDFSharp.Model
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
                                 result.AddRange(from DataRow pathResultRow
                                                 in pathResult.Rows
-                                                select pathResultRow["?END"]?.ToString()
+                                                select pathResultRow["?END"].ToString()
                                                 into prValue where !string.IsNullOrEmpty(prValue)
                                                 select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 

@@ -969,7 +969,7 @@ namespace RDFSharp.Query
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Object));
-                        PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CO, patternResultTable);
+                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CO, patternResultTable);
                     break;
 
                 case "SP":
@@ -1654,7 +1654,7 @@ namespace RDFSharp.Query
             bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
                 => leftRow.IsNull(commonColumn)
                     || rightRow.IsNull(commonColumn)
-                    || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
+                    || string.Equals(leftRow[commonColumn].ToString(), rightRow[commonColumn].ToString(), StringComparison.Ordinal);
             #endregion
 
             DataTable joinTable = new DataTable();
@@ -1769,7 +1769,7 @@ namespace RDFSharp.Query
             bool CheckJoin(DataRow leftRow, DataRow rightRow, string commonColumn)
                 => leftRow.IsNull(commonColumn)
                     || rightRow.IsNull(commonColumn)
-                    || string.Equals(leftRow[commonColumn]?.ToString(), rightRow[commonColumn]?.ToString(), StringComparison.Ordinal);
+                    || string.Equals(leftRow[commonColumn].ToString(), rightRow[commonColumn].ToString(), StringComparison.Ordinal);
             #endregion
 
             DataTable diffTable = new DataTable();

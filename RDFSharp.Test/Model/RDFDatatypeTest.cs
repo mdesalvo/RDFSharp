@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
-using System.Linq;
 
 namespace RDFSharp.Test.Model;
 
@@ -84,8 +83,8 @@ public class RDFDatatypeTest
 
         Assert.IsNotNull(exStringGraph);
         Assert.AreEqual(2, exStringGraph.TriplesCount);
-        Assert.AreEqual(1, exStringGraph[s: new RDFResource("ex:string"), p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDFS.DATATYPE, null].TriplesCount);
-        Assert.AreEqual(1, exStringGraph[s: new RDFResource("ex:string"), p: RDFVocabulary.OWL.EQUIVALENT_CLASS, o: RDFVocabulary.XSD.STRING, null].TriplesCount);
+        Assert.AreEqual(1, exStringGraph[s: new RDFResource("ex:string"), p: RDFVocabulary.RDF.TYPE, o: RDFVocabulary.RDFS.DATATYPE].TriplesCount);
+        Assert.AreEqual(1, exStringGraph[s: new RDFResource("ex:string"), p: RDFVocabulary.OWL.EQUIVALENT_CLASS, o: RDFVocabulary.XSD.STRING].TriplesCount);
     }
 
     [TestMethod]
