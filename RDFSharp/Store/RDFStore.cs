@@ -45,6 +45,11 @@ namespace RDFSharp.Store
         /// Count of the store's quadruples
         /// </summary>
         public abstract long QuadruplesCount { get; }
+        
+        /// <summary>
+        /// Asynchronous count of the store's quadruples
+        /// </summary>
+        public abstract Task<long> QuadruplesCountAsync { get; }
         #endregion
 
         #region Interfaces
@@ -69,9 +74,19 @@ namespace RDFSharp.Store
         public abstract RDFStore MergeGraph(RDFGraph graph);
 
         /// <summary>
+        /// Asynchronously merges the given graph into the store, avoiding duplicate insertions
+        /// </summary>
+        public abstract Task<RDFStore> MergeGraphAsync(RDFGraph graph);
+
+        /// <summary>
         /// Adds the given quadruple to the store, avoiding duplicate insertions
         /// </summary>
         public abstract RDFStore AddQuadruple(RDFQuadruple quadruple);
+        
+        /// <summary>
+        /// Asynchronously adds the given quadruple to the store, avoiding duplicate insertions
+        /// </summary>
+        public abstract Task<RDFStore> AddQuadrupleAsync(RDFQuadruple quadruple);
         #endregion
 
         #region Remove
@@ -79,6 +94,11 @@ namespace RDFSharp.Store
         /// Removes the given quadruple from the store
         /// </summary>
         public abstract RDFStore RemoveQuadruple(RDFQuadruple quadruple);
+        
+        /// <summary>
+        /// Asynchronously removes the given quadruple from the store
+        /// </summary>
+        public abstract Task<RDFStore> RemoveQuadrupleAsync(RDFQuadruple quadruple);
 
         /// <summary>
         /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
@@ -87,9 +107,20 @@ namespace RDFSharp.Store
         public abstract RDFStore RemoveQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
 
         /// <summary>
+        /// Asynchronously removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+        /// </summary>
+        public abstract Task<RDFStore> RemoveQuadruplesAsync(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
+
+        /// <summary>
         /// Clears the quadruples of the store
         /// </summary>
         public abstract void ClearQuadruples();
+        
+        /// <summary>
+        /// Asynchronously clears the quadruples of the store
+        /// </summary>
+        public abstract Task ClearQuadruplesAsync();
         #endregion
 
         #region Select
@@ -99,11 +130,23 @@ namespace RDFSharp.Store
         public abstract bool ContainsQuadruple(RDFQuadruple quadruple);
 
         /// <summary>
+        /// Asynchronously checks if the store contains the given quadruple
+        /// </summary>
+        public abstract Task<bool> ContainsQuadrupleAsync(RDFQuadruple quadruple);
+
+        /// <summary>
         /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
         /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
         /// </summary>
         /// <exception cref="RDFStoreException"></exception>
         public abstract List<RDFQuadruple> SelectQuadruples(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
+
+        /// <summary>
+        /// Asynchronously selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+        /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
+        public abstract Task<List<RDFQuadruple>> SelectQuadruplesAsync(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null);
 
         /// <summary>
         /// Gets a memory store containing quadruples which satisfy the given combination of CSPOL accessors<br/>
@@ -137,18 +180,10 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
-        /// Gets a list containing the contexts saved in the store
+        /// Asynchronously gets a list containing the graphs saved in the store
         /// </summary>
-        public List<RDFContext> ExtractContexts()
-        {
-            Dictionary<long, RDFPatternMember> contexts = new Dictionary<long, RDFPatternMember>();
-            foreach (RDFQuadruple q in SelectQuadruples())
-            {
-                if (!contexts.ContainsKey(q.Context.PatternMemberID))
-                    contexts.Add(q.Context.PatternMemberID, q.Context);
-            }
-            return contexts.Values.OfType<RDFContext>().ToList();
-        }
+        public Task<List<RDFGraph>> ExtractGraphsAsync()
+            => Task.Run(ExtractGraphs);
         #endregion
 
         #region Convert

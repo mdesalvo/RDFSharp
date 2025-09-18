@@ -243,6 +243,13 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously removes the triples which satisfy the given combination of SPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+        /// </summary>
+        public Task<RDFGraph> RemoveTriplesAsync(RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
+            => Task.Run(() => RemoveTriples(s, p, o, l));
+
+        /// <summary>
         /// Clears the triples and metadata of the graph
         /// </summary>
         public void ClearTriples()
@@ -325,6 +332,14 @@ namespace RDFSharp.Model
             }
         }
 
+        /// <summary>
+        /// Asynchronously selects the triples which satisfy the given combination of SPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        public Task<List<RDFTriple>> SelectTriplesAsync(RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
+            => Task.Run(() => SelectTriples(s,p,o,l));
+        
         /// <summary>
         /// Gets the subgraph containing the triples which satisfy the given combination of SPOL accessors<br/>
         /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)

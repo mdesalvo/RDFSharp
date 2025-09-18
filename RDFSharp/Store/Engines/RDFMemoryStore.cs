@@ -41,6 +41,12 @@ namespace RDFSharp.Store
             => Index.Hashes.Count;
 
         /// <summary>
+        /// Asynchronous count of the store's quadruples
+        /// </summary>
+        public override Task<long> QuadruplesCountAsync
+            => Task.Run(() => QuadruplesCount);
+        
+        /// <summary>
         /// Gets the enumerator on the store's quadruples for iteration
         /// </summary>
         public IEnumerator<RDFQuadruple> QuadruplesEnumerator
@@ -171,6 +177,12 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
+        /// Asynchronously merges the given graph into the store, avoiding duplicate insertions
+        /// </summary>
+        public override Task<RDFStore> MergeGraphAsync(RDFGraph graph)
+            => Task.Run(() => MergeGraph(graph));
+
+        /// <summary>
         /// Adds the given quadruple to the store, avoiding duplicate insertions
         /// </summary>
         public override RDFStore AddQuadruple(RDFQuadruple quadruple)
@@ -179,6 +191,12 @@ namespace RDFSharp.Store
                 Index.Add(quadruple);
             return this;
         }
+
+        /// <summary>
+        /// Asynchronously adds the given quadruple to the store, avoiding duplicate insertions
+        /// </summary>
+        public override Task<RDFStore> AddQuadrupleAsync(RDFQuadruple quadruple)
+            => Task.Run(() => AddQuadruple(quadruple));
         #endregion
 
         #region Remove
@@ -193,6 +211,12 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
+        /// Asynchronously removes the given quadruple from the store
+        /// </summary>
+        public override Task<RDFStore> RemoveQuadrupleAsync(RDFQuadruple quadruple)
+            => Task.Run(() => RemoveQuadruple(quadruple));
+
+        /// <summary>
         /// Removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
         /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
         /// </summary>
@@ -204,10 +228,23 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
+        /// Asynchronously removes the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+        /// </summary>
+        public override Task<RDFStore> RemoveQuadruplesAsync(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
+            => Task.Run(() => RemoveQuadruples(c,s,p,o,l));
+
+        /// <summary>
         /// Clears the quadruples of the store
         /// </summary>
         public override void ClearQuadruples()
             => Index.Clear();
+
+        /// <summary>
+        /// Asynchronously clears the quadruples of the store
+        /// </summary>
+        public override Task ClearQuadruplesAsync()
+            => Task.Run(ClearQuadruples);
         #endregion
 
         #region Select
@@ -216,6 +253,12 @@ namespace RDFSharp.Store
         /// </summary>
         public override bool ContainsQuadruple(RDFQuadruple quadruple)
             => quadruple != null && Index.Hashes.ContainsKey(quadruple.QuadrupleID);
+
+        /// <summary>
+        /// Asynchronously checks if the store contains the given quadruple
+        /// </summary>
+        public override Task<bool> ContainsQuadrupleAsync(RDFQuadruple quadruple)
+            => Task.Run(() => ContainsQuadruple(quadruple));
 
         /// <summary>
         /// Selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
@@ -304,6 +347,14 @@ namespace RDFSharp.Store
                 default:     return Index.Hashes.Values.ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
             }
         }
+
+        /// <summary>
+        /// Asynchronously selects the quadruples which satisfy the given combination of CSPOL accessors<br/>
+        /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
+        /// </summary>
+        /// <exception cref="RDFStoreException"></exception>
+        public override Task<List<RDFQuadruple>> SelectQuadruplesAsync(RDFContext c=null, RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
+            => Task.Run(() => SelectQuadruples(c,s,p,o,l));
         #endregion
 
         #region Set

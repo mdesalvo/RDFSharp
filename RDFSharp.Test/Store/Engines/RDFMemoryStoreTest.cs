@@ -796,21 +796,6 @@ public class RDFMemoryStoreTest
     }
 
     [TestMethod]
-    public void ShouldExtractContexts()
-    {
-        RDFMemoryStore store = new RDFMemoryStore();
-        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit","en-US")));
-        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit","en-UK")));
-        store.AddQuadruple(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
-        List<RDFContext> contexts = store.ExtractContexts();
-
-        Assert.IsNotNull(contexts);
-        Assert.HasCount(2, contexts);
-        Assert.IsTrue(contexts.Any(c => c.Equals(new RDFContext("ex:ctx1"))));
-        Assert.IsTrue(contexts.Any(c => c.Equals(new RDFContext("ex:ctx2"))));
-    }
-
-    [TestMethod]
     public void ShouldExtractGraphs()
     {
         RDFMemoryStore store = new RDFMemoryStore();
@@ -1086,7 +1071,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+        await (await store1.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
         await store1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}"));
         RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}"));
 
@@ -1104,9 +1089,9 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1)
-              .AddQuadruple(quadruple2)
-              .MergeGraph(new RDFGraph()
+        await (await (await store1.AddQuadrupleAsync(quadruple1))
+                .AddQuadrupleAsync(quadruple2))
+            .MergeGraphAsync(new RDFGraph()
                 .AddDatatype(new RDFDatatype(new Uri($"ex:mydtP{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFPatternFacet("^ex$") ])));
         await store1.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"));
         RDFMemoryStore store2 = await RDFMemoryStore.FromFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldImportFromFileAsync{fileExtension}WithEnabledDatatypeDiscovery"), true);
@@ -1222,7 +1207,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+        await (await store1.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
         await store1.ToStreamAsync(format, stream);
         RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()));
 
@@ -1241,9 +1226,9 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store1.AddQuadruple(quadruple1)
-              .AddQuadruple(quadruple2)
-              .MergeGraph(new RDFGraph()
+        await (await (await store1.AddQuadrupleAsync(quadruple1))
+                .AddQuadrupleAsync(quadruple2))
+            .MergeGraphAsync(new RDFGraph()
                 .AddDatatype(new RDFDatatype(new Uri($"ex:mydtQ{(int)format}"), RDFModelEnums.RDFDatatypes.XSD_STRING, [ new RDFPatternFacet("^ex$") ])));
         await store1.ToStreamAsync(format, stream);
         RDFMemoryStore store2 = await RDFMemoryStore.FromStreamAsync(format, new MemoryStream(stream.ToArray()), true);
@@ -1556,7 +1541,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        store1.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+        await (await store1.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
         DataTable table = await store1.ToDataTableAsync();
         RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table);
 
@@ -1571,9 +1556,9 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store1 = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        store1.AddQuadruple(quadruple1)
-              .AddQuadruple(quadruple2)
-              .MergeGraph(new RDFGraph()
+        await (await (await store1.AddQuadrupleAsync(quadruple1))
+                .AddQuadrupleAsync(quadruple2))
+            .MergeGraphAsync(new RDFGraph()
                 .AddDatatype(new RDFDatatype(new Uri("ex:mydtQG"), RDFModelEnums.RDFDatatypes.XSD_STRING, [new RDFPatternFacet("^ex$") ])));
         DataTable table = await store1.ToDataTableAsync();
         RDFMemoryStore store2 = await RDFMemoryStore.FromDataTableAsync(table, true);
@@ -1842,6 +1827,109 @@ public class RDFMemoryStoreTest
 
     #region Tests (Async)
     [TestMethod]
+    public async Task ShouldMergeGraphAsync()
+    {
+        RDFGraph graph = new RDFGraph([
+            new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFResource("ex:obj")),
+            new RDFTriple(new RDFResource("ex:subj"),new RDFResource("ex:pred"),new RDFPlainLiteral("lit"))
+        ]).SetContext(new Uri("ex:ctx"));
+        RDFMemoryStore store = new RDFMemoryStore();
+        await store.MergeGraphAsync(graph);
+
+        Assert.AreEqual(2, store.QuadruplesCount);
+        Assert.AreEqual(2, await store.QuadruplesCountAsync);
+        Assert.IsTrue(await store.ContainsQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+        Assert.IsTrue(await store.ContainsQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit"))));
+
+        await store.MergeGraphAsync(null);
+        Assert.AreEqual(2, store.QuadruplesCount);
+        Assert.AreEqual(2, await store.QuadruplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldAddQuadrupleAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+
+        Assert.AreEqual(1, store.QuadruplesCount);
+        Assert.AreEqual(1, await store.QuadruplesCountAsync);
+        Assert.IsTrue(await store.ContainsQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+
+        await store.AddQuadrupleAsync(null);
+        Assert.AreEqual(1, store.QuadruplesCount);
+        Assert.AreEqual(1, await store.QuadruplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldRemoveQuadrupleAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        await store.RemoveQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+
+        Assert.AreEqual(1, store.QuadruplesCount);
+        Assert.AreEqual(1, await store.QuadruplesCountAsync);
+        Assert.IsTrue(await store.ContainsQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+
+        await store.RemoveQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        Assert.AreEqual(1, store.QuadruplesCount);
+        Assert.AreEqual(1, await store.QuadruplesCountAsync);
+
+        await store.RemoveQuadrupleAsync(null);
+        Assert.AreEqual(1, store.QuadruplesCount);
+        Assert.AreEqual(1, await store.QuadruplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldRemoveQuadruplesAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        await store.RemoveQuadruplesAsync(c: new RDFContext("ex:ctx1"));
+
+        Assert.AreEqual(1, store.QuadruplesCount);
+        Assert.AreEqual(1, await store.QuadruplesCountAsync);
+        Assert.IsTrue(await store.ContainsQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj"))));
+
+        await store.RemoveQuadruplesAsync();
+        Assert.AreEqual(0, store.QuadruplesCount);
+        Assert.AreEqual(0, await store.QuadruplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldClearQuadruplesAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        await store.ClearQuadruplesAsync();
+
+        Assert.AreEqual(0, store.QuadruplesCount);
+        Assert.AreEqual(0, await store.QuadruplesCountAsync);
+        Assert.IsEmpty(store.Index.IDXContexts);
+        Assert.IsEmpty(store.Index.IDXSubjects);
+        Assert.IsEmpty(store.Index.IDXPredicates);
+        Assert.IsEmpty(store.Index.IDXObjects);
+        Assert.IsEmpty(store.Index.IDXLiterals);
+    }
+
+    [TestMethod]
+    public async Task ShouldSelectAllQuadruplesAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit")));
+        await store.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        List<RDFQuadruple> select = await store.SelectQuadruplesAsync();
+
+        Assert.IsNotNull(select);
+        Assert.HasCount(2, select);
+    }
+
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]
@@ -1850,7 +1938,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+        await (await store.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
         await store.ToFileAsync(format, Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}"));
 
         Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, $"RDFMemoryStoreTest_ShouldExportToFileAsync{fileExtension}")));
@@ -1871,7 +1959,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ex/ctx/"), new RDFResource("http://ex/subj/"), new RDFResource("http://ex/pred/"), new RDFResource("http://ex/obj/"));
-        store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+        await (await store.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
         await store.ToStreamAsync(format, stream);
 
         Assert.IsGreaterThan(90, stream.ToArray().Length);
@@ -1887,7 +1975,7 @@ public class RDFMemoryStoreTest
         RDFMemoryStore store = new RDFMemoryStore();
         RDFQuadruple quadruple1 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit", "en-US"));
         RDFQuadruple quadruple2 = new RDFQuadruple(new RDFContext("http://ctx/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
-        store.AddQuadruple(quadruple1).AddQuadruple(quadruple2);
+        await (await store.AddQuadrupleAsync(quadruple1)).AddQuadrupleAsync(quadruple2);
         DataTable table = await store.ToDataTableAsync();
 
         Assert.IsNotNull(table);
@@ -1897,14 +1985,14 @@ public class RDFMemoryStoreTest
         Assert.IsTrue(table.Columns[2].ColumnName.Equals("?PREDICATE", StringComparison.Ordinal));
         Assert.IsTrue(table.Columns[3].ColumnName.Equals("?OBJECT", StringComparison.Ordinal));
         Assert.AreEqual(2, table.Rows.Count);
-        Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString().Equals("http://ctx/", StringComparison.Ordinal));
-        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
-        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
-        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString().Equals("lit@EN-US", StringComparison.Ordinal));
-        Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString().Equals("http://ctx/", StringComparison.Ordinal));
-        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString().Equals("http://subj/", StringComparison.Ordinal));
-        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString().Equals("http://pred/", StringComparison.Ordinal));
-        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString().Equals("http://obj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?CONTEXT"].ToString()!.Equals("http://ctx/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?SUBJECT"].ToString()!.Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?PREDICATE"].ToString()!.Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[0]["?OBJECT"].ToString()!.Equals("lit@EN-US", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?CONTEXT"].ToString()!.Equals("http://ctx/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?SUBJECT"].ToString()!.Equals("http://subj/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?PREDICATE"].ToString()!.Equals("http://pred/", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[1]["?OBJECT"].ToString()!.Equals("http://obj/", StringComparison.Ordinal));
     }
 
     [TestMethod]

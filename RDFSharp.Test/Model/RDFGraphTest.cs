@@ -1792,6 +1792,31 @@ public class RDFGraphTest
 
     #region Tests (Async)
     [TestMethod]
+    public async Task ShouldSelectAllTriplesAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+        RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+        RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj2/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+        graph.AddTriple(triple1).AddTriple(triple2).AddTriple(triple3);
+
+        List<RDFTriple> select = await graph.SelectTriplesAsync();
+        Assert.IsNotNull(select);
+        Assert.HasCount(3, select);
+    }
+    
+    [TestMethod]
+    public async Task ShouldRemoveAllTriplesAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+        graph.AddTriple(triple);
+        await graph.RemoveTriplesAsync();
+
+        Assert.AreEqual(0, graph.TriplesCount);
+    }
+    
+    [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]
     [DataRow(".trix", RDFModelEnums.RDFFormats.TriX)]
