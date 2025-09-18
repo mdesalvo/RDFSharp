@@ -36,7 +36,7 @@ namespace RDFSharp.Model
 
         // Cache to handle backward seek without having to reseek on the stream
         private readonly List<char> _readHistory;
-        private const int MAX_HISTORY_SIZE = 4096;
+        private const int MAX_HISTORY_SIZE = 1024;
         #endregion
 
         #region Properties
@@ -55,7 +55,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Builds a RDFStreamReader on the given StreamReader with the given buffer size
         /// </summary>
-        internal RDFStreamReader(StreamReader reader, int bufferSize=8192)
+        internal RDFStreamReader(StreamReader reader, int bufferSize=16384)
         {
             _reader = reader ?? throw new ArgumentNullException(nameof(reader));
             _bufferSize = bufferSize;
@@ -63,7 +63,7 @@ namespace RDFSharp.Model
             _bufferStart = 0;
             _bufferLength = 0;
             _endOfStream = false;
-            _readHistory = new List<char>();
+            _readHistory = new List<char>(MAX_HISTORY_SIZE);
             Position = 0;
 
             // Fetch the first block

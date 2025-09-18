@@ -118,10 +118,11 @@ namespace RDFSharp.Store
                 {
                     using (RDFStreamReader rdfStreamReader = new RDFStreamReader(streamReader))
                     {
+                        StringBuilder directiveSentinel = new StringBuilder(8);
                         int bufferChar = SkipWhitespace(rdfStreamReader, trigContext);
                         while (bufferChar != -1)
                         {
-                            ParseStatement(rdfStreamReader, trigContext);
+                            ParseStatement(rdfStreamReader, trigContext, directiveSentinel);
                             //After parsing of a statement we discard spaces and comments
                             //and seek for the next eventual statement, until finally EOL
                             bufferChar = SkipWhitespace(rdfStreamReader, trigContext);
@@ -165,9 +166,9 @@ namespace RDFSharp.Store
         /// Parses the TriG data in order to detect a valid directive or statement
         /// </summary>
         /// <exception cref="RDFStoreException"></exception>
-        internal static void ParseStatement(RDFStreamReader rdfStreamReader, RDFTriGContext trigContext)
+        internal static void ParseStatement(RDFStreamReader rdfStreamReader, RDFTriGContext trigContext, StringBuilder directiveSentinel)
         {
-            StringBuilder sb = new StringBuilder();
+            directiveSentinel.Clear();
             do
             {
                 int codePoint = ReadCodePoint(rdfStreamReader, trigContext);
@@ -176,10 +177,10 @@ namespace RDFSharp.Store
                     UnreadCodePoint(rdfStreamReader, trigContext, codePoint);
                     break;
                 }
-                sb.Append(char.ConvertFromUtf32(codePoint));
-            } while (sb.Length < 8);
+                directiveSentinel.Append(char.ConvertFromUtf32(codePoint));
+            } while (directiveSentinel.Length < 8);
 
-            string directive = sb.ToString();
+            string directive = directiveSentinel.ToString();
             if (directive[0] == '@'
                  || directive.Equals("prefix", StringComparison.OrdinalIgnoreCase)
                  || directive.Equals("base", StringComparison.OrdinalIgnoreCase)
