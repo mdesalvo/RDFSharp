@@ -28,11 +28,6 @@ namespace RDFSharp.Model
     {
         #region Properties
         /// <summary>
-        /// Default namespace of the library (rdfsharp)
-        /// </summary>
-        private static readonly RDFNamespace RDFSharpNS = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI));
-
-        /// <summary>
         /// Default namespace of the library
         /// </summary>
         public static RDFNamespace DefaultNamespace { get; internal set; }
@@ -75,8 +70,6 @@ namespace RDFSharp.Model
             {
                 Register = new List<RDFNamespace>(32)
                 {
-                    RDFSharpNS.SetReserved(true),
-
                     //Basic
                     new RDFNamespace(RDFVocabulary.RDF.PREFIX, RDFVocabulary.RDF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDF.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.RDFS.PREFIX, RDFVocabulary.RDFS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFS.DEREFERENCE_URI)).SetReserved(true),
@@ -101,11 +94,14 @@ namespace RDFSharp.Model
                     new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.SKOSXL.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.TIME.PREFIX, RDFVocabulary.TIME.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.TIME.GREG.PREFIX, RDFVocabulary.TIME.GREG.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.GREG.DEREFERENCE_URI)).SetReserved(true),
-                    new RDFNamespace(RDFVocabulary.TIME.THORS.PREFIX, RDFVocabulary.TIME.THORS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.THORS.DEREFERENCE_URI)).SetReserved(true)
+                    new RDFNamespace(RDFVocabulary.TIME.THORS.PREFIX, RDFVocabulary.TIME.THORS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.THORS.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI)).SetReserved(true)
                 }
             };
 
-            DefaultNamespace = RDFSharpNS;
+            DefaultNamespace = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI)
+                                    .SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI))
+                                    .SetReserved(true);
             WebClient = new RDFWebClient(2000);
         }
         #endregion
@@ -143,7 +139,9 @@ namespace RDFSharp.Model
         /// Resets the default namespace of the library.
         /// </summary>
         public static void ResetDefaultNamespace()
-            => DefaultNamespace = RDFSharpNS;
+            => DefaultNamespace = new RDFNamespace(RDFVocabulary.RDFSHARP.PREFIX, RDFVocabulary.RDFSHARP.BASE_URI)
+                                    .SetDereferenceUri(new Uri(RDFVocabulary.RDFSHARP.DEREFERENCE_URI))
+                                    .SetReserved(true);
 
         /// <summary>
         /// Adds the given namespace to the register, if it has unique prefix and uri.
