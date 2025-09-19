@@ -1849,9 +1849,18 @@ public class RDFMemoryStoreTest
         Assert.AreEqual(2, i);
 
         int j = 0;
-        IEnumerator<RDFQuadruple> quads = await store.QuadruplesEnumeratorAsync;
-        while (quads.MoveNext()) j++;
+        IAsyncEnumerator<RDFQuadruple> quads = store.QuadruplesEnumeratorAsync.GetAsyncEnumerator();
+        while (await quads.MoveNextAsync()) j++;
         Assert.AreEqual(2, j);
+
+        int k = 0;
+        IAsyncEnumerator<RDFQuadruple> quads2 = store.GetAsyncEnumerator();
+        while (await quads2.MoveNextAsync()) k++;
+        Assert.AreEqual(2, k);
+
+        int z = 0;
+        await foreach (RDFQuadruple q in store) z++;
+        Assert.AreEqual(2, z);
     }
 
     [TestMethod]

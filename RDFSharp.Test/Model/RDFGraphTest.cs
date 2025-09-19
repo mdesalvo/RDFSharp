@@ -1812,6 +1812,10 @@ public class RDFGraphTest
         IAsyncEnumerator<RDFTriple> triplesEnumerator2 = graph.GetAsyncEnumerator();
         while (await triplesEnumerator2.MoveNextAsync()) k++;
         Assert.AreEqual(2, k);
+
+        int z = 0;
+        await foreach (RDFTriple t in graph) z++;
+        Assert.AreEqual(2, z);
     }
 
     [TestMethod]

@@ -23,7 +23,9 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Store
@@ -31,7 +33,11 @@ namespace RDFSharp.Store
     /// <summary>
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
+#if NET8_0_OR_GREATER
+    public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IAsyncEnumerable<RDFQuadruple>, IDisposable
+#else
     public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable
+#endif
     {
         #region Properties
         /// <summary>
@@ -62,11 +68,28 @@ namespace RDFSharp.Store
             }
         }
 
+#if NET8_0_OR_GREATER
         /// <summary>
         /// Asynchronously gets the enumerator on the store's quadruples for iteration
         /// </summary>
-        public Task<IEnumerator<RDFQuadruple>> QuadruplesEnumeratorAsync
-            => Task.Run(() => QuadruplesEnumerator);
+        public IAsyncEnumerable<RDFQuadruple> QuadruplesEnumeratorAsync => GetQuadruplesAsync();
+        private async IAsyncEnumerable<RDFQuadruple> GetQuadruplesAsync([EnumeratorCancellation] CancellationToken cancellationToken=default)
+        {
+            foreach (RDFHashedQuadruple hashedQuadruple in Index.Hashes.Values)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                yield return hashedQuadruple.TripleFlavor == 1 //SPO
+                                ? new RDFQuadruple(Index.Contexts[hashedQuadruple.ContextID],
+                                                   Index.Resources[hashedQuadruple.SubjectID],
+                                                   Index.Resources[hashedQuadruple.PredicateID],
+                                                   Index.Resources[hashedQuadruple.ObjectID])
+                                : new RDFQuadruple(Index.Contexts[hashedQuadruple.ContextID],
+                                                   Index.Resources[hashedQuadruple.SubjectID],
+                                                   Index.Resources[hashedQuadruple.PredicateID],
+                                                   Index.Literals[hashedQuadruple.ObjectID]);
+            }
+        }
+#endif
 
         /// <summary>
         /// Index on the quadruples of the store
@@ -137,6 +160,14 @@ namespace RDFSharp.Store
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
             => QuadruplesEnumerator;
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Asynchronously exposes a typed enumerator on the store's quadruples
+        /// </summary>
+        public IAsyncEnumerator<RDFQuadruple> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+            => GetQuadruplesAsync(cancellationToken).GetAsyncEnumerator(cancellationToken);
+#endif
 
         /// <summary>
         /// Disposes the memory store (IDisposable)
