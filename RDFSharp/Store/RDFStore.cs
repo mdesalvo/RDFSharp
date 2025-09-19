@@ -45,7 +45,7 @@ namespace RDFSharp.Store
         /// Count of the store's quadruples
         /// </summary>
         public abstract long QuadruplesCount { get; }
-        
+
         /// <summary>
         /// Asynchronous count of the store's quadruples
         /// </summary>
@@ -82,7 +82,7 @@ namespace RDFSharp.Store
         /// Adds the given quadruple to the store, avoiding duplicate insertions
         /// </summary>
         public abstract RDFStore AddQuadruple(RDFQuadruple quadruple);
-        
+
         /// <summary>
         /// Asynchronously adds the given quadruple to the store, avoiding duplicate insertions
         /// </summary>
@@ -94,7 +94,7 @@ namespace RDFSharp.Store
         /// Removes the given quadruple from the store
         /// </summary>
         public abstract RDFStore RemoveQuadruple(RDFQuadruple quadruple);
-        
+
         /// <summary>
         /// Asynchronously removes the given quadruple from the store
         /// </summary>
@@ -116,7 +116,7 @@ namespace RDFSharp.Store
         /// Clears the quadruples of the store
         /// </summary>
         public abstract void ClearQuadruples();
-        
+
         /// <summary>
         /// Asynchronously clears the quadruples of the store
         /// </summary>

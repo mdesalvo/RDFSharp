@@ -1930,6 +1930,108 @@ public class RDFMemoryStoreTest
     }
 
     [TestMethod]
+    public async Task ShouldIntersectStoresAsync()
+    {
+        RDFMemoryStore store1 = new RDFMemoryStore();
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")));
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-UK")));
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        RDFMemoryStore store2 = new RDFMemoryStore();
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")));
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-UK")));
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        RDFMemoryStore intersection12 = await store1.IntersectWithAsync(store2);
+
+        Assert.IsNotNull(intersection12);
+        Assert.AreEqual(2, await intersection12.QuadruplesCountAsync);
+
+        RDFMemoryStore intersection21 = await store2.IntersectWithAsync(store1);
+
+        Assert.IsNotNull(intersection21);
+        Assert.AreEqual(2, await intersection21.QuadruplesCountAsync);
+
+        RDFMemoryStore intersectionEmptyA = await store1.IntersectWithAsync(new RDFMemoryStore());
+        Assert.IsNotNull(intersectionEmptyA);
+        Assert.AreEqual(0, await intersectionEmptyA.QuadruplesCountAsync);
+
+        RDFMemoryStore intersectionEmptyB = await new RDFMemoryStore().IntersectWithAsync(store1);
+        Assert.IsNotNull(intersectionEmptyB);
+        Assert.AreEqual(0, await intersectionEmptyB.QuadruplesCountAsync);
+
+        RDFMemoryStore intersectionNull = await store1.IntersectWithAsync(null);
+        Assert.IsNotNull(intersectionNull);
+        Assert.AreEqual(0, await intersectionNull.QuadruplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldUnionStoresAsync()
+    {
+        RDFMemoryStore store1 = new RDFMemoryStore();
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")));
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-UK")));
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        RDFMemoryStore store2 = new RDFMemoryStore();
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")));
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-UK")));
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        RDFMemoryStore union12 = await store1.UnionWithAsync(store2);
+
+        Assert.IsNotNull(union12);
+        Assert.AreEqual(4, await union12.QuadruplesCountAsync);
+
+        RDFMemoryStore union21 = await store2.UnionWithAsync(store1);
+
+        Assert.IsNotNull(union21);
+        Assert.AreEqual(4, await union21.QuadruplesCountAsync);
+
+        RDFMemoryStore unionEmptyA = await store1.UnionWithAsync(new RDFMemoryStore());
+        Assert.IsNotNull(unionEmptyA);
+        Assert.AreEqual(3, await unionEmptyA.QuadruplesCountAsync);
+
+        RDFMemoryStore unionEmptyB = await new RDFMemoryStore().UnionWithAsync(store1);
+        Assert.IsNotNull(unionEmptyB);
+        Assert.AreEqual(3, await unionEmptyB.QuadruplesCountAsync);
+
+        RDFMemoryStore unionNull = await store1.UnionWithAsync(null);
+        Assert.IsNotNull(unionNull);
+        Assert.AreEqual(3, await unionNull.QuadruplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldDifferenceStoresAsync()
+    {
+        RDFMemoryStore store1 = new RDFMemoryStore();
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")));
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-UK")));
+        await store1.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx2"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        RDFMemoryStore store2 = new RDFMemoryStore();
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-US")));
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx1"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFPlainLiteral("lit", "en-UK")));
+        await store2.AddQuadrupleAsync(new RDFQuadruple(new RDFContext("ex:ctx3"), new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFResource("ex:obj")));
+        RDFMemoryStore difference12 = await store1.DifferenceWithAsync(store2);
+
+        Assert.IsNotNull(difference12);
+        Assert.AreEqual(1, await difference12.QuadruplesCountAsync);
+
+        RDFMemoryStore difference21 = await store2.DifferenceWithAsync(store1);
+
+        Assert.IsNotNull(difference21);
+        Assert.AreEqual(1, await difference21.QuadruplesCountAsync);
+
+        RDFMemoryStore differenceEmptyA = await store1.DifferenceWithAsync(new RDFMemoryStore());
+        Assert.IsNotNull(differenceEmptyA);
+        Assert.AreEqual(3, await differenceEmptyA.QuadruplesCountAsync);
+
+        RDFMemoryStore differenceEmptyB = await new RDFMemoryStore().DifferenceWithAsync(store1);
+        Assert.IsNotNull(differenceEmptyB);
+        Assert.AreEqual(0, await differenceEmptyB.QuadruplesCountAsync);
+
+        RDFMemoryStore differenceNull = await store1.DifferenceWithAsync(null);
+        Assert.IsNotNull(differenceNull);
+        Assert.AreEqual(3, await differenceNull.QuadruplesCountAsync);
+    }
+
+    [TestMethod]
     [DataRow(".nq", RDFStoreEnums.RDFFormats.NQuads)]
     [DataRow(".trix", RDFStoreEnums.RDFFormats.TriX)]
     [DataRow(".trig", RDFStoreEnums.RDFFormats.TriG)]

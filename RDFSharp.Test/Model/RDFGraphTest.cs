@@ -270,7 +270,7 @@ public class RDFGraphTest
     }
 
     [TestMethod]
-    public void ShouldAddFilledCollection()
+    public void ShouldAddCollection()
     {
         RDFGraph graph = new RDFGraph();
         RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
@@ -1792,6 +1792,48 @@ public class RDFGraphTest
 
     #region Tests (Async)
     [TestMethod]
+    public async Task ShouldAddContainerAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFContainer cont = new RDFContainer(RDFModelEnums.RDFContainerTypes.Alt, RDFModelEnums.RDFItemTypes.Literal);
+        cont.AddItem(new RDFPlainLiteral("hello"));
+        await graph.AddContainerAsync(cont);
+
+        Assert.AreEqual(2, await graph.TriplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldAddCollectionAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFCollection coll = new RDFCollection(RDFModelEnums.RDFItemTypes.Literal);
+        coll.AddItem(new RDFPlainLiteral("hello"));
+        await graph.AddCollectionAsync(coll);
+
+        Assert.AreEqual(3, await graph.TriplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldAddDatatypeAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFDatatype exlength6 = new RDFDatatype(new Uri("ex:exlength6"), RDFModelEnums.RDFDatatypes.XSD_STRING, [new RDFLengthFacet(6), new RDFPatternFacet("^ex")]);
+        await graph.AddDatatypeAsync(exlength6);
+
+        Assert.AreEqual(11, await graph.TriplesCountAsync);
+    }
+
+    [TestMethod]
+    public async Task ShouldContainTripleAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+        await graph.AddTripleAsync(triple);
+
+        Assert.IsTrue(await graph.ContainsTripleAsync(triple));
+    }
+
+    [TestMethod]
     public async Task ShouldSelectAllTriplesAsync()
     {
         RDFGraph graph = new RDFGraph();
@@ -1804,7 +1846,33 @@ public class RDFGraphTest
         Assert.IsNotNull(select);
         Assert.HasCount(3, select);
     }
-    
+
+    [TestMethod]
+    public async Task ShouldRemoveTripleAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+        await graph.AddTripleAsync(triple);
+        await graph.RemoveTripleAsync(triple);
+
+        Assert.AreEqual(0, graph.TriplesCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldClearTriplesAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFTriple triple = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+        await graph.AddTripleAsync(triple);
+        await graph.ClearTriplesAsync();
+
+        Assert.AreEqual(0, graph.TriplesCount);
+        Assert.IsEmpty(graph.Index.IDXSubjects);
+        Assert.IsEmpty(graph.Index.IDXPredicates);
+        Assert.IsEmpty(graph.Index.IDXObjects);
+        Assert.IsEmpty(graph.Index.IDXLiterals);
+    }
+
     [TestMethod]
     public async Task ShouldRemoveAllTriplesAsync()
     {
@@ -1815,7 +1883,67 @@ public class RDFGraphTest
 
         Assert.AreEqual(0, graph.TriplesCount);
     }
-    
+
+    [TestMethod]
+    public async Task ShouldIntersectGraphsAsync()
+    {
+        RDFGraph graph1 = new RDFGraph();
+        RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+        RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+        await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+        RDFGraph graph2 = new RDFGraph();
+        await graph2.AddTripleAsync(triple1);
+
+        RDFGraph intersect12 = await graph1.IntersectWithAsync(graph2);
+        Assert.IsNotNull(intersect12);
+        Assert.AreEqual(1, intersect12.TriplesCount);
+        Assert.IsTrue(intersect12.Index.Hashes.ContainsKey(triple1.TripleID));
+        RDFGraph intersect21 = await graph2.IntersectWithAsync(graph1);
+        Assert.IsNotNull(intersect21);
+        Assert.AreEqual(1, intersect21.TriplesCount);
+        Assert.IsTrue(intersect21.Index.Hashes.ContainsKey(triple1.TripleID));
+    }
+
+    [TestMethod]
+    public async Task ShouldUnionGraphsAsync()
+    {
+        RDFGraph graph1 = new RDFGraph();
+        RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+        RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+        RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
+        await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+        RDFGraph graph2 = new RDFGraph();
+        await (await graph2.AddTripleAsync(triple1)).AddTripleAsync(triple3);
+
+        RDFGraph union12 = await graph1.UnionWithAsync(graph2);
+        Assert.IsNotNull(union12);
+        Assert.AreEqual(3, union12.TriplesCount);
+        RDFGraph union21 = await graph2.UnionWithAsync(graph1);
+        Assert.IsNotNull(union21);
+        Assert.AreEqual(3, union21.TriplesCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldDifferenceGraphsAsync()
+    {
+        RDFGraph graph1 = new RDFGraph();
+        RDFTriple triple1 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("lit"));
+        RDFTriple triple2 = new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"));
+        RDFTriple triple3 = new RDFTriple(new RDFResource("http://subj3/"), new RDFResource("http://pred3/"), new RDFResource("http://obj3/"));
+        await (await graph1.AddTripleAsync(triple1)).AddTripleAsync(triple2);
+        RDFGraph graph2 = new RDFGraph();
+        await (await graph2.AddTripleAsync(triple1)).AddTripleAsync(triple3);
+
+        RDFGraph difference12 = await graph1.DifferenceWithAsync(graph2);
+        Assert.IsNotNull(difference12);
+        Assert.AreEqual(1, difference12.TriplesCount);
+        Assert.IsTrue(difference12.Index.Hashes.ContainsKey(triple2.TripleID));
+        RDFGraph difference21 = await graph2.DifferenceWithAsync(graph1);
+        Assert.IsNotNull(difference21);
+        Assert.AreEqual(1, difference21.TriplesCount);
+        Assert.IsTrue(difference21.Index.Hashes.ContainsKey(triple3.TripleID));
+    }
+
     [TestMethod]
     [DataRow(".nt", RDFModelEnums.RDFFormats.NTriples)]
     [DataRow(".rdf", RDFModelEnums.RDFFormats.RdfXml)]

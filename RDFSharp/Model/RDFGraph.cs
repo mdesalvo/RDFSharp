@@ -45,6 +45,12 @@ namespace RDFSharp.Model
             => Index.Hashes.Count;
 
         /// <summary>
+        /// Asynchronous count of the graph's triples
+        /// </summary>
+        public Task<long> TriplesCountAsync
+            => Task.Run(() => TriplesCount);
+
+        /// <summary>
         /// Gets the enumerator on the graph's triples for iteration
         /// </summary>
         public IEnumerator<RDFTriple> TriplesEnumerator
@@ -178,6 +184,12 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously adds the given triple to the graph, avoiding duplicate insertions
+        /// </summary>
+        public Task<RDFGraph> AddTripleAsync(RDFTriple triple)
+            => Task.Run(() => AddTriple(triple));
+
+        /// <summary>
         /// Adds the given container to the graph
         /// </summary>
         public RDFGraph AddContainer(RDFContainer container)
@@ -190,6 +202,12 @@ namespace RDFSharp.Model
             }
             return this;
         }
+
+        /// <summary>
+        /// Asynchronously adds the given container to the graph
+        /// </summary>
+        public Task<RDFGraph> AddContainerAsync(RDFContainer container)
+            => Task.Run(() => AddContainer(container));
 
         /// <summary>
         /// Adds the given collection to the graph
@@ -206,6 +224,12 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously adds the given collection to the graph
+        /// </summary>
+        public Task<RDFGraph> AddCollectionAsync(RDFCollection collection)
+            => Task.Run(() => AddCollection(collection));
+
+        /// <summary>
         /// Adds the given datatype to the graph
         /// </summary>
         public RDFGraph AddDatatype(RDFDatatype datatype)
@@ -218,6 +242,12 @@ namespace RDFSharp.Model
             }
             return this;
         }
+
+        /// <summary>
+        /// Asynchronously adds the given datatype to the graph
+        /// </summary>
+        public Task<RDFGraph> AddDatatypeAsync(RDFDatatype datatype)
+            => Task.Run(() => AddDatatype(datatype));
         #endregion
 
         #region Remove
@@ -230,6 +260,12 @@ namespace RDFSharp.Model
                 Index.Remove(triple);
             return this;
         }
+
+        /// <summary>
+        /// Asynchronously removes the given triple from the graph
+        /// </summary>
+        public Task<RDFGraph> RemoveTripleAsync(RDFTriple triple)
+            => Task.Run(() => RemoveTriple(triple));
 
         /// <summary>
         /// Removes the triples which satisfy the given combination of SPOL accessors<br/>
@@ -254,6 +290,12 @@ namespace RDFSharp.Model
         /// </summary>
         public void ClearTriples()
             => Index.Clear();
+
+        /// <summary>
+        /// Asynchronously clears the triples and metadata of the graph
+        /// </summary>
+        public Task ClearTriplesAsync()
+            => Task.Run(ClearTriples);
         #endregion
 
         #region Select
@@ -262,6 +304,12 @@ namespace RDFSharp.Model
         /// </summary>
         public bool ContainsTriple(RDFTriple triple)
             => triple != null && Index.Hashes.ContainsKey(triple.TripleID);
+
+        /// <summary>
+        /// Asynchronously checks if the graph contains the given triple
+        /// </summary>
+        public Task<bool> ContainsTripleAsync(RDFTriple triple)
+            => Task.Run(() => ContainsTriple(triple));
 
         /// <summary>
         /// Selects the triples which satisfy the given combination of SPOL accessors<br/>
@@ -339,7 +387,7 @@ namespace RDFSharp.Model
         /// <exception cref="RDFModelException"></exception>
         public Task<List<RDFTriple>> SelectTriplesAsync(RDFResource s=null, RDFResource p=null, RDFResource o=null, RDFLiteral l=null)
             => Task.Run(() => SelectTriples(s,p,o,l));
-        
+
         /// <summary>
         /// Gets the subgraph containing the triples which satisfy the given combination of SPOL accessors<br/>
         /// (null values are handled as * selectors. Object and Literal params, if given, must be mutually exclusive!)
@@ -369,6 +417,12 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously builds an intersection graph from this graph and a given one
+        /// </summary>
+        public Task<RDFGraph> IntersectWithAsync(RDFGraph graph)
+            => Task.Run(() => IntersectWith(graph));
+
+        /// <summary>
         /// Builds a union graph from this graph and a given one
         /// </summary>
         public RDFGraph UnionWith(RDFGraph graph)
@@ -389,6 +443,12 @@ namespace RDFSharp.Model
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously builds a union graph from this graph and a given one
+        /// </summary>
+        public Task<RDFGraph> UnionWithAsync(RDFGraph graph)
+            => Task.Run(() => UnionWith(graph));
 
         /// <summary>
         /// Builds a difference graph from this graph and a given one
@@ -415,6 +475,12 @@ namespace RDFSharp.Model
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously builds a difference graph from this graph and a given one
+        /// </summary>
+        public Task<RDFGraph> DifferenceWithAsync(RDFGraph graph)
+            => Task.Run(() => DifferenceWith(graph));
         #endregion
 
         #region Convert

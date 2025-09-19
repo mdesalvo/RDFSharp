@@ -45,7 +45,7 @@ namespace RDFSharp.Store
         /// </summary>
         public override Task<long> QuadruplesCountAsync
             => Task.Run(() => QuadruplesCount);
-        
+
         /// <summary>
         /// Gets the enumerator on the store's quadruples for iteration
         /// </summary>
@@ -377,6 +377,12 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
+        /// Asynchronously builds a new intersection store from this store and a given one
+        /// </summary>
+        public Task<RDFMemoryStore> IntersectWithAsync(RDFStore store)
+            => Task.Run(() => IntersectWith(store));
+
+        /// <summary>
         /// Builds a new union store from this store and a given one
         /// </summary>
         public RDFMemoryStore UnionWith(RDFStore store)
@@ -397,6 +403,12 @@ namespace RDFSharp.Store
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously builds a new union store from this store and a given one
+        /// </summary>
+        public Task<RDFMemoryStore> UnionWithAsync(RDFStore store)
+            => Task.Run(() => UnionWith(store));
 
         /// <summary>
         /// Builds a new difference store from this store and a given one
@@ -423,6 +435,12 @@ namespace RDFSharp.Store
 
             return result;
         }
+
+        /// <summary>
+        /// Asynchronously builds a new difference store from this store and a given one
+        /// </summary>
+        public Task<RDFMemoryStore> DifferenceWithAsync(RDFStore store)
+            => Task.Run(() => DifferenceWith(store));
         #endregion
 
         #region Convert

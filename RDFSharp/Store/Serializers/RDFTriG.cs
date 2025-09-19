@@ -119,7 +119,7 @@ namespace RDFSharp.Store
                 {
                     //Fetch TriG data
                     trigContext.Data = sReader.ReadToEnd();
-                    
+
                     //Parse TriG data
                     int bufferChar = SkipWhitespace(trigContext);
                     while (bufferChar != -1)

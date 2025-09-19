@@ -224,7 +224,7 @@ namespace RDFSharp.Model
                     RDFDatatype targetDatatype = RDFDatatypeRegister.GetDatatype(onDatatype.ToString())
                                                   ?? RDFDatatypeRegister.RDFSLiteral;
                     RDFModelEnums.RDFDatatypes targetDatatypeEnum = targetDatatype.ToString().GetEnumFromDatatype();
-                    
+
                     //Detect the constraining facets
                     RDFCollection facetsCollection = DeserializeCollectionFromGraph(graph, facetsRepresentative, RDFModelEnums.RDFTripleFlavors.SPO);
                     RDFResource[] facets = facetsCollection.Items.Cast<RDFResource>().ToArray();
