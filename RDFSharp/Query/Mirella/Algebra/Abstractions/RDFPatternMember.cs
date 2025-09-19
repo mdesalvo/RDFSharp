@@ -48,7 +48,19 @@ namespace RDFSharp.Query
         /// Performs the equality comparison between two pattern members
         /// </summary>
         public bool Equals(RDFPatternMember other)
-            => other != null && PatternMemberID.Equals(other.PatternMemberID);
+            => other != null && PatternMemberID == other.PatternMemberID;
+
+        /// <summary>
+        /// Performs the equality comparison between two pattern members
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFPatternMember pm && PatternMemberID == pm.PatternMemberID;
+
+        /// <summary>
+        /// Calculates the hashcode of this pattern member
+        /// </summary>
+        public override int GetHashCode()
+            => PatternMemberID.GetHashCode();
         #endregion
 
         #region Ctors

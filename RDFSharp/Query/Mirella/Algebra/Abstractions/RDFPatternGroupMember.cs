@@ -68,7 +68,19 @@ namespace RDFSharp.Query
         /// Performs the equality comparison between two pattern group members
         /// </summary>
         public bool Equals(RDFPatternGroupMember other)
-            => other != null && PatternGroupMemberID.Equals(other.PatternGroupMemberID);
+            => other != null && PatternGroupMemberID == other.PatternGroupMemberID;
+
+        /// <summary>
+        /// Performs the equality comparison between two pattern group members
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFPatternGroupMember pgm && PatternGroupMemberID == pgm.PatternGroupMemberID;
+
+        /// <summary>
+        /// Calculates the hashcode of this pattern group member
+        /// </summary>
+        public override int GetHashCode()
+            => PatternGroupMemberID.GetHashCode();
         #endregion
     }
 }

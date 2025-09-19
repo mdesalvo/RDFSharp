@@ -68,7 +68,19 @@ namespace RDFSharp.Query
         /// Performs the equality comparison between two query members
         /// </summary>
         public bool Equals(RDFQueryMember other)
-            => other != null && QueryMemberID.Equals(other.QueryMemberID);
+            => other != null && QueryMemberID == other.QueryMemberID;
+
+        /// <summary>
+        /// Performs the equality comparison between two query members
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFQueryMember qm && QueryMemberID == qm.QueryMemberID;
+
+        /// <summary>
+        /// Calculates the hashcode of this query member
+        /// </summary>
+        public override int GetHashCode()
+            => QueryMemberID.GetHashCode();
         #endregion
     }
 }
