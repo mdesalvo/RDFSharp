@@ -1807,6 +1807,11 @@ public class RDFGraphTest
         IAsyncEnumerator<RDFTriple> triplesEnumerator = graph.TriplesEnumeratorAsync.GetAsyncEnumerator();
         while (await triplesEnumerator.MoveNextAsync()) j++;
         Assert.AreEqual(2, j);
+
+        int k = 0;
+        IAsyncEnumerator<RDFTriple> triplesEnumerator2 = graph.GetAsyncEnumerator();
+        while (await triplesEnumerator2.MoveNextAsync()) k++;
+        Assert.AreEqual(2, k);
     }
 
     [TestMethod]
