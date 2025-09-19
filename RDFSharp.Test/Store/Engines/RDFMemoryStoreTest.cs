@@ -1864,6 +1864,20 @@ public class RDFMemoryStoreTest
     }
 
     [TestMethod]
+    public async Task ShouldDisposeMemoryStoreWithUsingAsync()
+    {
+        RDFMemoryStore store;
+        await using (store = new RDFMemoryStore([
+                   new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")) ]))
+        {
+            Assert.IsFalse(store.Disposed);
+            Assert.IsNotNull(store.Index);
+        }
+        Assert.IsTrue(store.Disposed);
+        Assert.IsNull(store.Index);
+    }
+
+    [TestMethod]
     public async Task ShouldMergeGraphAsync()
     {
         RDFGraph graph = new RDFGraph([

@@ -1819,6 +1819,21 @@ public class RDFGraphTest
     }
 
     [TestMethod]
+    public async Task ShouldDisposeGraphWithUsingAsync()
+    {
+        RDFGraph graph;
+        await using (graph = new RDFGraph([
+                   new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+                   new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit")) ]))
+        {
+            Assert.IsFalse(graph.Disposed);
+            Assert.IsNotNull(graph.Index);
+        }
+        Assert.IsTrue(graph.Disposed);
+        Assert.IsNull(graph.Index);
+    }
+
+    [TestMethod]
     public async Task ShouldAddContainerAsync()
     {
         RDFGraph graph = new RDFGraph();

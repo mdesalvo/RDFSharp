@@ -35,7 +35,7 @@ namespace RDFSharp.Model
     /// RDFGraph represents an Uri-named collection of triples
     /// </summary>
 #if NET8_0_OR_GREATER
-    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IAsyncEnumerable<RDFTriple>, IDisposable
+    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IAsyncEnumerable<RDFTriple>, IDisposable, IAsyncDisposable
 #else
     public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
 #endif
@@ -178,6 +178,18 @@ namespace RDFSharp.Model
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Asynchronously disposes the graph (IAsyncDisposable)
+        /// </summary>
+        ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+            return ValueTask.CompletedTask;
+        }
+#endif
 
         /// <summary>
         /// Disposes the graph

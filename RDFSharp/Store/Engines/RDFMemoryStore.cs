@@ -23,10 +23,12 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+#if NET8_0_OR_GREATER
+using System.Runtime.CompilerServices;
+using System.Threading;
+#endif
 
 namespace RDFSharp.Store
 {
@@ -34,7 +36,7 @@ namespace RDFSharp.Store
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
 #if NET8_0_OR_GREATER
-    public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IAsyncEnumerable<RDFQuadruple>, IDisposable
+    public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IAsyncEnumerable<RDFQuadruple>, IDisposable, IAsyncDisposable
 #else
     public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable
 #endif
@@ -170,13 +172,25 @@ namespace RDFSharp.Store
 #endif
 
         /// <summary>
-        /// Disposes the memory store (IDisposable)
+        /// Disposes the store (IDisposable)
         /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Asynchronously disposes the store (IAsyncDisposable)
+        /// </summary>
+        ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+            return ValueTask.CompletedTask;
+        }
+#endif
 
         /// <summary>
         /// Disposes the memory store

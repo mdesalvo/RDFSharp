@@ -21,7 +21,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using RDFSharp.Model;
-using RDFSharp.Query;
 
 namespace RDFSharp.Store
 {
