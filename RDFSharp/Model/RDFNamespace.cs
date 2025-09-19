@@ -99,6 +99,18 @@ namespace RDFSharp.Model
         /// </summary>
         public bool Equals(RDFNamespace other)
             => other != null && NamespaceID.Equals(other.NamespaceID);
+
+        /// <summary>
+        /// Performs the equality comparison between two namespaces
+        /// </summary>
+        public override bool Equals(object other)
+            => other is RDFNamespace ns && NamespaceID == ns.NamespaceID;
+
+        /// <summary>
+        /// Calculates the hashcode of this namespace
+        /// </summary>
+        public override int GetHashCode()
+            => NamespaceID.GetHashCode();
         #endregion
 
         #region Methods
