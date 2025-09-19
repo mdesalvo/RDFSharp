@@ -106,7 +106,7 @@ namespace RDFSharp.Model
 
                     //Fetch data describing collections of the graph
                     var collections = rdfType.SelectTriples(o:RDFVocabulary.RDF.LIST)
-                                             .Select(t => new
+                                             .ConvertAll(t => new
                                              {
                                                  CollectionUri = (RDFResource)t.Subject,
                                                  CollectionValue = rdfFirst.SelectTriples(s:(RDFResource)t.Subject)
@@ -116,7 +116,7 @@ namespace RDFSharp.Model
                                                  IsFloatingCollection = !graph.Index.Hashes.Any(v => v.Value.ObjectID.Equals(t.Subject.PatternMemberID)),
                                                  HasAllResourceItems = RDFModelUtilities.DeserializeCollectionFromGraph(graph, (RDFResource)t.Subject, RDFModelEnums.RDFTripleFlavors.SPO, true)
                                                                                         .Items.TrueForAll(collItem => collItem is RDFResource)
-                                             }).ToList();
+                                             });
                     #endregion
 
                     #region linq
