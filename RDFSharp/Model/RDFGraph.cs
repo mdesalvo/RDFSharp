@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using RDFSharp.Query;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,14 +24,21 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using RDFSharp.Query;
+#if NET8_0_OR_GREATER
+using System.Runtime.CompilerServices;
+using System.Threading;
+#endif
 
 namespace RDFSharp.Model
 {
     /// <summary>
     /// RDFGraph represents an Uri-named collection of triples
     /// </summary>
+#if NET8_0_OR_GREATER
+    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IAsyncEnumerable<RDFTriple>, IDisposable
+#else
     public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
+#endif
     {
         #region Properties
         /// <summary>
@@ -60,17 +68,36 @@ namespace RDFSharp.Model
                 foreach (RDFHashedTriple hashedTriple in Index.Hashes.Values)
                 {
                     yield return hashedTriple.TripleFlavor == 1 //SPO
-                        ? new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Resources[hashedTriple.ObjectID])
-                        : new RDFTriple(Index.Resources[hashedTriple.SubjectID], Index.Resources[hashedTriple.PredicateID], Index.Literals[hashedTriple.ObjectID]);
+                            ? new RDFTriple(Index.Resources[hashedTriple.SubjectID],
+                                            Index.Resources[hashedTriple.PredicateID],
+                                            Index.Resources[hashedTriple.ObjectID])
+                            : new RDFTriple(Index.Resources[hashedTriple.SubjectID],
+                                            Index.Resources[hashedTriple.PredicateID],
+                                            Index.Literals[hashedTriple.ObjectID]);
                 }
             }
         }
 
+#if NET8_0_OR_GREATER
         /// <summary>
         /// Asynchronously gets the enumerator on the graph's triples for iteration
         /// </summary>
-        public Task<IEnumerator<RDFTriple>> TriplesEnumeratorAsync
-            => Task.Run(() => TriplesEnumerator);
+        public IAsyncEnumerable<RDFTriple> TriplesEnumeratorAsync => GetTriplesAsync();
+        private async IAsyncEnumerable<RDFTriple> GetTriplesAsync([EnumeratorCancellation] CancellationToken cancellationToken=default)
+        {
+            foreach (RDFHashedTriple hashedTriple in Index.Hashes.Values)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                yield return hashedTriple.TripleFlavor == 1 //SPO
+                                ? new RDFTriple(Index.Resources[hashedTriple.SubjectID],
+                                                Index.Resources[hashedTriple.PredicateID],
+                                                Index.Resources[hashedTriple.ObjectID])
+                                : new RDFTriple(Index.Resources[hashedTriple.SubjectID],
+                                                Index.Resources[hashedTriple.PredicateID],
+                                                Index.Literals[hashedTriple.ObjectID]);
+            }
+        }
+#endif
 
         /// <summary>
         /// Index on the triples of the graph
@@ -134,6 +161,14 @@ namespace RDFSharp.Model
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
             => TriplesEnumerator;
+
+#if NET8_0_OR_GREATER
+        /// <summary>
+        /// Asynchronously exposes a typed enumerator on the graph's triples
+        /// </summary>
+        public IAsyncEnumerator<RDFTriple> GetAsyncEnumerator(CancellationToken cancellationToken=default)
+            => GetTriplesAsync(cancellationToken).GetAsyncEnumerator(cancellationToken);
+#endif
 
         /// <summary>
         /// Disposes the graph (IDisposable)
