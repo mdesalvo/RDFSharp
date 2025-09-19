@@ -67,6 +67,12 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
+        /// Asynchronously gets the enumerator on the graph's triples for iteration
+        /// </summary>
+        public Task<IEnumerator<RDFTriple>> TriplesEnumeratorAsync
+            => Task.Run(() => TriplesEnumerator);
+
+        /// <summary>
         /// Index on the triples of the graph
         /// </summary>
         internal RDFGraphIndex Index { get; set; }

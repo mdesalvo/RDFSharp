@@ -76,6 +76,16 @@ public class RDFMemoryStoreTest
         Assert.HasCount(1, store.Index.IDXLiterals);
         Assert.IsTrue(store.StoreID.Equals(RDFModelUtilities.CreateHash(store.ToString())));
         Assert.IsTrue(store.ToString().Equals($"MEMORY|ID={store.StoreGUID}", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldEnumerateQuadruples()
+    {
+        RDFMemoryStore store = new RDFMemoryStore(
+        [
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")),
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFPlainLiteral("lit"))
+        ]);
 
         int i = store.Count();
         Assert.AreEqual(2, i);
@@ -1826,6 +1836,24 @@ public class RDFMemoryStoreTest
     #endregion
 
     #region Tests (Async)
+    [TestMethod]
+    public async Task ShouldEnumerateQuadruplesAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore(
+        [
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")),
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFPlainLiteral("lit"))
+        ]);
+
+        int i = store.Count();
+        Assert.AreEqual(2, i);
+
+        int j = 0;
+        IEnumerator<RDFQuadruple> quads = await store.QuadruplesEnumeratorAsync;
+        while (quads.MoveNext()) j++;
+        Assert.AreEqual(2, j);
+    }
+
     [TestMethod]
     public async Task ShouldMergeGraphAsync()
     {

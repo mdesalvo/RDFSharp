@@ -63,6 +63,12 @@ namespace RDFSharp.Store
         }
 
         /// <summary>
+        /// Asynchronously gets the enumerator on the store's quadruples for iteration
+        /// </summary>
+        public Task<IEnumerator<RDFQuadruple>> QuadruplesEnumeratorAsync
+            => Task.Run(() => QuadruplesEnumerator);
+
+        /// <summary>
         /// Index on the quadruples of the store
         /// </summary>
         internal RDFStoreIndex Index { get; set; }

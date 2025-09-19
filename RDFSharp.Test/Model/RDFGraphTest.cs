@@ -1792,6 +1792,24 @@ public class RDFGraphTest
 
     #region Tests (Async)
     [TestMethod]
+    public async Task ShouldEnumerateGraphAsync()
+    {
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+            new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
+        ]);
+
+        int i = graph.Count();
+        Assert.AreEqual(2, i);
+
+        int j = 0;
+        IEnumerator<RDFTriple> triplesEnumerator = await graph.TriplesEnumeratorAsync;
+        while (triplesEnumerator.MoveNext()) j++;
+        Assert.AreEqual(2, j);
+    }
+
+    [TestMethod]
     public async Task ShouldAddContainerAsync()
     {
         RDFGraph graph = new RDFGraph();
