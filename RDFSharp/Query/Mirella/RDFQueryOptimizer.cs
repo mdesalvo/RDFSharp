@@ -100,11 +100,15 @@ namespace RDFSharp.Query
         /// </summary>
         private static long EstimatePatternCardinality(RDFPattern pattern, RDFDataSource dataSource)
         {
-            if (dataSource is RDFGraph graph)
-                return EstimatePatternCardinalityOnGraph(pattern, graph);
-            if (dataSource is RDFMemoryStore store)
-                return EstimatePatternCardinalityOnStore(pattern, store);
-            return pattern.Variables.Count;
+            switch (dataSource)
+            {
+                case RDFGraph graph:
+                    return EstimatePatternCardinalityOnGraph(pattern, graph);
+                case RDFMemoryStore store:
+                    return EstimatePatternCardinalityOnStore(pattern, store);
+                default:
+                    return pattern.Variables.Count;
+            }
         }
 
         /// <summary>
@@ -120,11 +124,13 @@ namespace RDFSharp.Query
                 long c = graph.Index.LookupIndexBySubject(subj).Count;
                 if (c < estimate) estimate = c;
             }
+
             if (pattern.Predicate is RDFResource pred)
             {
                 long c = graph.Index.LookupIndexByPredicate(pred).Count;
                 if (c < estimate) estimate = c;
             }
+
             if (pattern.Object is RDFResource obj)
             {
                 long c = graph.Index.LookupIndexByObject(obj).Count;
@@ -152,16 +158,19 @@ namespace RDFSharp.Query
                 long c = store.Index.LookupIndexByContext(ctx).Count;
                 if (c < estimate) estimate = c;
             }
+
             if (pattern.Subject is RDFResource subj)
             {
                 long c = store.Index.LookupIndexBySubject(subj).Count;
                 if (c < estimate) estimate = c;
             }
+
             if (pattern.Predicate is RDFResource pred)
             {
                 long c = store.Index.LookupIndexByPredicate(pred).Count;
                 if (c < estimate) estimate = c;
             }
+
             if (pattern.Object is RDFResource obj)
             {
                 long c = store.Index.LookupIndexByObject(obj).Count;
