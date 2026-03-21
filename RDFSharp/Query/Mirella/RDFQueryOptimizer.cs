@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         }
         #endregion
 
-        #region Internals
+        #region Utilities
         /// <summary>
         /// Checks whether the pattern group member at the given position is eligible for reordering
         /// </summary>
