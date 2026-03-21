@@ -211,6 +211,11 @@ namespace RDFSharp.Query
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
                                                                          .Distinct()
                                                                          .ToList();
+
+            //Optimize execution order of patterns within reorderable inner-join blocks
+            if (dataSource is RDFGraph || dataSource is RDFMemoryStore)
+                evaluablePGMembers = RDFQueryOptimizer.OptimizePatternOrder(evaluablePGMembers, dataSource);
+
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>(evaluablePGMembers.Count);
 
             //**Service** evaluation => send it querified to SPARQL endpoint
