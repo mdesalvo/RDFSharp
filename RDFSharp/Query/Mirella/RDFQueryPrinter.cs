@@ -721,6 +721,24 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Returns the SPARQL cardinality suffix for a property path step
+        /// </summary>
+        private static string PrintStepCardinality(RDFPropertyPathStep step)
+        {
+            switch (step.StepCardinality)
+            {
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:  return "?";
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:  return "+";
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore: return "*";
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange:
+                    return step.MinCardinality == step.MaxCardinality
+                        ? "{" + step.MinCardinality + "}"
+                        : "{" + step.MinCardinality + "," + step.MaxCardinality + "}";
+                default: return string.Empty;
+            }
+        }
+
+        /// <summary>
         /// Prints the string representation of a property path
         /// </summary>
         internal static string PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
@@ -738,6 +756,7 @@ namespace RDFSharp.Query
 
                 RDFResource propPath = propertyPath.Steps[0].StepProperty;
                 result.Append(PrintPatternMember(propPath, prefixes));
+                result.Append(PrintStepCardinality(propertyPath.Steps[0]));
             }
             #endregion
 
@@ -766,11 +785,13 @@ namespace RDFSharp.Query
                         if (i < propertyPath.Steps.Count - 1)
                         {
                             result.Append(PrintPatternMember(propPath, prefixes));
+                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
                             result.Append((char)propertyPath.Steps[i].StepFlavor);
                         }
                         else
                         {
                             result.Append(PrintPatternMember(propPath, prefixes));
+                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
                             result.Append(')');
                         }
                     }
@@ -793,11 +814,13 @@ namespace RDFSharp.Query
                         if (i < propertyPath.Steps.Count - 1)
                         {
                             result.Append(PrintPatternMember(propPath, prefixes));
+                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
                             result.Append((char)propertyPath.Steps[i].StepFlavor);
                         }
                         else
                         {
                             result.Append(PrintPatternMember(propPath, prefixes));
+                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
                         }
                     }
             }

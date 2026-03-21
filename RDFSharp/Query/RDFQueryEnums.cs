@@ -103,6 +103,33 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// RDFPropertyPathStepCardinalities represents an enumeration for possible cardinality constraints on a property path step.
+        /// </summary>
+        public enum RDFPropertyPathStepCardinalities
+        {
+            /// <summary>
+            /// The path step is traversed exactly once (default)
+            /// </summary>
+            ExactlyOne = 1,
+            /// <summary>
+            /// The path step is traversed zero or one times (SPARQL ?)
+            /// </summary>
+            ZeroOrOne = 2,
+            /// <summary>
+            /// The path step is traversed one or more times — transitive closure (SPARQL +)
+            /// </summary>
+            OneOrMore = 3,
+            /// <summary>
+            /// The path step is traversed zero or more times — reflexive-transitive closure (SPARQL *)
+            /// </summary>
+            ZeroOrMore = 4,
+            /// <summary>
+            /// The path step is traversed between MinCardinality and MaxCardinality times (SPARQL {n,m})
+            /// </summary>
+            BoundedRange = 5
+        }
+
+        /// <summary>
         /// RDFMinMaxAggregatorFlavors represents an enumeration for supported flavors of MIN/MAX aggregators
         /// </summary>
         public enum RDFMinMaxAggregatorFlavors
