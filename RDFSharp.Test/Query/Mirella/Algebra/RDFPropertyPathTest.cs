@@ -1023,6 +1023,104 @@ public class RDFPropertyPathTest
 
     #endregion
 
+    #region Engine — Cycles in cardinal paths
+
+    [TestMethod]
+    public void Engine_ZeroOrMore_Cycle_DoesNotLoop()
+    {
+        // alice <-> bob (bidirectional cycle), bob -> carol
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph.AddTriple(new RDFTriple(Bob,   Knows, Alice));
+        graph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, graph);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Alice.ToString(), ends, "ZeroOrMore includes self");
+        Assert.Contains(Bob.ToString(),   ends);
+        Assert.Contains(Carol.ToString(), ends);
+        Assert.AreEqual(3, ends.Count, "No duplicates despite cycle");
+    }
+
+    [TestMethod]
+    public void Engine_ZeroOrOne_Cycle_DoesNotLoop()
+    {
+        // alice <-> bob (bidirectional cycle)
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph.AddTriple(new RDFTriple(Bob,   Knows, Alice));
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, graph);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        // ZeroOrOne: self (0 hops) + bob (1 hop); alice via back-edge is NOT a new node
+        Assert.Contains(Alice.ToString(), ends, "ZeroOrOne includes self");
+        Assert.Contains(Bob.ToString(),   ends, "ZeroOrOne includes 1-hop");
+        Assert.AreEqual(2, ends.Count, "No extra nodes via back-edge");
+    }
+
+    [TestMethod]
+    public void Engine_OneOrMore_TriangleCycle_AllNodesReachable()
+    {
+        // triangle: alice -> bob -> carol -> alice
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+        graph.AddTriple(new RDFTriple(Carol, Knows, Alice));
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, graph);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Bob.ToString(),   ends);
+        Assert.Contains(Carol.ToString(), ends);
+        // alice is reachable via carol (back-edge closes the triangle)
+        Assert.Contains(Alice.ToString(), ends, "OneOrMore reaches alice via carol->alice");
+        Assert.AreEqual(3, ends.Count, "Exactly 3 distinct nodes, no infinite loop");
+    }
+
+    [TestMethod]
+    public void Engine_ZeroOrMore_BothVars_TriangleCycle_FiniteResult()
+    {
+        // triangle: alice -> bob -> carol -> alice
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+        graph.AddTriple(new RDFTriple(Carol, Knows, Alice));
+
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, graph);
+
+        // Each node can reach all 3 nodes (including itself via ZeroOrMore),
+        // so we expect exactly 9 pairs (3 sources × 3 targets), finite result.
+        List<(string s, string e)> rows = result.Rows.Cast<DataRow>()
+            .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
+        Assert.AreEqual(9, rows.Count, "3×3 pairs with no duplicates despite triangle cycle");
+        Assert.IsTrue(rows.Any(p => p.s == Alice.ToString() && p.e == Alice.ToString()), "alice reaches itself");
+        Assert.IsTrue(rows.Any(p => p.s == Bob.ToString()   && p.e == Alice.ToString()), "bob reaches alice via cycle");
+        Assert.IsTrue(rows.Any(p => p.s == Carol.ToString() && p.e == Bob.ToString()),   "carol reaches bob via cycle");
+    }
+
+    #endregion
+
     #region Engine — BoundedRange (prop{n,m})
 
     [TestMethod]
