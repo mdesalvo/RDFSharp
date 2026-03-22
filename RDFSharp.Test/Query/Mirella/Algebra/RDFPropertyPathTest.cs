@@ -2046,5 +2046,343 @@ public class RDFPropertyPathTest
 
     #endregion
 
+    // =========================================================================
+    #region Engine — RDFS subsumption (rdf:type / rdfs:subClassOf*)
+    // =========================================================================
+    //
+    // Ontology shared by all tests in this region
+    // ─────────────────────────────────────────────────────────────────────────
+    // 16-level class hierarchy (bottom → top via rdfs:subClassOf):
+    //
+    //   L0  Person
+    //   L1  CognitiveAgent
+    //   L2  ModernHuman
+    //   L3  HomoSapiens
+    //   L4  Hominid
+    //   L5  Primate
+    //   L6  Mammal
+    //   L7  Vertebrate
+    //   L8  Chordate
+    //   L9  Animal
+    //   L10 Organism
+    //   L11 LivingThing
+    //   L12 PhysicalObject
+    //   L13 Object
+    //   L14 Entity
+    //   L15 Thing (root)
+    //
+    // owl:equivalentClass sideways bridges:
+    //   HumanBeing  ≡ Person          (used by dave)
+    //   SocialAnimal ≡ CognitiveAgent (used by inverse tests)
+    //
+    // Named individuals:
+    //   alice  rdf:type Person        (L0)
+    //   bob    rdf:type Mammal        (L6 — enters mid-hierarchy)
+    //   carol  rdf:type HomoSapiens   (L3)
+    //   dave   rdf:type HumanBeing    (reaches Person via equivalentClass)
+    //   eve    rdf:type Animal        (L9 — superclass of Mammal, not below)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private static readonly RDFResource SubClassOf = new RDFResource("rdfs:subClassOf");
+    private static readonly RDFResource EquivClass  = new RDFResource("owl:equivalentClass");
+
+    private static RDFGraph BuildSubsumptionGraph()
+    {
+        // Class nodes
+        var cPerson         = new RDFResource("ex:Person");
+        var cCognitiveAgent = new RDFResource("ex:CognitiveAgent");
+        var cModernHuman    = new RDFResource("ex:ModernHuman");
+        var cHomoSapiens    = new RDFResource("ex:HomoSapiens");
+        var cHominid        = new RDFResource("ex:Hominid");
+        var cPrimate        = new RDFResource("ex:Primate");
+        var cMammal         = new RDFResource("ex:Mammal");
+        var cVertebrate     = new RDFResource("ex:Vertebrate");
+        var cChordate       = new RDFResource("ex:Chordate");
+        var cAnimal         = new RDFResource("ex:Animal");
+        var cOrganism       = new RDFResource("ex:Organism");
+        var cLivingThing    = new RDFResource("ex:LivingThing");
+        var cPhysicalObject = new RDFResource("ex:PhysicalObject");
+        var cObject         = new RDFResource("ex:Object");
+        var cEntity         = new RDFResource("ex:Entity");
+        var cThing          = new RDFResource("ex:Thing");
+        var cHumanBeing     = new RDFResource("ex:HumanBeing");
+        var cSocialAnimal   = new RDFResource("ex:SocialAnimal");
+
+        RDFGraph g = new RDFGraph();
+
+        // 15 rdfs:subClassOf edges (L0 → L15)
+        g.AddTriple(new RDFTriple(cPerson,         SubClassOf, cCognitiveAgent));   // L0→L1
+        g.AddTriple(new RDFTriple(cCognitiveAgent,  SubClassOf, cModernHuman));      // L1→L2
+        g.AddTriple(new RDFTriple(cModernHuman,    SubClassOf, cHomoSapiens));      // L2→L3
+        g.AddTriple(new RDFTriple(cHomoSapiens,    SubClassOf, cHominid));          // L3→L4
+        g.AddTriple(new RDFTriple(cHominid,        SubClassOf, cPrimate));          // L4→L5
+        g.AddTriple(new RDFTriple(cPrimate,        SubClassOf, cMammal));           // L5→L6
+        g.AddTriple(new RDFTriple(cMammal,         SubClassOf, cVertebrate));       // L6→L7
+        g.AddTriple(new RDFTriple(cVertebrate,     SubClassOf, cChordate));         // L7→L8
+        g.AddTriple(new RDFTriple(cChordate,       SubClassOf, cAnimal));           // L8→L9
+        g.AddTriple(new RDFTriple(cAnimal,         SubClassOf, cOrganism));         // L9→L10
+        g.AddTriple(new RDFTriple(cOrganism,       SubClassOf, cLivingThing));      // L10→L11
+        g.AddTriple(new RDFTriple(cLivingThing,    SubClassOf, cPhysicalObject));   // L11→L12
+        g.AddTriple(new RDFTriple(cPhysicalObject, SubClassOf, cObject));           // L12→L13
+        g.AddTriple(new RDFTriple(cObject,         SubClassOf, cEntity));           // L13→L14
+        g.AddTriple(new RDFTriple(cEntity,         SubClassOf, cThing));            // L14→L15
+
+        // owl:equivalentClass bridges
+        g.AddTriple(new RDFTriple(cHumanBeing,   EquivClass, cPerson));         // HumanBeing ≡ Person
+        g.AddTriple(new RDFTriple(cSocialAnimal, EquivClass, cCognitiveAgent)); // SocialAnimal ≡ CognitiveAgent
+
+        // Named individuals
+        g.AddTriple(new RDFTriple(Alice, Type, cPerson));       // alice  rdf:type Person       (L0)
+        g.AddTriple(new RDFTriple(Bob,   Type, cMammal));       // bob    rdf:type Mammal        (L6)
+        g.AddTriple(new RDFTriple(Carol, Type, cHomoSapiens));  // carol  rdf:type HomoSapiens   (L3)
+        g.AddTriple(new RDFTriple(Dave,  Type, cHumanBeing));   // dave   rdf:type HumanBeing    (→Person via equiv)
+        g.AddTriple(new RDFTriple(Eve,   Type, cAnimal));       // eve    rdf:type Animal         (L9, above Mammal)
+
+        return g;
+    }
+
+    // ── Test 1 ───────────────────────────────────────────────────────────────
+    // Canonical RDFS subsumption: type/subClassOf* must surface all 16 levels.
+    [TestMethod]
+    public void Subsumption_Canonical_TypeSubClassOfStar_Covers16Levels()
+    {
+        // alice rdf:type/rdfs:subClassOf* ?class
+        // ZeroOrMore includes Person itself at 0 hops, then climbs to Thing at hop 15.
+        RDFGraph graph = BuildSubsumptionGraph();
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Type))
+            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrMore());
+
+        HashSet<string> classes = new RDFQueryEngine()
+            .ApplyPropertyPath(path, graph)
+            .Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString())
+            .ToHashSet();
+
+        // All 16 levels present
+        Assert.IsTrue(classes.Contains("ex:Person"),         "L0  Person (zero hops of subClassOf)");
+        Assert.IsTrue(classes.Contains("ex:CognitiveAgent"), "L1  CognitiveAgent");
+        Assert.IsTrue(classes.Contains("ex:ModernHuman"),    "L2  ModernHuman");
+        Assert.IsTrue(classes.Contains("ex:HomoSapiens"),    "L3  HomoSapiens");
+        Assert.IsTrue(classes.Contains("ex:Hominid"),        "L4  Hominid");
+        Assert.IsTrue(classes.Contains("ex:Primate"),        "L5  Primate");
+        Assert.IsTrue(classes.Contains("ex:Mammal"),         "L6  Mammal");
+        Assert.IsTrue(classes.Contains("ex:Vertebrate"),     "L7  Vertebrate");
+        Assert.IsTrue(classes.Contains("ex:Chordate"),       "L8  Chordate");
+        Assert.IsTrue(classes.Contains("ex:Animal"),         "L9  Animal");
+        Assert.IsTrue(classes.Contains("ex:Organism"),       "L10 Organism");
+        Assert.IsTrue(classes.Contains("ex:LivingThing"),    "L11 LivingThing");
+        Assert.IsTrue(classes.Contains("ex:PhysicalObject"), "L12 PhysicalObject");
+        Assert.IsTrue(classes.Contains("ex:Object"),         "L13 Object");
+        Assert.IsTrue(classes.Contains("ex:Entity"),         "L14 Entity");
+        Assert.IsTrue(classes.Contains("ex:Thing"),          "L15 Thing (root)");
+
+        // Exactly 16 — no spurious classes (individuals or unrelated resources)
+        Assert.AreEqual(16, classes.Count, "Exactly 16 distinct classes, no spurious results");
+        Assert.IsFalse(classes.Contains(Alice.ToString()), "alice is an individual, not a class");
+    }
+
+    // ── Test 2 ───────────────────────────────────────────────────────────────
+    // Bounded range: only the 6 classes sitting at hops 5–10 from Person.
+    [TestMethod]
+    public void Subsumption_BoundedRange_TypeSubClassOf_5to10_MidHierarchy()
+    {
+        // alice rdf:type/rdfs:subClassOf{5,10} ?class
+        // type lands on Person (L0); subClassOf{5,10} then selects exactly
+        // hops 5 (Primate) … 10 (Organism), skipping both the shallow top
+        // of the human clade and the deep metazoan root.
+        RDFGraph graph = BuildSubsumptionGraph();
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Type))
+            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).Repeat(5, 10));
+
+        HashSet<string> classes = new RDFQueryEngine()
+            .ApplyPropertyPath(path, graph)
+            .Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString())
+            .ToHashSet();
+
+        // Inside window [5,10]
+        Assert.IsTrue(classes.Contains("ex:Primate"),     "L5  Primate  — hop 5 (lower bound)");
+        Assert.IsTrue(classes.Contains("ex:Mammal"),      "L6  Mammal   — hop 6");
+        Assert.IsTrue(classes.Contains("ex:Vertebrate"),  "L7  Vertebrate — hop 7");
+        Assert.IsTrue(classes.Contains("ex:Chordate"),    "L8  Chordate — hop 8");
+        Assert.IsTrue(classes.Contains("ex:Animal"),      "L9  Animal   — hop 9");
+        Assert.IsTrue(classes.Contains("ex:Organism"),    "L10 Organism — hop 10 (upper bound)");
+
+        // Too shallow (hops 0–4)
+        Assert.IsFalse(classes.Contains("ex:Person"),         "L0 hop 0 — below range");
+        Assert.IsFalse(classes.Contains("ex:CognitiveAgent"), "L1 hop 1 — below range");
+        Assert.IsFalse(classes.Contains("ex:ModernHuman"),    "L2 hop 2 — below range");
+        Assert.IsFalse(classes.Contains("ex:HomoSapiens"),    "L3 hop 3 — below range");
+        Assert.IsFalse(classes.Contains("ex:Hominid"),        "L4 hop 4 — below range");
+
+        // Too deep (hops 11–15)
+        Assert.IsFalse(classes.Contains("ex:LivingThing"),    "L11 hop 11 — above range");
+        Assert.IsFalse(classes.Contains("ex:PhysicalObject"), "L12 hop 12 — above range");
+        Assert.IsFalse(classes.Contains("ex:Object"),         "L13 hop 13 — above range");
+        Assert.IsFalse(classes.Contains("ex:Entity"),         "L14 hop 14 — above range");
+        Assert.IsFalse(classes.Contains("ex:Thing"),          "L15 hop 15 — above range");
+
+        Assert.AreEqual(6, classes.Count, "Exactly 6 classes in window [5,10]");
+    }
+
+    // ── Test 3 ───────────────────────────────────────────────────────────────
+    // Inverse step: ^subClassOf* navigates DOWN the hierarchy from Mammal.
+    [TestMethod]
+    public void Subsumption_Inverse_AllSubClassesOf_Mammal()
+    {
+        // ex:Mammal ^rdfs:subClassOf* ?sub
+        // Inverse ZeroOrMore descends from Mammal (L6) towards the leaf.
+        // Expected: Mammal itself + 6 transitive subclasses = 7 nodes total.
+        // Classes above Mammal (Vertebrate … Thing) must not appear.
+        RDFGraph graph = BuildSubsumptionGraph();
+        RDFPropertyPath path = new RDFPropertyPath(new RDFResource("ex:Mammal"), VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).Inverse().ZeroOrMore());
+
+        HashSet<string> subs = new RDFQueryEngine()
+            .ApplyPropertyPath(path, graph)
+            .Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString())
+            .ToHashSet();
+
+        // Mammal itself (zero hops)
+        Assert.IsTrue(subs.Contains("ex:Mammal"),         "Mammal itself (0 hops)");
+        // Transitive subclasses descending from L6 towards L0
+        Assert.IsTrue(subs.Contains("ex:Primate"),        "Primate — 1 hop down");
+        Assert.IsTrue(subs.Contains("ex:Hominid"),        "Hominid — 2 hops down");
+        Assert.IsTrue(subs.Contains("ex:HomoSapiens"),    "HomoSapiens — 3 hops down");
+        Assert.IsTrue(subs.Contains("ex:ModernHuman"),    "ModernHuman — 4 hops down");
+        Assert.IsTrue(subs.Contains("ex:CognitiveAgent"), "CognitiveAgent — 5 hops down");
+        Assert.IsTrue(subs.Contains("ex:Person"),         "Person — 6 hops down (leaf)");
+
+        // Superclasses of Mammal must not appear
+        Assert.IsFalse(subs.Contains("ex:Vertebrate"),    "Vertebrate is a superclass of Mammal");
+        Assert.IsFalse(subs.Contains("ex:Chordate"),      "Chordate is a superclass of Mammal");
+        Assert.IsFalse(subs.Contains("ex:Animal"),        "Animal is a superclass of Mammal");
+        Assert.IsFalse(subs.Contains("ex:Thing"),         "Thing is the taxonomy root");
+        // bob has rdf:type Mammal but is an individual, not reachable via ^subClassOf
+        Assert.IsFalse(subs.Contains(Bob.ToString()),     "bob is an individual, not a class node");
+
+        Assert.AreEqual(7, subs.Count, "Exactly 7 nodes: Mammal + 6 transitive subclasses");
+    }
+
+    // ── Test 4 ───────────────────────────────────────────────────────────────
+    // Multi-step sequence bridging an equivalentClass link before the deep hierarchy.
+    [TestMethod]
+    public void Subsumption_Sequence_TypeThroughEquivalence_ReachesFullHierarchy()
+    {
+        // dave rdf:type/owl:equivalentClass/rdfs:subClassOf* ?class
+        // 3-step sequence mixing ExactlyOne × ExactlyOne × ZeroOrMore:
+        //   dave ─type─► HumanBeing ─equivalentClass─► Person ─subClassOf*─► …Thing
+        // Validates that the engine correctly threads a non-transitive bridge
+        // step before entering the 16-level transitive closure.
+        RDFGraph graph = BuildSubsumptionGraph();
+        RDFPropertyPath path = new RDFPropertyPath(Dave, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Type))
+            .AddSequenceStep(new RDFPropertyPathStep(EquivClass))
+            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrMore());
+
+        HashSet<string> classes = new RDFQueryEngine()
+            .ApplyPropertyPath(path, graph)
+            .Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString())
+            .ToHashSet();
+
+        // ZeroOrMore starts at Person (0 hops) and climbs to Thing (15 hops)
+        Assert.IsTrue(classes.Contains("ex:Person"),         "Person — entry of subClassOf* (0 hops)");
+        Assert.IsTrue(classes.Contains("ex:CognitiveAgent"), "CognitiveAgent — L1");
+        Assert.IsTrue(classes.Contains("ex:HomoSapiens"),    "HomoSapiens — L3");
+        Assert.IsTrue(classes.Contains("ex:Hominid"),        "Hominid — L4");
+        Assert.IsTrue(classes.Contains("ex:Mammal"),         "Mammal — L6");
+        Assert.IsTrue(classes.Contains("ex:Animal"),         "Animal — L9");
+        Assert.IsTrue(classes.Contains("ex:LivingThing"),    "LivingThing — L11");
+        Assert.IsTrue(classes.Contains("ex:Thing"),          "Thing — L15 (root)");
+
+        Assert.AreEqual(16, classes.Count, "All 16 superclasses reachable via the equivalence bridge");
+
+        // The equivalence-bridge intermediate must NOT bleed into the result
+        Assert.IsFalse(classes.Contains("ex:HumanBeing"), "HumanBeing is an intermediate, not an endpoint");
+        Assert.IsFalse(classes.Contains(Dave.ToString()),  "dave is the subject individual");
+    }
+
+    // ── Test 5 ───────────────────────────────────────────────────────────────
+    // Optional step: subClassOf? limits the climb to 0 or 1 hop only.
+    [TestMethod]
+    public void Subsumption_Optional_TypeSubClassOfZeroOrOne_OnlyDirectAndImmediate()
+    {
+        // carol rdf:type/rdfs:subClassOf? ?class
+        // carol has asserted type HomoSapiens (L3).
+        // subClassOf? = 0 hops → HomoSapiens itself
+        //              1 hop  → Hominid (L4, immediate superclass)
+        // Everything at L5 and above must be absent.
+        RDFGraph graph = BuildSubsumptionGraph();
+        RDFPropertyPath path = new RDFPropertyPath(Carol, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Type))
+            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrOne());
+
+        HashSet<string> classes = new RDFQueryEngine()
+            .ApplyPropertyPath(path, graph)
+            .Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString())
+            .ToHashSet();
+
+        Assert.IsTrue(classes.Contains("ex:HomoSapiens"), "HomoSapiens — 0 hops (direct type)");
+        Assert.IsTrue(classes.Contains("ex:Hominid"),     "Hominid — 1 hop (immediate superclass)");
+
+        // Excluded because they are ≥ 2 hops away
+        Assert.IsFalse(classes.Contains("ex:Primate"),        "Primate — 2 hops, cut off by ?");
+        Assert.IsFalse(classes.Contains("ex:Mammal"),         "Mammal — 3 hops, cut off by ?");
+        Assert.IsFalse(classes.Contains("ex:Animal"),         "Animal — 6 hops, cut off by ?");
+        Assert.IsFalse(classes.Contains("ex:LivingThing"),    "LivingThing — 8 hops, cut off by ?");
+        Assert.IsFalse(classes.Contains("ex:Thing"),          "Thing — 12 hops, cut off by ?");
+        Assert.IsFalse(classes.Contains(Carol.ToString()),    "carol is an individual, not a class");
+
+        Assert.AreEqual(2, classes.Count, "Exactly 2 classes with subClassOf?");
+    }
+
+    // ── Test 6 ───────────────────────────────────────────────────────────────
+    // Full SELECT query: all instances of Mammal or any of its subclasses.
+    [TestMethod]
+    public void Subsumption_SelectQuery_AllInstancesOfMammalOrBelow()
+    {
+        // SELECT ?inst WHERE { ?inst rdf:type/rdfs:subClassOf* ex:Mammal }
+        //
+        // The path has a concrete end-node (ex:Mammal), so only individuals
+        // whose asserted type is Mammal or a subclass thereof are returned.
+        //
+        // alice  rdf:type Person (L0)      → Person subClassOf* Mammal (6 hops up) ✓
+        // bob    rdf:type Mammal (L6)      → Mammal subClassOf* Mammal (0 hops)    ✓
+        // carol  rdf:type HomoSapiens (L3) → HomoSapiens subClassOf* Mammal (3 hops) ✓
+        // dave   rdf:type HumanBeing       → HumanBeing has no subClassOf edge      ✗
+        // eve    rdf:type Animal (L9)      → Animal is a SUPERCLASS of Mammal       ✗
+        RDFGraph graph = BuildSubsumptionGraph();
+        RDFResource cMammal = new RDFResource("ex:Mammal");
+
+        RDFSelectQueryResult result = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPropertyPath(new RDFPropertyPath(VarS, cMammal)
+                    .AddSequenceStep(new RDFPropertyPathStep(Type))
+                    .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrMore())))
+            .ApplyToGraph(graph);
+
+        HashSet<string> instances = result.SelectResults.Rows.Cast<DataRow>()
+            .Select(r => r["?S"].ToString())
+            .ToHashSet();
+
+        // Must find the three Mammal-or-below individuals
+        Assert.IsTrue(instances.Contains(Alice.ToString()), "alice — type Person, subClassOf* reaches Mammal");
+        Assert.IsTrue(instances.Contains(Bob.ToString()),   "bob — type Mammal, ZeroOrMore includes self");
+        Assert.IsTrue(instances.Contains(Carol.ToString()), "carol — type HomoSapiens, subClassOf* reaches Mammal");
+
+        // Must not find individuals whose type is above Mammal or unrelated
+        Assert.IsFalse(instances.Contains(Dave.ToString()), "dave — type HumanBeing, no subClassOf chain to Mammal");
+        Assert.IsFalse(instances.Contains(Eve.ToString()),  "eve — type Animal, superclass of Mammal");
+
+        Assert.AreEqual(3, result.SelectResultsCount, "Exactly 3 instances of Mammal or its subclasses");
+    }
+
+    #endregion
+
     #endregion
 }
