@@ -113,14 +113,12 @@ namespace RDFSharp.Query
             //Collect the given steps into the property path
             if (alternativeSteps.Count == 1)
             {
-                Steps.Add(alternativeSteps[0]
-                                             .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
+                Steps.Add(alternativeSteps[0].SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             }
             else
             {
                 foreach (RDFPropertyPathStep alternativeStep in alternativeSteps)
-                    Steps.Add(alternativeStep
-                                             .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
+                    Steps.Add(alternativeStep.SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
             }
 
             //Update evaluability status of the property path
