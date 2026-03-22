@@ -113,13 +113,13 @@ namespace RDFSharp.Query
             //Collect the given steps into the property path
             if (alternativeSteps.Count == 1)
             {
-                Steps.Add(alternativeSteps[0].SetOrdinal(Steps.Count)
+                Steps.Add(alternativeSteps[0]
                                              .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             }
             else
             {
                 foreach (RDFPropertyPathStep alternativeStep in alternativeSteps)
-                    Steps.Add(alternativeStep.SetOrdinal(Steps.Count)
+                    Steps.Add(alternativeStep
                                              .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
             }
 
@@ -145,7 +145,7 @@ namespace RDFSharp.Query
             Depth++;
 
             //Collect the given step into the property path
-            Steps.Add(sequenceStep.SetOrdinal(Steps.Count)
+            Steps.Add(sequenceStep
                                   .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
 
             //Update evaluability status of the property path
@@ -187,7 +187,7 @@ namespace RDFSharp.Query
                         if (i < Steps.Count - 1 && Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                         {
                             //Adjust start/end
-                            if (!Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                            if (!Steps.Skip(i + 1).Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
                                 currEnd = End;
 
                             patterns.Add(Steps[i].IsInverseStep
@@ -209,7 +209,7 @@ namespace RDFSharp.Query
                             if (i < Steps.Count - 1)
                             {
                                 currStart = currEnd;
-                                if (i == Steps.Count - 2 || !Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                                if (i == Steps.Count - 2 || !Steps.Skip(i + 1).Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
                                     currEnd = End;
                                 else
                                     currEnd = new RDFVariable($"__PP{i+1}");
@@ -266,11 +266,6 @@ namespace RDFSharp.Query
         public bool IsInverseStep { get; internal set; }
 
         /// <summary>
-        /// Ordinal of the step
-        /// </summary>
-        internal int StepOrdinal { get; set; }
-
-        /// <summary>
         /// Cardinality constraint of the step
         /// </summary>
         public RDFQueryEnums.RDFPropertyPathStepCardinalities StepCardinality { get; internal set; }
@@ -307,15 +302,6 @@ namespace RDFSharp.Query
         internal RDFPropertyPathStep SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors stepFlavor)
         {
             StepFlavor = stepFlavor;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the ordinal of the step
-        /// </summary>
-        internal RDFPropertyPathStep SetOrdinal(int stepOrdinal)
-        {
-            StepOrdinal = stepOrdinal;
             return this;
         }
 
