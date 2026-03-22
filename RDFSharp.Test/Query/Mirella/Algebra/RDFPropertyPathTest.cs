@@ -716,7 +716,7 @@ public class RDFPropertyPathTest
     [TestMethod]
     public void StepCardinality_BoundedRange_Fluent()
     {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).Repeat(2, 4);
+        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).BoundedRange(2, 4);
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange, step.StepCardinality);
         Assert.AreEqual(2, step.MinCardinality);
         Assert.AreEqual(4, step.MaxCardinality);
@@ -724,11 +724,11 @@ public class RDFPropertyPathTest
 
     [TestMethod]
     public void StepCardinality_Repeat_NegativeMin_Throws()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).Repeat(-1, 2));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).BoundedRange(-1, 2));
 
     [TestMethod]
     public void StepCardinality_Repeat_MaxLessThanMin_Throws()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).Repeat(3, 1));
+        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).BoundedRange(3, 1));
 
     [TestMethod]
     public void StepCardinality_InverseCombines_WithCardinality()
@@ -806,7 +806,7 @@ public class RDFPropertyPathTest
     public void Printer_SingleStep_BoundedRange()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(2, 4));
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 4));
         string printed = path.ToString();
         Assert.IsTrue(printed.Contains("{2,4}"), $"Printed: {printed}");
     }
@@ -815,7 +815,7 @@ public class RDFPropertyPathTest
     public void Printer_SingleStep_BoundedRange_ExactCount()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(3, 3));
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(3, 3));
         string printed = path.ToString();
         Assert.IsTrue(printed.Contains("{3}"), $"Printed: {printed}");
     }
@@ -1031,7 +1031,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildTestGraph();
         // alice knows{2} ?e  => carol (exactly 2 hops)
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(2, 2));
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2));
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
@@ -1049,7 +1049,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildTestGraph();
         // alice knows{1,3} ?e  => bob, carol, dave
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(1, 3));
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 3));
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
@@ -1067,7 +1067,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildTestGraph();
         // alice knows{0,2} ?e  => alice, bob, carol
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(0, 2));
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(0, 2));
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
@@ -1086,7 +1086,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildTestGraph(); // chain length = 3 hops max
         // alice knows{5,7} ?e  => no results (chain too short)
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(5, 7));
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(5, 7));
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
@@ -1146,7 +1146,7 @@ public class RDFPropertyPathTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(2, 2))));
+                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         Assert.AreEqual(1, result.SelectResultsCount); // only carol
@@ -1388,7 +1388,7 @@ public class RDFPropertyPathTest
             .AddGraph(outerGraph);
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(2, 3));
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 3));
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, federation);
@@ -1556,7 +1556,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(2, 2))));
+                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
 
         op.ApplyToGraph(graph);
 
@@ -1574,7 +1574,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(1, 2))));
+                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 2))));
 
         op.ApplyToGraph(graph);
 
@@ -1700,7 +1700,7 @@ public class RDFPropertyPathTest
             .AddDeleteTemplate(new RDFPattern(Alice, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(2, 2))));
+                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
 
         op.ApplyToGraph(graph);
 
@@ -1847,7 +1847,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Tagged, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(1, 2))));
+                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 2))));
 
         op.ApplyToGraph(graph);
 
@@ -1964,7 +1964,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(0, 1))));
+                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(0, 1))));
 
         op.ApplyToGraph(graph);
 
@@ -2194,7 +2194,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildSubsumptionGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
             .AddSequenceStep(new RDFPropertyPathStep(Type))
-            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).Repeat(5, 10));
+            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).BoundedRange(5, 10));
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)

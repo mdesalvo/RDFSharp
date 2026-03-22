@@ -365,12 +365,15 @@ namespace RDFSharp.Query
         /// Sets the step cardinality to a bounded range (SPARQL {min,max})
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFPropertyPathStep Repeat(int min, int max)
+        public RDFPropertyPathStep BoundedRange(int min, int max)
         {
+            #region Guards
             if (min < 0)
                 throw new RDFQueryException("Cannot set BoundedRange cardinality because \"min\" parameter must be >= 0.");
             if (max < min)
                 throw new RDFQueryException("Cannot set BoundedRange cardinality because \"max\" parameter must be >= \"min\".");
+            #endregion
+
             StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange;
             MinCardinality = min;
             MaxCardinality = max;
