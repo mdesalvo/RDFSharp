@@ -687,6 +687,131 @@ public class RDFPropertyPathCardinalityTest
 
     #endregion
 
+    #region Engine — Federation datasource
+
+    [TestMethod]
+    public void Engine_OneOrMore_Federation_ChainSplitAcrossTwoGraphs()
+    {
+        // Chain split: alice→bob in graph1, bob→carol→dave in graph2.
+        // The transitive BFS must merge both sources to reach the full chain.
+        var graph1 = new RDFGraph();
+        graph1.AddTriple(new RDFTriple(Alice, Knows, Bob));
+
+        var graph2 = new RDFGraph();
+        graph2.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+        graph2.AddTriple(new RDFTriple(Carol, Knows, Dave));
+
+        var federation = new RDFFederation()
+            .AddGraph(graph1)
+            .AddGraph(graph2);
+
+        var path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+
+        var engine = new RDFQueryEngine();
+        var result = engine.ApplyPropertyPath(path, federation);
+
+        var ends = result.Rows.Cast<System.Data.DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.IsTrue(ends.Contains(Bob.ToString()),   "bob — 1 hop");
+        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — 2 hops via graph2");
+        Assert.IsTrue(ends.Contains(Dave.ToString()),  "dave — 3 hops via graph2");
+        Assert.IsFalse(ends.Contains(Alice.ToString()), "alice must not appear (OneOrMore)");
+    }
+
+    [TestMethod]
+    public void Engine_ZeroOrMore_Federation_HeterogeneousSources_IncludesSelf()
+    {
+        // Heterogeneous federation: one RDFGraph + one RDFMemoryStore.
+        // ZeroOrMore must include the start node (zero-step case) even when data is spread.
+        var graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+
+        var store = new RDFSharp.Store.RDFMemoryStore();
+        var ctx   = new RDFSharp.Store.RDFContext("ex:ctx");
+        store.AddQuadruple(new RDFSharp.Store.RDFQuadruple(ctx, Bob, Knows, Carol));
+
+        var federation = new RDFFederation()
+            .AddGraph(graph)
+            .AddStore(store);
+
+        var path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+
+        var engine = new RDFQueryEngine();
+        var result = engine.ApplyPropertyPath(path, federation);
+
+        var ends = result.Rows.Cast<System.Data.DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.IsTrue(ends.Contains(Alice.ToString()), "alice — zero hops (self)");
+        Assert.IsTrue(ends.Contains(Bob.ToString()),   "bob — from graph source");
+        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — from store source");
+    }
+
+    [TestMethod]
+    public void Engine_BoundedRange_Federation_NestedFederation_ExactHops()
+    {
+        // Bounded range {2,3}: only nodes reachable in 2 or 3 hops must appear.
+        // Data is nested inside a sub-federation to exercise the nested-federation code path.
+        // Chain: alice→bob(1)→carol(2)→dave(3)→eve(4)
+        var innerGraph = new RDFGraph();
+        innerGraph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        innerGraph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+
+        var outerGraph = new RDFGraph();
+        outerGraph.AddTriple(new RDFTriple(Carol, Knows, Dave));
+        outerGraph.AddTriple(new RDFTriple(Dave,  Knows, Eve));
+
+        var federation = new RDFFederation()
+            .AddFederation(new RDFFederation().AddGraph(innerGraph))
+            .AddGraph(outerGraph);
+
+        var path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).Repeat(2, 3));
+
+        var engine = new RDFQueryEngine();
+        var result = engine.ApplyPropertyPath(path, federation);
+
+        var ends = result.Rows.Cast<System.Data.DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.IsFalse(ends.Contains(Bob.ToString()),  "bob — 1 hop, below range");
+        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — 2 hops, in range");
+        Assert.IsTrue(ends.Contains(Dave.ToString()),  "dave — 3 hops, in range");
+        Assert.IsFalse(ends.Contains(Eve.ToString()),  "eve — 4 hops, above range");
+    }
+
+    [TestMethod]
+    public void Engine_OneOrMore_InverseStep_Federation_MultiSource()
+    {
+        // Inverse path (^knows+) navigates edges in reverse across two graph sources.
+        // dave ^knows+ ?e in a federation must reach carol, bob, alice.
+        var graph1 = new RDFGraph();
+        graph1.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph1.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+
+        var graph2 = new RDFGraph();
+        graph2.AddTriple(new RDFTriple(Carol, Knows, Dave));
+
+        var federation = new RDFFederation()
+            .AddGraph(graph1)
+            .AddGraph(graph2);
+
+        var path = new RDFPropertyPath(Dave, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
+
+        var engine = new RDFQueryEngine();
+        var result = engine.ApplyPropertyPath(path, federation);
+
+        var ends = result.Rows.Cast<System.Data.DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — 1 reverse hop (graph2)");
+        Assert.IsTrue(ends.Contains(Bob.ToString()),   "bob — 2 reverse hops (graph1)");
+        Assert.IsTrue(ends.Contains(Alice.ToString()), "alice — 3 reverse hops (graph1)");
+        Assert.IsFalse(ends.Contains(Dave.ToString()),  "dave must not appear (OneOrMore)");
+    }
+
+    #endregion
+
     #region Engine — Alternative path with cardinality
 
     [TestMethod]
