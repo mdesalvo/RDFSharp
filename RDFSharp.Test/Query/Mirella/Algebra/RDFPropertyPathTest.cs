@@ -773,64 +773,6 @@ public class RDFPropertyPathTest
 
     #endregion
 
-    #region SPARQL printer
-
-    [TestMethod]
-    public void Printer_SingleStep_ZeroOrOne()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
-        string printed = path.ToString();
-        Assert.IsTrue(printed.Contains("knows>?") || printed.Contains("knows?"), $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_OneOrMore()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
-        string printed = path.ToString();
-        Assert.IsTrue(printed.Contains("knows>+") || printed.Contains("knows+"), $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_ZeroOrMore()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
-        string printed = path.ToString();
-        Assert.IsTrue(printed.Contains("knows>*") || printed.Contains("knows*"), $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_BoundedRange()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 4));
-        string printed = path.ToString();
-        Assert.Contains("{2,4}", printed, $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_BoundedRange_ExactCount()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(3, 3));
-        string printed = path.ToString();
-        Assert.Contains("{3}", printed, $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_InverseStep_OneOrMore()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
-        string printed = path.ToString();
-        Assert.IsTrue(printed.Contains('^') && (printed.Contains("knows>+") || printed.Contains("knows+")), $"Printed: {printed}");
-    }
-
-    #endregion
-
     #region Engine — OneOrMore (prop+)
 
     [TestMethod]
@@ -1443,6 +1385,64 @@ public class RDFPropertyPathTest
         Assert.Contains(Bob.ToString(), ends,   "bob — 2 reverse hops (graph1)");
         Assert.Contains(Alice.ToString(), ends, "alice — 3 reverse hops (graph1)");
         Assert.DoesNotContain(Dave.ToString(), ends,  "dave must not appear (OneOrMore)");
+    }
+
+    #endregion
+
+    #region SPARQL printer
+
+    [TestMethod]
+    public void Printer_SingleStep_ZeroOrOne()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
+        string printed = path.ToString();
+        Assert.IsTrue(printed.Contains("knows>?") || printed.Contains("knows?"), $"Printed: {printed}");
+    }
+
+    [TestMethod]
+    public void Printer_SingleStep_OneOrMore()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+        string printed = path.ToString();
+        Assert.IsTrue(printed.Contains("knows>+") || printed.Contains("knows+"), $"Printed: {printed}");
+    }
+
+    [TestMethod]
+    public void Printer_SingleStep_ZeroOrMore()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+        string printed = path.ToString();
+        Assert.IsTrue(printed.Contains("knows>*") || printed.Contains("knows*"), $"Printed: {printed}");
+    }
+
+    [TestMethod]
+    public void Printer_SingleStep_BoundedRange()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 4));
+        string printed = path.ToString();
+        Assert.Contains("{2,4}", printed, $"Printed: {printed}");
+    }
+
+    [TestMethod]
+    public void Printer_SingleStep_BoundedRange_ExactCount()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(3, 3));
+        string printed = path.ToString();
+        Assert.Contains("{3}", printed, $"Printed: {printed}");
+    }
+
+    [TestMethod]
+    public void Printer_InverseStep_OneOrMore()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
+        string printed = path.ToString();
+        Assert.IsTrue(printed.Contains('^') && (printed.Contains("knows>+") || printed.Contains("knows+")), $"Printed: {printed}");
     }
 
     #endregion
