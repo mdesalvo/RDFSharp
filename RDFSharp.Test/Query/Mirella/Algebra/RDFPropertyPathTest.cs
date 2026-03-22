@@ -808,7 +808,7 @@ public class RDFPropertyPathTest
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
             .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 4));
         string printed = path.ToString();
-        Assert.IsTrue(printed.Contains("{2,4}"), $"Printed: {printed}");
+        Assert.Contains("{2,4}", printed, $"Printed: {printed}");
     }
 
     [TestMethod]
@@ -817,7 +817,7 @@ public class RDFPropertyPathTest
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
             .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(3, 3));
         string printed = path.ToString();
-        Assert.IsTrue(printed.Contains("{3}"), $"Printed: {printed}");
+        Assert.Contains("{3}", printed, $"Printed: {printed}");
     }
 
     [TestMethod]
@@ -826,7 +826,7 @@ public class RDFPropertyPathTest
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
             .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
         string printed = path.ToString();
-        Assert.IsTrue(printed.Contains("^") && (printed.Contains("knows>+") || printed.Contains("knows+")), $"Printed: {printed}");
+        Assert.IsTrue(printed.Contains('^') && (printed.Contains("knows>+") || printed.Contains("knows+")), $"Printed: {printed}");
     }
 
     #endregion
@@ -846,10 +846,10 @@ public class RDFPropertyPathTest
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
 
-        Assert.IsTrue(ends.Contains(Bob.ToString()));
-        Assert.IsTrue(ends.Contains(Carol.ToString()));
-        Assert.IsTrue(ends.Contains(Dave.ToString()));
-        Assert.IsFalse(ends.Contains(Alice.ToString())); // no self with OneOrMore
+        Assert.Contains(Bob.ToString(), ends);
+        Assert.Contains(Carol.ToString(), ends);
+        Assert.Contains(Dave.ToString(), ends);
+        Assert.DoesNotContain(Alice.ToString(), ends); // no self with OneOrMore
     }
 
     [TestMethod]
@@ -865,7 +865,7 @@ public class RDFPropertyPathTest
         // alice reachable from alice: bob, carol, dave
         // bob reachable from bob: carol, dave
         // carol reachable from carol: dave
-        Assert.IsTrue(result.Rows.Count >= 6);
+        Assert.IsGreaterThanOrEqualTo(6, result.Rows.Count);
         List<(string, string)> rows = result.Rows.Cast<DataRow>()
             .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
         Assert.IsTrue(rows.Any(p => p.Item1 == Alice.ToString() && p.Item2 == Dave.ToString()));
@@ -880,7 +880,7 @@ public class RDFPropertyPathTest
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.AreEqual(1, result.Rows.Count);
+        Assert.HasCount(1, result.Rows);
     }
 
     [TestMethod]
@@ -892,7 +892,7 @@ public class RDFPropertyPathTest
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.AreEqual(0, result.Rows.Count);
+        Assert.IsEmpty(result.Rows);
     }
 
     [TestMethod]
@@ -908,9 +908,9 @@ public class RDFPropertyPathTest
 
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Carol.ToString()));
-        Assert.IsTrue(ends.Contains(Bob.ToString()));
-        Assert.IsTrue(ends.Contains(Alice.ToString()));
+        Assert.Contains(Carol.ToString(), ends);
+        Assert.Contains(Bob.ToString(), ends);
+        Assert.Contains(Alice.ToString(), ends);
     }
 
     [TestMethod]
@@ -926,7 +926,7 @@ public class RDFPropertyPathTest
 
         List<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToList();
-        Assert.AreEqual(ends.Distinct().Count(), ends.Count, "No duplicates expected");
+        Assert.HasCount(ends.Distinct().Count(), ends, "No duplicates expected");
     }
 
     [TestMethod]
@@ -947,8 +947,8 @@ public class RDFPropertyPathTest
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
         // bob and carol reachable; alice is a back-edge but NOT included (OneOrMore, visited)
-        Assert.IsTrue(ends.Contains(Bob.ToString()));
-        Assert.IsTrue(ends.Contains(Carol.ToString()));
+        Assert.Contains(Bob.ToString(), ends);
+        Assert.Contains(Carol.ToString(), ends);
     }
 
     #endregion
@@ -967,8 +967,8 @@ public class RDFPropertyPathTest
 
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Alice.ToString()), "ZeroOrMore should include self");
-        Assert.IsTrue(ends.Contains(Dave.ToString()));
+        Assert.Contains(Alice.ToString(), ends, "ZeroOrMore should include self");
+        Assert.Contains(Dave.ToString(), ends);
     }
 
     [TestMethod]
@@ -1004,9 +1004,9 @@ public class RDFPropertyPathTest
 
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Alice.ToString()), "ZeroOrOne should include self");
-        Assert.IsTrue(ends.Contains(Bob.ToString()),   "ZeroOrOne should include 1-hop");
-        Assert.IsFalse(ends.Contains(Carol.ToString()), "ZeroOrOne should NOT include 2-hops");
+        Assert.Contains(Alice.ToString(), ends, "ZeroOrOne should include self");
+        Assert.Contains(Bob.ToString(), ends,   "ZeroOrOne should include 1-hop");
+        Assert.DoesNotContain(Carol.ToString(), ends, "ZeroOrOne should NOT include 2-hops");
     }
 
     [TestMethod]
@@ -1018,7 +1018,7 @@ public class RDFPropertyPathTest
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.AreEqual(2, result.Rows.Count); // alice (self) + bob (1 hop)
+        Assert.HasCount(2, result.Rows); // alice (self) + bob (1 hop)
     }
 
     #endregion
@@ -1038,9 +1038,9 @@ public class RDFPropertyPathTest
 
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Carol.ToString()));
-        Assert.IsFalse(ends.Contains(Bob.ToString()),  "1-hop not expected");
-        Assert.IsFalse(ends.Contains(Dave.ToString()), "3-hop not expected");
+        Assert.Contains(Carol.ToString(), ends);
+        Assert.DoesNotContain(Bob.ToString(), ends,  "1-hop not expected");
+        Assert.DoesNotContain(Dave.ToString(), ends, "3-hop not expected");
     }
 
     [TestMethod]
@@ -1056,9 +1056,9 @@ public class RDFPropertyPathTest
 
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Bob.ToString()));
-        Assert.IsTrue(ends.Contains(Carol.ToString()));
-        Assert.IsTrue(ends.Contains(Dave.ToString()));
+        Assert.Contains(Bob.ToString(), ends);
+        Assert.Contains(Carol.ToString(), ends);
+        Assert.Contains(Dave.ToString(), ends);
     }
 
     [TestMethod]
@@ -1074,10 +1074,10 @@ public class RDFPropertyPathTest
 
         HashSet<string> ends = result.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Alice.ToString()), "0 hops => self");
-        Assert.IsTrue(ends.Contains(Bob.ToString()));
-        Assert.IsTrue(ends.Contains(Carol.ToString()));
-        Assert.IsFalse(ends.Contains(Dave.ToString()), "3-hop exceeds max=2");
+        Assert.Contains(Alice.ToString(), ends, "0 hops => self");
+        Assert.Contains(Bob.ToString(), ends);
+        Assert.Contains(Carol.ToString(), ends);
+        Assert.DoesNotContain(Dave.ToString(), ends, "3-hop exceeds max=2");
     }
 
     [TestMethod]
@@ -1090,12 +1090,266 @@ public class RDFPropertyPathTest
 
         RDFQueryEngine engine = new RDFQueryEngine();
         DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.AreEqual(0, result.Rows.Count);
+        Assert.IsEmpty(result.Rows);
     }
 
     #endregion
 
-    #region Engine — SELECT query integration
+    #region Engine — Sequence path with mixed cardinality
+
+    [TestMethod]
+    public void Engine_Sequence_StaticThenTransitive()
+    {
+        // alice parent carol, carol knows dave knows eve
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Parent, Carol));
+        graph.AddTriple(new RDFTriple(Carol, Knows,  Dave));
+        graph.AddTriple(new RDFTriple(Dave,  Knows,  Eve));
+
+        // alice parent/knows+ ?e  => all nodes reachable from carol via knows+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Parent))
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, graph);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Dave.ToString(), ends);
+        Assert.Contains(Eve.ToString(), ends);
+        Assert.DoesNotContain(Alice.ToString(), ends);
+        Assert.DoesNotContain(Carol.ToString(), ends); // parent step target, not knows+ result
+    }
+
+    [TestMethod]
+    public void Engine_Sequence_TransitiveThenStatic()
+    {
+        // alice knows+ dave, dave parent eve
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows,  Bob));
+        graph.AddTriple(new RDFTriple(Bob,   Knows,  Dave));
+        graph.AddTriple(new RDFTriple(Dave,  Parent, Eve));
+
+        // ?s knows+/parent ?e
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())
+            .AddSequenceStep(new RDFPropertyPathStep(Parent));
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, graph);
+
+        List<(string, string)> rows = result.Rows.Cast<DataRow>()
+            .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
+        // alice knows+ bob/dave; dave parent eve → alice→eve, bob→eve
+        Assert.IsTrue(rows.Any(p => p.Item1 == Alice.ToString() && p.Item2 == Eve.ToString()));
+        Assert.IsTrue(rows.Any(p => p.Item1 == Bob.ToString()   && p.Item2 == Eve.ToString()));
+    }
+
+    #endregion
+
+    #region Engine — Alternative path with cardinality
+
+    [TestMethod]
+    public void Engine_Alternative_OneOrMore()
+    {
+        // alice has both knows and parent edges directly
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows,  Bob));
+        graph.AddTriple(new RDFTriple(Bob,   Knows,  Carol));   // knows chain: alice→bob→carol
+        graph.AddTriple(new RDFTriple(Alice, Parent, Dave));
+        graph.AddTriple(new RDFTriple(Dave,  Parent, Eve));     // parent chain: alice→dave→eve
+
+        // alice (knows+|parent+) ?e  =  knows+ from alice UNION parent+ from alice
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddAlternativeSteps(new List<RDFPropertyPathStep>
+            {
+                new RDFPropertyPathStep(Knows).OneOrMore(),
+                new RDFPropertyPathStep(Parent).OneOrMore()
+            });
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, graph);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r[0].ToString()).ToHashSet();
+        Assert.Contains(Bob.ToString(), ends,   "knows 1-hop");
+        Assert.Contains(Carol.ToString(), ends, "knows 2-hops");
+        Assert.Contains(Dave.ToString(), ends,  "parent 1-hop");
+        Assert.Contains(Eve.ToString(), ends,   "parent 2-hops");
+    }
+
+    #endregion
+
+    #region Engine — Store datasource
+
+    [TestMethod]
+    public void Engine_OneOrMore_OnMemoryStore()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        RDFContext ctx   = new RDFContext("ex:ctx");
+        store.AddQuadruple(new RDFQuadruple(ctx, Alice, Knows, Bob));
+        store.AddQuadruple(new RDFQuadruple(ctx, Bob,   Knows, Carol));
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, store);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Bob.ToString(), ends);
+        Assert.Contains(Carol.ToString(), ends);
+    }
+
+    [TestMethod]
+    public void Engine_ZeroOrMore_OnMemoryStore_IncludesSelf()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        RDFContext ctx   = new RDFContext("ex:ctx");
+        store.AddQuadruple(new RDFQuadruple(ctx, Alice, Knows, Bob));
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, store);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Alice.ToString(), ends);
+        Assert.Contains(Bob.ToString(), ends);
+    }
+
+    #endregion
+
+    #region Engine — Federation datasource
+
+    [TestMethod]
+    public void Engine_OneOrMore_Federation_ChainSplitAcrossTwoGraphs()
+    {
+        // Chain split: alice→bob in graph1, bob→carol→dave in graph2.
+        // The transitive BFS must merge both sources to reach the full chain.
+        RDFGraph graph1 = new RDFGraph();
+        graph1.AddTriple(new RDFTriple(Alice, Knows, Bob));
+
+        RDFGraph graph2 = new RDFGraph();
+        graph2.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+        graph2.AddTriple(new RDFTriple(Carol, Knows, Dave));
+
+        RDFFederation federation = new RDFFederation()
+            .AddGraph(graph1)
+            .AddGraph(graph2);
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, federation);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Bob.ToString(), ends,   "bob — 1 hop");
+        Assert.Contains(Carol.ToString(), ends, "carol — 2 hops via graph2");
+        Assert.Contains(Dave.ToString(), ends,  "dave — 3 hops via graph2");
+        Assert.DoesNotContain(Alice.ToString(), ends, "alice must not appear (OneOrMore)");
+    }
+
+    [TestMethod]
+    public void Engine_ZeroOrMore_Federation_HeterogeneousSources_IncludesSelf()
+    {
+        // Heterogeneous federation: one RDFGraph + one RDFMemoryStore.
+        // ZeroOrMore must include the start node (zero-step case) even when data is spread.
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+
+        RDFMemoryStore store = new RDFMemoryStore();
+        RDFContext ctx   = new RDFContext("ex:ctx");
+        store.AddQuadruple(new RDFQuadruple(ctx, Bob, Knows, Carol));
+
+        RDFFederation federation = new RDFFederation()
+            .AddGraph(graph)
+            .AddStore(store);
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, federation);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Alice.ToString(), ends, "alice — zero hops (self)");
+        Assert.Contains(Bob.ToString(), ends,   "bob — from graph source");
+        Assert.Contains(Carol.ToString(), ends, "carol — from store source");
+    }
+
+    [TestMethod]
+    public void Engine_BoundedRange_Federation_NestedFederation_ExactHops()
+    {
+        // Bounded range {2,3}: only nodes reachable in 2 or 3 hops must appear.
+        // Data is nested inside a sub-federation to exercise the nested-federation code path.
+        // Chain: alice→bob(1)→carol(2)→dave(3)→eve(4)
+        RDFGraph innerGraph = new RDFGraph();
+        innerGraph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        innerGraph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+
+        RDFGraph outerGraph = new RDFGraph();
+        outerGraph.AddTriple(new RDFTriple(Carol, Knows, Dave));
+        outerGraph.AddTriple(new RDFTriple(Dave,  Knows, Eve));
+
+        RDFFederation federation = new RDFFederation()
+            .AddFederation(new RDFFederation().AddGraph(innerGraph))
+            .AddGraph(outerGraph);
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 3));
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, federation);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.DoesNotContain(Bob.ToString(), ends,  "bob — 1 hop, below range");
+        Assert.Contains(Carol.ToString(), ends, "carol — 2 hops, in range");
+        Assert.Contains(Dave.ToString(), ends,  "dave — 3 hops, in range");
+        Assert.DoesNotContain(Eve.ToString(), ends,  "eve — 4 hops, above range");
+    }
+
+    [TestMethod]
+    public void Engine_OneOrMore_InverseStep_Federation_MultiSource()
+    {
+        // Inverse path (^knows+) navigates edges in reverse across two graph sources.
+        // dave ^knows+ ?e in a federation must reach carol, bob, alice.
+        RDFGraph graph1 = new RDFGraph();
+        graph1.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph1.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+
+        RDFGraph graph2 = new RDFGraph();
+        graph2.AddTriple(new RDFTriple(Carol, Knows, Dave));
+
+        RDFFederation federation = new RDFFederation()
+            .AddGraph(graph1)
+            .AddGraph(graph2);
+
+        RDFPropertyPath path = new RDFPropertyPath(Dave, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
+
+        RDFQueryEngine engine = new RDFQueryEngine();
+        DataTable result = engine.ApplyPropertyPath(path, federation);
+
+        HashSet<string> ends = result.Rows.Cast<DataRow>()
+            .Select(r => r["?E"].ToString()).ToHashSet();
+        Assert.Contains(Carol.ToString(), ends, "carol — 1 reverse hop (graph2)");
+        Assert.Contains(Bob.ToString(), ends,   "bob — 2 reverse hops (graph1)");
+        Assert.Contains(Alice.ToString(), ends, "alice — 3 reverse hops (graph1)");
+        Assert.DoesNotContain(Dave.ToString(), ends,  "dave must not appear (OneOrMore)");
+    }
+
+    #endregion
+
+    #region SPARQL
 
     [TestMethod]
     public void SelectQuery_OneOrMore_ReturnsTransitiveClosure()
@@ -1107,7 +1361,7 @@ public class RDFPropertyPathTest
                     .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
-        Assert.IsTrue(result.SelectResultsCount >= 3);
+        Assert.IsGreaterThanOrEqualTo(3, result.SelectResultsCount);
     }
 
     [TestMethod]
@@ -1122,7 +1376,7 @@ public class RDFPropertyPathTest
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         HashSet<string> ends = result.SelectResults.Rows.Cast<DataRow>()
             .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Alice.ToString()));
+        Assert.Contains(Alice.ToString(), ends);
     }
 
     [TestMethod]
@@ -1136,7 +1390,7 @@ public class RDFPropertyPathTest
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         // Self-pairs included + direct knows pairs
-        Assert.IsTrue(result.SelectResultsCount > 3);
+        Assert.IsGreaterThan(3, result.SelectResultsCount);
     }
 
     [TestMethod]
@@ -1207,262 +1461,9 @@ public class RDFPropertyPathTest
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         // alice's reachable: bob, carol, dave; bob's reachable: carol, dave
-        Assert.IsTrue(result.SelectResultsCount >= 5);
+        Assert.IsGreaterThanOrEqualTo(5, result.SelectResultsCount);
     }
 
-    #endregion
-
-    #region Engine — Store datasource
-
-    [TestMethod]
-    public void Engine_OneOrMore_OnMemoryStore()
-    {
-        RDFMemoryStore store = new RDFMemoryStore();
-        RDFContext ctx   = new RDFContext("ex:ctx");
-        store.AddQuadruple(new RDFQuadruple(ctx, Alice, Knows, Bob));
-        store.AddQuadruple(new RDFQuadruple(ctx, Bob,   Knows, Carol));
-
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, store);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Bob.ToString()));
-        Assert.IsTrue(ends.Contains(Carol.ToString()));
-    }
-
-    [TestMethod]
-    public void Engine_ZeroOrMore_OnMemoryStore_IncludesSelf()
-    {
-        RDFMemoryStore store = new RDFMemoryStore();
-        RDFContext ctx   = new RDFContext("ex:ctx");
-        store.AddQuadruple(new RDFQuadruple(ctx, Alice, Knows, Bob));
-
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, store);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Alice.ToString()));
-        Assert.IsTrue(ends.Contains(Bob.ToString()));
-    }
-
-    #endregion
-
-    #region Engine — Sequence path with mixed cardinality
-
-    [TestMethod]
-    public void Engine_Sequence_StaticThenTransitive()
-    {
-        // alice parent carol, carol knows dave knows eve
-        RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(Alice, Parent, Carol));
-        graph.AddTriple(new RDFTriple(Carol, Knows,  Dave));
-        graph.AddTriple(new RDFTriple(Dave,  Knows,  Eve));
-
-        // alice parent/knows+ ?e  => all nodes reachable from carol via knows+
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Parent))
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Dave.ToString()));
-        Assert.IsTrue(ends.Contains(Eve.ToString()));
-        Assert.IsFalse(ends.Contains(Alice.ToString()));
-        Assert.IsFalse(ends.Contains(Carol.ToString())); // parent step target, not knows+ result
-    }
-
-    [TestMethod]
-    public void Engine_Sequence_TransitiveThenStatic()
-    {
-        // alice knows+ dave, dave parent eve
-        RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(Alice, Knows,  Bob));
-        graph.AddTriple(new RDFTriple(Bob,   Knows,  Dave));
-        graph.AddTriple(new RDFTriple(Dave,  Parent, Eve));
-
-        // ?s knows+/parent ?e
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())
-            .AddSequenceStep(new RDFPropertyPathStep(Parent));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
-
-        List<(string, string)> rows = result.Rows.Cast<DataRow>()
-            .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
-        // alice knows+ bob/dave; dave parent eve → alice→eve, bob→eve
-        Assert.IsTrue(rows.Any(p => p.Item1 == Alice.ToString() && p.Item2 == Eve.ToString()));
-        Assert.IsTrue(rows.Any(p => p.Item1 == Bob.ToString()   && p.Item2 == Eve.ToString()));
-    }
-
-    #endregion
-
-    #region Engine — Federation datasource
-
-    [TestMethod]
-    public void Engine_OneOrMore_Federation_ChainSplitAcrossTwoGraphs()
-    {
-        // Chain split: alice→bob in graph1, bob→carol→dave in graph2.
-        // The transitive BFS must merge both sources to reach the full chain.
-        RDFGraph graph1 = new RDFGraph();
-        graph1.AddTriple(new RDFTriple(Alice, Knows, Bob));
-
-        RDFGraph graph2 = new RDFGraph();
-        graph2.AddTriple(new RDFTriple(Bob,   Knows, Carol));
-        graph2.AddTriple(new RDFTriple(Carol, Knows, Dave));
-
-        RDFFederation federation = new RDFFederation()
-            .AddGraph(graph1)
-            .AddGraph(graph2);
-
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Bob.ToString()),   "bob — 1 hop");
-        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — 2 hops via graph2");
-        Assert.IsTrue(ends.Contains(Dave.ToString()),  "dave — 3 hops via graph2");
-        Assert.IsFalse(ends.Contains(Alice.ToString()), "alice must not appear (OneOrMore)");
-    }
-
-    [TestMethod]
-    public void Engine_ZeroOrMore_Federation_HeterogeneousSources_IncludesSelf()
-    {
-        // Heterogeneous federation: one RDFGraph + one RDFMemoryStore.
-        // ZeroOrMore must include the start node (zero-step case) even when data is spread.
-        RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
-
-        RDFMemoryStore store = new RDFMemoryStore();
-        RDFContext ctx   = new RDFContext("ex:ctx");
-        store.AddQuadruple(new RDFQuadruple(ctx, Bob, Knows, Carol));
-
-        RDFFederation federation = new RDFFederation()
-            .AddGraph(graph)
-            .AddStore(store);
-
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Alice.ToString()), "alice — zero hops (self)");
-        Assert.IsTrue(ends.Contains(Bob.ToString()),   "bob — from graph source");
-        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — from store source");
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_Federation_NestedFederation_ExactHops()
-    {
-        // Bounded range {2,3}: only nodes reachable in 2 or 3 hops must appear.
-        // Data is nested inside a sub-federation to exercise the nested-federation code path.
-        // Chain: alice→bob(1)→carol(2)→dave(3)→eve(4)
-        RDFGraph innerGraph = new RDFGraph();
-        innerGraph.AddTriple(new RDFTriple(Alice, Knows, Bob));
-        innerGraph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
-
-        RDFGraph outerGraph = new RDFGraph();
-        outerGraph.AddTriple(new RDFTriple(Carol, Knows, Dave));
-        outerGraph.AddTriple(new RDFTriple(Dave,  Knows, Eve));
-
-        RDFFederation federation = new RDFFederation()
-            .AddFederation(new RDFFederation().AddGraph(innerGraph))
-            .AddGraph(outerGraph);
-
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 3));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsFalse(ends.Contains(Bob.ToString()),  "bob — 1 hop, below range");
-        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — 2 hops, in range");
-        Assert.IsTrue(ends.Contains(Dave.ToString()),  "dave — 3 hops, in range");
-        Assert.IsFalse(ends.Contains(Eve.ToString()),  "eve — 4 hops, above range");
-    }
-
-    [TestMethod]
-    public void Engine_OneOrMore_InverseStep_Federation_MultiSource()
-    {
-        // Inverse path (^knows+) navigates edges in reverse across two graph sources.
-        // dave ^knows+ ?e in a federation must reach carol, bob, alice.
-        RDFGraph graph1 = new RDFGraph();
-        graph1.AddTriple(new RDFTriple(Alice, Knows, Bob));
-        graph1.AddTriple(new RDFTriple(Bob,   Knows, Carol));
-
-        RDFGraph graph2 = new RDFGraph();
-        graph2.AddTriple(new RDFTriple(Carol, Knows, Dave));
-
-        RDFFederation federation = new RDFFederation()
-            .AddGraph(graph1)
-            .AddGraph(graph2);
-
-        RDFPropertyPath path = new RDFPropertyPath(Dave, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Carol.ToString()), "carol — 1 reverse hop (graph2)");
-        Assert.IsTrue(ends.Contains(Bob.ToString()),   "bob — 2 reverse hops (graph1)");
-        Assert.IsTrue(ends.Contains(Alice.ToString()), "alice — 3 reverse hops (graph1)");
-        Assert.IsFalse(ends.Contains(Dave.ToString()),  "dave must not appear (OneOrMore)");
-    }
-
-    #endregion
-
-    #region Engine — Alternative path with cardinality
-
-    [TestMethod]
-    public void Engine_Alternative_OneOrMore()
-    {
-        // alice has both knows and parent edges directly
-        RDFGraph graph = new RDFGraph();
-        graph.AddTriple(new RDFTriple(Alice, Knows,  Bob));
-        graph.AddTriple(new RDFTriple(Bob,   Knows,  Carol));   // knows chain: alice→bob→carol
-        graph.AddTriple(new RDFTriple(Alice, Parent, Dave));
-        graph.AddTriple(new RDFTriple(Dave,  Parent, Eve));     // parent chain: alice→dave→eve
-
-        // alice (knows+|parent+) ?e  =  knows+ from alice UNION parent+ from alice
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddAlternativeSteps(new List<RDFPropertyPathStep>
-            {
-                new RDFPropertyPathStep(Knows).OneOrMore(),
-                new RDFPropertyPathStep(Parent).OneOrMore()
-            });
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
-            .Select(r => r[0].ToString()).ToHashSet();
-        Assert.IsTrue(ends.Contains(Bob.ToString()),   "knows 1-hop");
-        Assert.IsTrue(ends.Contains(Carol.ToString()), "knows 2-hops");
-        Assert.IsTrue(ends.Contains(Dave.ToString()),  "parent 1-hop");
-        Assert.IsTrue(ends.Contains(Eve.ToString()),   "parent 2-hops");
-    }
     #endregion
 
     #region SPARQL UPDATE
@@ -2046,8 +2047,7 @@ public class RDFPropertyPathTest
 
     #endregion
 
-    // =========================================================================
-    #region Engine — RDFS subsumption (rdf:type / rdfs:subClassOf*)
+    #region Ontology — RDFS subsumption (rdf:type / rdfs:subClassOf*)
     // =========================================================================
     //
     // Ontology shared by all tests in this region
@@ -2083,36 +2083,36 @@ public class RDFPropertyPathTest
     //   eve    rdf:type Animal        (L9 — superclass of Mammal, not below)
     // ─────────────────────────────────────────────────────────────────────────
 
-    private static readonly RDFResource SubClassOf = new RDFResource("rdfs:subClassOf");
-    private static readonly RDFResource EquivClass  = new RDFResource("owl:equivalentClass");
+    private static readonly RDFResource SubClassOf = RDFVocabulary.RDFS.SUB_CLASS_OF;
+    private static readonly RDFResource EquivClass  = RDFVocabulary.OWL.EQUIVALENT_CLASS;
 
     private static RDFGraph BuildSubsumptionGraph()
     {
         // Class nodes
-        var cPerson         = new RDFResource("ex:Person");
-        var cCognitiveAgent = new RDFResource("ex:CognitiveAgent");
-        var cModernHuman    = new RDFResource("ex:ModernHuman");
-        var cHomoSapiens    = new RDFResource("ex:HomoSapiens");
-        var cHominid        = new RDFResource("ex:Hominid");
-        var cPrimate        = new RDFResource("ex:Primate");
-        var cMammal         = new RDFResource("ex:Mammal");
-        var cVertebrate     = new RDFResource("ex:Vertebrate");
-        var cChordate       = new RDFResource("ex:Chordate");
-        var cAnimal         = new RDFResource("ex:Animal");
-        var cOrganism       = new RDFResource("ex:Organism");
-        var cLivingThing    = new RDFResource("ex:LivingThing");
-        var cPhysicalObject = new RDFResource("ex:PhysicalObject");
-        var cObject         = new RDFResource("ex:Object");
-        var cEntity         = new RDFResource("ex:Entity");
-        var cThing          = new RDFResource("ex:Thing");
-        var cHumanBeing     = new RDFResource("ex:HumanBeing");
-        var cSocialAnimal   = new RDFResource("ex:SocialAnimal");
+        RDFResource cPerson         = new RDFResource("ex:Person");
+        RDFResource cCognitiveAgent = new RDFResource("ex:CognitiveAgent");
+        RDFResource cModernHuman    = new RDFResource("ex:ModernHuman");
+        RDFResource cHomoSapiens    = new RDFResource("ex:HomoSapiens");
+        RDFResource cHominid        = new RDFResource("ex:Hominid");
+        RDFResource cPrimate        = new RDFResource("ex:Primate");
+        RDFResource cMammal         = new RDFResource("ex:Mammal");
+        RDFResource cVertebrate     = new RDFResource("ex:Vertebrate");
+        RDFResource cChordate       = new RDFResource("ex:Chordate");
+        RDFResource cAnimal         = new RDFResource("ex:Animal");
+        RDFResource cOrganism       = new RDFResource("ex:Organism");
+        RDFResource cLivingThing    = new RDFResource("ex:LivingThing");
+        RDFResource cPhysicalObject = new RDFResource("ex:PhysicalObject");
+        RDFResource cObject         = new RDFResource("ex:Object");
+        RDFResource cEntity         = new RDFResource("ex:Entity");
+        RDFResource cThing          = new RDFResource("ex:Thing");
+        RDFResource cHumanBeing     = new RDFResource("ex:HumanBeing");
+        RDFResource cSocialAnimal   = new RDFResource("ex:SocialAnimal");
 
         RDFGraph g = new RDFGraph();
 
         // 15 rdfs:subClassOf edges (L0 → L15)
         g.AddTriple(new RDFTriple(cPerson,         SubClassOf, cCognitiveAgent));   // L0→L1
-        g.AddTriple(new RDFTriple(cCognitiveAgent,  SubClassOf, cModernHuman));      // L1→L2
+        g.AddTriple(new RDFTriple(cCognitiveAgent, SubClassOf, cModernHuman));      // L1→L2
         g.AddTriple(new RDFTriple(cModernHuman,    SubClassOf, cHomoSapiens));      // L2→L3
         g.AddTriple(new RDFTriple(cHomoSapiens,    SubClassOf, cHominid));          // L3→L4
         g.AddTriple(new RDFTriple(cHominid,        SubClassOf, cPrimate));          // L4→L5
@@ -2160,26 +2160,26 @@ public class RDFPropertyPathTest
             .ToHashSet();
 
         // All 16 levels present
-        Assert.IsTrue(classes.Contains("ex:Person"),         "L0  Person (zero hops of subClassOf)");
-        Assert.IsTrue(classes.Contains("ex:CognitiveAgent"), "L1  CognitiveAgent");
-        Assert.IsTrue(classes.Contains("ex:ModernHuman"),    "L2  ModernHuman");
-        Assert.IsTrue(classes.Contains("ex:HomoSapiens"),    "L3  HomoSapiens");
-        Assert.IsTrue(classes.Contains("ex:Hominid"),        "L4  Hominid");
-        Assert.IsTrue(classes.Contains("ex:Primate"),        "L5  Primate");
-        Assert.IsTrue(classes.Contains("ex:Mammal"),         "L6  Mammal");
-        Assert.IsTrue(classes.Contains("ex:Vertebrate"),     "L7  Vertebrate");
-        Assert.IsTrue(classes.Contains("ex:Chordate"),       "L8  Chordate");
-        Assert.IsTrue(classes.Contains("ex:Animal"),         "L9  Animal");
-        Assert.IsTrue(classes.Contains("ex:Organism"),       "L10 Organism");
-        Assert.IsTrue(classes.Contains("ex:LivingThing"),    "L11 LivingThing");
-        Assert.IsTrue(classes.Contains("ex:PhysicalObject"), "L12 PhysicalObject");
-        Assert.IsTrue(classes.Contains("ex:Object"),         "L13 Object");
-        Assert.IsTrue(classes.Contains("ex:Entity"),         "L14 Entity");
-        Assert.IsTrue(classes.Contains("ex:Thing"),          "L15 Thing (root)");
+        Assert.Contains("ex:Person", classes,         "L0  Person (zero hops of subClassOf)");
+        Assert.Contains("ex:CognitiveAgent", classes, "L1  CognitiveAgent");
+        Assert.Contains("ex:ModernHuman", classes,    "L2  ModernHuman");
+        Assert.Contains("ex:HomoSapiens", classes,    "L3  HomoSapiens");
+        Assert.Contains("ex:Hominid", classes,        "L4  Hominid");
+        Assert.Contains("ex:Primate", classes,        "L5  Primate");
+        Assert.Contains("ex:Mammal", classes,         "L6  Mammal");
+        Assert.Contains("ex:Vertebrate", classes,     "L7  Vertebrate");
+        Assert.Contains("ex:Chordate", classes,       "L8  Chordate");
+        Assert.Contains("ex:Animal", classes,         "L9  Animal");
+        Assert.Contains("ex:Organism", classes,       "L10 Organism");
+        Assert.Contains("ex:LivingThing", classes,    "L11 LivingThing");
+        Assert.Contains("ex:PhysicalObject", classes, "L12 PhysicalObject");
+        Assert.Contains("ex:Object", classes,         "L13 Object");
+        Assert.Contains("ex:Entity", classes,         "L14 Entity");
+        Assert.Contains("ex:Thing", classes,          "L15 Thing (root)");
 
         // Exactly 16 — no spurious classes (individuals or unrelated resources)
-        Assert.AreEqual(16, classes.Count, "Exactly 16 distinct classes, no spurious results");
-        Assert.IsFalse(classes.Contains(Alice.ToString()), "alice is an individual, not a class");
+        Assert.HasCount(16, classes, "Exactly 16 distinct classes, no spurious results");
+        Assert.DoesNotContain(Alice.ToString(), classes, "alice is an individual, not a class");
     }
 
     // ── Test 2 ───────────────────────────────────────────────────────────────
@@ -2203,28 +2203,28 @@ public class RDFPropertyPathTest
             .ToHashSet();
 
         // Inside window [5,10]
-        Assert.IsTrue(classes.Contains("ex:Primate"),     "L5  Primate  — hop 5 (lower bound)");
-        Assert.IsTrue(classes.Contains("ex:Mammal"),      "L6  Mammal   — hop 6");
-        Assert.IsTrue(classes.Contains("ex:Vertebrate"),  "L7  Vertebrate — hop 7");
-        Assert.IsTrue(classes.Contains("ex:Chordate"),    "L8  Chordate — hop 8");
-        Assert.IsTrue(classes.Contains("ex:Animal"),      "L9  Animal   — hop 9");
-        Assert.IsTrue(classes.Contains("ex:Organism"),    "L10 Organism — hop 10 (upper bound)");
+        Assert.Contains("ex:Primate", classes,     "L5  Primate  — hop 5 (lower bound)");
+        Assert.Contains("ex:Mammal", classes,      "L6  Mammal   — hop 6");
+        Assert.Contains("ex:Vertebrate", classes,  "L7  Vertebrate — hop 7");
+        Assert.Contains("ex:Chordate", classes,    "L8  Chordate — hop 8");
+        Assert.Contains("ex:Animal", classes,      "L9  Animal   — hop 9");
+        Assert.Contains("ex:Organism", classes,    "L10 Organism — hop 10 (upper bound)");
 
         // Too shallow (hops 0–4)
-        Assert.IsFalse(classes.Contains("ex:Person"),         "L0 hop 0 — below range");
-        Assert.IsFalse(classes.Contains("ex:CognitiveAgent"), "L1 hop 1 — below range");
-        Assert.IsFalse(classes.Contains("ex:ModernHuman"),    "L2 hop 2 — below range");
-        Assert.IsFalse(classes.Contains("ex:HomoSapiens"),    "L3 hop 3 — below range");
-        Assert.IsFalse(classes.Contains("ex:Hominid"),        "L4 hop 4 — below range");
+        Assert.DoesNotContain("ex:Person", classes,         "L0 hop 0 — below range");
+        Assert.DoesNotContain("ex:CognitiveAgent", classes, "L1 hop 1 — below range");
+        Assert.DoesNotContain("ex:ModernHuman", classes,    "L2 hop 2 — below range");
+        Assert.DoesNotContain("ex:HomoSapiens", classes,    "L3 hop 3 — below range");
+        Assert.DoesNotContain("ex:Hominid", classes,        "L4 hop 4 — below range");
 
         // Too deep (hops 11–15)
-        Assert.IsFalse(classes.Contains("ex:LivingThing"),    "L11 hop 11 — above range");
-        Assert.IsFalse(classes.Contains("ex:PhysicalObject"), "L12 hop 12 — above range");
-        Assert.IsFalse(classes.Contains("ex:Object"),         "L13 hop 13 — above range");
-        Assert.IsFalse(classes.Contains("ex:Entity"),         "L14 hop 14 — above range");
-        Assert.IsFalse(classes.Contains("ex:Thing"),          "L15 hop 15 — above range");
+        Assert.DoesNotContain("ex:LivingThing", classes,    "L11 hop 11 — above range");
+        Assert.DoesNotContain("ex:PhysicalObject", classes, "L12 hop 12 — above range");
+        Assert.DoesNotContain("ex:Object", classes,         "L13 hop 13 — above range");
+        Assert.DoesNotContain("ex:Entity", classes,         "L14 hop 14 — above range");
+        Assert.DoesNotContain("ex:Thing", classes,          "L15 hop 15 — above range");
 
-        Assert.AreEqual(6, classes.Count, "Exactly 6 classes in window [5,10]");
+        Assert.HasCount(6, classes, "Exactly 6 classes in window [5,10]");
     }
 
     // ── Test 3 ───────────────────────────────────────────────────────────────
@@ -2247,24 +2247,24 @@ public class RDFPropertyPathTest
             .ToHashSet();
 
         // Mammal itself (zero hops)
-        Assert.IsTrue(subs.Contains("ex:Mammal"),         "Mammal itself (0 hops)");
+        Assert.Contains("ex:Mammal", subs,         "Mammal itself (0 hops)");
         // Transitive subclasses descending from L6 towards L0
-        Assert.IsTrue(subs.Contains("ex:Primate"),        "Primate — 1 hop down");
-        Assert.IsTrue(subs.Contains("ex:Hominid"),        "Hominid — 2 hops down");
-        Assert.IsTrue(subs.Contains("ex:HomoSapiens"),    "HomoSapiens — 3 hops down");
-        Assert.IsTrue(subs.Contains("ex:ModernHuman"),    "ModernHuman — 4 hops down");
-        Assert.IsTrue(subs.Contains("ex:CognitiveAgent"), "CognitiveAgent — 5 hops down");
-        Assert.IsTrue(subs.Contains("ex:Person"),         "Person — 6 hops down (leaf)");
+        Assert.Contains("ex:Primate", subs,        "Primate — 1 hop down");
+        Assert.Contains("ex:Hominid", subs,        "Hominid — 2 hops down");
+        Assert.Contains("ex:HomoSapiens", subs,    "HomoSapiens — 3 hops down");
+        Assert.Contains("ex:ModernHuman", subs,    "ModernHuman — 4 hops down");
+        Assert.Contains("ex:CognitiveAgent", subs, "CognitiveAgent — 5 hops down");
+        Assert.Contains("ex:Person", subs,         "Person — 6 hops down (leaf)");
 
         // Superclasses of Mammal must not appear
-        Assert.IsFalse(subs.Contains("ex:Vertebrate"),    "Vertebrate is a superclass of Mammal");
-        Assert.IsFalse(subs.Contains("ex:Chordate"),      "Chordate is a superclass of Mammal");
-        Assert.IsFalse(subs.Contains("ex:Animal"),        "Animal is a superclass of Mammal");
-        Assert.IsFalse(subs.Contains("ex:Thing"),         "Thing is the taxonomy root");
+        Assert.DoesNotContain("ex:Vertebrate", subs,    "Vertebrate is a superclass of Mammal");
+        Assert.DoesNotContain("ex:Chordate", subs,      "Chordate is a superclass of Mammal");
+        Assert.DoesNotContain("ex:Animal", subs,        "Animal is a superclass of Mammal");
+        Assert.DoesNotContain("ex:Thing", subs,         "Thing is the taxonomy root");
         // bob has rdf:type Mammal but is an individual, not reachable via ^subClassOf
-        Assert.IsFalse(subs.Contains(Bob.ToString()),     "bob is an individual, not a class node");
+        Assert.DoesNotContain(Bob.ToString(), subs,     "bob is an individual, not a class node");
 
-        Assert.AreEqual(7, subs.Count, "Exactly 7 nodes: Mammal + 6 transitive subclasses");
+        Assert.HasCount(7, subs, "Exactly 7 nodes: Mammal + 6 transitive subclasses");
     }
 
     // ── Test 4 ───────────────────────────────────────────────────────────────
@@ -2290,20 +2290,20 @@ public class RDFPropertyPathTest
             .ToHashSet();
 
         // ZeroOrMore starts at Person (0 hops) and climbs to Thing (15 hops)
-        Assert.IsTrue(classes.Contains("ex:Person"),         "Person — entry of subClassOf* (0 hops)");
-        Assert.IsTrue(classes.Contains("ex:CognitiveAgent"), "CognitiveAgent — L1");
-        Assert.IsTrue(classes.Contains("ex:HomoSapiens"),    "HomoSapiens — L3");
-        Assert.IsTrue(classes.Contains("ex:Hominid"),        "Hominid — L4");
-        Assert.IsTrue(classes.Contains("ex:Mammal"),         "Mammal — L6");
-        Assert.IsTrue(classes.Contains("ex:Animal"),         "Animal — L9");
-        Assert.IsTrue(classes.Contains("ex:LivingThing"),    "LivingThing — L11");
-        Assert.IsTrue(classes.Contains("ex:Thing"),          "Thing — L15 (root)");
+        Assert.Contains("ex:Person", classes,         "Person — entry of subClassOf* (0 hops)");
+        Assert.Contains("ex:CognitiveAgent", classes, "CognitiveAgent — L1");
+        Assert.Contains("ex:HomoSapiens", classes,    "HomoSapiens — L3");
+        Assert.Contains("ex:Hominid", classes,        "Hominid — L4");
+        Assert.Contains("ex:Mammal", classes,         "Mammal — L6");
+        Assert.Contains("ex:Animal", classes,         "Animal — L9");
+        Assert.Contains("ex:LivingThing", classes,    "LivingThing — L11");
+        Assert.Contains("ex:Thing", classes,          "Thing — L15 (root)");
 
-        Assert.AreEqual(16, classes.Count, "All 16 superclasses reachable via the equivalence bridge");
+        Assert.HasCount(16, classes, "All 16 superclasses reachable via the equivalence bridge");
 
         // The equivalence-bridge intermediate must NOT bleed into the result
-        Assert.IsFalse(classes.Contains("ex:HumanBeing"), "HumanBeing is an intermediate, not an endpoint");
-        Assert.IsFalse(classes.Contains(Dave.ToString()),  "dave is the subject individual");
+        Assert.DoesNotContain("ex:HumanBeing", classes, "HumanBeing is an intermediate, not an endpoint");
+        Assert.DoesNotContain(Dave.ToString(), classes,  "dave is the subject individual");
     }
 
     // ── Test 5 ───────────────────────────────────────────────────────────────
@@ -2327,18 +2327,18 @@ public class RDFPropertyPathTest
             .Select(r => r["?E"].ToString())
             .ToHashSet();
 
-        Assert.IsTrue(classes.Contains("ex:HomoSapiens"), "HomoSapiens — 0 hops (direct type)");
-        Assert.IsTrue(classes.Contains("ex:Hominid"),     "Hominid — 1 hop (immediate superclass)");
+        Assert.Contains("ex:HomoSapiens", classes, "HomoSapiens — 0 hops (direct type)");
+        Assert.Contains("ex:Hominid", classes,     "Hominid — 1 hop (immediate superclass)");
 
         // Excluded because they are ≥ 2 hops away
-        Assert.IsFalse(classes.Contains("ex:Primate"),        "Primate — 2 hops, cut off by ?");
-        Assert.IsFalse(classes.Contains("ex:Mammal"),         "Mammal — 3 hops, cut off by ?");
-        Assert.IsFalse(classes.Contains("ex:Animal"),         "Animal — 6 hops, cut off by ?");
-        Assert.IsFalse(classes.Contains("ex:LivingThing"),    "LivingThing — 8 hops, cut off by ?");
-        Assert.IsFalse(classes.Contains("ex:Thing"),          "Thing — 12 hops, cut off by ?");
-        Assert.IsFalse(classes.Contains(Carol.ToString()),    "carol is an individual, not a class");
+        Assert.DoesNotContain("ex:Primate", classes,        "Primate — 2 hops, cut off by ?");
+        Assert.DoesNotContain("ex:Mammal", classes,         "Mammal — 3 hops, cut off by ?");
+        Assert.DoesNotContain("ex:Animal", classes,         "Animal — 6 hops, cut off by ?");
+        Assert.DoesNotContain("ex:LivingThing", classes,    "LivingThing — 8 hops, cut off by ?");
+        Assert.DoesNotContain("ex:Thing", classes,          "Thing — 12 hops, cut off by ?");
+        Assert.DoesNotContain(Carol.ToString(), classes,    "carol is an individual, not a class");
 
-        Assert.AreEqual(2, classes.Count, "Exactly 2 classes with subClassOf?");
+        Assert.HasCount(2, classes, "Exactly 2 classes with subClassOf?");
     }
 
     // ── Test 6 ───────────────────────────────────────────────────────────────
@@ -2371,13 +2371,13 @@ public class RDFPropertyPathTest
             .ToHashSet();
 
         // Must find the three Mammal-or-below individuals
-        Assert.IsTrue(instances.Contains(Alice.ToString()), "alice — type Person, subClassOf* reaches Mammal");
-        Assert.IsTrue(instances.Contains(Bob.ToString()),   "bob — type Mammal, ZeroOrMore includes self");
-        Assert.IsTrue(instances.Contains(Carol.ToString()), "carol — type HomoSapiens, subClassOf* reaches Mammal");
+        Assert.Contains(Alice.ToString(), instances, "alice — type Person, subClassOf* reaches Mammal");
+        Assert.Contains(Bob.ToString(), instances,   "bob — type Mammal, ZeroOrMore includes self");
+        Assert.Contains(Carol.ToString(), instances, "carol — type HomoSapiens, subClassOf* reaches Mammal");
 
         // Must not find individuals whose type is above Mammal or unrelated
-        Assert.IsFalse(instances.Contains(Dave.ToString()), "dave — type HumanBeing, no subClassOf chain to Mammal");
-        Assert.IsFalse(instances.Contains(Eve.ToString()),  "eve — type Animal, superclass of Mammal");
+        Assert.DoesNotContain(Dave.ToString(), instances, "dave — type HumanBeing, no subClassOf chain to Mammal");
+        Assert.DoesNotContain(Eve.ToString(), instances,  "eve — type Animal, superclass of Mammal");
 
         Assert.AreEqual(3, result.SelectResultsCount, "Exactly 3 instances of Mammal or its subclasses");
     }
