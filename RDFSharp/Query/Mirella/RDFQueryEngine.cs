@@ -1177,6 +1177,7 @@ namespace RDFSharp.Query
         {
             DataTable resultTable = new DataTable();
 
+            //Collect information about boundary terms of the property path
             bool startIsVar = propertyPath.Start is RDFVariable;
             bool endIsVar   = propertyPath.End   is RDFVariable;
             RDFResource startResource = propertyPath.Start as RDFResource;
