@@ -272,7 +272,7 @@ namespace RDFSharp.Query
                         case RDFPropertyPath propertyPath:
                             //Evaluate property path on the given data source
                             DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-                            //Set name and metadata of result datatable (mirrors what is done for patterns)
+                            //Set name and metadata of result datatable
                             pPathResultsTable.ExtendedProperties.Add(IsOptional, propertyPath.IsOptional);
                             pPathResultsTable.ExtendedProperties.Add(JoinAsUnion, propertyPath.JoinAsUnion);
                             pPathResultsTable.ExtendedProperties.Add(JoinAsMinus, propertyPath.JoinAsMinus);
