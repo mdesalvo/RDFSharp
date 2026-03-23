@@ -15,6 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -1443,6 +1444,63 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
         string printed = path.ToString();
         Assert.IsTrue(printed.Contains('^') && (printed.Contains("knows>+") || printed.Contains("knows+")), $"Printed: {printed}");
+    }
+
+    [TestMethod]
+    public void Printer_Optional_SetsFlags()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows))
+            .Optional();
+        Assert.IsTrue(path.IsOptional);
+        Assert.IsFalse(path.JoinAsUnion);
+        Assert.IsFalse(path.JoinAsMinus);
+    }
+
+    [TestMethod]
+    public void Printer_Optional_OverridesPreviousFlags()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows))
+            .UnionWithNext()
+            .Optional();
+        Assert.IsTrue(path.IsOptional);
+        Assert.IsFalse(path.JoinAsUnion);
+        Assert.IsFalse(path.JoinAsMinus);
+    }
+
+    [TestMethod]
+    public void Printer_UnionWithNext_SetsFlags()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows))
+            .UnionWithNext();
+        Assert.IsFalse(path.IsOptional);
+        Assert.IsTrue(path.JoinAsUnion);
+        Assert.IsFalse(path.JoinAsMinus);
+    }
+
+    [TestMethod]
+    public void Printer_MinusWithNext_SetsFlags()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows))
+            .MinusWithNext();
+        Assert.IsFalse(path.IsOptional);
+        Assert.IsFalse(path.JoinAsUnion);
+        Assert.IsTrue(path.JoinAsMinus);
+    }
+
+    [TestMethod]
+    public void Printer_Optional_WrapsOutputWithOptional()
+    {
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())
+            .Optional();
+        string printed = path.ToString();
+        Assert.IsTrue(printed.StartsWith("OPTIONAL {", StringComparison.Ordinal), $"Expected OPTIONAL prefix, got: {printed}");
+        Assert.IsTrue(printed.EndsWith("}"), $"Expected closing brace, got: {printed}");
+        Assert.IsTrue(printed.Contains("knows"), $"Path predicate missing from: {printed}");
     }
 
     #endregion

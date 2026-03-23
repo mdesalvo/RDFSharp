@@ -9614,5 +9614,152 @@ public class RDFQueryPrinterTest
   [TestMethod]
   public void ShouldPrintPatternMemberTypedLiteralResolved()
     => Assert.IsTrue(string.Equals("\"hello\"^^xsd:string", RDFQueryPrinter.PrintPatternMember(new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING), [RDFNamespaceRegister.GetByPrefix("xsd")]), StringComparison.Ordinal));
+
+  // ── Property path flag printing ─────────────────────────────────────────
+
+  [TestMethod]
+  public void ShouldPrintSelectQueryWithOptionalPropertyPath()
+  {
+    RDFSelectQuery query = new RDFSelectQuery()
+      .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+      .AddPatternGroup(new RDFPatternGroup()
+        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
+          .Optional()));
+    string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+    const string expectedQueryString =
+      """
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+      SELECT *
+      WHERE {
+        {
+          OPTIONAL { ?S rdfs:label ?E } .
+        }
+      }
+
+      """;
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
+    Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
+  }
+
+  [TestMethod]
+  public void ShouldPrintSelectQueryWithSingleUnionPropertyPathFollowedByPattern()
+  {
+    RDFSelectQuery query = new RDFSelectQuery()
+      .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+      .AddPatternGroup(new RDFPatternGroup()
+        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
+          .UnionWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))));
+    string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+    const string expectedQueryString =
+      """
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+      SELECT *
+      WHERE {
+        {
+          { ?S rdfs:label ?E }
+          UNION
+          { ?S rdfs:label "label"@EN }
+        }
+      }
+
+      """;
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
+    Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
+  }
+
+  [TestMethod]
+  public void ShouldPrintSelectQueryWithSingleUnionPropertyPathFollowedByPropertyPath()
+  {
+    RDFSelectQuery query = new RDFSelectQuery()
+      .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+      .AddPatternGroup(new RDFPatternGroup()
+        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
+          .UnionWithNext())
+        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E2"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
+    string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+    const string expectedQueryString =
+      """
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+      SELECT *
+      WHERE {
+        {
+          { ?S rdfs:label ?E }
+          UNION
+          { ?S rdfs:label ?E2 }
+        }
+      }
+
+      """;
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
+    Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
+  }
+
+  [TestMethod]
+  public void ShouldPrintSelectQueryWithSingleMinusPropertyPathFollowedByPattern()
+  {
+    RDFSelectQuery query = new RDFSelectQuery()
+      .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+      .AddPatternGroup(new RDFPatternGroup()
+        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
+          .MinusWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))));
+    string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+    const string expectedQueryString =
+      """
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+      SELECT *
+      WHERE {
+        {
+          { ?S rdfs:label ?E }
+          MINUS
+          { ?S rdfs:label "label"@EN }
+        }
+      }
+
+      """;
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
+    Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
+  }
+
+  [TestMethod]
+  public void ShouldPrintSelectQueryWithSingleMinusPropertyPathFollowedByPropertyPath()
+  {
+    RDFSelectQuery query = new RDFSelectQuery()
+      .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
+      .AddPatternGroup(new RDFPatternGroup()
+        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
+          .MinusWithNext())
+        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E2"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
+    string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
+    const string expectedQueryString =
+      """
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+      SELECT *
+      WHERE {
+        {
+          { ?S rdfs:label ?E }
+          MINUS
+          { ?S rdfs:label ?E2 }
+        }
+      }
+
+      """;
+    Assert.IsTrue(string.Equals(queryString, expectedQueryString, StringComparison.Ordinal));
+    Assert.AreEqual(queryString.Count(chr => chr == '}'), queryString.Count(chr => chr == '{'));
+  }
+
   #endregion
 }

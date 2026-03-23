@@ -619,29 +619,66 @@ namespace RDFSharp.Query
                     }
                     case RDFPropertyPath ppPgMember when ppPgMember.IsEvaluable:
                     {
-                        //In case we are under MINUS or UNION semantic, we need to print all their closing brackets to complete the grammar
-                        if (printingUnion || printingMinus)
+                        //Property path is set as UNION with the next pg member and it IS NOT the last one => append UNION
+                        if (ppPgMember.JoinAsUnion && !isLastPgMemberOrNextPgMemberIsBind)
                         {
-                            //We can directly print the bracketed property path
-                            result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
-
-                            //Then we need to print all the pending brackets and to keep care of
-                            //reflecting this in the indentation spaces (-2) which must be consumed
-                            while (openedBrackets > 0)
+                            //In case we are opening UNION semantic, but we are also under MINUS semantic, we need to print its opening bracket
+                            //and to keep care of reflecting this in the indentation spaces (+2)
+                            if (!printingUnion && printingMinus)
                             {
-                                openedBrackets--;
-                                result.AppendLine(string.Concat(spaces, "  }"));
-                                if (spaces.Length >= 2)
-                                    spaces = new string(' ', spaces.Length - 2);
+                                openedBrackets++;
+                                spaces = $"{spaces}  ";
+                                result.AppendLine(string.Concat(spaces, "  {"));
                             }
 
-                            //Unsignal UNION/MINUS semantic
-                            printingUnion = false;
-                            printingMinus = false;
+                            //Then we can print the bracketed property path, along with its UNION operator
+                            result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
+                            result.AppendLine($"{spaces}    UNION");
+
+                            //Signal UNION semantic
+                            printingUnion = true;
                         }
+
+                        //Property path is set as MINUS with the next pg member and it IS NOT the last one => append MINUS
+                        else if (ppPgMember.JoinAsMinus && !isLastPgMemberOrNextPgMemberIsBind)
+                        {
+                            //We can directly print the bracketed property path, along with its MINUS operator
+                            result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
+                            result.AppendLine($"{spaces}    MINUS");
+
+                            //Signal MINUS semantic
+                            printingMinus = true;
+                            //Unsignal UNION semantic
+                            printingUnion = false;
+                        }
+
+                        //Property path is set as INTERSECT with the next pg member or it IS the last one => do not append UNION/MINUS
                         else
                         {
-                            result.AppendLine($"{spaces}    {PrintPropertyPath(ppPgMember, prefixes)} .");
+                            //In case we are under MINUS or UNION semantic, we need to print all their closing brackets to complete the grammar
+                            if (printingUnion || printingMinus)
+                            {
+                                //We can directly print the bracketed property path
+                                result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(ppPgMember, prefixes), " }"));
+
+                                //Then we need to print all the pending brackets and to keep care of
+                                //reflecting this in the indentation spaces (-2) which must be consumed
+                                while (openedBrackets > 0)
+                                {
+                                    openedBrackets--;
+                                    result.AppendLine(string.Concat(spaces, "  }"));
+                                    if (spaces.Length >= 2)
+                                        spaces = new string(' ', spaces.Length - 2);
+                                }
+
+                                //Unsignal UNION/MINUS semantic
+                                printingUnion = false;
+                                printingMinus = false;
+                            }
+                            else
+                            {
+                                result.AppendLine($"{spaces}    {PrintPropertyPath(ppPgMember, prefixes)} .");
+                            }
                         }
                         break;
                     }
@@ -828,7 +865,8 @@ namespace RDFSharp.Query
 
             result.Append(' ');
             result.Append(PrintPatternMember(propertyPath.End, prefixes));
-            return result.ToString();
+            string pathString = result.ToString();
+            return propertyPath.IsOptional ? $"OPTIONAL {{ {pathString} }}" : pathString;
         }
 
         /// <summary>
