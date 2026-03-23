@@ -272,6 +272,10 @@ namespace RDFSharp.Query
                         case RDFPropertyPath propertyPath:
                             //Evaluate property path on the given data source
                             DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
+                            //Set name and metadata of result datatable (mirrors what is done for patterns)
+                            pPathResultsTable.ExtendedProperties.Add(IsOptional, propertyPath.IsOptional);
+                            pPathResultsTable.ExtendedProperties.Add(JoinAsUnion, propertyPath.JoinAsUnion);
+                            pPathResultsTable.ExtendedProperties.Add(JoinAsMinus, propertyPath.JoinAsMinus);
                             //Save result datatable
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                             break;
@@ -1457,16 +1461,19 @@ namespace RDFSharp.Query
                 {
                     int newDepth = depth + 1;
 
+                    //Skip already-visited neighbors: prevents duplicate results when multiple
+                    //paths converge on the same node (e.g. diamond-shaped graphs)
+                    if (visited.Contains(neighbor.ToString()))
+                        continue;
+                    visited.Add(neighbor.ToString());
+
                     //Collect this neighbor only if it satisfies the minimum hop constraint
                     if (newDepth >= minHops)
                         result.Add(neighbor);
 
-                    //Enqueue unvisited neighbors that can still be expanded further
-                    if (!visited.Contains(neighbor.ToString()) && (maxHops < 0 || newDepth < maxHops))
-                    {
-                        visited.Add(neighbor.ToString());
+                    //Enqueue neighbors that can still be expanded further
+                    if (maxHops < 0 || newDepth < maxHops)
                         queue.Enqueue((neighbor, newDepth));
-                    }
                 }
             }
             return result;
