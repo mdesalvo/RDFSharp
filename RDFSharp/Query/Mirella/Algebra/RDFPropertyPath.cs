@@ -51,6 +51,21 @@ namespace RDFSharp.Query
         /// </summary>
         internal bool HasTransitiveSteps
             => Steps.Any(s => s.StepCardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne);
+
+        /// <summary>
+        /// Flag indicating the property path as Optional
+        /// </summary>
+        internal bool IsOptional { get; set; }
+
+        /// <summary>
+        /// Flag indicating the property path to be joined as Union
+        /// </summary>
+        internal bool JoinAsUnion { get; set; }
+
+        /// <summary>
+        /// Flag indicating the property path to be joined as Minus
+        /// </summary>
+        internal bool JoinAsMinus { get; set; }
         #endregion
 
         #region Ctors
@@ -89,6 +104,39 @@ namespace RDFSharp.Query
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Sets the property path to be joined as Optional with the previous member
+        /// </summary>
+        public RDFPropertyPath Optional()
+        {
+            IsOptional = true;
+            JoinAsUnion = false;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the property path to be joined as Union with the next member
+        /// </summary>
+        public RDFPropertyPath UnionWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = true;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the property path to be joined as Minus with the next member
+        /// </summary>
+        public RDFPropertyPath MinusWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = false;
+            JoinAsMinus = true;
+            return this;
+        }
+
         /// <summary>
         /// Adds the given alternative steps to the path. If only one is given, it is considered sequence.
         /// </summary>
