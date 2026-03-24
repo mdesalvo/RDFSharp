@@ -1444,8 +1444,11 @@ namespace RDFSharp.Query
         /// </summary>
         private List<RDFResource> BFSReachable(RDFResource startNode, RDFResource property, bool inverse, RDFDataSource dataSource, int minHops, int maxHops)
         {
-            List<RDFResource> result  = new List<RDFResource>();
-            HashSet<string>   visited = new HashSet<string> { startNode.ToString() };
+            List<RDFResource> result = new List<RDFResource>();
+
+            //Initialize data structures for beginning of BFS visit
+            HashSet<string> collected = new HashSet<string>();
+            HashSet<string> enqueued = new HashSet<string> { startNode.ToString() };
             Queue<(RDFResource node, int depth)> queue = new Queue<(RDFResource, int)>();
             queue.Enqueue((startNode, 0));
 
@@ -1461,21 +1464,27 @@ namespace RDFSharp.Query
                 {
                     int newDepth = depth + 1;
 
-                    //Skip already-visited neighbors: prevents duplicate results when multiple
-                    //paths converge on the same node (e.g. diamond-shaped graphs)
-                    if (visited.Contains(neighbor.ToString()))
-                        continue;
-                    visited.Add(neighbor.ToString());
-
-                    //Collect this neighbor only if it satisfies the minimum hop constraint
-                    if (newDepth >= minHops)
+                    //Collect this neighbor if it satisfies the minimum hop constraint and it has not
+                    //been collected yet. Note: startNode itself can be a valid result when a cycle
+                    //closes back to it (e.g. alice->bob->carol->alice with OneOrMore), so we do NOT
+                    //pre-seed collected with startNode — only enqueued is pre-seeded to stop re-expansion.
+                    if (newDepth >= minHops && !collected.Contains(neighbor.ToString()))
+                    {
+                        collected.Add(neighbor.ToString());
                         result.Add(neighbor);
+                    }
 
-                    //Enqueue neighbors that can still be expanded further
-                    if (maxHops < 0 || newDepth < maxHops)
-                        queue.Enqueue((neighbor, newDepth));
+                    //Enqueue neighbors for further expansion only if not yet enqueued
+                    //(prevents infinite loops and redundant work in cyclic graphs)
+                    if (!enqueued.Contains(neighbor.ToString()))
+                    {
+                        enqueued.Add(neighbor.ToString());
+                        if (maxHops < 0 || newDepth < maxHops)
+                            queue.Enqueue((neighbor, newDepth));
+                    }
                 }
             }
+
             return result;
         }
 
