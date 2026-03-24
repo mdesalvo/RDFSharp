@@ -54,7 +54,7 @@ public class RDFInsertDataOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT DATA {
             }
@@ -83,7 +83,7 @@ public class RDFInsertDataOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

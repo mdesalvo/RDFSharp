@@ -262,9 +262,9 @@ namespace RDFSharp.Query
                             //Evaluate pattern on the given data source
                             DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
                             //Set name and metadata of result datatable
-                            patternResultsTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
-                            patternResultsTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
-                            patternResultsTable.ExtendedProperties.Add(JoinAsMinus, pattern.JoinAsMinus);
+                            patternResultsTable.ExtendedProperties[IsOptional] = pattern.IsOptional;
+                            patternResultsTable.ExtendedProperties[JoinAsUnion] = pattern.JoinAsUnion;
+                            patternResultsTable.ExtendedProperties[JoinAsMinus] = pattern.JoinAsMinus;
                             //Save result datatable
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                             break;
@@ -273,9 +273,9 @@ namespace RDFSharp.Query
                             //Evaluate property path on the given data source
                             DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
                             //Set name and metadata of result datatable
-                            pPathResultsTable.ExtendedProperties.Add(IsOptional, propertyPath.IsOptional);
-                            pPathResultsTable.ExtendedProperties.Add(JoinAsUnion, propertyPath.JoinAsUnion);
-                            pPathResultsTable.ExtendedProperties.Add(JoinAsMinus, propertyPath.JoinAsMinus);
+                            pPathResultsTable.ExtendedProperties[IsOptional] = propertyPath.IsOptional;
+                            pPathResultsTable.ExtendedProperties[JoinAsUnion] = propertyPath.JoinAsUnion;
+                            pPathResultsTable.ExtendedProperties[JoinAsMinus] = propertyPath.JoinAsMinus;
                             //Save result datatable
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                             break;
@@ -1230,11 +1230,11 @@ namespace RDFSharp.Query
 
             //When start is concrete use it as the only seed; otherwise explore from every resource in the datasource
             IEnumerable<RDFResource> seeds = startIsVar ? GetAllResourceNodes(dataSource)
-                                                        : (IEnumerable<RDFResource>)new List<RDFResource> { startResource };
+                                                        : new List<RDFResource> { startResource };
             foreach (RDFResource seed in seeds)
             {
                 foreach (RDFResource reached in EvaluateStepsFromNode(seed, propertyPath.Steps, dataSource))
-                                    AddBindingRow(seed, reached);
+                    AddBindingRow(seed, reached);
             }
 
             return resultTable;

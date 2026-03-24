@@ -54,7 +54,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
             }
@@ -81,7 +81,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
               <ex:subj> <ex:pred> <ex:obj> .
@@ -112,7 +112,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -143,7 +143,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
             }
@@ -173,7 +173,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
             }
@@ -203,7 +203,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
             }
@@ -234,7 +234,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
             }
@@ -266,7 +266,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
             }
@@ -300,7 +300,7 @@ public class RDFInsertWhereOperationTest
 
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             INSERT {
             }
@@ -349,7 +349,7 @@ public class RDFInsertWhereOperationTest
             .AddModifier(new RDFDistinctModifier());
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
@@ -430,7 +430,7 @@ public class RDFInsertWhereOperationTest
             .AddModifier(new RDFDistinctModifier());
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
@@ -505,8 +505,8 @@ public class RDFInsertWhereOperationTest
                     .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
                         .AddAlternativeSteps([
                             new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
-                            new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)]))
-                    .UnionWithNext())
+                            new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)])
+                    .UnionWithNext()))
                 .AddProjectionVariable(new RDFVariable("?Y"))
                 .UnionWithNext())
             .AddSubQuery(new RDFSelectQuery()
@@ -520,7 +520,7 @@ public class RDFInsertWhereOperationTest
             .AddModifier(new RDFDistinctModifier());
         string operationString = operation.ToString();
 
-        Assert.IsTrue(string.Equals(operationString,
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
             """
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
