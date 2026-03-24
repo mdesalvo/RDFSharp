@@ -191,8 +191,7 @@ namespace RDFSharp.Query
             Depth++;
 
             //Collect the given step into the property path
-            Steps.Add(sequenceStep
-                                  .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
+            Steps.Add(sequenceStep.SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
 
             //Update evaluability status of the property path
             if (Start is RDFVariable || End is RDFVariable || Depth > 1 || HasTransitiveSteps)
