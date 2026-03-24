@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2025 Marco De Salvo
+   Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -100,6 +100,33 @@ namespace RDFSharp.Query
             /// Steps within a property path are connected with OR semantic
             /// </summary>
             Alternative = '|'
+        }
+
+        /// <summary>
+        /// RDFPropertyPathStepCardinalities represents an enumeration for possible cardinality constraints on a property path step.
+        /// </summary>
+        public enum RDFPropertyPathStepCardinalities
+        {
+            /// <summary>
+            /// The path step is traversed exactly once (default)
+            /// </summary>
+            ExactlyOne = 1,
+            /// <summary>
+            /// The path step is traversed zero or one times (SPARQL ?)
+            /// </summary>
+            ZeroOrOne = 2,
+            /// <summary>
+            /// The path step is traversed one or more times — transitive closure (SPARQL +)
+            /// </summary>
+            OneOrMore = 3,
+            /// <summary>
+            /// The path step is traversed zero or more times — reflexive-transitive closure (SPARQL *)
+            /// </summary>
+            ZeroOrMore = 4,
+            /// <summary>
+            /// The path step is traversed between MinCardinality and MaxCardinality times (SPARQL {n,m})
+            /// </summary>
+            BoundedRange = 5
         }
 
         /// <summary>

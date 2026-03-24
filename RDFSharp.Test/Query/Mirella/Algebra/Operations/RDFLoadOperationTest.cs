@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2025 Marco De Salvo
+   Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -412,14 +412,6 @@ public class RDFLoadOperationTest
         server
             .Given(
                 Request.Create()
-                    .WithPath("ex:ShouldApplyToSPARQLUpdateEndpoint"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
-        server
-            .Given(
-                Request.Create()
                     .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpoint"))
             .RespondWith(
                 Response.Create()
@@ -436,14 +428,6 @@ public class RDFLoadOperationTest
     [TestMethod]
     public void ShouldApplyToSPARQLUpdateEndpointWithParams()
     {
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithParams"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
         server
             .Given(
                 Request.Create()
@@ -470,14 +454,6 @@ public class RDFLoadOperationTest
         server
             .Given(
                 Request.Create()
-                    .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithRequestContentType"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
-        server
-            .Given(
-                Request.Create()
                     .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithRequestContentType")
                     .WithBody(new RegexMatcher("update=.*")))
             .RespondWith(
@@ -495,14 +471,6 @@ public class RDFLoadOperationTest
     [TestMethod]
     public void ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams()
     {
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithRequestContentTypeAndParams"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
         server
             .Given(
                 Request.Create()
@@ -528,14 +496,6 @@ public class RDFLoadOperationTest
         server
             .Given(
                 Request.Create()
-                    .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
-        server
-            .Given(
-                Request.Create()
                     .WithPath("/RDFLoadOperationTest/ShouldApplyToSPARQLUpdateEndpointWithTimeoutMilliseconds"))
             .RespondWith(
                 Response.Create()
@@ -555,14 +515,6 @@ public class RDFLoadOperationTest
         server
             .Given(
                 Request.Create()
-                    .WithPath("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
-        server
-            .Given(
-                Request.Create()
                     .WithPath("/RDFLoadOperationTest/ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpointAccordingToTimeoutBehavior"))
             .RespondWith(
                 Response.Create()
@@ -579,14 +531,6 @@ public class RDFLoadOperationTest
     [TestMethod]
     public void ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint()
     {
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("ex:ShouldThrowExceptionWhenApplyingToSPARQLUpdateEndpoint"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
         server
             .Given(
                 Request.Create()
@@ -614,14 +558,6 @@ public class RDFLoadOperationTest
     [TestMethod]
     public async Task ShouldApplyToSPARQLUpdateEndpointAsync()
     {
-        server
-            .Given(
-                Request.Create()
-                    .WithPath("ex:ShouldApplyToSPARQLUpdateEndpointAsync"))
-            .RespondWith(
-                Response.Create()
-                    .WithHeader("ContentType", "text/turtle")
-                    .WithBody("<ex:subj> a <ex:obj> ."));
         server
             .Given(
                 Request.Create()

@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2025 Marco De Salvo
+   Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -211,6 +211,11 @@ namespace RDFSharp.Query
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
                                                                          .Distinct()
                                                                          .ToList();
+
+            //Optimize execution order of patterns within reorderable inner-join blocks
+            if (dataSource is RDFGraph || dataSource is RDFMemoryStore)
+                evaluablePGMembers = RDFQueryOptimizer.OptimizePatternOrder(evaluablePGMembers, dataSource);
+
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>(evaluablePGMembers.Count);
 
             //**Service** evaluation => send it querified to SPARQL endpoint
@@ -267,6 +272,10 @@ namespace RDFSharp.Query
                         case RDFPropertyPath propertyPath:
                             //Evaluate property path on the given data source
                             DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
+                            //Set name and metadata of result datatable
+                            pPathResultsTable.ExtendedProperties.Add(IsOptional, propertyPath.IsOptional);
+                            pPathResultsTable.ExtendedProperties.Add(JoinAsUnion, propertyPath.JoinAsUnion);
+                            pPathResultsTable.ExtendedProperties.Add(JoinAsMinus, propertyPath.JoinAsMinus);
                             //Save result datatable
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                             break;
@@ -1125,6 +1134,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
         {
+            //Dispatch to transitive evaluation when any step carries a cardinality constraint
+            if (propertyPath.HasTransitiveSteps)
+                return ApplyTransitivePropertyPath(propertyPath, dataSource);
+
             //Translate property path into equivalent list of patterns
             List<RDFPattern> patternList = propertyPath.GetPatternList();
             List<DataTable> patternTables = new List<DataTable>(patternList.Count);
@@ -1157,6 +1170,313 @@ namespace RDFSharp.Query
             }
 
             return resultTable;
+        }
+
+        /// <summary>
+        /// Applies a property path containing at least one transitive cardinality step (?, *, +, {min,max}).<br/>
+        /// For each seed node, evaluates all path steps via BFS and emits a result row for every reachable end node.
+        /// Seeds are either the concrete start resource or all resource nodes in the datasource when the start is a variable.
+        /// </summary>
+        internal DataTable ApplyTransitivePropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
+        {
+            DataTable resultTable = new DataTable();
+
+            //Collect information about boundary terms of the property path
+            bool startIsVar = propertyPath.Start is RDFVariable;
+            bool endIsVar   = propertyPath.End   is RDFVariable;
+            RDFResource startResource = propertyPath.Start as RDFResource;
+            RDFResource endResource   = propertyPath.End   as RDFResource;
+
+            //Add output columns only for the terms that are variables
+            if (startIsVar)
+                AddColumn(resultTable, propertyPath.Start.ToString());
+            if (endIsVar)
+                AddColumn(resultTable, propertyPath.End.ToString());
+
+            //Track already-added (start, end) pairs to avoid duplicate rows
+            HashSet<string> addedRows = new HashSet<string>();
+
+            //Emits one result row for the (s, e) pair, applying concrete-term filters and deduplication
+            void AddBindingRow(RDFResource s, RDFResource e)
+            {
+                //Skip if concrete start does not match the seed
+                if (!startIsVar && !s.Equals(startResource))
+                    return;
+                //Skip if concrete end does not match the reached node
+                if (!endIsVar && !e.Equals(endResource))
+                    return;
+
+                //Deduplicate by the variable portion of the key
+                string key = (startIsVar ? s.ToString() : string.Empty) + "|" + (endIsVar ? e.ToString() : string.Empty);
+                if (!addedRows.Add(key))
+                    return;
+
+                if (startIsVar || endIsVar)
+                {
+                    //At least one variable: populate the corresponding columns
+                    Dictionary<string, string> row = new Dictionary<string, string>();
+                    if (startIsVar)
+                        row[propertyPath.Start.ToString()] = s.ToString();
+                    if (endIsVar)
+                        row[propertyPath.End.ToString()]   = e.ToString();
+                    AddRow(resultTable, row);
+                }
+                else
+                {
+                    //Both terms are concrete: emit a blank existence row (pattern matched)
+                    resultTable.Rows.Add(resultTable.NewRow());
+                }
+            }
+
+            //When start is concrete use it as the only seed; otherwise explore from every resource in the datasource
+            IEnumerable<RDFResource> seeds = startIsVar ? GetAllResourceNodes(dataSource)
+                                                        : (IEnumerable<RDFResource>)new List<RDFResource> { startResource };
+            foreach (RDFResource seed in seeds)
+            {
+                foreach (RDFResource reached in EvaluateStepsFromNode(seed, propertyPath.Steps, dataSource))
+                                    AddBindingRow(seed, reached);
+            }
+
+            return resultTable;
+        }
+
+        /// <summary>
+        /// Evaluates all path steps from the given start node, returning the set of reachable end nodes.<br/>
+        /// Consecutive Alternative-flavored steps are merged into a single group and evaluated in parallel;
+        /// Sequence-flavored steps are applied one at a time, feeding each step's output into the next.
+        /// </summary>
+        private List<RDFResource> EvaluateStepsFromNode(RDFResource startNode, List<RDFPropertyPathStep> steps, RDFDataSource dataSource)
+        {
+            List<RDFResource> current = new List<RDFResource> { startNode };
+
+            int i = 0;
+            while (i < steps.Count)
+            {
+                //Start a new group with the current step; if it is Alternative, keep collecting
+                //consecutive Alternative steps (they form a single union-branch of the path)
+                List<RDFPropertyPathStep> group = new List<RDFPropertyPathStep> { steps[i] };
+                if (steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                {
+                    while (i + 1 < steps.Count && steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
+                        group.Add(steps[++i]);
+                }
+                i++;
+
+                //Expand every current frontier node through the group, deduplicating by URI
+                Dictionary<string, RDFResource> next = new Dictionary<string, RDFResource>();
+                foreach (RDFResource node in current)
+                {
+                    IEnumerable<RDFResource> reached = group.Count == 1 ? EvaluateSingleStepFromNode(node, group[0], dataSource)
+                                                                        : group.SelectMany(step => EvaluateSingleStepFromNode(node, step, dataSource));
+                    foreach (RDFResource r in reached)
+                        next[r.ToString()] = r;
+                }
+                current = next.Values.ToList();
+            }
+
+            return current;
+        }
+
+        /// <summary>
+        /// Evaluates a single path step from the given node according to its cardinality:<br/>
+        /// - ExactlyOne   → one direct hop via the step property<br/>
+        /// - ZeroOrOne    → node itself plus at most one direct hop (? operator)<br/>
+        /// - OneOrMore    → BFS from depth 1 upward (+ operator)<br/>
+        /// - ZeroOrMore   → node itself plus BFS from depth 1 upward (* operator)<br/>
+        /// - BoundedRange → BFS within [min, max] hops, including node itself when min is 0
+        /// </summary>
+        private IEnumerable<RDFResource> EvaluateSingleStepFromNode(RDFResource node, RDFPropertyPathStep step, RDFDataSource dataSource)
+        {
+            switch (step.StepCardinality)
+            {
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:
+                {
+                    //Include the node itself (zero hops) and any direct successor (one hop)
+                    Dictionary<string, RDFResource> result = new Dictionary<string, RDFResource> { [node.ToString()] = node };
+                    foreach (RDFResource r in GetDirectSuccessors(node, step.StepProperty, step.IsInverseStep, dataSource))
+                        result[r.ToString()] = r;
+                    return result.Values;
+                }
+
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:
+                    //At least one hop: BFS starting from depth 1 with no upper bound
+                    return BFSReachable(node, step.StepProperty, step.IsInverseStep, dataSource, 1, -1);
+
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore:
+                {
+                    //Include the node itself (zero hops) and all BFS-reachable nodes
+                    Dictionary<string, RDFResource> result = new Dictionary<string, RDFResource> { [node.ToString()] = node };
+                    foreach (RDFResource r in BFSReachable(node, step.StepProperty, step.IsInverseStep, dataSource, 1, -1))
+                        result[r.ToString()] = r;
+                    return result.Values;
+                }
+
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange:
+                {
+                    Dictionary<string, RDFResource> result = new Dictionary<string, RDFResource>();
+                    //When min is 0 the start node is a valid result (zero hops)
+                    if (step.MinCardinality == 0)
+                        result[node.ToString()] = node;
+                    foreach (RDFResource r in BFSReachable(node, step.StepProperty, step.IsInverseStep, dataSource, step.MinCardinality, step.MaxCardinality))
+                        result[r.ToString()] = r;
+                    return result.Values;
+                }
+
+                default: // ExactlyOne
+                    return GetDirectSuccessors(node, step.StepProperty, step.IsInverseStep, dataSource);
+            }
+        }
+
+        /// <summary>
+        /// Returns the resources reachable from the given node in exactly one hop via the given property.<br/>
+        /// When <paramref name="inverse"/> is true, traversal goes in the opposite direction (object → subject).
+        /// Federation sources are handled by recursing over each member.
+        /// </summary>
+        private List<RDFResource> GetDirectSuccessors(RDFResource node, RDFResource property, bool inverse, RDFDataSource dataSource)
+        {
+            List<RDFResource> result = new List<RDFResource>();
+            switch (dataSource)
+            {
+                case RDFGraph graph:
+                    if (inverse)
+                    {
+                        foreach (RDFTriple t in graph.SelectTriples(p: property, o: node))
+                        {
+                            if (t.Subject is RDFResource s)
+                                result.Add(s);
+                        }
+                    }
+                    else
+                    {
+                        foreach (RDFTriple t in graph.SelectTriples(s: node, p: property))
+                        {
+                            if (t.Object is RDFResource o)
+                                result.Add(o);
+                        }
+                    }
+                    break;
+
+                case RDFStore store:
+                    if (inverse)
+                    {
+                        foreach (RDFQuadruple q in store.SelectQuadruples(p: property, o: node))
+                        {
+                            if (q.Subject is RDFResource s)
+                                result.Add(s);
+                        }
+                    }
+                    else
+                    {
+                        foreach (RDFQuadruple q in store.SelectQuadruples(s: node, p: property))
+                        {
+                            if (q.Object is RDFResource o)
+                                result.Add(o);
+                        }
+                    }
+                    break;
+
+                case RDFFederation federation:
+                    foreach (RDFDataSource member in federation)
+                        result.AddRange(GetDirectSuccessors(node, property, inverse, member));
+                    break;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Returns all distinct resource nodes (subjects and resource-typed objects) present in the given datasource.<br/>
+        /// Used to seed BFS when the path start is a variable. Literal objects are excluded because they cannot
+        /// appear as subjects in further hops.
+        /// </summary>
+        private static List<RDFResource> GetAllResourceNodes(RDFDataSource dataSource)
+        {
+            HashSet<string> seen  = new HashSet<string>();
+            List<RDFResource> nodes = new List<RDFResource>();
+
+            #region Utilities
+            //Add r to the list only the first time its URI is encountered
+            void CollectNode(RDFResource r)
+            {
+                if (r != null && seen.Add(r.ToString()))
+                    nodes.Add(r);
+            }
+            #endregion
+
+            switch (dataSource)
+            {
+                case RDFGraph graph:
+                    foreach (RDFTriple t in graph.SelectTriples())
+                    {
+                        if (t.Subject is RDFResource tSubj)
+                            CollectNode(tSubj);
+                        if (t.Object is RDFResource tObj)
+                            CollectNode(tObj);
+                    }
+                    break;
+
+                case RDFStore store:
+                    foreach (RDFQuadruple q in store.SelectQuadruples())
+                    {
+                        if (q.Subject is RDFResource qSubj)
+                            CollectNode(qSubj);
+                        if (q.Object is RDFResource qObj)
+                            CollectNode(qObj);
+                    }
+                    break;
+
+                case RDFFederation federation:
+                    foreach (RDFDataSource member in federation)
+                    {
+                        foreach (RDFResource r in GetAllResourceNodes(member))
+                            CollectNode(r);
+                    }
+                    break;
+            }
+            return nodes;
+        }
+
+        /// <summary>
+        /// Returns all resource nodes reachable from <paramref name="startNode"/> by traversing
+        /// <paramref name="property"/> repeatedly via BFS, collecting only nodes whose depth falls
+        /// within [<paramref name="minHops"/>, <paramref name="maxHops"/>].
+        /// Pass <paramref name="maxHops"/> = -1 for an unbounded search.
+        /// Cycles are handled by the <c>visited</c> set, which prevents re-enqueuing already-seen nodes.
+        /// </summary>
+        private List<RDFResource> BFSReachable(RDFResource startNode, RDFResource property, bool inverse, RDFDataSource dataSource, int minHops, int maxHops)
+        {
+            List<RDFResource> result  = new List<RDFResource>();
+            HashSet<string>   visited = new HashSet<string> { startNode.ToString() };
+            Queue<(RDFResource node, int depth)> queue = new Queue<(RDFResource, int)>();
+            queue.Enqueue((startNode, 0));
+
+            while (queue.Count > 0)
+            {
+                (RDFResource current, int depth) = queue.Dequeue();
+
+                //Do not expand beyond the maximum depth (avoids unnecessary work when bounded)
+                if (maxHops >= 0 && depth >= maxHops)
+                    continue;
+
+                foreach (RDFResource neighbor in GetDirectSuccessors(current, property, inverse, dataSource))
+                {
+                    int newDepth = depth + 1;
+
+                    //Skip already-visited neighbors: prevents duplicate results when multiple
+                    //paths converge on the same node (e.g. diamond-shaped graphs)
+                    if (visited.Contains(neighbor.ToString()))
+                        continue;
+                    visited.Add(neighbor.ToString());
+
+                    //Collect this neighbor only if it satisfies the minimum hop constraint
+                    if (newDepth >= minHops)
+                        result.Add(neighbor);
+
+                    //Enqueue neighbors that can still be expanded further
+                    if (maxHops < 0 || newDepth < maxHops)
+                        queue.Enqueue((neighbor, newDepth));
+                }
+            }
+            return result;
         }
 
         /// <summary>

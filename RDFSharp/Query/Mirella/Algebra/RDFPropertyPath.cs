@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2012-2025 Marco De Salvo
+   Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -45,6 +45,27 @@ namespace RDFSharp.Query
         /// Depth of the path
         /// </summary>
         internal int Depth { get; set; }
+
+        /// <summary>
+        /// Indicates whether any step carries a transitive or bounded cardinality constraint
+        /// </summary>
+        internal bool HasTransitiveSteps
+            => Steps.Any(s => s.StepCardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne);
+
+        /// <summary>
+        /// Flag indicating the property path as Optional
+        /// </summary>
+        internal bool IsOptional { get; set; }
+
+        /// <summary>
+        /// Flag indicating the property path to be joined as Union
+        /// </summary>
+        internal bool JoinAsUnion { get; set; }
+
+        /// <summary>
+        /// Flag indicating the property path to be joined as Minus
+        /// </summary>
+        internal bool JoinAsMinus { get; set; }
         #endregion
 
         #region Ctors
@@ -84,6 +105,39 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Sets the property path to be joined as Optional with the previous member
+        /// </summary>
+        public RDFPropertyPath Optional()
+        {
+            IsOptional = true;
+            JoinAsUnion = false;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the property path to be joined as Union with the next member
+        /// </summary>
+        public RDFPropertyPath UnionWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = true;
+            JoinAsMinus = false;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the property path to be joined as Minus with the next member
+        /// </summary>
+        public RDFPropertyPath MinusWithNext()
+        {
+            IsOptional = false;
+            JoinAsUnion = false;
+            JoinAsMinus = true;
+            return this;
+        }
+
+        /// <summary>
         /// Adds the given alternative steps to the path. If only one is given, it is considered sequence.
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
@@ -107,18 +161,16 @@ namespace RDFSharp.Query
             //Collect the given steps into the property path
             if (alternativeSteps.Count == 1)
             {
-                Steps.Add(alternativeSteps[0].SetOrdinal(Steps.Count)
-                                             .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
+                Steps.Add(alternativeSteps[0].SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
             }
             else
             {
                 foreach (RDFPropertyPathStep alternativeStep in alternativeSteps)
-                    Steps.Add(alternativeStep.SetOrdinal(Steps.Count)
-                                             .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
+                    Steps.Add(alternativeStep.SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative));
             }
 
             //Update evaluability status of the property path
-            if (Start is RDFVariable || End is RDFVariable || Depth > 1)
+            if (Start is RDFVariable || End is RDFVariable || Depth > 1 || HasTransitiveSteps)
                 IsEvaluable = true;
 
             return this;
@@ -139,11 +191,11 @@ namespace RDFSharp.Query
             Depth++;
 
             //Collect the given step into the property path
-            Steps.Add(sequenceStep.SetOrdinal(Steps.Count)
+            Steps.Add(sequenceStep
                                   .SetFlavor(RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence));
 
             //Update evaluability status of the property path
-            if (Start is RDFVariable || End is RDFVariable || Depth > 1)
+            if (Start is RDFVariable || End is RDFVariable || Depth > 1 || HasTransitiveSteps)
                 IsEvaluable = true;
 
             return this;
@@ -181,7 +233,7 @@ namespace RDFSharp.Query
                         if (i < Steps.Count - 1 && Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                         {
                             //Adjust start/end
-                            if (!Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                            if (!Steps.Skip(i + 1).Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
                                 currEnd = End;
 
                             patterns.Add(Steps[i].IsInverseStep
@@ -203,7 +255,7 @@ namespace RDFSharp.Query
                             if (i < Steps.Count - 1)
                             {
                                 currStart = currEnd;
-                                if (i == Steps.Count - 2 || !Steps.Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence && p.StepOrdinal > i))
+                                if (i == Steps.Count - 2 || !Steps.Skip(i + 1).Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
                                     currEnd = End;
                                 else
                                     currEnd = new RDFVariable($"__PP{i+1}");
@@ -260,9 +312,19 @@ namespace RDFSharp.Query
         public bool IsInverseStep { get; internal set; }
 
         /// <summary>
-        /// Ordinal of the step
+        /// Cardinality constraint of the step
         /// </summary>
-        internal int StepOrdinal { get; set; }
+        public RDFQueryEnums.RDFPropertyPathStepCardinalities StepCardinality { get; internal set; }
+
+        /// <summary>
+        /// Minimum repetitions for BoundedRange cardinality
+        /// </summary>
+        public int MinCardinality { get; internal set; }
+
+        /// <summary>
+        /// Maximum repetitions for BoundedRange cardinality
+        /// </summary>
+        public int MaxCardinality { get; internal set; }
         #endregion
 
         #region Ctors
@@ -271,7 +333,12 @@ namespace RDFSharp.Query
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public RDFPropertyPathStep(RDFResource stepProperty)
-            => StepProperty = stepProperty ?? throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
+        {
+            StepProperty = stepProperty ?? throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
+            StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne;
+            MinCardinality = 1;
+            MaxCardinality = 1;
+        }
         #endregion
 
         #region Methods
@@ -285,20 +352,63 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the ordinal of the step
-        /// </summary>
-        internal RDFPropertyPathStep SetOrdinal(int stepOrdinal)
-        {
-            StepOrdinal = stepOrdinal;
-            return this;
-        }
-
-        /// <summary>
         /// Sets the step as inverse
         /// </summary>
         public RDFPropertyPathStep Inverse()
         {
             IsInverseStep = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the step cardinality to zero-or-one (SPARQL ?)
+        /// </summary>
+        public RDFPropertyPathStep ZeroOrOne()
+        {
+            StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne;
+            MinCardinality = 0;
+            MaxCardinality = 1;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the step cardinality to one-or-more transitive closure (SPARQL +)
+        /// </summary>
+        public RDFPropertyPathStep OneOrMore()
+        {
+            StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore;
+            MinCardinality = 1;
+            MaxCardinality = -1;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the step cardinality to zero-or-more reflexive-transitive closure (SPARQL *)
+        /// </summary>
+        public RDFPropertyPathStep ZeroOrMore()
+        {
+            StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore;
+            MinCardinality = 0;
+            MaxCardinality = -1;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the step cardinality to a bounded range (SPARQL {min,max})
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFPropertyPathStep BoundedRange(int min, int max)
+        {
+            #region Guards
+            if (min < 0)
+                throw new RDFQueryException("Cannot set BoundedRange cardinality because \"min\" parameter must be >= 0.");
+            if (max < min)
+                throw new RDFQueryException("Cannot set BoundedRange cardinality because \"max\" parameter must be >= \"min\".");
+            #endregion
+
+            StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange;
+            MinCardinality = min;
+            MaxCardinality = max;
             return this;
         }
         #endregion

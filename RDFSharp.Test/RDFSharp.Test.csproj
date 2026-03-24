@@ -3,10 +3,10 @@
         <AssemblyTitle>RDFSharp.Test</AssemblyTitle>
         <AssemblyName>RDFSharp.Test</AssemblyName>
         <AssemblyVersion>$(Version)</AssemblyVersion>
-        <Version>3.22.0</Version>
+        <Version>3.23.0</Version>
         <Authors>Marco De Salvo</Authors>
         <Copyright>Marco De Salvo</Copyright>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
         <Product>RDFSharp</Product>
         <OutputType>Library</OutputType>
@@ -14,11 +14,11 @@
         <Description>RDFSharp unit testing suite</Description>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-        <PackageReference Include="MSTest.TestAdapter" Version="3.11.1" />
-        <PackageReference Include="MSTest.TestFramework" Version="3.11.1" />
-        <PackageReference Include="WireMock.Net.Minimal" Version="1.15.0" />
-        <PackageReference Include="coverlet.collector" Version="6.0.4">
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+        <PackageReference Include="MSTest.TestAdapter" Version="4.1.0" />
+        <PackageReference Include="MSTest.TestFramework" Version="4.1.0" />
+        <PackageReference Include="WireMock.Net.Minimal" Version="2.0.0" />
+        <PackageReference Include="coverlet.collector" Version="8.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
