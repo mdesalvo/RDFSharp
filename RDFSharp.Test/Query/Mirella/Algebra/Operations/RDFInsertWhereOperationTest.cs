@@ -55,12 +55,12 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -82,13 +82,13 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
               <ex:subj> <ex:pred> <ex:obj> .
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -113,7 +113,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -121,7 +121,7 @@ public class RDFInsertWhereOperationTest
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -144,12 +144,12 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -174,7 +174,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
             }
             WHERE {
@@ -182,7 +182,7 @@ public class RDFInsertWhereOperationTest
                 ?Y <ex:dogOf> ?X .
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -204,7 +204,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
             }
             WHERE {
@@ -213,7 +213,7 @@ public class RDFInsertWhereOperationTest
                 BIND(?Y AS ?YBIND) .
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -235,7 +235,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
             }
             WHERE {
@@ -244,7 +244,7 @@ public class RDFInsertWhereOperationTest
                 BIND(?Y AS ?YBIND) .
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -267,7 +267,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
             }
             WHERE {
@@ -277,7 +277,7 @@ public class RDFInsertWhereOperationTest
                 ?Y <ex:isDogOf> ?X .
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -301,7 +301,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT {
             }
             WHERE {
@@ -311,7 +311,7 @@ public class RDFInsertWhereOperationTest
                 }
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -350,7 +350,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
             INSERT {
@@ -389,7 +389,7 @@ public class RDFInsertWhereOperationTest
                 }
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -431,7 +431,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
             INSERT {
@@ -477,7 +477,7 @@ public class RDFInsertWhereOperationTest
                 }
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -521,7 +521,7 @@ public class RDFInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
             INSERT {
@@ -567,7 +567,7 @@ public class RDFInsertWhereOperationTest
                 }
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]

@@ -55,14 +55,14 @@ public class RDFDeleteInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             DELETE {
             }
             INSERT {
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -85,7 +85,7 @@ public class RDFDeleteInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             DELETE {
               <ex:subj> <ex:pred> <ex:obj> .
             }
@@ -94,7 +94,7 @@ public class RDFDeleteInsertWhereOperationTest
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -123,7 +123,7 @@ public class RDFDeleteInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -133,7 +133,7 @@ public class RDFDeleteInsertWhereOperationTest
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -156,14 +156,14 @@ public class RDFDeleteInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             DELETE {
             }
             INSERT {
             }
             WHERE {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -188,7 +188,7 @@ public class RDFDeleteInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             DELETE {
             }
             INSERT {
@@ -198,7 +198,7 @@ public class RDFDeleteInsertWhereOperationTest
                 ?Y <ex:dogOf> ?X .
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -220,7 +220,7 @@ public class RDFDeleteInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             DELETE {
             }
             INSERT {
@@ -232,7 +232,7 @@ public class RDFDeleteInsertWhereOperationTest
                 }
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -256,7 +256,7 @@ public class RDFDeleteInsertWhereOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             DELETE {
             }
             INSERT {
@@ -268,7 +268,7 @@ public class RDFDeleteInsertWhereOperationTest
                 }
               }
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]

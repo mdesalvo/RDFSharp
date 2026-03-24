@@ -55,10 +55,10 @@ public class RDFInsertDataOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             INSERT DATA {
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -84,7 +84,7 @@ public class RDFInsertDataOperationTest
         string operationString = operation.ToString();
 
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -93,7 +93,7 @@ public class RDFInsertDataOperationTest
               <ex:subj> <ex:pred> <ex:obj> .
               rdfs:Class rdf:type owl:Class .
             }
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]

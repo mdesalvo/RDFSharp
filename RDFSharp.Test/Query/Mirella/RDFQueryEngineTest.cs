@@ -294,7 +294,7 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(query.ToString()),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             SELECT *
             WHERE {
               {
@@ -310,7 +310,7 @@ public class RDFQueryEngineTest
             }
             ORDER BY ASC(?X)
 
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -340,7 +340,7 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(query.ToString()),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             SELECT *
             WHERE {
               {
@@ -350,7 +350,7 @@ public class RDFQueryEngineTest
               }
             }
 
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1056,7 +1056,7 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(query.ToString()),
-            """
+            RDFTestUtilities.NormalizeEOL("""
             SELECT ?Y ?X ?N
             WHERE {
               {
@@ -1086,7 +1086,7 @@ public class RDFQueryEngineTest
             }
             ORDER BY ASC(?X)
 
-            """, StringComparison.Ordinal));
+            """), StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -2153,7 +2153,7 @@ public class RDFQueryEngineTest
 
         //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
         Assert.IsNotNull(receivedQuery);
-        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(HttpUtility.UrlDecode(receivedQuery)), expectedQuery, StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(HttpUtility.UrlDecode(receivedQuery)), RDFTestUtilities.NormalizeEOL(expectedQuery), StringComparison.Ordinal));
     }
 
     [TestMethod]
