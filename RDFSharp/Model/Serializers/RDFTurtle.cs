@@ -1414,23 +1414,30 @@ namespace RDFSharp.Model
             if (codePoint == -1)
                 throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
 
-            string supplied = char.ConvertFromUtf32(codePoint);
-            if (expected.IndexOf(supplied, StringComparison.Ordinal) == -1)
+            //Fast path: BMP code point matched against the expected ASCII set without
+            //allocating a temporary string. Supplementary code points fall back to the
+            //surrogate-pair string only if needed (and they never match the ASCII sets
+            //actually used by the parser anyway).
+            bool matched = codePoint <= char.MaxValue
+                ? expected.IndexOf((char)codePoint) >= 0
+                : expected.IndexOf(char.ConvertFromUtf32(codePoint), StringComparison.Ordinal) >= 0;
+            if (matched)
+                return;
+
+            //Slow path: build the diagnostic message
+            StringBuilder msg = new StringBuilder("Unexpected character found" + GetTurtleContextCoordinates(turtleContext) + ": expected ");
+            for (int i = 0; i < expected.Length; i++)
             {
-                StringBuilder msg = new StringBuilder("Unexpected character found" + GetTurtleContextCoordinates(turtleContext) + ": expected ");
-                for (int i = 0; i < expected.Length; i++)
-                {
-                    if (i > 0)
-                        msg.Append(" or ");
-                    msg.Append('\'');
-                    msg.Append(expected[i]);
-                    msg.Append('\'');
-                }
-                msg.Append(", found '");
-                msg.Append(supplied);
+                if (i > 0)
+                    msg.Append(" or ");
                 msg.Append('\'');
-                throw new RDFModelException(msg.ToString());
+                msg.Append(expected[i]);
+                msg.Append('\'');
             }
+            msg.Append(", found '");
+            AppendCodePoint(msg, codePoint);
+            msg.Append('\'');
+            throw new RDFModelException(msg.ToString());
         }
 
         internal static char ReadLocalEscapedChar(RDFTurtleContext turtleContext)
