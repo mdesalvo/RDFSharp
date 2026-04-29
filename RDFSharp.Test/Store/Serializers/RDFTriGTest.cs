@@ -648,6 +648,34 @@ public class RDFTriGTest
         Assert.ThrowsExactly<RDFStoreException>(() => RDFTriG.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
+    [TestMethod]
+    public void ShouldDeserializeTriGSaturatingPushbackBuffer()
+    {
+        // Stresses the bounded pushback in RDFPushbackReader through TriG's
+        // ParseStatement, which inherits the same 8-code-point directive scan as
+        // Turtle. The second statement starts with "ex:abcd\U0001D7CE": 7 BMP chars
+        // followed by MATHEMATICAL BOLD DIGIT ZERO (supplementary, surrogate pair
+        // U+D835 U+DFCE) push StringBuilder.Length to 9 chars before the loop
+        // exits. That 9-char directive does not match @prefix/@base/graph/etc.,
+        // so it is unread back into the RDFPushbackReader as a single 9-char
+        // string -- the worst-case pushback fill reachable through TriG grammar.
+        // ParseGraph then drains the buffer and ReadCodePoint reassembles the
+        // surrogate pair from the bottom of the LIFO stack to recover the
+        // supplementary code point intact.
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.Write("@prefix ex: <http://example.org/> .\nex:abcd\U0001D7CE ex:p ex:o .");
+        RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+        Assert.IsNotNull(store);
+        Assert.AreEqual(1, store.QuadruplesCount);
+        Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(
+            new RDFContext(),
+            new RDFResource("http://example.org/abcd\U0001D7CE"),
+            new RDFResource("http://example.org/p"),
+            new RDFResource("http://example.org/o"))));
+    }
+
     [TestCleanup]
     public void Cleanup()
     {

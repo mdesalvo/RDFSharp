@@ -92,8 +92,9 @@ namespace RDFSharp.Model
                 #region deserialize
                 using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    //Fetch Turtle data
-                    turtleContext.Data = sReader.ReadToEnd();
+                    //Wrap the reader so the parser can pull code points on demand
+                    //instead of materializing the whole input as a string
+                    turtleContext.Reader = new RDFPushbackReader(sReader);
 
                     //Parse Turtle data
                     int bufferChar = SkipWhitespace(turtleContext);
@@ -127,9 +128,9 @@ namespace RDFSharp.Model
         {
             #region Properties
             /// <summary>
-            /// Represents the Turtle data fetched from the stream
+            /// Pull-style reader over the Turtle input
             /// </summary>
-            internal string Data  { get; set; }
+            internal RDFPushbackReader Reader { get; set; }
 
             /// <summary>
             /// Indicates the current subject
@@ -147,11 +148,6 @@ namespace RDFSharp.Model
             internal RDFPatternMember Object { get; set; }
 
             /// <summary>
-            /// Indicates the current position in the input string
-            /// </summary>
-            internal int Position { get; set; }
-
-            /// <summary>
             /// Context for Uri hashing
             /// </summary>
             internal Dictionary<string, long> HashContext { get; }
@@ -161,6 +157,88 @@ namespace RDFSharp.Model
             internal RDFTurtleContext()
                 => HashContext = new Dictionary<string, long>();
             #endregion
+        }
+
+        /// <summary>
+        /// <para>
+        /// Pull-style reader with bounded LIFO pushback over a TextReader.
+        /// Lets the Turtle/TriG parser peek and rewind a small number of UTF-16 chars
+        /// without ever holding the full input in memory.
+        /// </para>
+        /// <para>
+        /// Capacity is sized for the worst-case parser pushback: ParseStatement reads up
+        /// to 8 code points (16 UTF-16 chars if all supplementary) before deciding whether
+        /// to rewind. 32 chars gives a 2x safety margin over that worst case.
+        /// </para>
+        /// </summary>
+        internal sealed class RDFPushbackReader
+        {
+            private const int DefaultPushbackCapacity = 32;
+
+            private readonly TextReader _reader;
+            private readonly char[] _pushback;
+            private int _pushbackSize;
+            private int _line = 1;
+            private int _column;
+
+            /// <summary>
+            /// 1-based line of the next char to be read from the underlying source.
+            /// Pushback re-reads do not move this counter, so error messages reflect
+            /// the deepest position reached in the underlying stream.
+            /// </summary>
+            internal int Line => _line;
+
+            /// <summary>
+            /// 1-based column of the next char to be read from the underlying source.
+            /// </summary>
+            internal int Column => _column;
+
+            internal RDFPushbackReader(TextReader reader)
+                : this(reader, DefaultPushbackCapacity) { }
+
+            internal RDFPushbackReader(TextReader reader, int pushbackCapacity)
+            {
+                _reader = reader;
+                _pushback = new char[pushbackCapacity];
+            }
+
+            /// <summary>
+            /// Reads the next UTF-16 char, draining the pushback first.
+            /// Returns -1 at EOF.
+            /// </summary>
+            internal int Read()
+            {
+                if (_pushbackSize > 0)
+                    return _pushback[--_pushbackSize];
+
+                int c = _reader.Read();
+                if (c == -1)
+                    return -1;
+
+                if (c == '\n')
+                {
+                    _line++;
+                    _column = 0;
+                }
+                else
+                {
+                    _column++;
+                }
+                return c;
+            }
+
+            /// <summary>
+            /// Pushes a single UTF-16 char back so it will be returned by the next Read().
+            /// Throws if the bounded pushback buffer would overflow — that signals a parser bug.
+            /// </summary>
+            internal void Push(char c)
+            {
+                if (_pushbackSize >= _pushback.Length)
+                    throw new InvalidOperationException(
+                        $"RDFPushbackReader pushback buffer overflow (capacity={_pushback.Length}). " +
+                        "This indicates a parser bug: too many chars unread without an intervening read.");
+                _pushback[_pushbackSize++] = c;
+            }
         }
         #endregion
 
@@ -176,27 +254,30 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Reads the next Unicode code point from the reader
+        /// Reads the next Unicode code point from the reader, assembling
+        /// surrogate pairs into a single supplementary code point.
         /// </summary>
         internal static int ReadCodePoint(RDFTurtleContext turtleContext)
         {
-            if (turtleContext.Position >= turtleContext.Data.Length)
+            int high = turtleContext.Reader.Read();
+            if (high == -1)
                 return -1; //EOF
 
-            int highSurrogate = turtleContext.Data[turtleContext.Position];
-            UpdateTurtleContextPosition(turtleContext, 1);
-            if (char.IsHighSurrogate((char)highSurrogate) && turtleContext.Position < turtleContext.Data.Length)
+            if (char.IsHighSurrogate((char)high))
             {
-                int lowSurrogate = turtleContext.Data[turtleContext.Position];
-                UpdateTurtleContextPosition(turtleContext, 1);
-                if (char.IsLowSurrogate((char)lowSurrogate))
-                    highSurrogate = char.ConvertToUtf32((char)highSurrogate, (char)lowSurrogate);
+                int low = turtleContext.Reader.Read();
+                if (low == -1)
+                    return high;
+                if (char.IsLowSurrogate((char)low))
+                    return char.ConvertToUtf32((char)high, (char)low);
+                //Lone high surrogate: preserve historical behaviour (the trailing
+                //char is consumed and the high surrogate is returned alone)
             }
-            return highSurrogate;
+            return high;
         }
 
         /// <summary>
-        /// Unreads the given Unicode code point from the reader
+        /// Unreads the given Unicode code point so the next ReadCodePoint returns it.
         /// </summary>
         internal static void UnreadCodePoint(RDFTurtleContext turtleContext, int codePoint)
         {
@@ -206,49 +287,37 @@ namespace RDFSharp.Model
             if (IsSupplementaryCodePoint(codePoint))
             {
                 string surrogatePair = char.ConvertFromUtf32(codePoint);
-                UpdateTurtleContextPosition(turtleContext, -surrogatePair.Length);
+                //Push low surrogate first so the LIFO buffer pops high before low
+                turtleContext.Reader.Push(surrogatePair[1]);
+                turtleContext.Reader.Push(surrogatePair[0]);
             }
             else
             {
-                UpdateTurtleContextPosition(turtleContext, -1);
+                turtleContext.Reader.Push((char)codePoint);
             }
-            SafetyCheckTurtleContextPosition(turtleContext);
         }
 
         /// <summary>
-        /// Unreads the given Unicode code point from the reader
+        /// Unreads each char of the given string so that subsequent reads return
+        /// the chars in their original order. Iterates in reverse: the last char
+        /// is pushed first so the LIFO buffer pops codePoints[0], codePoints[1], ...
         /// </summary>
         internal static void UnreadCodePoint(RDFTurtleContext turtleContext, string codePoints)
         {
-            if (!string.IsNullOrEmpty(codePoints))
-            {
-                foreach (char cp in codePoints)
-                    UnreadCodePoint(turtleContext, cp);
-            }
+            if (string.IsNullOrEmpty(codePoints))
+                return;
+
+            for (int i = codePoints.Length - 1; i >= 0; i--)
+                turtleContext.Reader.Push(codePoints[i]);
         }
         #endregion
 
         #region Parse.TurtleContext
         /// <summary>
-        /// Gets the actual coordinates within Turtle context
+        /// Gets the actual coordinates within Turtle context (for error messages).
         /// </summary>
         internal static string GetTurtleContextCoordinates(RDFTurtleContext turtleContext)
-            => $"[POSITION:{turtleContext.Position}]";
-
-        /// <summary>
-        /// Updates the position of the cursor within Turtle context
-        /// </summary>
-        internal static void UpdateTurtleContextPosition(RDFTurtleContext turtleContext, int move)
-            => turtleContext.Position += move;
-
-        /// <summary>
-        /// Safety checks the position of the cursor within Turtle context
-        /// </summary>
-        internal static void SafetyCheckTurtleContextPosition(RDFTurtleContext turtleContext)
-        {
-            if (turtleContext.Position < 0)
-                turtleContext.Position = 0;
-        }
+            => $"[LINE:{turtleContext.Reader.Line},COL:{turtleContext.Reader.Column}]";
         #endregion
 
         #region Parse.Grammar
@@ -348,13 +417,10 @@ namespace RDFSharp.Model
                 }
                 else
                 {
-                    //We have to parse an implicit blank, so we must rewind to the
-                    //initial '[' character in order for the method to work
-                    while (bufChar != '[')
-                    {
-                        UnreadCodePoint(turtleContext, bufChar);
-                        bufChar = PeekCodePoint(turtleContext);
-                    }
+                    //ParseImplicitBlank expects to read '[' itself, then skip whitespace.
+                    //Push '[' back into the pushback buffer (we already consumed the
+                    //whitespace; ParseImplicitBlank's own SkipWhitespace will be a no-op).
+                    UnreadCodePoint(turtleContext, '[');
                     turtleContext.Subject = ParseImplicitBlank(turtleContext, result);
                 }
                 SkipWhitespace(turtleContext);

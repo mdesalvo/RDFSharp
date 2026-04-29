@@ -117,8 +117,9 @@ namespace RDFSharp.Store
                 #region deserialize
                 using (StreamReader sReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
                 {
-                    //Fetch TriG data
-                    trigContext.Data = sReader.ReadToEnd();
+                    //Wrap the reader so the parser can pull code points on demand
+                    //instead of materializing the whole input as a string
+                    trigContext.Reader = new RDFPushbackReader(sReader);
 
                     //Parse TriG data
                     int bufferChar = SkipWhitespace(trigContext);
@@ -357,13 +358,10 @@ namespace RDFSharp.Store
                 }
                 else
                 {
-                    //We have to parse an implicit blank, so we must rewind to the
-                    //initial '[' character in order for the method to work
-                    while (bufChar != '[')
-                    {
-                        UnreadCodePoint(trigContext, bufChar);
-                        bufChar = PeekCodePoint(trigContext);
-                    }
+                    //ParseImplicitBlank expects to read '[' itself, then skip whitespace.
+                    //Push '[' back into the pushback buffer (we already consumed the
+                    //whitespace; ParseImplicitBlank's own SkipWhitespace will be a no-op).
+                    UnreadCodePoint(trigContext, '[');
                     trigContext.Subject = ParseImplicitBlank(trigContext, trigContext.Graph);
                 }
                 SkipWhitespace(trigContext);

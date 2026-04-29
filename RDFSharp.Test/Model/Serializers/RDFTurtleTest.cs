@@ -8809,6 +8809,39 @@ public class RDFTurtleTest
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource($"{RDFNamespaceRegister.DefaultNamespace}alice"), new RDFResource($"{RDFNamespaceRegister.DefaultNamespace}age"), new RDFPlainLiteral("a"))));
     }
 
+    [TestMethod]
+    public void ShouldDeserializeTurtleSaturatingPushbackBuffer()
+    {
+        // Stresses the bounded pushback in RDFPushbackReader.
+        //
+        // ParseStatement reads up to 8 code points to identify a directive. The first
+        // statement here ("@prefix ...") follows the directive path and is consumed
+        // normally. The second statement is "ex:abcd\U0001D7CE ex:p ex:o ."; ParseStatement
+        // reads:
+        //   'e','x',':','a','b','c','d'   (7 BMP code points  -> StringBuilder.Length = 7)
+        //   '\U0001D7CE' (MATHEMATICAL BOLD DIGIT ZERO, supplementary, encoded as the
+        //                 surrogate pair U+D835 U+DFCE -> StringBuilder.Length = 9)
+        // The do-while exits because Length >= 8. The 9-char directive does not match
+        // any keyword, so UnreadCodePoint(string) pushes those 9 chars back into the
+        // RDFPushbackReader. This is the worst-case pushback fill reachable through
+        // the current Turtle grammar.
+        //
+        // ParseTriples then drains the buffer and ReadCodePoint must reassemble the
+        // surrogate pair from the bottom of the stack to recover the supplementary
+        // code point. The assertions below verify the round-trip is byte-exact.
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.Write("@prefix ex: <http://example.org/> .\nex:abcd\U0001D7CE ex:p ex:o .");
+        RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(
+            new RDFResource("http://example.org/abcd\U0001D7CE"),
+            new RDFResource("http://example.org/p"),
+            new RDFResource("http://example.org/o"))));
+    }
+
     [TestCleanup]
     public void Cleanup()
     {
