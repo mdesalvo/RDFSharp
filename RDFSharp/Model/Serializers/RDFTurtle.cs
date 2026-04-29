@@ -335,7 +335,7 @@ namespace RDFSharp.Model
                     UnreadCodePoint(turtleContext, codePoint);
                     break;
                 }
-                sb.Append(char.ConvertFromUtf32(codePoint));
+                AppendCodePoint(sb, codePoint);
             } while (sb.Length < 8);
 
             string directive = sb.ToString();
@@ -713,7 +713,7 @@ namespace RDFSharp.Model
                 if (bufChar == -1)
                     throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
 
-                prefixID.Append(char.ConvertFromUtf32(bufChar));
+                AppendCodePoint(prefixID, bufChar);
             }
 
             SkipWhitespace(turtleContext);
@@ -780,7 +780,7 @@ namespace RDFSharp.Model
                         throw new RDFModelException("Uri included an unencoded space: '" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
                 }
 
-                uriBuf.Append(char.ConvertFromUtf32(bufChar));
+                AppendCodePoint(uriBuf, bufChar);
 
                 if (bufChar == '\\')
                 {
@@ -791,7 +791,7 @@ namespace RDFSharp.Model
                     if (bufChar != 'u' && bufChar != 'U')
                         throw new RDFModelException("Uri includes string escapes: '\\" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
 
-                    uriBuf.Append(char.ConvertFromUtf32(bufChar));
+                    AppendCodePoint(uriBuf, bufChar);
                 }
             }
 
@@ -855,7 +855,7 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Expected a letter, found '" + (char)bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
 
             StringBuilder name = new StringBuilder();
-            name.Append(char.ConvertFromUtf32(bufChar));
+            AppendCodePoint(name, bufChar);
 
             // Read all following letter and numbers, they are part of the name
             bufChar = ReadCodePoint(turtleContext);
@@ -895,13 +895,13 @@ namespace RDFSharp.Model
             // read optional sign character
             if (bufChar == '+' || bufChar == '-')
             {
-                value.Append(char.ConvertFromUtf32(bufChar));
+                AppendCodePoint(value, bufChar);
                 bufChar = ReadCodePoint(turtleContext);
             }
 
             while (IsNumber(bufChar))
             {
-                value.Append(char.ConvertFromUtf32(bufChar));
+                AppendCodePoint(value, bufChar);
                 bufChar = ReadCodePoint(turtleContext);
             }
 
@@ -920,13 +920,13 @@ namespace RDFSharp.Model
                     }
                     else
                     {
-                        value.Append(char.ConvertFromUtf32(bufChar));
+                        AppendCodePoint(value, bufChar);
 
                         bufChar = ReadCodePoint(turtleContext);
 
                         while (IsNumber(bufChar))
                         {
-                            value.Append(char.ConvertFromUtf32(bufChar));
+                            AppendCodePoint(value, bufChar);
                             bufChar = ReadCodePoint(turtleContext);
                         }
 
@@ -949,24 +949,24 @@ namespace RDFSharp.Model
                 if (bufChar == 'e' || bufChar == 'E')
                 {
                     dt = RDFModelEnums.RDFDatatypes.XSD_DOUBLE;
-                    value.Append(char.ConvertFromUtf32(bufChar));
+                    AppendCodePoint(value, bufChar);
 
                     bufChar = ReadCodePoint(turtleContext);
                     if (bufChar == '+' || bufChar == '-')
                     {
-                        value.Append(char.ConvertFromUtf32(bufChar));
+                        AppendCodePoint(value, bufChar);
                         bufChar = ReadCodePoint(turtleContext);
                     }
 
                     if (!IsNumber(bufChar))
                         throw new RDFModelException("Exponent value missing" + GetTurtleContextCoordinates(turtleContext));
 
-                    value.Append(char.ConvertFromUtf32(bufChar));
+                    AppendCodePoint(value, bufChar);
 
                     bufChar = ReadCodePoint(turtleContext);
                     while (IsNumber(bufChar))
                     {
-                        value.Append(char.ConvertFromUtf32(bufChar));
+                        AppendCodePoint(value, bufChar);
                         bufChar = ReadCodePoint(turtleContext);
                     }
                 }
@@ -1002,13 +1002,13 @@ namespace RDFSharp.Model
             {
                 // bufChar is the first letter of the prefix
                 StringBuilder prefix = new StringBuilder();
-                prefix.Append(char.ConvertFromUtf32(bufChar));
+                AppendCodePoint(prefix, bufChar);
 
                 previousChar = bufChar;
                 bufChar = ReadCodePoint(turtleContext);
                 while (IsPrefixChar(bufChar))
                 {
-                    prefix.Append(char.ConvertFromUtf32(bufChar));
+                    AppendCodePoint(prefix, bufChar);
                     previousChar = bufChar;
                     bufChar = ReadCodePoint(turtleContext);
                 }
@@ -1053,7 +1053,7 @@ namespace RDFSharp.Model
                 if (bufChar == '\\')
                     localName.Append(ReadLocalEscapedChar(turtleContext));
                 else
-                    localName.Append(char.ConvertFromUtf32(bufChar));
+                    AppendCodePoint(localName, bufChar);
 
                 previousChar = bufChar;
                 bufChar = ReadCodePoint(turtleContext);
@@ -1062,7 +1062,7 @@ namespace RDFSharp.Model
                     if (bufChar == '\\')
                         localName.Append(ReadLocalEscapedChar(turtleContext));
                     else
-                        localName.Append(char.ConvertFromUtf32(bufChar));
+                        AppendCodePoint(localName, bufChar);
                     previousChar = bufChar;
                     bufChar = ReadCodePoint(turtleContext);
                 }
@@ -1114,7 +1114,7 @@ namespace RDFSharp.Model
 
                         // Read language
                         StringBuilder lang = new StringBuilder();
-                        lang.Append(char.ConvertFromUtf32(bufChar));
+                        AppendCodePoint(lang, bufChar);
 
                         bufChar = ReadCodePoint(turtleContext);
                         while (!IsWhitespace(bufChar))
@@ -1125,7 +1125,7 @@ namespace RDFSharp.Model
                             if (!IsLanguageChar(bufChar))
                                 throw new RDFModelException("Illegal language tag char: '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
 
-                            lang.Append(char.ConvertFromUtf32(bufChar));
+                            AppendCodePoint(lang, bufChar);
                             bufChar = ReadCodePoint(turtleContext);
                         }
 
@@ -1210,7 +1210,7 @@ namespace RDFSharp.Model
                     case '\n':
                         throw new RDFModelException("Illegal carriage return or new line in literal");
                 }
-                sb.Append(char.ConvertFromUtf32(bufChar));
+                AppendCodePoint(sb, bufChar);
 
                 if (bufChar == '\\')
                 {
@@ -1219,7 +1219,7 @@ namespace RDFSharp.Model
                     if (bufChar == -1)
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
 
-                    sb.Append(char.ConvertFromUtf32(bufChar));
+                    AppendCodePoint(sb, bufChar);
                 }
             }
 
@@ -1245,7 +1245,7 @@ namespace RDFSharp.Model
                 else
                     doubleQuoteCount = 0;
 
-                sb.Append(char.ConvertFromUtf32(bufChar));
+                AppendCodePoint(sb, bufChar);
 
                 if (bufChar == '\\')
                 {
@@ -1254,7 +1254,7 @@ namespace RDFSharp.Model
                     if (bufChar == -1)
                         throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
 
-                    sb.Append(char.ConvertFromUtf32(bufChar));
+                    AppendCodePoint(sb, bufChar);
                 }
             }
 
@@ -1328,7 +1328,7 @@ namespace RDFSharp.Model
                             try
                             {
                                 int cp = int.Parse(uValue, NumberStyles.AllowHexSpecifier);
-                                sb.Append(char.ConvertFromUtf32(cp));
+                                AppendCodePoint(sb, cp);
                                 startIdx = backSlashIdx + 6;
                             }
                             catch
@@ -1347,7 +1347,7 @@ namespace RDFSharp.Model
                             try
                             {
                                 int cp = int.Parse(UValue, NumberStyles.AllowHexSpecifier);
-                                sb.Append(char.ConvertFromUtf32(cp));
+                                AppendCodePoint(sb, cp);
                                 startIdx = backSlashIdx + 10;
                             }
                             catch
@@ -1462,6 +1462,20 @@ namespace RDFSharp.Model
         /// </summary>
         internal static bool IsSupplementaryCodePoint(int codePoint)
             => (codePoint & ~char.MaxValue) != 0;
+
+        /// <summary>
+        /// Appends the given Unicode code point to the StringBuilder.
+        /// For BMP code points (the >99% case in real Turtle/TriG inputs) this is a
+        /// straight char append with no allocation; only supplementary code points
+        /// fall back to char.ConvertFromUtf32 which builds a 2-char string.
+        /// </summary>
+        internal static void AppendCodePoint(StringBuilder sb, int codePoint)
+        {
+            if (codePoint <= char.MaxValue)
+                sb.Append((char)codePoint);
+            else
+                sb.Append(char.ConvertFromUtf32(codePoint));
+        }
 
         /// <summary>
         /// Check if the supplied code point represents a valid name start character

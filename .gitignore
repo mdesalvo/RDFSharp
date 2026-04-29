@@ -6,3 +6,4 @@ RDFSharp/obj/*
 RDFSharp.Test/obj/*
 /.vs
 /.claude
+/RDFSharp.Benchmark

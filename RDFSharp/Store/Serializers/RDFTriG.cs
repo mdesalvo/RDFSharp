@@ -180,7 +180,7 @@ namespace RDFSharp.Store
                     UnreadCodePoint(trigContext, codePoint);
                     break;
                 }
-                sb.Append(char.ConvertFromUtf32(codePoint));
+                AppendCodePoint(sb, codePoint);
             } while (sb.Length < 8);
 
             string directive = sb.ToString();
