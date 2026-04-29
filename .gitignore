@@ -5,3 +5,4 @@ RDFSharp.Test/bin/Release/*
 RDFSharp/obj/*
 RDFSharp.Test/obj/*
 /.vs
+/.claude
