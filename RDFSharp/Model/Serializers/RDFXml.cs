@@ -47,21 +47,25 @@ namespace RDFSharp.Model
             try
             {
                 #region serialize
-                using (XmlTextWriter rdfxmlWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
+                XmlWriterSettings rdfxmlSettings = new XmlWriterSettings
                 {
-                    rdfxmlWriter.Formatting = Formatting.Indented;
-
-                    #region xmlDecl
+                    Encoding = RDFModelUtilities.UTF8_NoBOM,
+                    Indent = true,
+                    NewLineChars = Environment.NewLine,
+                    NamespaceHandling = NamespaceHandling.OmitDuplicates,
+                    CloseOutput = true
+                };
+                using (XmlWriter rdfxmlWriter = XmlWriter.Create(outputStream, rdfxmlSettings))
+                {
+                    //rdfDoc acts as a DOM node factory only. We never grow its tree:
+                    //each subject is built as a detached subtree and immediately written
+                    //to rdfxmlWriter via WriteTo, so the heap holds at most one subject's
+                    //DOM at a time instead of the full graph's serialised XML.
                     XmlDocument rdfDoc = new XmlDocument();
-                    rdfDoc.AppendChild(rdfDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
-                    #endregion
 
-                    #region rdfRoot
-                    XmlNode rdfRoot = rdfDoc.CreateNode(XmlNodeType.Element, "rdf:RDF", RDFVocabulary.RDF.BASE_URI);
-                    XmlAttribute rdfRootNS = rdfDoc.CreateAttribute("xmlns:rdf");
-                    XmlText rdfRootNSText = rdfDoc.CreateTextNode(RDFVocabulary.RDF.BASE_URI);
-                    rdfRootNS.AppendChild(rdfRootNSText);
-                    rdfRoot.Attributes.Append(rdfRootNS);
+                    #region xmlDecl + rdf:RDF open
+                    rdfxmlWriter.WriteStartDocument();
+                    rdfxmlWriter.WriteStartElement("rdf", "RDF", RDFVocabulary.RDF.BASE_URI);
 
                     #region prefixes
                     //Write the prefixes (except for "rdf" and "base")
@@ -71,17 +75,11 @@ namespace RDFSharp.Model
                         if (!string.Equals(ns.NamespacePrefix, "rdf", StringComparison.OrdinalIgnoreCase)
                              && !string.Equals(ns.NamespacePrefix, "base", StringComparison.OrdinalIgnoreCase))
                         {
-                            XmlAttribute pfRootNS = rdfDoc.CreateAttribute($"xmlns:{ns.NamespacePrefix}");
-                            XmlText pfRootNSText = rdfDoc.CreateTextNode(ns.ToString());
-                            pfRootNS.AppendChild(pfRootNSText);
-                            rdfRoot.Attributes.Append(pfRootNS);
+                            rdfxmlWriter.WriteAttributeString("xmlns", ns.NamespacePrefix, null, ns.ToString());
                         }
                     }
                     //Write the graph's base uri to resolve eventual relative #IDs
-                    XmlAttribute pfBaseNS = rdfDoc.CreateAttribute("xml:base");
-                    XmlText pfBaseNSText = rdfDoc.CreateTextNode(graph.Context.ToString());
-                    pfBaseNS.AppendChild(pfBaseNSText);
-                    rdfRoot.Attributes.Append(pfBaseNS);
+                    rdfxmlWriter.WriteAttributeString("xml", "base", null, graph.Context.ToString());
                     #endregion
 
                     #region containers/collections
@@ -355,20 +353,20 @@ namespace RDFSharp.Model
                             }
 
                         //Raw containers must not be written as-is, instead they have to be saved
-                        //and attached whenever their subject is found as object of a triple
+                        //and attached whenever their subject is found as object of a triple.
                         if (!subjNode.Name.Equals("rdf:Bag", StringComparison.OrdinalIgnoreCase)
                               && !subjNode.Name.Equals("rdf:Seq", StringComparison.OrdinalIgnoreCase)
                               && !subjNode.Name.Equals("rdf:Alt", StringComparison.OrdinalIgnoreCase))
-                            rdfRoot.AppendChild(subjNode);
+                        {
+                            subjNode.WriteTo(rdfxmlWriter);
+                        }
 
                         #endregion
                     }
                     #endregion
 
-                    rdfDoc.AppendChild(rdfRoot);
+                    rdfxmlWriter.WriteEndElement();
                     #endregion
-
-                    rdfDoc.Save(rdfxmlWriter);
                 }
                 #endregion
             }
