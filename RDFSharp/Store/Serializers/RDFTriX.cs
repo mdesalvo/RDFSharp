@@ -46,31 +46,20 @@ namespace RDFSharp.Store
             try
             {
                 #region serialize
-                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
+                using (XmlWriter trixWriter = XmlWriter.Create(outputStream, Model.RDFTriX.GetWriterSettings()))
                 {
-                    trixWriter.Formatting = Formatting.Indented;
-
-                    #region xmlDecl
                     XmlDocument trixDoc = new XmlDocument();
-                    trixDoc.AppendChild(trixDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
-                    #endregion
 
-                    #region trixRoot
-                    XmlNode trixRoot = trixDoc.CreateNode(XmlNodeType.Element, "TriX", null);
-                    XmlAttribute trixRootNS = trixDoc.CreateAttribute("xmlns");
-                    XmlText trixRootNSText = trixDoc.CreateTextNode("http://www.w3.org/2004/03/trix/trix-1/");
-                    trixRootNS.AppendChild(trixRootNSText);
-                    trixRoot.Attributes.Append(trixRootNS);
+                    trixWriter.WriteStartDocument();
+                    trixWriter.WriteStartElement(string.Empty, "TriX", Model.RDFTriX.TriXNamespace);
 
                     #region graphs
                     foreach (RDFGraph graph in store.ExtractGraphs())
-                        Model.RDFTriX.AppendTriXGraph(trixDoc, trixRoot, graph);
+                        Model.RDFTriX.WriteTriXGraph(trixWriter, trixDoc, graph);
                     #endregion
 
-                    trixDoc.AppendChild(trixRoot);
-                    #endregion
-
-                    trixDoc.Save(trixWriter);
+                    trixWriter.WriteEndElement();
+                    trixWriter.WriteEndDocument();
                 }
                 #endregion
             }
@@ -101,45 +90,46 @@ namespace RDFSharp.Store
             try
             {
                 #region deserialize
-                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
+                using (XmlReader trixReader = XmlReader.Create(inputStream, Model.RDFTriX.GetReaderSettings()))
                 {
-                    using (XmlTextReader trixReader = new XmlTextReader(streamReader))
+                    XmlDocument nodeFactory = new XmlDocument { XmlResolver = null };
+                    Dictionary<string, long> hashContext = new Dictionary<string, long>();
+
+                    #region <TriX>
+                    if (Model.RDFTriX.MoveToTriXRoot(trixReader, " given file does not encode a TriX dataset."))
                     {
-                        trixReader.DtdProcessing = DtdProcessing.Parse;
-                        trixReader.XmlResolver = null;
-                        trixReader.Normalization = false;
-                        XmlDocument trixDoc = new XmlDocument { XmlResolver = null };
-                        trixDoc.Load(trixReader);
-
-                        #region <TriX>
-                        if (trixDoc.DocumentElement != null)
+                        while (trixReader.Read())
                         {
-                            #region Guards
+                            if (trixReader.NodeType == XmlNodeType.EndElement)
+                                break;
+                            if (trixReader.NodeType != XmlNodeType.Element)
+                                continue;
+                            if (!trixReader.LocalName.Equals("graph", StringComparison.Ordinal))
+                                throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + trixReader.LocalName + ">\".");
 
-                            if (!trixDoc.DocumentElement.Name.Equals("TriX")
-                                 || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
-                                throw new Exception(" given file does not encode a TriX dataset.");
+                            #region <graph>
 
-                            #endregion Guards
+                            //Setup defaults for the current iterating graph
+                            Uri graphUri = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
+                            long graphID = RDFNamespaceRegister.DefaultNamespace.NamespaceID;
+                            if (!graphs.ContainsKey(graphID))
+                                graphs.Add(graphID, new RDFGraph().SetContext(graphUri));
 
-                            Dictionary<string, long> hashContext = new Dictionary<string, long>();
-                            foreach (XmlNode graph in trixDoc.DocumentElement.ChildNodes)
+                            long encodedUris = 0;
+                            using (XmlReader graphReader = trixReader.ReadSubtree())
                             {
-                                if (!graph.Name.Equals("graph", StringComparison.Ordinal))
-                                    throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
-
-                                #region <graph>
-
-                                //Setup defaults for the current iterating graph
-                                Uri graphUri = RDFNamespaceRegister.DefaultNamespace.NamespaceUri;
-                                long graphID = RDFNamespaceRegister.DefaultNamespace.NamespaceID;
-                                if (!graphs.ContainsKey(graphID))
-                                    graphs.Add(graphID, new RDFGraph().SetContext(graphUri));
-
-                                long encodedUris = 0;
-                                foreach (XmlNode graphChild in graph.ChildNodes)
+                                graphReader.Read();  //position on <graph>
+                                graphReader.Read();  //position on its first child (or its end tag)
+                                while (graphReader.ReadState == ReadState.Interactive && graphReader.NodeType != XmlNodeType.EndElement)
                                 {
-                                    #region <uri>
+                                    if (graphReader.NodeType != XmlNodeType.Element)
+                                    {
+                                        graphReader.Read();
+                                        continue;
+                                    }
+
+                                    //ReadNode materialises only this child's subtree and advances the reader past it
+                                    XmlNode graphChild = nodeFactory.ReadNode(graphReader);
 
                                     //<uri> gives the context of the graph
                                     if (graphChild.Name.Equals("uri", StringComparison.Ordinal))
@@ -155,10 +145,6 @@ namespace RDFSharp.Store
                                             graphs.Add(graphID, new RDFGraph().SetContext(graphUri));
                                     }
 
-                                    #endregion <uri>
-
-                                    #region <triple>
-
                                     //<triple> gives a triple of the graph
                                     else if (graphChild.Name.Equals("triple", StringComparison.Ordinal) && graphChild.ChildNodes.Count == 3)
                                         Model.RDFTriX.ParseTriXTriple(graphs[graphID], graphChild, hashContext);
@@ -166,19 +152,17 @@ namespace RDFSharp.Store
                                     //Neither <uri> or a well-formed <triple>: exception must be raised
                                     else
                                         throw new Exception("found a TriX element (" + graphChild.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
-
-                                    #endregion <triple>
                                 }
-
-                                #endregion <graph>
                             }
 
-                            //At last merge parsed graphs into the final store
-                            foreach (RDFGraph graph in graphs.Values)
-                                result.MergeGraph(graph);
+                            #endregion <graph>
                         }
-                        #endregion <TriX>
+
+                        //At last merge parsed graphs into the final store
+                        foreach (RDFGraph graph in graphs.Values)
+                            result.MergeGraph(graph);
                     }
+                    #endregion <TriX>
                 }
                 #endregion deserialize
             }

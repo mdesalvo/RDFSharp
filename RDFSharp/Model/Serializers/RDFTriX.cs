@@ -27,6 +27,40 @@ namespace RDFSharp.Model
     /// </summary>
     internal static class RDFTriX
     {
+        #region Statics
+        /// <summary>
+        /// Namespace of the TriX data format
+        /// </summary>
+        internal const string TriXNamespace = "http://www.w3.org/2004/03/trix/trix-1/";
+
+        /// <summary>
+        /// Builds the XmlWriterSettings shared by the graph and store TriX serializers.
+        /// </summary>
+        internal static XmlWriterSettings GetWriterSettings()
+            => new XmlWriterSettings
+            {
+                Encoding = RDFModelUtilities.UTF8_NoBOM,
+                Indent = true,
+                NewLineChars = Environment.NewLine,
+                NamespaceHandling = NamespaceHandling.OmitDuplicates,
+                CloseOutput = true
+            };
+
+        /// <summary>
+        /// Builds the XmlReaderSettings shared by the graph and store TriX deserializers.
+        /// </summary>
+        internal static XmlReaderSettings GetReaderSettings()
+            => new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Parse,
+                XmlResolver = null,
+                CloseInput = true,
+                IgnoreWhitespace = true,
+                IgnoreComments = true
+            };
+
+        #endregion
+
         #region Methods
 
         #region Write
@@ -48,30 +82,15 @@ namespace RDFSharp.Model
             {
                 #region serialize
 
-                using (XmlTextWriter trixWriter = new XmlTextWriter(outputStream, RDFModelUtilities.UTF8_NoBOM))
+                using (XmlWriter trixWriter = XmlWriter.Create(outputStream, GetWriterSettings()))
                 {
-                    trixWriter.Formatting = Formatting.Indented;
-
-                    #region xmlDecl
                     XmlDocument trixDoc = new XmlDocument();
-                    trixDoc.AppendChild(trixDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
-                    #endregion
 
-                    #region trixRoot
-                    XmlNode trixRoot = trixDoc.CreateNode(XmlNodeType.Element, "TriX", null);
-                    XmlAttribute trixRootNS = trixDoc.CreateAttribute("xmlns");
-                    XmlText trixRootNSText = trixDoc.CreateTextNode("http://www.w3.org/2004/03/trix/trix-1/");
-                    trixRootNS.AppendChild(trixRootNSText);
-                    trixRoot.Attributes.Append(trixRootNS);
-
-                    #region graph
-                    AppendTriXGraph(trixDoc, trixRoot, graph);
-                    #endregion
-
-                    trixDoc.AppendChild(trixRoot);
-                    #endregion
-
-                    trixDoc.Save(trixWriter);
+                    trixWriter.WriteStartDocument();
+                    trixWriter.WriteStartElement(string.Empty, "TriX", TriXNamespace);
+                    WriteTriXGraph(trixWriter, trixDoc, graph);
+                    trixWriter.WriteEndElement();
+                    trixWriter.WriteEndDocument();
                 }
 
                 #endregion serialize
@@ -83,104 +102,110 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Serializes the TriX structure corresponding to the given graph, appending it to the given XML root node.
+        /// Streams the TriX structure corresponding to the given graph, writing it to the given XML writer.
         /// </summary>
-        internal static void AppendTriXGraph(XmlDocument trixDoc, XmlNode trixRoot, RDFGraph graph)
+        internal static void WriteTriXGraph(XmlWriter trixWriter, XmlDocument trixDoc, RDFGraph graph)
         {
-            XmlNode graphElement = trixDoc.CreateNode(XmlNodeType.Element, "graph", null);
-            XmlNode graphUriElement = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-            XmlText graphUriElementT = trixDoc.CreateTextNode(graph.ToString());
-            graphUriElement.AppendChild(graphUriElementT);
-            graphElement.AppendChild(graphUriElement);
+            trixWriter.WriteStartElement(string.Empty, "graph", TriXNamespace);
+
+            #region uri
+            trixWriter.WriteStartElement(string.Empty, "uri", TriXNamespace);
+            trixWriter.WriteString(graph.ToString());
+            trixWriter.WriteEndElement();
+            #endregion
 
             #region triple
+            foreach (RDFTriple triple in graph)
+                BuildTriXTriple(trixDoc, triple).WriteTo(trixWriter);
+            #endregion
 
-            foreach (RDFTriple t in graph)
+            trixWriter.WriteEndElement();
+        }
+
+        /// <summary>
+        /// Builds the detached "&lt;triple&gt;" DOM subtree corresponding to the given triple.
+        /// </summary>
+        private static XmlNode BuildTriXTriple(XmlDocument trixDoc, RDFTriple t)
+        {
+            XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", TriXNamespace);
+
+            #region subject
+
+            XmlNode subjElement = ((RDFResource)t.Subject).IsBlank
+                ? trixDoc.CreateNode(XmlNodeType.Element, "id", TriXNamespace)
+                : trixDoc.CreateNode(XmlNodeType.Element, "uri", TriXNamespace);
+            XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
+            subjElement.AppendChild(subjElementText);
+            tripleElement.AppendChild(subjElement);
+
+            #endregion subject
+
+            #region predicate
+
+            XmlNode uriElementP = trixDoc.CreateNode(XmlNodeType.Element, "uri", TriXNamespace);
+            XmlText uriTextP = trixDoc.CreateTextNode(t.Predicate.ToString());
+            uriElementP.AppendChild(uriTextP);
+            tripleElement.AppendChild(uriElementP);
+
+            #endregion predicate
+
+            #region object
+
+            if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
             {
-                XmlNode tripleElement = trixDoc.CreateNode(XmlNodeType.Element, "triple", null);
+                XmlNode objElement = ((RDFResource)t.Object).IsBlank ?
+                    trixDoc.CreateNode(XmlNodeType.Element, "id", TriXNamespace) :
+                    trixDoc.CreateNode(XmlNodeType.Element, "uri", TriXNamespace);
+                XmlText objElementText = trixDoc.CreateTextNode(t.Object.ToString());
+                objElement.AppendChild(objElementText);
+                tripleElement.AppendChild(objElement);
+            }
 
-                #region subject
+            #endregion object
 
-                XmlNode subjElement = ((RDFResource)t.Subject).IsBlank
-                    ? trixDoc.CreateNode(XmlNodeType.Element, "id", null)
-                    : trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                XmlText subjElementText = trixDoc.CreateTextNode(t.Subject.ToString());
-                subjElement.AppendChild(subjElementText);
-                tripleElement.AppendChild(subjElement);
+            #region literal
 
-                #endregion subject
+            else
+            {
+                #region plain literal
 
-                #region predicate
-
-                XmlNode uriElementP = trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                XmlText uriTextP = trixDoc.CreateTextNode(t.Predicate.ToString());
-                uriElementP.AppendChild(uriTextP);
-                tripleElement.AppendChild(uriElementP);
-
-                #endregion predicate
-
-                #region object
-
-                if (t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO)
+                if (t.Object is RDFPlainLiteral objLit)
                 {
-                    XmlNode objElement = ((RDFResource)t.Object).IsBlank ?
-                        trixDoc.CreateNode(XmlNodeType.Element, "id", null) :
-                        trixDoc.CreateNode(XmlNodeType.Element, "uri", null);
-                    XmlText objElementText = trixDoc.CreateTextNode(t.Object.ToString());
-                    objElement.AppendChild(objElementText);
-                    tripleElement.AppendChild(objElement);
+                    XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", TriXNamespace);
+                    if (objLit.HasLanguage())
+                    {
+                        XmlAttribute xmlLang = trixDoc.CreateAttribute("xml:lang", RDFVocabulary.XML.BASE_URI);
+                        XmlText xmlLangText = trixDoc.CreateTextNode(objLit.Language);
+                        xmlLang.AppendChild(xmlLangText);
+                        plainLiteralElement.Attributes.Append(xmlLang);
+                    }
+                    XmlText plainLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(objLit.Value)));
+                    plainLiteralElement.AppendChild(plainLiteralText);
+                    tripleElement.AppendChild(plainLiteralElement);
                 }
 
-                #endregion object
+                #endregion plain literal
 
-                #region literal
+                #region typed literal
 
                 else
                 {
-                    #region plain literal
-
-                    if (t.Object is RDFPlainLiteral objLit)
-                    {
-                        XmlNode plainLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "plainLiteral", null);
-                        if (objLit.HasLanguage())
-                        {
-                            XmlAttribute xmlLang = trixDoc.CreateAttribute("xml:lang", RDFVocabulary.XML.BASE_URI);
-                            XmlText xmlLangText = trixDoc.CreateTextNode(objLit.Language);
-                            xmlLang.AppendChild(xmlLangText);
-                            plainLiteralElement.Attributes.Append(xmlLang);
-                        }
-                        XmlText plainLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(objLit.Value)));
-                        plainLiteralElement.AppendChild(plainLiteralText);
-                        tripleElement.AppendChild(plainLiteralElement);
-                    }
-
-                    #endregion plain literal
-
-                    #region typed literal
-
-                    else
-                    {
-                        XmlNode typedLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "typedLiteral", null);
-                        XmlAttribute datatype = trixDoc.CreateAttribute("datatype");
-                        XmlText datatypeText = trixDoc.CreateTextNode(((RDFTypedLiteral)t.Object).Datatype.URI.ToString());
-                        datatype.AppendChild(datatypeText);
-                        typedLiteralElement.Attributes.Append(datatype);
-                        XmlText typedLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
-                        typedLiteralElement.AppendChild(typedLiteralText);
-                        tripleElement.AppendChild(typedLiteralElement);
-                    }
-
-                    #endregion typed literal
+                    XmlNode typedLiteralElement = trixDoc.CreateNode(XmlNodeType.Element, "typedLiteral", TriXNamespace);
+                    XmlAttribute datatype = trixDoc.CreateAttribute("datatype");
+                    XmlText datatypeText = trixDoc.CreateTextNode(((RDFTypedLiteral)t.Object).Datatype.URI.ToString());
+                    datatype.AppendChild(datatypeText);
+                    typedLiteralElement.Attributes.Append(datatype);
+                    XmlText typedLiteralText = trixDoc.CreateTextNode(RDFModelUtilities.EscapeControlCharsForXML(HttpUtility.HtmlDecode(((RDFLiteral)t.Object).Value)));
+                    typedLiteralElement.AppendChild(typedLiteralText);
+                    tripleElement.AppendChild(typedLiteralElement);
                 }
 
-                #endregion literal
-
-                graphElement.AppendChild(tripleElement);
+                #endregion typed literal
             }
 
-            #endregion triple
+            #endregion literal
 
-            trixRoot.AppendChild(graphElement);
+            return tripleElement;
         }
 
         #endregion Write
@@ -204,39 +229,44 @@ namespace RDFSharp.Model
             try
             {
                 #region deserialize
-                using (StreamReader streamReader = new StreamReader(inputStream, RDFModelUtilities.UTF8_NoBOM))
+                using (XmlReader trixReader = XmlReader.Create(inputStream, GetReaderSettings()))
                 {
-                    using (XmlTextReader trixReader = new XmlTextReader(streamReader))
+                    XmlDocument nodeFactory = new XmlDocument { XmlResolver = null };
+                    Dictionary<string, long> hashContext = new Dictionary<string, long>();
+
+                    #region <TriX>
+                    if (MoveToTriXRoot(trixReader, " given file does not encode a TriX graph."))
                     {
-                        trixReader.DtdProcessing = DtdProcessing.Parse;
-                        trixReader.XmlResolver = null;
-                        trixReader.Normalization = false;
-                        XmlDocument trixDoc = new XmlDocument { XmlResolver = null };
-                        trixDoc.Load(trixReader);
-
-                        #region <TriX>
-
-                        if (trixDoc.DocumentElement != null)
+                        int encodedGraphs = 0;
+                        while (trixReader.Read())
                         {
-                            #region Guards
-                            if (!trixDoc.DocumentElement.Name.Equals("TriX")
-                                 || !trixDoc.DocumentElement.NamespaceURI.Equals("http://www.w3.org/2004/03/trix/trix-1/"))
-                                throw new Exception(" given file does not encode a TriX graph.");
-                            if (trixDoc.DocumentElement.ChildNodes.Count > 1)
+                            if (trixReader.NodeType == XmlNodeType.EndElement)
+                                break;
+                            if (trixReader.NodeType != XmlNodeType.Element)
+                                continue;
+                            if (!trixReader.LocalName.Equals("graph", StringComparison.Ordinal))
+                                throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + trixReader.LocalName + ">\".");
+
+                            encodedGraphs++;
+                            if (encodedGraphs > 1)
                                 throw new Exception(" given TriX file seems to encode more than one graph.");
-                            #endregion Guards
 
-                            Dictionary<string, long> hashContext = new Dictionary<string, long>();
-                            foreach (XmlNode graph in trixDoc.DocumentElement.ChildNodes)
+                            #region <graph>
+                            long encodedUris = 0;
+                            using (XmlReader graphReader = trixReader.ReadSubtree())
                             {
-                                if (!graph.Name.Equals("graph", StringComparison.Ordinal))
-                                    throw new Exception(" a \"<graph>\" element was expected, instead of unrecognized \"<" + graph.Name + ">\".");
-
-                                #region <graph>
-                                long encodedUris = 0;
-                                foreach (XmlNode graphChild in graph.ChildNodes)
+                                graphReader.Read();  //position on <graph>
+                                graphReader.Read();  //position on its first child (or its end tag)
+                                while (graphReader.ReadState == ReadState.Interactive && graphReader.NodeType != XmlNodeType.EndElement)
                                 {
-                                    #region <uri>
+                                    if (graphReader.NodeType != XmlNodeType.Element)
+                                    {
+                                        graphReader.Read();
+                                        continue;
+                                    }
+
+                                    //ReadNode materialises only this child's subtree and advances the reader past it
+                                    XmlNode graphChild = nodeFactory.ReadNode(graphReader);
 
                                     //<uri> gives the context of the graph
                                     if (graphChild.Name.Equals("uri", StringComparison.Ordinal))
@@ -249,10 +279,6 @@ namespace RDFSharp.Model
                                                             ?? RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
                                     }
 
-                                    #endregion <uri>
-
-                                    #region <triple>
-
                                     //<triple> gives a triple of the graph
                                     else if (graphChild.Name.Equals("triple", StringComparison.Ordinal) && graphChild.ChildNodes.Count == 3)
                                         ParseTriXTriple(result, graphChild, hashContext);
@@ -260,15 +286,12 @@ namespace RDFSharp.Model
                                     //Neither <uri> or a well-formed <triple>: exception must be raised
                                     else
                                         throw new Exception("found a TriX element (" + graphChild.Name + ") which is neither \"<uri>\" or \"<triple>\", or is a \"<triple>\" without the required 3 childs.");
-
-                                    #endregion <triple>
                                 }
-                                #endregion <graph>
                             }
+                            #endregion <graph>
                         }
-
-                        #endregion <TriX>
                     }
+                    #endregion <TriX>
                 }
                 #endregion deserialize
             }
@@ -278,6 +301,24 @@ namespace RDFSharp.Model
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Advances the reader onto the "&lt;TriX&gt;" root, validating its name and namespace.
+        /// Returns false when the document carries no root element.
+        /// </summary>
+        internal static bool MoveToTriXRoot(XmlReader trixReader, string mismatchMessage)
+        {
+            if (trixReader.MoveToContent() != XmlNodeType.Element)
+                return false;
+
+            if (!trixReader.LocalName.Equals("TriX", StringComparison.Ordinal)
+                 || !trixReader.NamespaceURI.Equals(TriXNamespace, StringComparison.Ordinal))
+            {
+                throw new Exception(mismatchMessage);
+            }
+
+            return true;
         }
 
         /// <summary>

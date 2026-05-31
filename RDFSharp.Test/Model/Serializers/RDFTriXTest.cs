@@ -1034,6 +1034,57 @@ public class RDFTriXTest
         Assert.ThrowsExactly<RDFModelException>(() => RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
+    //Streaming-path coverage (per-triple WriteTo on serialize, ReadNode on deserialize)
+
+    [TestMethod]
+    public void ShouldRoundtripGraphWithManyTriplesThroughFile()
+    {
+        RDFGraph graph = new RDFGraph().SetContext(new Uri("http://example.org/"));
+        for (int i = 0; i < 2500; i++)
+            graph.AddTriple(new RDFTriple(new RDFResource($"http://subj/{i}"), new RDFResource("http://pred/"), new RDFResource($"http://obj/{i}")));
+        string file = Path.Combine(Environment.CurrentDirectory, "RDFTriXTest_ShouldRoundtripManyTriples.trix");
+        RDFTriX.Serialize(graph, file);
+        RDFGraph graph2 = RDFTriX.Deserialize(file);
+
+        Assert.IsNotNull(graph2);
+        Assert.AreEqual(2500, graph2.TriplesCount);
+        Assert.IsTrue(graph2.Context.Equals(new Uri("http://example.org/")));
+        Assert.IsTrue(graph2.ContainsTriple(new RDFTriple(new RDFResource("http://subj/0"), new RDFResource("http://pred/"), new RDFResource("http://obj/0"))));
+        Assert.IsTrue(graph2.ContainsTriple(new RDFTriple(new RDFResource("http://subj/2499"), new RDFResource("http://pred/"), new RDFResource("http://obj/2499"))));
+    }
+
+    [TestMethod]
+    public void ShouldRoundtripGraphWithLiteralsHavingMarkupAndLanguageThroughFile()
+    {
+        RDFGraph graph = new RDFGraph().SetContext(new Uri("http://example.org/"));
+        graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("a < b & c > d \"q\"")));
+        graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("ciao", "it-IT")));
+        graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        string file = Path.Combine(Environment.CurrentDirectory, "RDFTriXTest_ShouldRoundtripMarkupLiterals.trix");
+        RDFTriX.Serialize(graph, file);
+        RDFGraph graph2 = RDFTriX.Deserialize(file);
+
+        Assert.IsNotNull(graph2);
+        Assert.AreEqual(3, graph2.TriplesCount);
+        Assert.IsTrue(graph2.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("a < b & c > d \"q\""))));
+        Assert.IsTrue(graph2.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("ciao", "it-IT"))));
+        Assert.IsTrue(graph2.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+    }
+
+    [TestMethod]
+    public void ShouldDeserializeGraphSkippingXmlCommentsAndWhitespace()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<TriX xmlns=\"http://www.w3.org/2004/03/trix/trix-1/\">\n  <!-- dataset comment -->\n  <graph>\n    <uri>http://example.org/</uri>\n    <!-- triple comment -->\n    <triple>\n      <uri>http://subj/</uri><!-- inline --><uri>http://pred/</uri>\n      <uri>http://obj/</uri>\n    </triple>\n  </graph>\n</TriX>");
+        RDFGraph graph = RDFTriX.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.IsTrue(graph.Context.Equals(new Uri("http://example.org/")));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+    }
+
     [TestCleanup]
     public void Cleanup()
     {

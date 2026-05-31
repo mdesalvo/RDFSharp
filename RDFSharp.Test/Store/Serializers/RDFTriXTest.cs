@@ -794,6 +794,26 @@ public class RDFTriXTest
         Assert.ThrowsExactly<RDFStoreException>(() => RDFSharp.Store.RDFTriX.Deserialize(new MemoryStream(stream.ToArray())));
     }
 
+    //Streaming-path coverage (graphs streamed one detached subtree at a time)
+
+    [TestMethod]
+    public void ShouldRoundtripStoreWithMultipleGraphsThroughFile()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en")));
+        store.AddQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        string file = Path.Combine(Environment.CurrentDirectory, "RDFTriXTest_ShouldRoundtripMultiGraphStore.trix");
+        RDFSharp.Store.RDFTriX.Serialize(store, file);
+        RDFMemoryStore store2 = RDFSharp.Store.RDFTriX.Deserialize(file);
+
+        Assert.IsNotNull(store2);
+        Assert.AreEqual(3, store2.QuadruplesCount);
+        Assert.IsTrue(store2.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx1/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+        Assert.IsTrue(store2.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("hello", "en"))));
+        Assert.IsTrue(store2.ContainsQuadruple(new RDFQuadruple(new RDFContext("http://ctx2/"), new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+    }
+
     [TestCleanup]
     public void Cleanup()
     {
