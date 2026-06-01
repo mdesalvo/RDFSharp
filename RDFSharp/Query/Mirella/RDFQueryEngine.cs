@@ -1679,63 +1679,30 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
-            string patternSubject = pattern.Subject.ToString();
-            string patternPredicate = pattern.Predicate.ToString();
-            string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            //Resolve the target column of each variable position once (the indexer returns null for
+            //non-variable positions, whose ToString() is not a column name). When two positions bind
+            //the same variable they resolve to the very same DataColumn, so the reference checks below
+            //reproduce the previous "first key wins" dictionary dedup (in S,P,O order) without a
+            //per-row dictionary or per-cell name lookups.
+            DataColumnCollection columns = resultTable.Columns;
+            DataColumn colS = columns[pattern.Subject.ToString()];
+            DataColumn colP = columns[pattern.Predicate.ToString()];
+            DataColumn colO = columns[pattern.Object.ToString()];
+            bool writeS = colS != null;
+            bool writeP = colP != null && colP != colS;
+            bool writeO = colO != null && colO != colS && colO != colP;
 
             //Iterate result graph's triples
             foreach (RDFTriple triple in triples)
             {
-                switch (patternHole)
-                {
-                    //?->P->O
-                    case RDFQueryEnums.RDFPatternHoles.S:
-                        bindings.Add(patternSubject, triple.Subject.ToString());
-                        break;
-
-                    //S->?->O
-                    case RDFQueryEnums.RDFPatternHoles.P:
-                        bindings.Add(patternPredicate, triple.Predicate.ToString());
-                        break;
-
-                    //S->P->?
-                    case RDFQueryEnums.RDFPatternHoles.O:
-                        bindings.Add(patternObject, triple.Object.ToString());
-                        break;
-
-                    //?->?->O
-                    case RDFQueryEnums.RDFPatternHoles.SP:
-                        bindings.Add(patternSubject, triple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, triple.Predicate.ToString());
-                        break;
-
-                    //?->P->?
-                    case RDFQueryEnums.RDFPatternHoles.SO:
-                        bindings.Add(patternSubject, triple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, triple.Object.ToString());
-                        break;
-
-                    //S->?->?
-                    case RDFQueryEnums.RDFPatternHoles.PO:
-                        bindings.Add(patternPredicate, triple.Predicate.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, triple.Object.ToString());
-                        break;
-
-                    //?->?->?
-                    case RDFQueryEnums.RDFPatternHoles.SPO:
-                        bindings.Add(patternSubject, triple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, triple.Predicate.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, triple.Object.ToString());
-                        break;
-                }
-                AddRow(resultTable, bindings);
-                bindings.Clear();
+                DataRow row = resultTable.NewRow();
+                if (writeS)
+                    row[colS] = triple.Subject.ToString();
+                if (writeP)
+                    row[colP] = triple.Predicate.ToString();
+                if (writeO)
+                    row[colO] = triple.Object.ToString();
+                resultTable.Rows.Add(row);
             }
         }
 
@@ -1744,128 +1711,34 @@ namespace RDFSharp.Query
         /// </summary>
         internal static void PopulateTable(RDFPattern pattern, List<RDFQuadruple> quadruples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
         {
+            //Resolve the target column of each variable position once (the indexer returns null for
+            //non-variable positions). Positions binding the same variable resolve to the very same
+            //DataColumn, so the reference checks below reproduce the previous "first key wins"
+            //dictionary dedup (in C,S,P,O order) without a per-row dictionary or per-cell name lookups.
+            DataColumnCollection columns = resultTable.Columns;
             string patternContext = pattern.Context?.ToString();
-            string patternSubject = pattern.Subject.ToString();
-            string patternPredicate = pattern.Predicate.ToString();
-            string patternObject = pattern.Object.ToString();
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            DataColumn colC = patternContext != null ? columns[patternContext] : null;
+            DataColumn colS = columns[pattern.Subject.ToString()];
+            DataColumn colP = columns[pattern.Predicate.ToString()];
+            DataColumn colO = columns[pattern.Object.ToString()];
+            bool writeC = colC != null;
+            bool writeS = colS != null && colS != colC;
+            bool writeP = colP != null && colP != colC && colP != colS;
+            bool writeO = colO != null && colO != colC && colO != colS && colO != colP;
 
             //Iterate result store's quadruples
             foreach (RDFQuadruple quadruple in quadruples)
             {
-                switch (patternHole)
-                {
-                    //?->S->P->O
-                    case RDFQueryEnums.RDFPatternHoles.C:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        break;
-
-                    //C->?->P->O
-                    case RDFQueryEnums.RDFPatternHoles.S:
-                        bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        break;
-
-                    //C->S->?->O
-                    case RDFQueryEnums.RDFPatternHoles.P:
-                        bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        break;
-
-                    //C->S->P->?
-                    case RDFQueryEnums.RDFPatternHoles.O:
-                        bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-
-                    //?->?->P->O
-                    case RDFQueryEnums.RDFPatternHoles.CS:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        if (!bindings.ContainsKey(patternSubject))
-                            bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        break;
-
-                    //?->S->?->O
-                    case RDFQueryEnums.RDFPatternHoles.CP:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        break;
-
-                    //?->S->P->?
-                    case RDFQueryEnums.RDFPatternHoles.CO:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-
-                    //C->?->?->O
-                    case RDFQueryEnums.RDFPatternHoles.SP:
-                        bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        break;
-
-                    //C->?->P->?
-                    case RDFQueryEnums.RDFPatternHoles.SO:
-                        bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-
-                    //C->S->?->?
-                    case RDFQueryEnums.RDFPatternHoles.PO:
-                        bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-
-                    //?->?->?->O
-                    case RDFQueryEnums.RDFPatternHoles.CSP:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        if (!bindings.ContainsKey(patternSubject))
-                            bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        break;
-
-                    //?->?->P->?
-                    case RDFQueryEnums.RDFPatternHoles.CSO:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        if (!bindings.ContainsKey(patternSubject))
-                            bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-
-                    //?->S->?->?
-                    case RDFQueryEnums.RDFPatternHoles.CPO:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-
-                    //C->?->?->?
-                    case RDFQueryEnums.RDFPatternHoles.SPO:
-                        bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-
-                    //?->?->?->?
-                    case RDFQueryEnums.RDFPatternHoles.CSPO:
-                        bindings.Add(patternContext, quadruple.Context.ToString());
-                        if (!bindings.ContainsKey(patternSubject))
-                            bindings.Add(patternSubject, quadruple.Subject.ToString());
-                        if (!bindings.ContainsKey(patternPredicate))
-                            bindings.Add(patternPredicate, quadruple.Predicate.ToString());
-                        if (!bindings.ContainsKey(patternObject))
-                            bindings.Add(patternObject, quadruple.Object.ToString());
-                        break;
-                }
-                AddRow(resultTable, bindings);
-                bindings.Clear();
+                DataRow row = resultTable.NewRow();
+                if (writeC)
+                    row[colC] = quadruple.Context.ToString();
+                if (writeS)
+                    row[colS] = quadruple.Subject.ToString();
+                if (writeP)
+                    row[colP] = quadruple.Predicate.ToString();
+                if (writeO)
+                    row[colO] = quadruple.Object.ToString();
+                resultTable.Rows.Add(row);
             }
         }
 
