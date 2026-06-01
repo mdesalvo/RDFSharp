@@ -2023,120 +2023,34 @@ namespace RDFSharp.Query
         /// </summary>
         internal static DataTable CombineTables(List<DataTable> dataTables)
         {
-            DataTable finalTable = new DataTable();
-            switch (dataTables.Count)
-            {
-                case 0: return finalTable;
-                case 1: return dataTables[0];
-            }
+            //v4: route the combine through the lightweight RDFTable pipeline (hash-join, no DataSet/DataRelation),
+            //converting the DataTables (carrying their Optional/Union/Minus flags) at the boundary and back.
+            List<RDFTable> rdfTables = new List<RDFTable>(dataTables.Count);
+            foreach (DataTable dataTable in dataTables)
+                rdfTables.Add(ToRDFTableWithFlags(dataTable));
 
-            #region Utilities
-            bool ProcessUnions()
-            {
-                bool hasProcessedUnion = false;
-                for (int i = 1; i < dataTables.Count; i++)
-                {
-                    bool previousTableRequiresUnion = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsUnion)
-                                                        && dataTables[i-1].ExtendedProperties[JoinAsUnion] is true;
-                    if (previousTableRequiresUnion)
-                    {
-                        //Backup extended attributes of the current table
-                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
-                                                              && dataTables[i].ExtendedProperties[IsOptional] is true;
-                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion)
-                                                           && dataTables[i].ExtendedProperties[JoinAsUnion] is true;
-                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus)
-                                                           && dataTables[i].ExtendedProperties[JoinAsMinus] is true;
+            RDFTable combinedTable = CombineTables(rdfTables);
 
-                        //Merge the previous table into the current one
-                        dataTables[i].Merge(dataTables[i-1], true, MissingSchemaAction.Add);
+            //Carry the resulting join flags back onto the DataTable, since the caller may read them
+            //(e.g. when OR-ing a pattern group's Optional flag onto its already-combined result)
+            DataTable resultTable = combinedTable.ToDataTable();
+            resultTable.ExtendedProperties[IsOptional] = combinedTable.IsOptional;
+            resultTable.ExtendedProperties[JoinAsUnion] = combinedTable.JoinAsUnion;
+            resultTable.ExtendedProperties[JoinAsMinus] = combinedTable.JoinAsMinus;
+            return resultTable;
+        }
 
-                        //Restore extended attributes of the current table
-                        dataTables[i].ExtendedProperties.Clear();
-                        dataTables[i].ExtendedProperties.Add(IsOptional, currentTableRequiresOptional);
-                        dataTables[i].ExtendedProperties.Add(JoinAsUnion, currentTableRequiresUnion);
-                        dataTables[i].ExtendedProperties.Add(JoinAsMinus, currentTableRequiresMinus);
-
-                        //Clear the previous table and flag it as logically deleted
-                        dataTables[i-1].Rows.Clear();
-                        dataTables[i-1].ExtendedProperties.Clear();
-                        dataTables[i-1].ExtendedProperties.Add(LogicallyDeleted, true);
-
-                        //Signal that at least one UnionWithNext has been performed
-                        hasProcessedUnion = true;
-                    }
-                }
-                return hasProcessedUnion;
-            }
-            bool ProcessMinus()
-            {
-                bool hasProcessedMinus = false;
-                for (int i = 1; i < dataTables.Count; i++)
-                {
-                    bool previousTableRequiresMinus = dataTables[i-1].ExtendedProperties.ContainsKey(JoinAsMinus)
-                                                        && dataTables[i-1].ExtendedProperties[JoinAsMinus] is true;
-                    if (previousTableRequiresMinus)
-                    {
-                        //Backup extended attributes of the current table
-                        bool currentTableRequiresOptional = dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
-                                                              && dataTables[i].ExtendedProperties[IsOptional] is true;
-                        bool currentTableRequiresUnion = dataTables[i].ExtendedProperties.ContainsKey(JoinAsUnion)
-                                                           && dataTables[i].ExtendedProperties[JoinAsUnion] is true;
-                        bool currentTableRequiresMinus = dataTables[i].ExtendedProperties.ContainsKey(JoinAsMinus)
-                                                           && dataTables[i].ExtendedProperties[JoinAsMinus] is true;
-
-                        //Diff the previous table against the current one (which is replaced)
-                        dataTables[i] = DiffJoinTables(dataTables[i-1], dataTables[i]);
-
-                        //Restore extended attributes of the current table
-                        dataTables[i].ExtendedProperties.Clear();
-                        dataTables[i].ExtendedProperties.Add(IsOptional, currentTableRequiresOptional);
-                        dataTables[i].ExtendedProperties.Add(JoinAsUnion, currentTableRequiresUnion);
-                        dataTables[i].ExtendedProperties.Add(JoinAsMinus, currentTableRequiresMinus);
-
-                        //Clear the previous table and flag it as logically deleted
-                        dataTables[i-1].Rows.Clear();
-                        dataTables[i-1].ExtendedProperties.Clear();
-                        dataTables[i-1].ExtendedProperties.Add(LogicallyDeleted, true);
-
-                        //Signal that at least one MinusWithNext has been performed
-                        hasProcessedMinus = true;
-                    }
-                }
-                return hasProcessedMinus;
-            }
-            void ComputeJoins(bool needsOuterJoin)
-            {
-                finalTable = dataTables[0];
-                for (int i = 1; i < dataTables.Count; i++)
-                {
-                    //Switch to OuterJoin when encountering Optional behavior (or always, in case we come from Union behavior)
-                    needsOuterJoin |= dataTables[i].ExtendedProperties.ContainsKey(IsOptional)
-                                       && dataTables[i].ExtendedProperties[IsOptional] is true;
-
-                    //Proceed with most proper join strategy for current table
-                    finalTable = needsOuterJoin ? OuterJoinTables(finalTable, dataTables[i])
-                                                : InnerJoinTables(finalTable, dataTables[i]);
-                }
-            }
-            #endregion
-
-            //Step 1: process Union operators
-            bool hasDoneUnions = ProcessUnions();
-            if (hasDoneUnions)
-                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted)
-                                            && dt.ExtendedProperties[LogicallyDeleted] is true);
-
-            //Step 2: process Minus operators
-            bool hasDoneMinus = ProcessMinus();
-            if (hasDoneMinus)
-                dataTables.RemoveAll(dt => dt.ExtendedProperties.ContainsKey(LogicallyDeleted)
-                                            && dt.ExtendedProperties[LogicallyDeleted] is true);
-
-            //Step 3: compute joins
-            ComputeJoins(hasDoneUnions);
-
-            return finalTable;
+        /// <summary>
+        /// Converts a DataTable into an RDFTable, carrying over the Optional/Union/Minus join flags
+        /// from the DataTable's ExtendedProperties (the way the engine tags pattern/group result tables)
+        /// </summary>
+        private static RDFTable ToRDFTableWithFlags(DataTable dataTable)
+        {
+            RDFTable table = RDFTable.FromDataTable(dataTable);
+            table.IsOptional = dataTable.ExtendedProperties.ContainsKey(IsOptional) && dataTable.ExtendedProperties[IsOptional] is true;
+            table.JoinAsUnion = dataTable.ExtendedProperties.ContainsKey(JoinAsUnion) && dataTable.ExtendedProperties[JoinAsUnion] is true;
+            table.JoinAsMinus = dataTable.ExtendedProperties.ContainsKey(JoinAsMinus) && dataTable.ExtendedProperties[JoinAsMinus] is true;
+            return table;
         }
 
         #region RDFTable (v4)
@@ -2577,12 +2491,14 @@ namespace RDFSharp.Query
             //Projection expression variables
             ProjectExpressions(query, table);
 
-            //Execute configured sort modifiers
+            //Execute configured sort modifiers (v4: stable Ordinal sort via RDFTable, UNBOUND sorts smallest)
             RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
             if (orderByModifiers.Length > 0)
             {
-                table = orderByModifiers.Aggregate(table, (current, modifier) => modifier.ApplyModifier(current));
-                table = table.DefaultView.ToTable();
+                List<(string, bool)> sortKeys = orderByModifiers
+                    .Select(m => (m.Variable.ToString(), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
+                    .ToList();
+                table = SortTable(RDFTable.FromDataTable(table), sortKeys).ToDataTable();
             }
 
             //Execute projection algorithm

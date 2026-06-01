@@ -73,6 +73,13 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Tells whether the row's table owns a column with the given (possibly non-normalized) name.
+        /// Replaces the old "row.Table.Columns.Contains(...)" check used throughout the algebra.
+        /// </summary>
+        public bool HasColumn(string column)
+            => column != null && _ordinals.ContainsKey(RDFTable.NormalizeColumnName(column));
+
+        /// <summary>
         /// Tells whether the given column is UNBOUND in this row (counterpart of DataRow.IsNull)
         /// </summary>
         /// <exception cref="RDFQueryException">the column is null or does not belong to the table</exception>
