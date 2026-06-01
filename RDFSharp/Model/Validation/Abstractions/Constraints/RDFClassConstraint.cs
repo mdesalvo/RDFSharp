@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model
@@ -48,7 +47,8 @@ namespace RDFSharp.Model
         internal override RDFValidationReport ValidateConstraint(RDFShapesGraph shapesGraph, RDFGraph dataGraph, RDFShape shape, RDFPatternMember focusNode, List<RDFPatternMember> valueNodes)
         {
             RDFValidationReport report = new RDFValidationReport();
-            List<RDFPatternMember> classInstances = dataGraph.GetInstancesOfClass(ClassType);
+            //Opt into identity membership: probe class instances in O(1) instead of scanning per value node
+            BuildIdentityLookup(dataGraph.GetInstancesOfClass(ClassType));
             RDFPropertyShape pShape = shape as RDFPropertyShape;
 
             //In case no shape messages have been provided, this constraint emits a default one (for usability)
@@ -62,7 +62,7 @@ namespace RDFSharp.Model
                 {
                     //Resource
                     case RDFResource valueNodeResource:
-                        if (!classInstances.Any(x => x.Equals(valueNodeResource)))
+                        if (!IsInIdentityLookup(valueNodeResource))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT,
                                                                      focusNode,

@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using RDFSharp.Query;
 
 namespace RDFSharp.Model
@@ -90,7 +89,8 @@ namespace RDFSharp.Model
 
             #region Evaluation
             foreach (RDFPatternMember valueNode in valueNodes)
-                if (!InValues.Any(v => v.Value.Equals(valueNode)))
+                //InValues is already keyed by pattern member identity, so probe it directly in O(1)
+                if (!InValues.ContainsKey(valueNode.PatternMemberID))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.IN_CONSTRAINT_COMPONENT,
                                                              focusNode,
