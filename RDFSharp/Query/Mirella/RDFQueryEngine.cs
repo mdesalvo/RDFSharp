@@ -833,23 +833,20 @@ namespace RDFSharp.Query
                 AddColumn(patternResultTable, pattern.Object.ToString());
             }
 
-            //Analyze templateHoleDetector to decide hole filling strategy
-            List<RDFTriple> matchingTriples;
+            //Analyze templateHoleDetector to refine the set of matching triples
+            List<RDFTriple> matchingTriples = null;
             switch (templateHoleDetector.ToString())
             {
                 case "S":
                     matchingTriples = graph.SelectTriples(p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.S, patternResultTable);
                     break;
 
                 case "P":
                     matchingTriples = graph.SelectTriples(s: (RDFResource)pattern.Subject, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.P, patternResultTable);
                     break;
 
                 case "O":
                     matchingTriples = graph.SelectTriples(s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate);
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.O, patternResultTable);
                     break;
 
                 case "SP":
@@ -857,7 +854,6 @@ namespace RDFSharp.Query
                     //In case of same S and P variable, must refine matching triples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Predicate));
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SP, patternResultTable);
                     break;
 
                 case "SO":
@@ -865,7 +861,6 @@ namespace RDFSharp.Query
                     //In case of same S and O variable, must refine matching triples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Subject.Equals(mt.Object));
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SO, patternResultTable);
                     break;
 
                 case "PO":
@@ -873,7 +868,6 @@ namespace RDFSharp.Query
                     //In case of same P and O variable, must refine matching triples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.PO, patternResultTable);
                     break;
 
                 case "SPO":
@@ -887,9 +881,12 @@ namespace RDFSharp.Query
                     //In case of same P and O variable, must refine matching triples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingTriples = matchingTriples.FindAll(mt => mt.Predicate.Equals(mt.Object));
-                    PopulateTable(pattern, matchingTriples, RDFQueryEnums.RDFPatternHoles.SPO, patternResultTable);
                     break;
             }
+
+            //Fully-bound patterns (no holes) match no switch case and leave the table empty
+            if (matchingTriples != null)
+                PopulateTable(pattern, matchingTriples, patternResultTable);
 
             return patternResultTable;
         }
@@ -933,28 +930,24 @@ namespace RDFSharp.Query
                 AddColumn(patternResultTable, pattern.Object.ToString());
             }
 
-            //Analyze templateHoleDetector to decide hole filling strategy
-            List<RDFQuadruple> matchingQuadruples;
+            //Analyze templateHoleDetector to refine the set of matching quadruples
+            List<RDFQuadruple> matchingQuadruples = null;
             switch (templateHoleDetector.ToString())
             {
                 case "C":
                     matchingQuadruples = store.SelectQuadruples(s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.C, patternResultTable);
                     break;
 
                 case "S":
                     matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.S, patternResultTable);
                     break;
 
                 case "P":
                     matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, s: (RDFResource)pattern.Subject, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.P, patternResultTable);
                     break;
 
                 case "O":
                     matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate);
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.O, patternResultTable);
                     break;
 
                 case "CS":
@@ -962,7 +955,6 @@ namespace RDFSharp.Query
                     //In case of same C and S variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Subject))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Subject));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CS, patternResultTable);
                     break;
 
                 case "CP":
@@ -970,7 +962,6 @@ namespace RDFSharp.Query
                     //In case of same C and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Predicate))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Predicate));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CP, patternResultTable);
                     break;
 
                 case "CO":
@@ -978,7 +969,6 @@ namespace RDFSharp.Query
                     //In case of same C and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Context.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Context.Equals(mq.Object));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CO, patternResultTable);
                     break;
 
                 case "SP":
@@ -986,7 +976,6 @@ namespace RDFSharp.Query
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Subject.Equals(mq.Predicate));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SP, patternResultTable);
                     break;
 
                 case "SO":
@@ -994,7 +983,6 @@ namespace RDFSharp.Query
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Subject.Equals(mq.Object));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SO, patternResultTable);
                     break;
 
                 case "PO":
@@ -1002,7 +990,6 @@ namespace RDFSharp.Query
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Predicate.Equals(mq.Object));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.PO, patternResultTable);
                     break;
 
                 case "CSP":
@@ -1016,7 +1003,6 @@ namespace RDFSharp.Query
                     //In case of same S and P variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Predicate))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Subject.Equals(mq.Predicate));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSP, patternResultTable);
                     break;
 
                 case "CSO":
@@ -1030,7 +1016,6 @@ namespace RDFSharp.Query
                     //In case of same S and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Subject.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Subject.Equals(mq.Object));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSO, patternResultTable);
                     break;
 
                 case "CPO":
@@ -1044,7 +1029,6 @@ namespace RDFSharp.Query
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Predicate.Equals(mq.Object));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CPO, patternResultTable);
                     break;
 
                 case "SPO":
@@ -1058,7 +1042,6 @@ namespace RDFSharp.Query
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Predicate.Equals(mq.Object));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.SPO, patternResultTable);
                     break;
 
                 case "CSPO":
@@ -1081,9 +1064,12 @@ namespace RDFSharp.Query
                     //In case of same P and O variable, must refine matching quadruples with a further value comparison
                     if (pattern.Predicate.Equals(pattern.Object))
                         matchingQuadruples = matchingQuadruples.FindAll(mq => mq.Predicate.Equals(mq.Object));
-                    PopulateTable(pattern, matchingQuadruples, RDFQueryEnums.RDFPatternHoles.CSPO, patternResultTable);
                     break;
             }
+
+            //Fully-bound patterns (no holes) match no switch case and leave the table empty
+            if (matchingQuadruples != null)
+                PopulateTable(pattern, matchingQuadruples, patternResultTable);
 
             return patternResultTable;
         }
@@ -1677,7 +1663,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Builds the table results of the pattern with values from the given graph
         /// </summary>
-        internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
+        internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, DataTable resultTable)
         {
             //Resolve the target column of each variable position once (the indexer returns null for
             //non-variable positions, whose ToString() is not a column name). When two positions bind
@@ -1709,7 +1695,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Builds the table results of the pattern with values from the given store
         /// </summary>
-        internal static void PopulateTable(RDFPattern pattern, List<RDFQuadruple> quadruples, RDFQueryEnums.RDFPatternHoles patternHole, DataTable resultTable)
+        internal static void PopulateTable(RDFPattern pattern, List<RDFQuadruple> quadruples, DataTable resultTable)
         {
             //Resolve the target column of each variable position once (the indexer returns null for
             //non-variable positions). Positions binding the same variable resolve to the very same

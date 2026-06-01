@@ -14,6 +14,8 @@
    limitations under the License.
 */
 
+using System;
+
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -24,6 +26,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// RDFPatternHoles represents an enumeration for possible positions of holes in a pattern.
         /// </summary>
+        [Obsolete("RDFPatternHoles is no longer used by RDFSharp. The enum is retained only for backward compatibility and will be removed in a future major version.")]
         internal enum RDFPatternHoles { C, S, P, O, CS, CP, CO, CSP, CSO, CPO, CSPO, SP, SO, PO, SPO }
 
         /// <summary>
