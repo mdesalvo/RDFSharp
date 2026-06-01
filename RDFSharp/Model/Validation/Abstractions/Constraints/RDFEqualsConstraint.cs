@@ -61,8 +61,10 @@ namespace RDFSharp.Model
                                                              .Select(x => x.Object)
                                                              .ToList();
 
+            //Opt into identity membership to probe each side in O(1) (single lookup rebuilt per side)
+            BuildIdentityLookup(valueNodes);
             foreach (RDFPatternMember predicateNode in predicateNodes)
-                if (!valueNodes.Any(v => v.Equals(predicateNode)))
+                if (!IsInIdentityLookup(predicateNode))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,
@@ -71,8 +73,9 @@ namespace RDFSharp.Model
                                                              shapeMessages,
                                                              shape.Severity));
 
+            BuildIdentityLookup(predicateNodes);
             foreach (RDFPatternMember valueNode in valueNodes)
-                if (!predicateNodes.Any(p => p.Equals(valueNode)))
+                if (!IsInIdentityLookup(valueNode))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.EQUALS_CONSTRAINT_COMPONENT,
                                                              focusNode,

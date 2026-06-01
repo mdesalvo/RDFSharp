@@ -56,10 +56,16 @@ namespace RDFSharp.Model
                 shapeMessages.Add(new RDFPlainLiteral($"Must not have common values with property <{DisjointPredicate}>"));
 
             #region Evaluation
+            //Opt into identity membership: index the focus node's disjoint-predicate objects once
+            //(via the graph index) and probe each value node in O(1), instead of scanning the whole
+            //graph per value node. A non-resource focus node has no such triples, so the lookup
+            //stays empty and nothing matches (as the previous per-value graph scan would have found)
+            if (focusNode is RDFResource focusNodeResource)
+                BuildIdentityLookup(dataGraph.SelectTriples(s: focusNodeResource, p: DisjointPredicate)
+                                             .Select(t => t.Object));
+
             foreach (RDFPatternMember valueNode in valueNodes)
-                if (dataGraph.Any(t => t.Subject.Equals(focusNode)
-                                        && t.Predicate.Equals(DisjointPredicate)
-                                        && t.Object.Equals(valueNode)))
+                if (IsInIdentityLookup(valueNode))
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.DISJOINT_CONSTRAINT_COMPONENT,
                                                              focusNode,

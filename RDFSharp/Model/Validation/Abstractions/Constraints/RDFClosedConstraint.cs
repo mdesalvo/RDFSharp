@@ -75,6 +75,9 @@ namespace RDFSharp.Model
                     if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
                         allowedProperties.Add(propertyShape.Path);
 
+                //Opt into identity membership: probe allowed properties in O(1) instead of scanning per triple
+                BuildIdentityLookup(allowedProperties);
+
                 //In case no shape messages have been provided, this constraint emits a default one (for usability)
                 List<RDFLiteral> shapeMessages = new List<RDFLiteral>(shape.Messages);
                 if (shapeMessages.Count == 0)
@@ -84,7 +87,7 @@ namespace RDFSharp.Model
                 foreach (RDFPatternMember valueNode in valueNodes)
                     if (valueNode is RDFResource valueNodeResource)
                     {
-                        foreach (RDFTriple unallowedTriple in dataGraph.SelectTriples(s:valueNodeResource).Where(t => !allowedProperties.Any(p => p.Equals(t.Predicate))))
+                        foreach (RDFTriple unallowedTriple in dataGraph.SelectTriples(s:valueNodeResource).Where(t => !IsInIdentityLookup(t.Predicate)))
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT,
                                                                      valueNodeResource,
