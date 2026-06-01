@@ -361,6 +361,20 @@ public class RDFNTriplesTest
     }
 
     [TestMethod]
+    public void ShouldSerializeGraphWithSPLTripleHavingSlashAndNewlineCharsInLiteral()
+    {
+        //Backslash and newline in the same value: the backslash must be escaped to "\\" while the
+        //raw newline becomes "\n" without being re-escaped, pinning the folded escaping order
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("http://subj/"), new RDFResource("http://pred/"), new RDFPlainLiteral("a\\b\nc", "en-US")));
+        RDFNTriples.Serialize(graph, Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashAndNewlineCharsInLiteral.nt"));
+
+        Assert.IsTrue(File.Exists(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashAndNewlineCharsInLiteral.nt")));
+        string fileContent = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "RDFNTriplesTest_ShouldSerializeGraphWithSPLTripleHavingSlashAndNewlineCharsInLiteral.nt"));
+        Assert.IsTrue(fileContent.Equals($"<http://subj/> <http://pred/> \"a\\\\b\\nc\"@EN-US .{Environment.NewLine}", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
     public void ShouldSerializeEmptyGraphToStream()
     {
         MemoryStream stream = new MemoryStream();

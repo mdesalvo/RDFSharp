@@ -83,10 +83,11 @@ namespace RDFSharp.Store
                         #region literal
                         else
                         {
-                            quadrupleTemplate = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value.Replace("\\", @"\\").Replace("\"", "\\\""))));
-                            quadrupleTemplate = quadrupleTemplate.Replace("\n", "\\n")
-                                                                 .Replace("\t", "\\t")
-                                                                 .Replace("\r", "\\r");
+                            //Control-char escaping ("\n"/"\t"/"\r") is folded into the value pipeline:
+                            //it can only ever occur inside the literal value, never in the constant
+                            //delimiters/URIs/lang of the assembled line, so this avoids re-scanning the
+                            //whole line three times while producing byte-identical output
+                            quadrupleTemplate = quadrupleTemplate.Replace("{VAL}", RDFModelUtilities.EscapeControlCharsForXML(RDFModelUtilities.Unicode_To_ASCII(((RDFLiteral)q.Object).Value.Replace("\\", @"\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\t", "\\t").Replace("\r", "\\r"))));
 
                             #region plain literal
                             if (q.Object is RDFPlainLiteral plitObj)
