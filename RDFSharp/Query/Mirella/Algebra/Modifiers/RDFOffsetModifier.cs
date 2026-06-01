@@ -62,12 +62,12 @@ namespace RDFSharp.Query
         internal override DataTable ApplyModifier(DataTable table)
         {
             string tableSort = table.DefaultView.Sort;
-            if (table.Rows.Count == 0 || Offset >= table.Rows.Count)
-                table = table.Clone();
-            else
-                table = table.AsEnumerable().Skip(Offset).CopyToDataTable();
-            table.DefaultView.Sort = tableSort;
-            return table;
+            DataTable offsetTable = table.Clone();
+            if (table.Rows.Count > 0 && Offset < table.Rows.Count)
+                foreach (DataRow row in table.Rows.Cast<DataRow>().Skip(Offset))
+                    offsetTable.ImportRow(row);
+            offsetTable.DefaultView.Sort = tableSort;
+            return offsetTable;
         }
         #endregion
     }

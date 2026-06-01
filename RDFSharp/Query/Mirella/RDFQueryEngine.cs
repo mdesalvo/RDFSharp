@@ -1889,7 +1889,7 @@ namespace RDFSharp.Query
             {
                 //Leverage a relation between left row and right table based on common columns.
                 //This helps at slightly reducing O(N^2) complexity to O(N*K) where K << N
-                List<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(),
+                List<DataRow> relatedRows = commonColumns.Aggregate(rightTable.Rows.Cast<DataRow>(),
                     (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName))).ToList();
 
                 //Relation HAS found data => proceed with outer-join
@@ -2002,7 +2002,7 @@ namespace RDFSharp.Query
 
                 //Leverage a relation between left row and right table based on common columns.
                 //This helps at slightly reducing O(N^2) complexity to O(N*K) where K << N
-                List<DataRow> relatedRows = commonColumns.Aggregate(rightTable.AsEnumerable(),
+                List<DataRow> relatedRows = commonColumns.Aggregate(rightTable.Rows.Cast<DataRow>(),
                     (current, commonColumn) => current.Where(relatedRow => CheckJoin(leftRow, relatedRow, commonColumn.ColumnName))).ToList();
 
                 //Take left row only if it HASN'T right matches
@@ -2562,7 +2562,7 @@ namespace RDFSharp.Query
                 }
                 else
                 {
-                    foreach (DataRow row in table.AsEnumerable())
+                    foreach (DataRow row in table.Rows.Cast<DataRow>())
                         row[bindVariable] = expression.ApplyExpression(row)?.ToString();
                 }
 

@@ -90,7 +90,7 @@ namespace RDFSharp.Query
             #region Non-Disjoint Evaluation
             else
             {
-                EnumerableRowCollection<DataRow> patternResultsEnumerable = PatternResults?.AsEnumerable();
+                IEnumerable<DataRow> patternResultsEnumerable = PatternResults?.Rows.Cast<DataRow>();
                 if (patternResultsEnumerable?.Any() ?? false)
                 {
                     #region Subject
@@ -106,7 +106,7 @@ namespace RDFSharp.Query
                             RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[subjectString].ToString());
 
                             //Apply subject filter on the pattern resultset
-                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<string>(subjectString)).Equals(rowMember));
+                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x[subjectString] as string).Equals(rowMember));
                         }
                         subjectCompared = true;
                     }
@@ -125,7 +125,7 @@ namespace RDFSharp.Query
                             RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[predicateString].ToString());
 
                             //Apply predicate filter on the pattern resultset
-                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<string>(predicateString)).Equals(rowMember));
+                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x[predicateString] as string).Equals(rowMember));
                         }
                         predicateCompared = true;
                     }
@@ -144,7 +144,7 @@ namespace RDFSharp.Query
                             RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[objectString].ToString());
 
                             //Apply object filter on the pattern resultset
-                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x.Field<string>(objectString)).Equals(rowMember));
+                            patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x[objectString] as string).Equals(rowMember));
                         }
                         objectCompared = true;
                     }

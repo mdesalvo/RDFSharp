@@ -71,7 +71,7 @@ namespace RDFSharp.Query
             if (filterColumns.Count > 0)
             {
                 //Get the enumerable representation of the filter table
-                EnumerableRowCollection<DataRow> valuesTableEnumerable = ValuesTable.AsEnumerable();
+                IEnumerable<DataRow> valuesTableEnumerable = ValuesTable.Rows.Cast<DataRow>();
 
                 //Perform the iterative check on the filter columns
                 filterColumns.ForEach(filterColumn =>
