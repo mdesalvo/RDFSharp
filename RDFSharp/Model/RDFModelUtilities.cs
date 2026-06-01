@@ -104,15 +104,17 @@ namespace RDFSharp.Model
             if (string.IsNullOrEmpty(asciiString))
                 return asciiString;
 
+            //Fast-path: ASCII-encoded Unicodes are introduced by a backslash ("\u"/"\U"),
+            //so a string without any backslash cannot carry escapes and is returned as-is,
+            //skipping both regex passes (the dominant case for plain URIs/literals)
+            if (asciiString.IndexOf('\\') == -1)
+                return asciiString;
+
             //UNICODE (UTF-16)
-            StringBuilder sbRegexU8 = new StringBuilder();
-            sbRegexU8.Append(RDFShims.EightBytesUnicodeRegex.Value.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
+            string u8Replaced = RDFShims.EightBytesUnicodeRegex.Value.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)));
 
             //UNICODE (UTF-8)
-            StringBuilder sbRegexU4 = new StringBuilder();
-            sbRegexU4.Append(RDFShims.FourBytesUnicodeRegex.Value.Replace(sbRegexU8.ToString(), match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber))));
-
-            return sbRegexU4.ToString();
+            return RDFShims.FourBytesUnicodeRegex.Value.Replace(u8Replaced, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)));
         }
 
         /// <summary>
@@ -124,9 +126,18 @@ namespace RDFSharp.Model
             if (string.IsNullOrEmpty(unicodeString))
                 return unicodeString;
 
+            //Fast-path: when every character is already ASCII (the dominant case for URIs)
+            //the output equals the input, so we avoid allocating/filling the StringBuilder
+            int firstNonAscii = 0;
+            while (firstNonAscii < unicodeString.Length && unicodeString[firstNonAscii] <= 127)
+                firstNonAscii++;
+            if (firstNonAscii == unicodeString.Length)
+                return unicodeString;
+
             //https://docs.microsoft.com/en-us/dotnet/api/system.text.rune?view=net-5.0&viewFallbackFrom=netstandard-2.0
             StringBuilder b = new StringBuilder();
-            for (int i = 0; i < unicodeString.Length; i++)
+            b.Append(unicodeString, 0, firstNonAscii);
+            for (int i = firstNonAscii; i < unicodeString.Length; i++)
             {
                 //ASCII
                 if (unicodeString[i] <= 127)

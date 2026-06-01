@@ -204,6 +204,21 @@ public class RDFModelUtilitiesTest
     }
 
     [TestMethod]
+    [DataRow("http://example.org/subject#fragment")]   //no backslash: fast-path returns input as-is
+    [DataRow("This is nothing!")]
+    [DataRow(@"C:\temp\not-an-escape")]                //backslash but not a "\u"/"\U" escape: regex path no-ops
+    public void ShouldReturnInputUntouchedASCII_To_UnicodeWhenNoEscape(string input)
+    {
+        string output = RDFModelUtilities.ASCII_To_Unicode(input);
+
+        Assert.IsTrue(output.Equals(input, StringComparison.Ordinal));
+        //A pure no-backslash term must hit the fast-path and yield the very same instance
+        //(no regex pass, no allocation); a non-escape backslash term may go through the regex
+        if (input.IndexOf('\\') == -1)
+            Assert.AreSame(input, output);
+    }
+
+    [TestMethod]
     [DataRow(@"\U9\u8")]
     public void ShouldNotTransformBadFormedASCII_To_Unicode(string input)
     {
@@ -267,6 +282,19 @@ public class RDFModelUtilitiesTest
         string output = RDFModelUtilities.Unicode_To_ASCII(input);
 
         Assert.IsNull(output);
+    }
+
+    [TestMethod]
+    [DataRow("http://example.org/subject#fragment")]
+    [DataRow("This is nothing!")]
+    [DataRow("~!@#$%^&*()_+-=[]{}|;':,./<>?")]   //all-ASCII punctuation: fast-path returns input as-is
+    public void ShouldReturnInputUntouchedUnicode_To_ASCIIWhenPureAscii(string input)
+    {
+        string output = RDFModelUtilities.Unicode_To_ASCII(input);
+
+        //A pure-ASCII term must hit the fast-path and yield the very same instance
+        //(no StringBuilder, no allocation), proving no per-char rebuild took place
+        Assert.AreSame(input, output);
     }
 
     [TestMethod]
