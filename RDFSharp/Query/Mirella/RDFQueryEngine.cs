@@ -1659,10 +1659,15 @@ namespace RDFSharp.Query
             bool rowAdded = false;
 
             DataRow resultRow = table.NewRow();
-            foreach (string bindingKey in bindings.Keys.Where(bk => table.Columns.Contains(bk)))
+            //Plain iteration over the bindings avoids the per-row LINQ Where() iterator/closure
+            //allocation, and the KeyValuePair access avoids re-looking-up the value by key
+            foreach (KeyValuePair<string, string> binding in bindings)
             {
-                resultRow[bindingKey] = bindings[bindingKey];
-                rowAdded = true;
+                if (table.Columns.Contains(binding.Key))
+                {
+                    resultRow[binding.Key] = binding.Value;
+                    rowAdded = true;
+                }
             }
 
             if (rowAdded)
@@ -1890,13 +1895,17 @@ namespace RDFSharp.Query
                 joinTable.BeginLoadData();
                 foreach (DataRow leftRow in leftTable.Rows)
                 {
+                    object[] leftItems = leftRow.ItemArray;
+
                     //Loop right table
                     foreach (DataRow rightRow in rightTable.Rows)
                     {
+                        object[] rightItems = rightRow.ItemArray;
+
                         //Join left array with right array
-                        object[] joinArray = new object[leftRow.ItemArray.Length + rightRow.ItemArray.Length];
-                        Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
-                        Array.Copy(rightRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, rightRow.ItemArray.Length);
+                        object[] joinArray = new object[leftItems.Length + rightItems.Length];
+                        Array.Copy(leftItems, 0, joinArray, 0, leftItems.Length);
+                        Array.Copy(rightItems, 0, joinArray, leftItems.Length, rightItems.Length);
                         joinTable.LoadDataRow(joinArray, true);
                     }
                 }
@@ -1953,13 +1962,17 @@ namespace RDFSharp.Query
                         DataRow[] relatedRows = leftRow.GetChildRows(dataRelation);
                         if (relatedRows.Length > 0)
                         {
+                            object[] leftItems = leftRow.ItemArray;
+
                             //Loop right table (only rows from relation)
                             foreach (DataRow relatedRow in relatedRows)
                             {
+                                object[] rightItems = relatedRow.ItemArray;
+
                                 //Join left array with related array
-                                object[] joinArray = new object[leftRow.ItemArray.Length + relatedRow.ItemArray.Length];
-                                Array.Copy(leftRow.ItemArray, 0, joinArray, 0, leftRow.ItemArray.Length);
-                                Array.Copy(relatedRow.ItemArray, 0, joinArray, leftRow.ItemArray.Length, relatedRow.ItemArray.Length);
+                                object[] joinArray = new object[leftItems.Length + rightItems.Length];
+                                Array.Copy(leftItems, 0, joinArray, 0, leftItems.Length);
+                                Array.Copy(rightItems, 0, joinArray, leftItems.Length, rightItems.Length);
                                 joinTable.LoadDataRow(joinArray, true);
                             }
                         }
