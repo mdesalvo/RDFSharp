@@ -21,18 +21,18 @@ namespace RDFSharp.Query
     /// as a string, a column is fully described by its (already normalized) name and its position.
     /// It is the lightweight counterpart of System.Data.DataColumn, without typing or constraints.
     /// </summary>
-    public sealed class RDFTableColumn
+    internal sealed class RDFTableColumn
     {
         #region Properties
         /// <summary>
         /// Name of the column (normalized as Trim().ToUpperInvariant(), e.g. "?SUBJECT")
         /// </summary>
-        public string Name { get; }
+        internal string Name { get; }
 
         /// <summary>
         /// Zero-based position of the column within the owning table
         /// </summary>
-        public int Ordinal { get; internal set; }
+        internal int Ordinal { get; set; }
         #endregion
 
         #region Ctors

@@ -308,5 +308,140 @@ public class RDFTableTest
         Assert.AreEqual("ex:s2", roundTripped.Rows[1]["?S"]);
         Assert.IsTrue(roundTripped.Rows[1].IsUnbound("?P"));
     }
+
+    [TestMethod]
+    public void ShouldImportRowFromDataRow()
+    {
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add("?s", typeof(string));
+        dataTable.Columns.Add("?P", typeof(string));
+        DataRow dataRow = dataTable.NewRow();
+        dataRow["?s"] = "ex:s";
+        dataRow["?P"] = DBNull.Value;
+        dataTable.Rows.Add(dataRow);
+
+        RDFTableRow row = RDFTable.FromDataRow(dataRow);
+
+        //Column names are normalized (Trim + UpperInvariant)
+        Assert.AreEqual("ex:s", row["?S"]);
+        Assert.IsTrue(row.IsUnbound("?P"));
+        Assert.IsTrue(row.HasColumn("?s"));
+    }
+
+    [TestMethod]
+    public void ShouldThrowImportingRowFromNullDataRow()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFTable.FromDataRow(null));
+    #endregion
+
+    #region Schema (utilities)
+    [TestMethod]
+    public void ShouldNormalizeColumnName()
+    {
+        Assert.AreEqual("?SUBJECT", RDFTable.NormalizeColumnName("  ?subject "));
+        Assert.AreEqual("?S", RDFTable.NormalizeColumnName("?s"));
+        Assert.IsNull(RDFTable.NormalizeColumnName(null));
+    }
+
+    [TestMethod]
+    public void ShouldRemoveColumn()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new[] { "a1", "b1", "c1" });
+        table.AddRow(new[] { "a2", (string)null, "c2" });
+
+        table.RemoveColumn("?b");
+
+        //Column dropped and remaining ones re-indexed
+        Assert.AreEqual(2, table.ColumnsCount);
+        Assert.IsFalse(table.HasColumn("?B"));
+        Assert.AreEqual(0, table.OrdinalOf("?A"));
+        Assert.AreEqual(1, table.OrdinalOf("?C"));
+        Assert.AreEqual(0, table.Columns[0].Ordinal);
+        Assert.AreEqual(1, table.Columns[1].Ordinal);
+
+        //Rows are shrunk, keeping the surviving cells aligned
+        Assert.AreEqual(2, table.RowsCount);
+        Assert.AreEqual("a1", table.Rows[0]["?A"]);
+        Assert.AreEqual("c1", table.Rows[0]["?C"]);
+        Assert.AreEqual("a2", table.Rows[1]["?A"]);
+        Assert.AreEqual("c2", table.Rows[1]["?C"]);
+    }
+
+    [TestMethod]
+    public void ShouldNotRemoveColumnBecauseAbsentOrNull()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new[] { "a1" });
+
+        table.RemoveColumn("?MISSING");
+        table.RemoveColumn(null);
+
+        Assert.AreEqual(1, table.ColumnsCount);
+        Assert.AreEqual(1, table.RowsCount);
+        Assert.AreEqual("a1", table.Rows[0]["?A"]);
+    }
+    #endregion
+
+    #region Data (utilities)
+    [TestMethod]
+    public void ShouldBuildNewUnboundRow()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new[] { "a1", "b1" });
+
+        RDFTableRow unboundRow = table.NewRow();
+
+        //The transient row is all-UNBOUND and is NOT added to the table
+        Assert.IsTrue(unboundRow.IsUnbound("?A"));
+        Assert.IsTrue(unboundRow.IsUnbound("?B"));
+        Assert.AreEqual(1, table.RowsCount);
+    }
+
+    [TestMethod]
+    public void ShouldGetRowArrayByReference()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new[] { "a1", (string)null });
+
+        string[] cells = table.GetRowArray(0);
+        Assert.AreEqual("a1", cells[0]);
+        Assert.IsNull(cells[1]);
+
+        //Mutating the backing array is reflected by the row view (no defensive copy)
+        cells[1] = "b1";
+        Assert.AreEqual("b1", table.Rows[0]["?B"]);
+    }
+
+    [TestMethod]
+    public void ShouldCloneSchemaAndFlagsWithoutRows()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new[] { "a1", "b1" });
+        table.IsOptional = true;
+        table.JoinAsUnion = true;
+        table.JoinAsMinus = true;
+
+        RDFTable clone = table.Clone();
+
+        //Same columns and flags, but no rows; original is untouched
+        Assert.AreEqual(2, clone.ColumnsCount);
+        Assert.IsTrue(clone.HasColumn("?A"));
+        Assert.IsTrue(clone.HasColumn("?B"));
+        Assert.AreEqual(0, clone.RowsCount);
+        Assert.IsTrue(clone.IsOptional);
+        Assert.IsTrue(clone.JoinAsUnion);
+        Assert.IsTrue(clone.JoinAsMinus);
+        Assert.AreEqual(1, table.RowsCount);
+    }
     #endregion
 }

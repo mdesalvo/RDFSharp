@@ -141,5 +141,18 @@ public class RDFTableRowTest
 
         Assert.ThrowsExactly<RDFQueryException>(() => { _ = row["   "]; });
     }
+
+    [TestMethod]
+    public void ShouldCheckHasColumn()
+    {
+        RDFTableRow row = BuildRow("ex:s", "ex:p", "ex:o");
+
+        Assert.IsTrue(row.HasColumn("?S"));
+        //Column names are normalized (Trim + UpperInvariant)
+        Assert.IsTrue(row.HasColumn(" ?s "));
+        //Absent and null names answer gracefully (no throw), like DataColumnCollection.Contains
+        Assert.IsFalse(row.HasColumn("?X"));
+        Assert.IsFalse(row.HasColumn(null));
+    }
     #endregion
 }

@@ -2784,7 +2784,7 @@ namespace RDFSharp.Query
                 {
                     //Ensure to add the row only in case the expression has evaluated without binding errors,
                     //(otherwise in this scenario we would always answer true for ASK queries due to this row)
-                    RDFPatternMember bindResult = expression.ApplyExpression(table.NewUnboundRow());
+                    RDFPatternMember bindResult = expression.ApplyExpression(table.NewRow());
                     if (bindResult != null)
                         table.AddRow(new Dictionary<string, string> { { bindVariable, bindResult.ToString() } });
                 }

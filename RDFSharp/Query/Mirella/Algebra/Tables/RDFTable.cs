@@ -28,7 +28,7 @@ namespace RDFSharp.Query
     /// no constraints, no relations and no change-tracking, and can be exported to / imported
     /// from a DataTable since, for Mirella, every value is a string anyway.
     /// </summary>
-    public sealed class RDFTable
+    internal sealed class RDFTable
     {
         #region Fields
         /// <summary>
@@ -53,25 +53,25 @@ namespace RDFSharp.Query
         /// <summary>
         /// Columns of the table, in ordinal order
         /// </summary>
-        public IReadOnlyList<RDFTableColumn> Columns
+        internal IReadOnlyList<RDFTableColumn> Columns
             => _columns;
 
         /// <summary>
         /// Number of columns of the table
         /// </summary>
-        public int ColumnsCount
+        internal int ColumnsCount
             => _columns.Count;
 
         /// <summary>
         /// Rows of the table (zero-allocation enumeration via struct enumerator)
         /// </summary>
-        public RDFTableRowCollection Rows
+        internal RDFTableRowCollection Rows
             => new RDFTableRowCollection(_rows, _ordinals);
 
         /// <summary>
         /// Number of rows of the table
         /// </summary>
-        public int RowsCount
+        internal int RowsCount
             => _rows.Count;
         #endregion
 
@@ -143,13 +143,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Tells whether the table owns a column with the given (possibly non-normalized) name
         /// </summary>
-        public bool HasColumn(string columnName)
+        internal bool HasColumn(string columnName)
             => columnName != null && _ordinals.ContainsKey(NormalizeColumnName(columnName));
 
         /// <summary>
         /// Gets the ordinal of the column with the given (possibly non-normalized) name, or -1 if absent
         /// </summary>
-        public int OrdinalOf(string columnName)
+        internal int OrdinalOf(string columnName)
             => columnName != null && _ordinals.TryGetValue(NormalizeColumnName(columnName), out int ordinal) ? ordinal : -1;
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace RDFSharp.Query
         /// ordinal map but NOT added to the table. Counterpart of DataTable.NewRow used by the engine to
         /// evaluate an expression on an empty table (e.g. BIND on a zero-row table).
         /// </summary>
-        internal RDFTableRow NewUnboundRow()
+        internal RDFTableRow NewRow()
             => new RDFTableRow(new string[_columns.Count], _ordinals);
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace RDFSharp.Query
         /// Exports the table to an equivalent System.Data.DataTable made of string columns,
         /// mapping UNBOUND cells to DBNull.Value. Column names and order are preserved.
         /// </summary>
-        public DataTable ToDataTable()
+        internal DataTable ToDataTable()
         {
             DataTable dataTable = new DataTable();
             foreach (RDFTableColumn column in _columns)
@@ -289,7 +289,7 @@ namespace RDFSharp.Query
         /// projected to its string representation (since, for Mirella, everything is a string),
         /// mapping null / DBNull to UNBOUND. Column names are normalized (Trim + UpperInvariant).
         /// </summary>
-        public static RDFTable FromDataTable(DataTable dataTable)
+        internal static RDFTable FromDataTable(DataTable dataTable)
         {
             if (dataTable == null)
                 throw new RDFQueryException("Cannot import RDFTable because given \"dataTable\" parameter is null.");
@@ -350,7 +350,7 @@ namespace RDFSharp.Query
     /// It exposes a struct enumerator so that a foreach over the rows allocates nothing, while
     /// still implementing IEnumerable&lt;RDFTableRow&gt; for LINQ-style consumers.
     /// </summary>
-    public readonly struct RDFTableRowCollection : IEnumerable<RDFTableRow>
+    internal readonly struct RDFTableRowCollection : IEnumerable<RDFTableRow>
     {
         #region Fields
         private readonly List<string[]> _rows;
@@ -369,13 +369,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Number of rows in the collection
         /// </summary>
-        public int Count
+        internal int Count
             => _rows.Count;
 
         /// <summary>
         /// Gets a view over the row at the given index
         /// </summary>
-        public RDFTableRow this[int index]
+        internal RDFTableRow this[int index]
             => new RDFTableRow(_rows[index], _ordinals);
         #endregion
 

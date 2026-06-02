@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// The struct only references the backing storage of its owning table, so enumerating
     /// rows does not allocate one object per physical row.
     /// </summary>
-    public readonly struct RDFTableRow
+    internal readonly struct RDFTableRow
     {
         #region Fields
         /// <summary>
@@ -55,7 +55,7 @@ namespace RDFSharp.Query
         /// Gets the value bound to the given column, or null if the variable is UNBOUND
         /// </summary>
         /// <exception cref="RDFQueryException">the column is null or does not belong to the table</exception>
-        public string this[string column]
+        internal string this[string column]
         {
             get
             {
@@ -67,7 +67,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the value at the given ordinal, or null if the variable is UNBOUND
         /// </summary>
-        public string this[int ordinal]
+        internal string this[int ordinal]
             => _cells[ordinal];
         #endregion
 
@@ -76,21 +76,21 @@ namespace RDFSharp.Query
         /// Tells whether the row's table owns a column with the given (possibly non-normalized) name.
         /// Replaces the old "row.Table.Columns.Contains(...)" check used throughout the algebra.
         /// </summary>
-        public bool HasColumn(string column)
+        internal bool HasColumn(string column)
             => column != null && _ordinals.ContainsKey(RDFTable.NormalizeColumnName(column));
 
         /// <summary>
         /// Tells whether the given column is UNBOUND in this row (counterpart of DataRow.IsNull)
         /// </summary>
         /// <exception cref="RDFQueryException">the column is null or does not belong to the table</exception>
-        public bool IsUnbound(string column)
+        internal bool IsUnbound(string column)
             => _cells[ResolveOrdinal(column)] == null;
 
         /// <summary>
         /// Tells whether the given column is bound to a value in this row
         /// </summary>
         /// <exception cref="RDFQueryException">the column is null or does not belong to the table</exception>
-        public bool IsBound(string column)
+        internal bool IsBound(string column)
             => _cells[ResolveOrdinal(column)] != null;
 
         /// <summary>
