@@ -23,10 +23,10 @@ namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFTable is the lightweight, string-only tabular structure backing Mirella's query
-    /// evaluation. It is the isofunctional replacement of System.Data.DataTable: it stores
-    /// bindings as plain strings (a null cell represents an UNBOUND variable), keeps no typing,
-    /// no constraints, no relations and no change-tracking, and can be exported to / imported
-    /// from a DataTable since, for Mirella, every value is a string anyway.
+    /// evaluation. It stores bindings as plain strings (a null cell represents an UNBOUND
+    /// variable), keeps no typing, no constraints, no relations and no change-tracking, and
+    /// can be exported to / imported from a System.Data.DataTable at the public boundary,
+    /// since for Mirella every value is a string anyway.
     /// </summary>
     internal sealed class RDFTable
     {
@@ -38,7 +38,7 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Map (normalized column name => ordinal), using Ordinal comparison over already
-        /// normalized (Trim + UpperInvariant) names, reproducing the engine's column lookup
+        /// normalized (Trim + UpperInvariant) names
         /// </summary>
         private readonly Dictionary<string, int> _ordinals = new Dictionary<string, int>(StringComparer.Ordinal);
 
@@ -103,16 +103,15 @@ namespace RDFSharp.Query
 
         #region Schema
         /// <summary>
-        /// Normalizes a column name exactly as the engine has always done (Trim + UpperInvariant),
-        /// so that lookups and serialized variable names stay backwards-compatible (e.g. "?SUBJECT")
+        /// Normalizes a column name (Trim + UpperInvariant), so that lookups and serialized
+        /// variable names are canonical (e.g. "?SUBJECT")
         /// </summary>
         internal static string NormalizeColumnName(string columnName)
             => columnName?.Trim().ToUpperInvariant();
 
         /// <summary>
         /// Adds a new column to the table (avoiding duplicates) and returns it. If rows already
-        /// exist, they are widened with an UNBOUND cell for the new column, reproducing the way
-        /// DataTable backfills newly added columns.
+        /// exist, they are widened with an UNBOUND cell for the new column.
         /// </summary>
         internal RDFTableColumn AddColumn(string columnName)
         {
@@ -125,7 +124,7 @@ namespace RDFSharp.Query
             _columns.Add(column);
 
             //Widen already existing rows so that every row stays sized to the columns count,
-            //reproducing the way DataTable backfills a newly added column with empty cells
+            //leaving the newly added column UNBOUND on them
             if (_rows.Count > 0)
             {
                 int newWidth = _columns.Count;
@@ -155,7 +154,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Removes the column with the given (possibly non-normalized) name from the table, re-indexing
         /// the remaining columns and shrinking every existing row accordingly. No-op if the column is absent.
-        /// Counterpart of DataColumnCollection.Remove, used by the engine to drop property-path / non-projection columns.
+        /// Used by the engine to drop property-path / non-projection columns.
         /// </summary>
         internal void RemoveColumn(string columnName)
         {
@@ -191,8 +190,8 @@ namespace RDFSharp.Query
         #region Data
         /// <summary>
         /// Adds a row from the given variable=>value bindings: only bindings matching an existing
-        /// column are written, and the row is added only if at least one binding matched a column
-        /// (reproducing the engine's AddRow behavior). Missing columns stay UNBOUND (null).
+        /// column are written, and the row is added only if at least one binding matched a column.
+        /// Missing columns stay UNBOUND (null).
         /// </summary>
         internal void AddRow(IDictionary<string, string> bindings)
         {
@@ -228,8 +227,8 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Builds a transient all-UNBOUND row view sized to the table's current columns, sharing the table's
-        /// ordinal map but NOT added to the table. Counterpart of DataTable.NewRow used by the engine to
-        /// evaluate an expression on an empty table (e.g. BIND on a zero-row table).
+        /// ordinal map but NOT added to the table. Used by the engine to evaluate an expression on an empty
+        /// table (e.g. BIND on a zero-row table).
         /// </summary>
         internal RDFTableRow NewRow()
             => new RDFTableRow(new string[_columns.Count], _ordinals);
@@ -242,8 +241,8 @@ namespace RDFSharp.Query
             => _rows[index];
 
         /// <summary>
-        /// Creates an empty table with the same columns (and join flags) as this one, but no rows.
-        /// Counterpart of DataTable.Clone (schema-only copy).
+        /// Creates an empty table with the same columns (and join flags) as this one, but no rows
+        /// (schema-only copy).
         /// </summary>
         internal RDFTable Clone()
         {

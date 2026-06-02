@@ -103,7 +103,7 @@ namespace RDFSharp.Query
             RDFTable finalTable = ApplyModifiers(selectQuery, queryResultTable);
 
             //Export to the public DataTable result, carrying the join flags onto its ExtendedProperties
-            //(the old engine exposed its internal table directly, so callers may read these back)
+            //so that consumers can read them back off the result
             DataTable selectResults = finalTable.ToDataTable();
             selectResults.ExtendedProperties[IsOptional] = finalTable.IsOptional;
             selectResults.ExtendedProperties[JoinAsUnion] = finalTable.JoinAsUnion;
@@ -428,8 +428,8 @@ namespace RDFSharp.Query
                 table = limitModifier.ApplyModifier(table);
             #endregion
 
-            //Carry the incoming join flags onto the result (the old engine's combined table propagated
-            //IsOptional/Union/Minus through the modifiers down to the query result)
+            //Carry the incoming join flags (IsOptional/Union/Minus) through the modifiers
+            //onto the query result table
             table.IsOptional = inOptional;
             table.JoinAsUnion = inUnion;
             table.JoinAsMinus = inMinus;
@@ -1653,7 +1653,7 @@ namespace RDFSharp.Query
         {
             //Resolve the target ordinal of each variable position once (-1 for non-variable positions, whose
             //ToString() is not a column name). Positions binding the same variable resolve to the same ordinal,
-            //so the inequality checks reproduce the previous "first key wins" dedup (in S,P,O order).
+            //so the inequality checks apply "first key wins" dedup (in S,P,O order).
             int colS = resultTable.OrdinalOf(pattern.Subject.ToString());
             int colP = resultTable.OrdinalOf(pattern.Predicate.ToString());
             int colO = resultTable.OrdinalOf(pattern.Object.ToString());
@@ -1683,7 +1683,7 @@ namespace RDFSharp.Query
         {
             //Resolve the target ordinal of each variable position once (-1 for non-variable positions).
             //Positions binding the same variable resolve to the same ordinal, so the inequality checks
-            //reproduce the previous "first key wins" dedup (in C,S,P,O order).
+            //apply "first key wins" dedup (in C,S,P,O order).
             string patternContext = pattern.Context?.ToString();
             int colC = patternContext != null ? resultTable.OrdinalOf(patternContext) : -1;
             int colS = resultTable.OrdinalOf(pattern.Subject.ToString());
@@ -1713,13 +1713,12 @@ namespace RDFSharp.Query
 
         #region RDFTable (v4)
         //Lightweight, string-only join/combine/merge operations over RDFTable (null cell = UNBOUND),
-        //backed by a plain hash-join (no DataSet/DataRelation). One deliberate semantic: the inner-join
-        //compares common columns with StringComparison.Ordinal (the pre-v4 DataRelation was case-INSENSITIVE),
-        //aligning it with the Ordinal CheckJoin used by the outer-join and the difference.
+        //backed by a plain hash-join. All of them compare common columns with StringComparison.Ordinal,
+        //so matching is case-sensitive and consistent across inner-join, outer-join and difference.
 
         /// <summary>
         /// Builds a collision-free Ordinal key over the row's common columns, or null if any of them is UNBOUND
-        /// (UNBOUND can never take part in an equality match, mirroring DataRelation's strict semantics)
+        /// (an UNBOUND column can never take part in an equality match)
         /// </summary>
         private static string BuildJoinKey(RDFTableRow row, int[] commonOrdinals)
         {
@@ -1736,7 +1735,7 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Tells whether two rows are join-compatible on their common columns: for each of them either side
-        /// is UNBOUND, or both are bound to the same value (Ordinal). This is the old CheckJoin predicate.
+        /// is UNBOUND, or both are bound to the same value (Ordinal).
         /// </summary>
         private static bool AreJoinCompatible(RDFTableRow leftRow, int[] leftCommonOrdinals, RDFTableRow rightRow, int[] rightCommonOrdinals)
         {
@@ -2048,7 +2047,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Returns a new table with the rows ordered by the given keys (column name + descending flag).
         /// The sort is STABLE (rows equal on all keys keep their original order), UNBOUND sorts first when
-        /// ascending and last when descending, and keys whose column is absent are ignored (old guard).
+        /// ascending and last when descending, and keys whose column is absent are ignored.
         /// </summary>
         internal static RDFTable SortTable(RDFTable table, IList<(string column, bool descending)> sortKeys)
         {

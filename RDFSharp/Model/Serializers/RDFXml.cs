@@ -488,8 +488,8 @@ namespace RDFSharp.Model
                     {
                         string attrName = subjAttr.Name;
 
-                        //Skip reserved attributes (case-insensitive comparison without the
-                        //per-attribute ToLower() string allocation the switch used to require).
+                        //Skip reserved attributes (case-insensitive comparison, with no
+                        //per-attribute ToLower() string allocation).
                         if (attrName.Equals("rdf:about", StringComparison.OrdinalIgnoreCase)
                              || attrName.Equals("rdf:resource", StringComparison.OrdinalIgnoreCase)
                              || attrName.Equals("rdf:parseType", StringComparison.OrdinalIgnoreCase)

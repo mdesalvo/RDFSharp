@@ -18,8 +18,8 @@ namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFTableColumn represents a column of an RDFTable: since Mirella treats every binding
-    /// as a string, a column is fully described by its (already normalized) name and its position.
-    /// It is the lightweight counterpart of System.Data.DataColumn, without typing or constraints.
+    /// as a string, a column is fully described by its (already normalized) name and its position,
+    /// without typing or constraints.
     /// </summary>
     internal sealed class RDFTableColumn
     {
@@ -49,7 +49,7 @@ namespace RDFSharp.Query
         #region Interfaces
         /// <summary>
         /// Gives the string representation of the column (its name), so that callers iterating
-        /// the columns can keep using ToString() exactly as they did with System.Data.DataColumn
+        /// the columns can obtain the variable name via ToString()
         /// </summary>
         public override string ToString()
             => Name;

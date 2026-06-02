@@ -20,8 +20,8 @@ namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFTableRow is a lightweight, read-only view over a single row of an RDFTable.
-    /// It is the counterpart of System.Data.DataRow but carries no change-tracking, no
-    /// versioning and no per-cell boxing: a cell is either a bound string or null (UNBOUND).
+    /// It carries no change-tracking, no versioning and no per-cell boxing: a cell is
+    /// either a bound string or null (UNBOUND).
     /// The struct only references the backing storage of its owning table, so enumerating
     /// rows does not allocate one object per physical row.
     /// </summary>
@@ -74,13 +74,12 @@ namespace RDFSharp.Query
         #region Methods
         /// <summary>
         /// Tells whether the row's table owns a column with the given (possibly non-normalized) name.
-        /// Replaces the old "row.Table.Columns.Contains(...)" check used throughout the algebra.
         /// </summary>
         internal bool HasColumn(string column)
             => column != null && _ordinals.ContainsKey(RDFTable.NormalizeColumnName(column));
 
         /// <summary>
-        /// Tells whether the given column is UNBOUND in this row (counterpart of DataRow.IsNull)
+        /// Tells whether the given column is UNBOUND in this row
         /// </summary>
         /// <exception cref="RDFQueryException">the column is null or does not belong to the table</exception>
         internal bool IsUnbound(string column)
@@ -95,13 +94,12 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Resolves the ordinal of the given (possibly non-normalized) column name,
-        /// throwing the same way DataRow does when the column is unknown
+        /// throwing an RDFQueryException when the column is unknown
         /// </summary>
         private int ResolveOrdinal(string column)
         {
-            //Every misuse surfaces as RDFQueryException, keeping the same behavioral distinction
-            //the old DataRow drew between a null name and a name not belonging to the table.
-            //The null guard also avoids feeding a null key to the dictionary.
+            //Every misuse surfaces as RDFQueryException, distinguishing a null name from a name
+            //not belonging to the table. The null guard also avoids feeding a null key to the dictionary.
             if (column == null)
                 throw new RDFQueryException("Cannot access table cell because given \"column\" parameter is null.");
 
