@@ -102,7 +102,7 @@ namespace RDFSharp.Model
                                     propertyShape.SequencePath.Start = focusNode;
 
                                 //Compute property path on the given focus node
-                                RDFTable pathResult = new RDFQueryEngine().ApplyPropertyPathTable(
+                                RDFTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
                                 result.AddRange(from RDFTableRow pathResultRow
                                                 in pathResult.Rows

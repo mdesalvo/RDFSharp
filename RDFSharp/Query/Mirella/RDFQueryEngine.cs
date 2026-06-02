@@ -265,7 +265,7 @@ namespace RDFSharp.Query
                     {
                         case RDFPattern pattern:
                             //Evaluate pattern on the given data source
-                            RDFTable patternResultsTable = ApplyPatternTable(pattern, dataSource);
+                            RDFTable patternResultsTable = ApplyPattern(pattern, dataSource);
                             //Set metadata of result table
                             patternResultsTable.IsOptional = pattern.IsOptional;
                             patternResultsTable.JoinAsUnion = pattern.JoinAsUnion;
@@ -276,7 +276,7 @@ namespace RDFSharp.Query
 
                         case RDFPropertyPath propertyPath:
                             //Evaluate property path on the given data source
-                            RDFTable pPathResultsTable = ApplyPropertyPathTable(propertyPath, dataSource);
+                            RDFTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
                             //Set metadata of result table
                             pPathResultsTable.IsOptional = propertyPath.IsOptional;
                             pPathResultsTable.JoinAsUnion = propertyPath.JoinAsUnion;
@@ -310,7 +310,7 @@ namespace RDFSharp.Query
 
                         case RDFExistsFilter existsFilter:
                             //Evaluate exists filter's pattern on the given data source and save its result directly into the filter
-                            existsFilter.PatternResults = ApplyPatternTable(existsFilter.Pattern, dataSource);
+                            existsFilter.PatternResults = ApplyPattern(existsFilter.Pattern, dataSource);
                             break;
                     }
             }
@@ -809,59 +809,21 @@ namespace RDFSharp.Query
             }
         }
 
-        #region DataTable wrappers (kept for the test suite)
-        /// <summary>
-        /// Exports an RDFTable to a DataTable carrying its join flags onto ExtendedProperties
-        /// </summary>
-        private static DataTable ToDataTableWithFlags(RDFTable table)
-        {
-            DataTable dataTable = table.ToDataTable();
-            dataTable.ExtendedProperties[IsOptional] = table.IsOptional;
-            dataTable.ExtendedProperties[JoinAsUnion] = table.JoinAsUnion;
-            dataTable.ExtendedProperties[JoinAsMinus] = table.JoinAsMinus;
-            return dataTable;
-        }
-
-        /// <summary>Applies the given pattern to the given data source (DataTable-compatibility wrapper)</summary>
-        internal DataTable ApplyPattern(RDFPattern pattern, RDFDataSource dataSource)
-            => ApplyPatternTable(pattern, dataSource).ToDataTable();
-
-        /// <summary>Applies the given pattern to the given graph (DataTable-compatibility wrapper)</summary>
-        internal DataTable ApplyPatternToGraph(RDFPattern pattern, RDFGraph graph)
-            => ApplyPatternToGraphTable(pattern, graph).ToDataTable();
-
-        /// <summary>Applies the given pattern to the given store (DataTable-compatibility wrapper)</summary>
-        internal DataTable ApplyPatternToStore(RDFPattern pattern, RDFStore store)
-            => ApplyPatternToStoreTable(pattern, store).ToDataTable();
-
-        /// <summary>Applies the given pattern to the given federation (DataTable-compatibility wrapper)</summary>
-        internal DataTable ApplyPatternToFederation(RDFPattern pattern, RDFFederation federation)
-            => ApplyPatternToFederationTable(pattern, federation).ToDataTable();
-
-        /// <summary>Applies the given property path to the given data source (DataTable-compatibility wrapper)</summary>
-        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
-            => ToDataTableWithFlags(ApplyPropertyPathTable(propertyPath, dataSource));
-
-        /// <summary>Applies the given transitive property path to the given data source (DataTable-compatibility wrapper)</summary>
-        internal DataTable ApplyTransitivePropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
-            => ApplyTransitivePropertyPathTable(propertyPath, dataSource).ToDataTable();
-        #endregion
-
         /// <summary>
         /// Applies the given pattern to the given data source
         /// </summary>
-        internal RDFTable ApplyPatternTable(RDFPattern pattern, RDFDataSource dataSource)
+        internal RDFTable ApplyPattern(RDFPattern pattern, RDFDataSource dataSource)
         {
             switch (dataSource)
             {
                 case RDFGraph graph:
-                    return ApplyPatternToGraphTable(pattern, graph);
+                    return ApplyPatternToGraph(pattern, graph);
 
                 case RDFStore store:
-                    return ApplyPatternToStoreTable(pattern, store);
+                    return ApplyPatternToStore(pattern, store);
 
                 case RDFFederation federation:
-                    return ApplyPatternToFederationTable(pattern, federation);
+                    return ApplyPatternToFederation(pattern, federation);
             }
             return new RDFTable();
         }
@@ -869,7 +831,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given graph
         /// </summary>
-        internal RDFTable ApplyPatternToGraphTable(RDFPattern pattern, RDFGraph graph)
+        internal RDFTable ApplyPatternToGraph(RDFPattern pattern, RDFGraph graph)
         {
             RDFTable patternResultTable = new RDFTable();
             StringBuilder templateHoleDetector = new StringBuilder();
@@ -958,7 +920,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given store
         /// </summary>
-        internal RDFTable ApplyPatternToStoreTable(RDFPattern pattern, RDFStore store)
+        internal RDFTable ApplyPatternToStore(RDFPattern pattern, RDFStore store)
         {
             RDFTable patternResultTable = new RDFTable();
             StringBuilder templateHoleDetector = new StringBuilder();
@@ -1141,7 +1103,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given federation
         /// </summary>
-        internal RDFTable ApplyPatternToFederationTable(RDFPattern pattern, RDFFederation federation)
+        internal RDFTable ApplyPatternToFederation(RDFPattern pattern, RDFFederation federation)
         {
             RDFTable resultTable = new RDFTable();
 
@@ -1151,17 +1113,17 @@ namespace RDFSharp.Query
                 switch (dataSource)
                 {
                     case RDFGraph dataSourceGraph:
-                        RDFTable graphTable = ApplyPatternToGraphTable(pattern, dataSourceGraph);
+                        RDFTable graphTable = ApplyPatternToGraph(pattern, dataSourceGraph);
                         MergeTable(resultTable, graphTable);
                         break;
 
                     case RDFStore dataSourceStore:
-                        RDFTable storeTable = ApplyPatternToStoreTable(pattern, dataSourceStore);
+                        RDFTable storeTable = ApplyPatternToStore(pattern, dataSourceStore);
                         MergeTable(resultTable, storeTable);
                         break;
 
                     case RDFFederation dataSourceFederation:
-                        RDFTable federationTable = ApplyPatternToFederationTable(pattern, dataSourceFederation);
+                        RDFTable federationTable = ApplyPatternToFederation(pattern, dataSourceFederation);
                         MergeTable(resultTable, federationTable);
                         break;
 
@@ -1182,11 +1144,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given property path to the given graph
         /// </summary>
-        internal RDFTable ApplyPropertyPathTable(RDFPropertyPath propertyPath, RDFDataSource dataSource)
+        internal RDFTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
         {
             //Dispatch to transitive evaluation when any step carries a cardinality constraint
             if (propertyPath.HasTransitiveSteps)
-                return ApplyTransitivePropertyPathTable(propertyPath, dataSource);
+                return ApplyTransitivePropertyPath(propertyPath, dataSource);
 
             //Translate property path into equivalent list of patterns
             List<RDFPattern> patternList = propertyPath.GetPatternList();
@@ -1196,7 +1158,7 @@ namespace RDFSharp.Query
             foreach (RDFPattern pattern in patternList)
             {
                 //Apply pattern to graph
-                RDFTable patternTable = ApplyPatternTable(pattern, dataSource);
+                RDFTable patternTable = ApplyPattern(pattern, dataSource);
 
                 //Set join flags
                 patternTable.IsOptional = pattern.IsOptional;
@@ -1227,7 +1189,7 @@ namespace RDFSharp.Query
         /// For each seed node, evaluates all path steps via BFS and emits a result row for every reachable end node.
         /// Seeds are either the concrete start resource or all resource nodes in the datasource when the start is a variable.
         /// </summary>
-        internal RDFTable ApplyTransitivePropertyPathTable(RDFPropertyPath propertyPath, RDFDataSource dataSource)
+        internal RDFTable ApplyTransitivePropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
         {
             RDFTable resultTable = new RDFTable();
 
@@ -1722,74 +1684,6 @@ namespace RDFSharp.Query
 
             if (rowAdded)
                 table.Rows.Add(resultRow);
-        }
-
-        /// <summary>
-        /// Builds the table results of the pattern with values from the given graph
-        /// </summary>
-        internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, DataTable resultTable)
-        {
-            //Resolve the target column of each variable position once (the indexer returns null for
-            //non-variable positions, whose ToString() is not a column name). When two positions bind
-            //the same variable they resolve to the very same DataColumn, so the reference checks below
-            //reproduce the previous "first key wins" dictionary dedup (in S,P,O order) without a
-            //per-row dictionary or per-cell name lookups.
-            DataColumnCollection columns = resultTable.Columns;
-            DataColumn colS = columns[pattern.Subject.ToString()];
-            DataColumn colP = columns[pattern.Predicate.ToString()];
-            DataColumn colO = columns[pattern.Object.ToString()];
-            bool writeS = colS != null;
-            bool writeP = colP != null && colP != colS;
-            bool writeO = colO != null && colO != colS && colO != colP;
-
-            //Iterate result graph's triples
-            foreach (RDFTriple triple in triples)
-            {
-                DataRow row = resultTable.NewRow();
-                if (writeS)
-                    row[colS] = triple.Subject.ToString();
-                if (writeP)
-                    row[colP] = triple.Predicate.ToString();
-                if (writeO)
-                    row[colO] = triple.Object.ToString();
-                resultTable.Rows.Add(row);
-            }
-        }
-
-        /// <summary>
-        /// Builds the table results of the pattern with values from the given store
-        /// </summary>
-        internal static void PopulateTable(RDFPattern pattern, List<RDFQuadruple> quadruples, DataTable resultTable)
-        {
-            //Resolve the target column of each variable position once (the indexer returns null for
-            //non-variable positions). Positions binding the same variable resolve to the very same
-            //DataColumn, so the reference checks below reproduce the previous "first key wins"
-            //dictionary dedup (in C,S,P,O order) without a per-row dictionary or per-cell name lookups.
-            DataColumnCollection columns = resultTable.Columns;
-            string patternContext = pattern.Context?.ToString();
-            DataColumn colC = patternContext != null ? columns[patternContext] : null;
-            DataColumn colS = columns[pattern.Subject.ToString()];
-            DataColumn colP = columns[pattern.Predicate.ToString()];
-            DataColumn colO = columns[pattern.Object.ToString()];
-            bool writeC = colC != null;
-            bool writeS = colS != null && colS != colC;
-            bool writeP = colP != null && colP != colC && colP != colS;
-            bool writeO = colO != null && colO != colC && colO != colS && colO != colP;
-
-            //Iterate result store's quadruples
-            foreach (RDFQuadruple quadruple in quadruples)
-            {
-                DataRow row = resultTable.NewRow();
-                if (writeC)
-                    row[colC] = quadruple.Context.ToString();
-                if (writeS)
-                    row[colS] = quadruple.Subject.ToString();
-                if (writeP)
-                    row[colP] = quadruple.Predicate.ToString();
-                if (writeO)
-                    row[colO] = quadruple.Object.ToString();
-                resultTable.Rows.Add(row);
-            }
         }
 
         /// <summary>

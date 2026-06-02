@@ -784,9 +784,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
 
         Assert.Contains(Bob.ToString(), ends);
@@ -803,13 +803,13 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
         // alice reachable from alice: bob, carol, dave
         // bob reachable from bob: carol, dave
         // carol reachable from carol: dave
-        Assert.IsGreaterThanOrEqualTo(6, result.Rows.Count);
-        List<(string, string)> rows = result.Rows.Cast<DataRow>()
+        Assert.IsGreaterThanOrEqualTo(6, result.RowsCount);
+        List<(string, string)> rows = result.Rows
             .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
         Assert.IsTrue(rows.Any(p => p.Item1 == Alice.ToString() && p.Item2 == Dave.ToString()));
     }
@@ -822,8 +822,8 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.HasCount(1, result.Rows);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
+        Assert.AreEqual(1, result.RowsCount);
     }
 
     [TestMethod]
@@ -834,8 +834,8 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.IsEmpty(result.Rows);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
+        Assert.AreEqual(0, result.RowsCount);
     }
 
     [TestMethod]
@@ -847,9 +847,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Carol.ToString(), ends);
         Assert.Contains(Bob.ToString(), ends);
@@ -865,9 +865,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        List<string> ends = result.Rows.Cast<DataRow>()
+        List<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToList();
         Assert.HasCount(ends.Distinct().Count(), ends, "No duplicates expected");
     }
@@ -885,9 +885,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         // bob and carol reachable; alice is a back-edge but NOT included (OneOrMore, visited)
         Assert.Contains(Bob.ToString(), ends);
@@ -906,9 +906,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Alice.ToString(), ends, "ZeroOrMore should include self");
         Assert.Contains(Dave.ToString(), ends);
@@ -922,9 +922,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        List<(string, string)> rows = result.Rows.Cast<DataRow>()
+        List<(string, string)> rows = result.Rows
             .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
         // Self-pairs for alice, bob, carol, dave
         Assert.IsTrue(rows.Any(p => p.Item1 == Alice.ToString() && p.Item2 == Alice.ToString()));
@@ -943,9 +943,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Alice.ToString(), ends, "ZeroOrOne should include self");
         Assert.Contains(Bob.ToString(), ends,   "ZeroOrOne should include 1-hop");
@@ -960,8 +960,8 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.HasCount(2, result.Rows); // alice (self) + bob (1 hop)
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
+        Assert.AreEqual(2, result.RowsCount); // alice (self) + bob (1 hop)
     }
 
     #endregion
@@ -981,9 +981,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Alice.ToString(), ends, "ZeroOrMore includes self");
         Assert.Contains(Bob.ToString(),   ends);
@@ -1003,9 +1003,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         // ZeroOrOne: self (0 hops) + bob (1 hop); alice via back-edge is NOT a new node
         Assert.Contains(Alice.ToString(), ends, "ZeroOrOne includes self");
@@ -1026,9 +1026,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Bob.ToString(),   ends);
         Assert.Contains(Carol.ToString(), ends);
@@ -1050,11 +1050,11 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
         // Each node can reach all 3 nodes (including itself via ZeroOrMore),
         // so we expect exactly 9 pairs (3 sources × 3 targets), finite result.
-        List<(string s, string e)> rows = result.Rows.Cast<DataRow>()
+        List<(string s, string e)> rows = result.Rows
             .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
         Assert.AreEqual(9, rows.Count, "3×3 pairs with no duplicates despite triangle cycle");
         Assert.IsTrue(rows.Any(p => p.s == Alice.ToString() && p.e == Alice.ToString()), "alice reaches itself");
@@ -1075,9 +1075,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2));
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Carol.ToString(), ends);
         Assert.DoesNotContain(Bob.ToString(), ends,  "1-hop not expected");
@@ -1093,9 +1093,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 3));
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Bob.ToString(), ends);
         Assert.Contains(Carol.ToString(), ends);
@@ -1111,9 +1111,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(0, 2));
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Alice.ToString(), ends, "0 hops => self");
         Assert.Contains(Bob.ToString(), ends);
@@ -1130,8 +1130,8 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(5, 7));
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.IsEmpty(result.Rows);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
+        Assert.AreEqual(0, result.RowsCount);
     }
 
     #endregion
@@ -1153,9 +1153,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Dave.ToString(), ends);
         Assert.Contains(Eve.ToString(), ends);
@@ -1178,9 +1178,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Parent));
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        List<(string, string)> rows = result.Rows.Cast<DataRow>()
+        List<(string, string)> rows = result.Rows
             .Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToList();
         // alice knows+ bob/dave; dave parent eve → alice→eve, bob→eve
         Assert.IsTrue(rows.Any(p => p.Item1 == Alice.ToString() && p.Item2 == Eve.ToString()));
@@ -1210,9 +1210,9 @@ public class RDFPropertyPathTest
             });
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, graph);
+        RDFTable result = engine.ApplyPropertyPath(path, graph);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r[0].ToString()).ToHashSet();
         Assert.Contains(Bob.ToString(), ends,   "knows 1-hop");
         Assert.Contains(Carol.ToString(), ends, "knows 2-hops");
@@ -1236,9 +1236,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, store);
+        RDFTable result = engine.ApplyPropertyPath(path, store);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Bob.ToString(), ends);
         Assert.Contains(Carol.ToString(), ends);
@@ -1255,9 +1255,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, store);
+        RDFTable result = engine.ApplyPropertyPath(path, store);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Alice.ToString(), ends);
         Assert.Contains(Bob.ToString(), ends);
@@ -1287,9 +1287,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
+        RDFTable result = engine.ApplyPropertyPath(path, federation);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Bob.ToString(), ends,   "bob — 1 hop");
         Assert.Contains(Carol.ToString(), ends, "carol — 2 hops via graph2");
@@ -1317,9 +1317,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
+        RDFTable result = engine.ApplyPropertyPath(path, federation);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Alice.ToString(), ends, "alice — zero hops (self)");
         Assert.Contains(Bob.ToString(), ends,   "bob — from graph source");
@@ -1348,9 +1348,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 3));
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
+        RDFTable result = engine.ApplyPropertyPath(path, federation);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.DoesNotContain(Bob.ToString(), ends,  "bob — 1 hop, below range");
         Assert.Contains(Carol.ToString(), ends, "carol — 2 hops, in range");
@@ -1378,9 +1378,9 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
-        DataTable result = engine.ApplyPropertyPath(path, federation);
+        RDFTable result = engine.ApplyPropertyPath(path, federation);
 
-        HashSet<string> ends = result.Rows.Cast<DataRow>()
+        HashSet<string> ends = result.Rows
             .Select(r => r["?E"].ToString()).ToHashSet();
         Assert.Contains(Carol.ToString(), ends, "carol — 1 reverse hop (graph2)");
         Assert.Contains(Bob.ToString(), ends,   "bob — 2 reverse hops (graph1)");
@@ -2311,7 +2311,7 @@ public class RDFPropertyPathTest
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
-            .Rows.Cast<DataRow>()
+            .Rows
             .Select(r => r["?E"].ToString())
             .ToHashSet();
 
@@ -2354,7 +2354,7 @@ public class RDFPropertyPathTest
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
-            .Rows.Cast<DataRow>()
+            .Rows
             .Select(r => r["?E"].ToString())
             .ToHashSet();
 
@@ -2398,7 +2398,7 @@ public class RDFPropertyPathTest
 
         HashSet<string> subs = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
-            .Rows.Cast<DataRow>()
+            .Rows
             .Select(r => r["?E"].ToString())
             .ToHashSet();
 
@@ -2441,7 +2441,7 @@ public class RDFPropertyPathTest
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
-            .Rows.Cast<DataRow>()
+            .Rows
             .Select(r => r["?E"].ToString())
             .ToHashSet();
 
@@ -2479,7 +2479,7 @@ public class RDFPropertyPathTest
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
-            .Rows.Cast<DataRow>()
+            .Rows
             .Select(r => r["?E"].ToString())
             .ToHashSet();
 
