@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
-
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -56,20 +54,6 @@ namespace RDFSharp.Query
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Applies the modifier on the column corresponding to the variable in the given datatable
-        /// </summary>
-        internal override DataTable ApplyModifier(DataTable table)
-        {
-            if (table.Columns.Contains(Variable.ToString()))
-            {
-                table.DefaultView.Sort = !string.IsNullOrEmpty(table.DefaultView.Sort)
-                                            ? $"{table.DefaultView.Sort}, {Variable} {OrderByFlavor}"
-                                            : $"{Variable} {OrderByFlavor}";
-            }
-            return table;
-        }
-
         /// <summary>
         /// Applies the modifier on the given table (stable Ordinal sort on the variable's column, UNBOUND
         /// sorts smallest; keys whose column is absent are ignored). In the live pipeline the ORDER BY sort

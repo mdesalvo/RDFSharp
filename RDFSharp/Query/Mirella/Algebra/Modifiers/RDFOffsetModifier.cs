@@ -14,9 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
-using System.Linq;
-
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -56,20 +53,6 @@ namespace RDFSharp.Query
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Applies the modifier on the given datatable
-        /// </summary>
-        internal override DataTable ApplyModifier(DataTable table)
-        {
-            string tableSort = table.DefaultView.Sort;
-            DataTable offsetTable = table.Clone();
-            if (table.Rows.Count > 0 && Offset < table.Rows.Count)
-                foreach (DataRow row in table.Rows.Cast<DataRow>().Skip(Offset))
-                    offsetTable.ImportRow(row);
-            offsetTable.DefaultView.Sort = tableSort;
-            return offsetTable;
-        }
-
         /// <summary>
         /// Applies the modifier on the given table (drops the first Offset rows, keeping the rest in order)
         /// </summary>

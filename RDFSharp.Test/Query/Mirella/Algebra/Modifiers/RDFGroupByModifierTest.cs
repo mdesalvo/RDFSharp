@@ -17,7 +17,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -110,26 +109,28 @@ public class RDFGroupByModifierTest
     [TestMethod]
     public void ShouldThrowExceptionDuringConsistencyChecksBecauseUnavailablePartitionVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?D")]);
 
@@ -139,26 +140,28 @@ public class RDFGroupByModifierTest
     [TestMethod]
     public void ShouldThrowExceptionDuringConsistencyChecksBecauseUnavailableAggregatorVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?D"), new RDFVariable("?A")));
@@ -170,26 +173,28 @@ public class RDFGroupByModifierTest
     [TestMethod]
     public void ShouldThrowExceptionDuringConsistencyChecksBecauseCommonPartitionProjectionVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?B")]);
         modifier.AddAggregator(new RDFAggregator(new RDFVariable("?A"), new RDFVariable("?A")));
@@ -201,78 +206,82 @@ public class RDFGroupByModifierTest
     [TestMethod]
     public void ShouldApplyModifier()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
 
         //This will behave like a partition aggregator on column "?C"
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(1, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual(2, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", StringComparison.Ordinal));
+        Assert.AreEqual(1, result.ColumnsCount);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual(2, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?C"].Equals("ex:value1", StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].Equals("ex:value0", StringComparison.Ordinal));
     }
 
     [TestMethod]
     public void ShouldApplyModifierWithHavingClause()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?A"] = new RDFTypedLiteral("36.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row3["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row3["?C"] = DBNull.Value;
-        table.Rows.Add(row3);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("36.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString()
+        });
 
         //This will behave like a partition aggregator on column "?C" with an having clause "?C = ex:value0"
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.Aggregators[0].SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFResource("ex:value0"));
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(1, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual(1, result.Rows.Count);
-        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0", StringComparison.Ordinal));
+        Assert.AreEqual(1, result.ColumnsCount);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?C"].Equals("ex:value0", StringComparison.Ordinal));
     }
     #endregion
 }
