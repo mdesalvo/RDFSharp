@@ -136,14 +136,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the comparison expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             RDFPatternMember expressionResult = null;
 
             #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
                 return null;
-            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
+            if (RightArgument is RDFVariable && !row.HasColumn(RightArgument.ToString()))
                 return null;
             #endregion
 
@@ -155,14 +155,14 @@ namespace RDFSharp.Query
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
 
                 //Evaluate right argument (Expression VS Variable)
                 RDFPatternMember rightArgumentPMember;
                 if (RightArgument is RDFExpression rightArgumentExpression)
                     rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
                 else
-                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[RightArgument.ToString()] ?? string.Empty));
 
                 //Binding error from arguments
                 if (leftArgumentPMember == null || rightArgumentPMember == null)

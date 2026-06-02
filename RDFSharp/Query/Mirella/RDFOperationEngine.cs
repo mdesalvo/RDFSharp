@@ -348,7 +348,7 @@ namespace RDFSharp.Query
         /// </summary>
         private RDFConstructQueryResult ExecuteConstructQueryFromOperation(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand = null)
         {
-            DataTable resultTable = new DataTable();
+            RDFTable resultTable = new RDFTable();
 
             RDFConstructQueryResult constructResult = new RDFConstructQueryResult();
             List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
@@ -362,7 +362,7 @@ namespace RDFSharp.Query
             }
 
             //Fill the templates from the result table
-            DataTable filledResultTable;
+            RDFTable filledResultTable;
             switch (deleteInsertCommand)
             {
                 case "DELETE":
@@ -378,8 +378,8 @@ namespace RDFSharp.Query
                     break;
             }
 
-            //Apply the modifiers of the query to the result table
-            constructResult.ConstructResults = ApplyModifiers(operation, filledResultTable);
+            //Apply the modifiers of the query to the result table (export to the public DataTable result)
+            constructResult.ConstructResults = ApplyModifiers(operation, filledResultTable).ToDataTable();
 
             return constructResult;
         }

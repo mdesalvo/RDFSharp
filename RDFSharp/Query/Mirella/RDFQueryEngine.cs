@@ -37,12 +37,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Dictionary of result tables produced by evaluation of patternGroup members
         /// </summary>
-        internal Dictionary<long, List<DataTable>> PatternGroupMemberResultTables { get; set; }
+        internal Dictionary<long, List<RDFTable>> PatternGroupMemberResultTables { get; set; }
 
         /// <summary>
         /// Dictionary of result tables produced by evaluation of query members
         /// </summary>
-        internal Dictionary<long, DataTable> QueryMemberResultTables { get; set; }
+        internal Dictionary<long, RDFTable> QueryMemberResultTables { get; set; }
 
         /// <summary>
         /// Attribute denoting an optional pattern/patternGroup/query
@@ -71,8 +71,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFQueryEngine()
         {
-            PatternGroupMemberResultTables = new Dictionary<long, List<DataTable>>();
-            QueryMemberResultTables = new Dictionary<long, DataTable>();
+            PatternGroupMemberResultTables = new Dictionary<long, List<RDFTable>>();
+            QueryMemberResultTables = new Dictionary<long, RDFTable>();
         }
         #endregion
 
@@ -82,9 +82,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Evaluates the given SPARQL query on the given RDF datasource
         /// </summary>
-        private DataTable EvaluateQuery(RDFQuery query, RDFDataSource datasource)
+        private RDFTable EvaluateQuery(RDFQuery query, RDFDataSource datasource)
         {
-            DataTable queryResultTable = new DataTable();
+            RDFTable queryResultTable = new RDFTable();
 
             List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
             if (evaluableQueryMembers.Count > 0)
@@ -104,10 +104,18 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
-            DataTable queryResultTable = EvaluateQuery(selectQuery, datasource);
+            RDFTable queryResultTable = EvaluateQuery(selectQuery, datasource);
+            RDFTable finalTable = ApplyModifiers(selectQuery, queryResultTable);
+
+            //Export to the public DataTable result, carrying the join flags onto its ExtendedProperties
+            //(the old engine exposed its internal table directly, so callers may read these back)
+            DataTable selectResults = finalTable.ToDataTable();
+            selectResults.ExtendedProperties[IsOptional] = finalTable.IsOptional;
+            selectResults.ExtendedProperties[JoinAsUnion] = finalTable.JoinAsUnion;
+            selectResults.ExtendedProperties[JoinAsMinus] = finalTable.JoinAsMinus;
             return new RDFSelectQueryResult
             {
-                SelectResults = ApplyModifiers(selectQuery, queryResultTable)
+                SelectResults = selectResults
             };
         }
 
@@ -117,13 +125,13 @@ namespace RDFSharp.Query
         internal RDFDescribeQueryResult EvaluateDescribeQuery(RDFDescribeQuery describeQuery, RDFDataSource datasource)
         {
             #region Utilities
-            DataTable FillDescribeTerms(DataTable qResultTable)
+            RDFTable FillDescribeTerms(RDFTable qResultTable)
             {
-                DataTable resultTable = new DataTable();
+                RDFTable resultTable = new RDFTable();
                 if (datasource.IsFederation())
                 {
                     foreach (RDFDataSource fedDataSource in ((RDFFederation)datasource).Where(fedDataSource => !fedDataSource.IsFederation() || ((RDFFederation)fedDataSource).DataSourcesCount != 0))
-                        resultTable.Merge(DescribeTerms(describeQuery, fedDataSource, qResultTable), true, MissingSchemaAction.Add);
+                        MergeTable(resultTable, DescribeTerms(describeQuery, fedDataSource, qResultTable));
                 }
                 else
                 {
@@ -133,10 +141,10 @@ namespace RDFSharp.Query
             }
             #endregion
 
-            DataTable queryResultTable = EvaluateQuery(describeQuery, datasource);
+            RDFTable queryResultTable = EvaluateQuery(describeQuery, datasource);
             return new RDFDescribeQueryResult
             {
-                DescribeResults = ApplyModifiers(describeQuery, FillDescribeTerms(queryResultTable))
+                DescribeResults = ApplyModifiers(describeQuery, FillDescribeTerms(queryResultTable)).ToDataTable()
             };
         }
 
@@ -145,10 +153,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource)
         {
-            DataTable queryResultTable = EvaluateQuery(constructQuery, datasource);
+            RDFTable queryResultTable = EvaluateQuery(constructQuery, datasource);
             return new RDFConstructQueryResult
             {
-                ConstructResults = ApplyModifiers(constructQuery, FillTemplates(constructQuery.Templates, queryResultTable, false))
+                ConstructResults = ApplyModifiers(constructQuery, FillTemplates(constructQuery.Templates, queryResultTable, false)).ToDataTable()
             };
         }
 
@@ -157,10 +165,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
-            DataTable queryResultTable = EvaluateQuery(askQuery, datasource);
+            RDFTable queryResultTable = EvaluateQuery(askQuery, datasource);
             return new RDFAskQueryResult
             {
-                 AskResult = queryResultTable.Rows.Count > 0
+                 AskResult = queryResultTable.RowsCount > 0
             };
         }
 
@@ -187,18 +195,15 @@ namespace RDFSharp.Query
                         //Get the result table of the subquery
                         RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
 
-                        //Populate its metadata (IsOptional)
-                        subQueryResult.SelectResults.ExtendedProperties[IsOptional] = subQuery.IsOptional
-                                                                                       || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
-
-                        //Populate its metadata (JoinAsUnion)
-                        subQueryResult.SelectResults.ExtendedProperties[JoinAsUnion] = subQuery.JoinAsUnion;
-
-                        //Populate its metadata (JoinAsMinus)
-                        subQueryResult.SelectResults.ExtendedProperties[JoinAsMinus] = subQuery.JoinAsMinus;
+                        //Bring the subquery's public DataTable result into the RDFTable pipeline, carrying
+                        //its join flags (the subquery may itself already be tagged as optional)
+                        RDFTable subQueryTable = ToRDFTableWithFlags(subQueryResult.SelectResults);
+                        subQueryTable.IsOptional = subQuery.IsOptional || subQueryTable.IsOptional;
+                        subQueryTable.JoinAsUnion = subQuery.JoinAsUnion;
+                        subQueryTable.JoinAsMinus = subQuery.JoinAsMinus;
 
                         //Save updates
-                        QueryMemberResultTables[subQuery.QueryMemberID] = subQueryResult.SelectResults;
+                        QueryMemberResultTables[subQuery.QueryMemberID] = subQueryTable;
                         break;
                 }
         }
@@ -216,7 +221,7 @@ namespace RDFSharp.Query
             if (dataSource is RDFGraph || dataSource is RDFMemoryStore)
                 evaluablePGMembers = RDFQueryOptimizer.OptimizePatternOrder(evaluablePGMembers, dataSource);
 
-            PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<DataTable>(evaluablePGMembers.Count);
+            PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<RDFTable>(evaluablePGMembers.Count);
 
             //**Service** evaluation => send it querified to SPARQL endpoint
             if (patternGroup.EvaluateAsService.HasValue)
@@ -235,7 +240,7 @@ namespace RDFSharp.Query
                 RDFSelectQueryResult serviceResults = new RDFSelectQuery()
                                                         .AddPatternGroup(patternGroup)
                                                         .ApplyToSPARQLEndpoint(asService.Value.Item1, asService.Value.Item2);
-                DataTable serviceResultsTable = serviceResults.SelectResults;
+                RDFTable serviceResultsTable = RDFTable.FromDataTable(serviceResults.SelectResults);
 
                 //Restore pattern group to its official state
                 patternGroup.IsOptional = isOptional;
@@ -243,12 +248,12 @@ namespace RDFSharp.Query
                 patternGroup.JoinAsMinus = joinAsMinus;
                 patternGroup.EvaluateAsService = asService;
 
-                //Set name and metadata of result datatable
-                serviceResultsTable.ExtendedProperties.Add(IsOptional, patternGroup.IsOptional);
-                serviceResultsTable.ExtendedProperties.Add(JoinAsUnion, patternGroup.JoinAsUnion);
-                serviceResultsTable.ExtendedProperties.Add(JoinAsMinus, patternGroup.JoinAsMinus);
+                //Set metadata of result table
+                serviceResultsTable.IsOptional = patternGroup.IsOptional;
+                serviceResultsTable.JoinAsUnion = patternGroup.JoinAsUnion;
+                serviceResultsTable.JoinAsMinus = patternGroup.JoinAsMinus;
 
-                //Save result datatable
+                //Save result table
                 PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(serviceResultsTable);
             }
 
@@ -260,30 +265,30 @@ namespace RDFSharp.Query
                     {
                         case RDFPattern pattern:
                             //Evaluate pattern on the given data source
-                            DataTable patternResultsTable = ApplyPattern(pattern, dataSource);
-                            //Set name and metadata of result datatable
-                            patternResultsTable.ExtendedProperties[IsOptional] = pattern.IsOptional;
-                            patternResultsTable.ExtendedProperties[JoinAsUnion] = pattern.JoinAsUnion;
-                            patternResultsTable.ExtendedProperties[JoinAsMinus] = pattern.JoinAsMinus;
-                            //Save result datatable
+                            RDFTable patternResultsTable = ApplyPatternTable(pattern, dataSource);
+                            //Set metadata of result table
+                            patternResultsTable.IsOptional = pattern.IsOptional;
+                            patternResultsTable.JoinAsUnion = pattern.JoinAsUnion;
+                            patternResultsTable.JoinAsMinus = pattern.JoinAsMinus;
+                            //Save result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                             break;
 
                         case RDFPropertyPath propertyPath:
                             //Evaluate property path on the given data source
-                            DataTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-                            //Set name and metadata of result datatable
-                            pPathResultsTable.ExtendedProperties[IsOptional] = propertyPath.IsOptional;
-                            pPathResultsTable.ExtendedProperties[JoinAsUnion] = propertyPath.JoinAsUnion;
-                            pPathResultsTable.ExtendedProperties[JoinAsMinus] = propertyPath.JoinAsMinus;
-                            //Save result datatable
+                            RDFTable pPathResultsTable = ApplyPropertyPathTable(propertyPath, dataSource);
+                            //Set metadata of result table
+                            pPathResultsTable.IsOptional = propertyPath.IsOptional;
+                            pPathResultsTable.JoinAsUnion = propertyPath.JoinAsUnion;
+                            pPathResultsTable.JoinAsMinus = propertyPath.JoinAsMinus;
+                            //Save result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                             break;
 
                         case RDFValues values:
                             //Transform SPARQL values into an equivalent filter
                             RDFValuesFilter valuesFilter = values.GetValuesFilter();
-                            //Save result datatable
+                            //Save result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
                             //Inject SPARQL values filter
                             patternGroup.AddFilter(valuesFilter);
@@ -295,7 +300,7 @@ namespace RDFSharp.Query
                             // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
                             // finally we drop all tables collected until this moment, except the comprehensive bind table
                             //Populate current patternGroup result table
-                            DataTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
+                            RDFTable currentPatternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
                             //Evaluate bind operator on the current patternGroup result table
                             ProjectBind(bind, currentPatternGroupResultTable);
                             //Delete previous patternGroup result tables and replace them with bind operator's one
@@ -304,14 +309,10 @@ namespace RDFSharp.Query
                             break;
 
                         case RDFExistsFilter existsFilter:
-                            //Evaluate exists filter's pattern on the given data source
-                            DataTable existsFilterResultsTable = ApplyPattern(existsFilter.Pattern, dataSource);
-                            //Set name and metadata of result datatable
-                            existsFilterResultsTable.ExtendedProperties.Add(IsOptional, false);
-                            existsFilterResultsTable.ExtendedProperties.Add(JoinAsUnion, false);
-                            existsFilterResultsTable.ExtendedProperties.Add(JoinAsMinus, false);
-                            //Save result datatable (directly into the filter)
-                            existsFilter.PatternResults = existsFilterResultsTable;
+                            //Evaluate exists filter's pattern on the given data source and save its result
+                            //directly into the filter (kept as a DataTable on the filter's boundary, carrying
+                            //the (false) join flags onto its ExtendedProperties as the old engine did)
+                            existsFilter.PatternResults = ToDataTableWithFlags(ApplyPatternTable(existsFilter.Pattern, dataSource));
                             break;
                     }
             }
@@ -326,17 +327,17 @@ namespace RDFSharp.Query
             if (evaluablePGMembers.Count > 0)
             {
                 //Populate patternGroup result table
-                DataTable patternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
+                RDFTable patternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
 
                 //Populate its metadata (IsOptional)
-                patternGroupResultTable.ExtendedProperties[IsOptional] = patternGroup.IsOptional
-                  || patternGroupResultTable.ExtendedProperties[IsOptional] is true;
+                patternGroupResultTable.IsOptional = patternGroup.IsOptional
+                  || patternGroupResultTable.IsOptional;
 
                 //Populate its metadata (JoinAsUnion)
-                patternGroupResultTable.ExtendedProperties[JoinAsUnion] = patternGroup.JoinAsUnion;
+                patternGroupResultTable.JoinAsUnion = patternGroup.JoinAsUnion;
 
                 //Populate its metadata (JoinAsMinus)
-                patternGroupResultTable.ExtendedProperties[JoinAsMinus] = patternGroup.JoinAsMinus;
+                patternGroupResultTable.JoinAsMinus = patternGroup.JoinAsMinus;
 
                 //Add it to the list of query member result tables
                 QueryMemberResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
@@ -352,10 +353,12 @@ namespace RDFSharp.Query
             List<RDFFilter> filters = patternGroup.GetFilters().ToList();
             if (evaluablePatternGroupMembers.Count > 0 && filters.Count > 0)
             {
-                DataTable filteredTable = QueryMemberResultTables[patternGroup.QueryMemberID].Clone();
+                RDFTable sourceTable = QueryMemberResultTables[patternGroup.QueryMemberID];
+                RDFTable filteredTable = sourceTable.Clone();
+                int width = sourceTable.ColumnsCount;
 
                 //Iterate the rows of the pattern group's result table
-                foreach (DataRow currentRow in QueryMemberResultTables[patternGroup.QueryMemberID].Rows)
+                foreach (RDFTableRow currentRow in sourceTable.Rows)
                 {
                     //Apply the pattern group's filters on the row
                     bool keepRow = true;
@@ -370,13 +373,14 @@ namespace RDFSharp.Query
                     //If the row has passed all the filters, keep it in the filtered result table
                     if (keepRow)
                     {
-                        DataRow newRow = filteredTable.NewRow();
-                        newRow.ItemArray = currentRow.ItemArray;
-                        filteredTable.Rows.Add(newRow);
+                        string[] cells = new string[width];
+                        for (int c = 0; c < width; c++)
+                            cells[c] = currentRow[c];
+                        filteredTable.AddRow(cells);
                     }
                 }
 
-                //Save the result datatable
+                //Save the result table
                 QueryMemberResultTables[patternGroup.QueryMemberID] = filteredTable;
             }
         }
@@ -384,8 +388,13 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query modifiers to the query result table
         /// </summary>
-        internal DataTable ApplyModifiers(RDFQuery query, DataTable table)
+        internal RDFTable ApplyModifiers(RDFQuery query, RDFTable table)
         {
+            //Save the incoming join flags so they can be carried onto the modified result
+            bool inOptional = table.IsOptional;
+            bool inUnion = table.JoinAsUnion;
+            bool inMinus = table.JoinAsMinus;
+
             #region GROUPBY/PROJECTION
             List<RDFModifier> modifiers = query.GetModifiers().ToList();
             if (query is RDFSelectQuery selectQuery)
@@ -427,6 +436,11 @@ namespace RDFSharp.Query
                 table = limitModifier.ApplyModifier(table);
             #endregion
 
+            //Carry the incoming join flags onto the result (the old engine's combined table propagated
+            //IsOptional/Union/Minus through the modifiers down to the query result)
+            table.IsOptional = inOptional;
+            table.JoinAsUnion = inUnion;
+            table.JoinAsMinus = inMinus;
             return table;
         }
 
@@ -434,15 +448,15 @@ namespace RDFSharp.Query
         /// Fills the given templates with data from the given result table<br/>
         /// (needsContext flag is true only when the caller is a store operation)
         /// </summary>
-        internal DataTable FillTemplates(List<RDFPattern> templates, DataTable resultTable, bool needsContext)
+        internal RDFTable FillTemplates(List<RDFPattern> templates, RDFTable resultTable, bool needsContext)
         {
-            //Create the structure of the result datatable
-            DataTable result = new DataTable();
+            //Create the structure of the result table
+            RDFTable result = new RDFTable();
             if (needsContext)
-                AddColumn(result, "?CONTEXT");
-            AddColumn(result, "?SUBJECT");
-            AddColumn(result, "?PREDICATE");
-            AddColumn(result, "?OBJECT");
+                result.AddColumn("?CONTEXT");
+            result.AddColumn("?SUBJECT");
+            result.AddColumn("?PREDICATE");
+            result.AddColumn("?OBJECT");
 
             //Initialize working variables
             Dictionary<string, string> bindings = new Dictionary<string, string>();
@@ -455,7 +469,7 @@ namespace RDFSharp.Query
             //Iterate on the templates
             string defaultContext = RDFNamespaceRegister.DefaultNamespace.ToString();
             foreach (RDFPattern template in templates.Where(tp => tp.Variables.Count == 0
-                                                                   || tp.Variables.TrueForAll(v => resultTable.Columns.Contains(v.ToString()))))
+                                                                   || tp.Variables.TrueForAll(v => resultTable.HasColumn(v.ToString()))))
             {
                 string templateCtx = template.Context?.ToString();
                 string templateSubj = template.Subject.ToString();
@@ -470,13 +484,13 @@ namespace RDFSharp.Query
                     bindings["?SUBJECT"] = templateSubj;
                     bindings["?PREDICATE"] = templatePred;
                     bindings["?OBJECT"] = templateObj;
-                    AddRow(result, bindings);
+                    result.AddRow(bindings);
                     continue;
                 }
                 #endregion
 
                 #region NON-GROUND TEMPLATE
-                foreach (DataRow resultRow in resultTable.Rows)
+                foreach (RDFTableRow resultRow in resultTable.Rows)
                 {
                     #region CONTEXT
                     if (needsContext)
@@ -486,10 +500,10 @@ namespace RDFSharp.Query
                         {
                             //Check if the template must be skipped, in order to not produce illegal triples
                             //Row contains an unbound value in position of the variable corresponding to the template context
-                            if (resultRow.IsNull(templateCtx))
+                            if (resultRow.IsUnbound(templateCtx))
                                 continue;
 
-                            RDFPatternMember ctx = ParseRDFPatternMember(resultRow[templateCtx].ToString());
+                            RDFPatternMember ctx = ParseRDFPatternMember(resultRow[templateCtx]);
                             //Row contains a literal in position of the variable corresponding to the template context
                             if (ctx is RDFLiteral)
                                 continue;
@@ -510,10 +524,10 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template subject
-                        if (resultRow.IsNull(templateSubj))
+                        if (resultRow.IsUnbound(templateSubj))
                             continue;
 
-                        RDFPatternMember subj = ParseRDFPatternMember(resultRow[templateSubj].ToString());
+                        RDFPatternMember subj = ParseRDFPatternMember(resultRow[templateSubj]);
                         //Row contains a literal in position of the variable corresponding to the template subject
                         if (subj is RDFLiteral)
                             continue;
@@ -533,10 +547,10 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template predicate
-                        if (resultRow.IsNull(templatePred))
+                        if (resultRow.IsUnbound(templatePred))
                             continue;
 
-                        RDFPatternMember pred = ParseRDFPatternMember(resultRow[templatePred].ToString());
+                        RDFPatternMember pred = ParseRDFPatternMember(resultRow[templatePred]);
                         //Row contains a blank resource or a literal in position of the variable corresponding to the template predicate
                         if ((pred is RDFResource predRes && predRes.IsBlank) || pred is RDFLiteral)
                             continue;
@@ -556,10 +570,10 @@ namespace RDFSharp.Query
                     {
                         //Check if the template must be skipped, in order to not produce illegal triples
                         //Row contains an unbound value in position of the variable corresponding to the template object
-                        if (resultRow.IsNull(templateObj))
+                        if (resultRow.IsUnbound(templateObj))
                             continue;
 
-                        RDFPatternMember obj = ParseRDFPatternMember(resultRow[templateObj].ToString());
+                        RDFPatternMember obj = ParseRDFPatternMember(resultRow[templateObj]);
                         //Row contains a resource or a literal in position of the variable corresponding to the template object
                         bindings["?OBJECT"] = obj.ToString();
                     }
@@ -571,7 +585,7 @@ namespace RDFSharp.Query
                     #endregion
 
                     //Insert the triple into the final table
-                    AddRow(result, bindings);
+                    result.AddRow(bindings);
                 }
                 #endregion
             }
@@ -580,17 +594,24 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Fills the given templates with data from the given result datatable (thin DataTable-compatibility
+        /// wrapper kept for the test suite: delegates to the real RDFTable implementation)
+        /// </summary>
+        internal DataTable FillTemplates(List<RDFPattern> templates, DataTable resultTable, bool needsContext)
+            => FillTemplates(templates, RDFTable.FromDataTable(resultTable), needsContext).ToDataTable();
+
+        /// <summary>
         /// Describes the terms of the given DESCRIBE query with data from the given result table
         /// </summary>
-        internal DataTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable resultTable)
+        internal RDFTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource dataSource, RDFTable resultTable)
         {
-            //Create the structure of the result datatable
-            DataTable result = new DataTable();
+            //Create the structure of the result table
+            RDFTable result = new RDFTable();
             if (dataSource.IsStore())
-                AddColumn(result, "?CONTEXT");
-            AddColumn(result, "?SUBJECT");
-            AddColumn(result, "?PREDICATE");
-            AddColumn(result, "?OBJECT");
+                result.AddColumn("?CONTEXT");
+            result.AddColumn("?SUBJECT");
+            result.AddColumn("?PREDICATE");
+            result.AddColumn("?OBJECT");
 
             //In case of "DESCRIBE *" query, all the variables must be considered describe terms
             if (describeQuery.DescribeTerms.Count == 0)
@@ -601,11 +622,11 @@ namespace RDFSharp.Query
                 switch (describeTerm)
                 {
                     case RDFResource describeResource:
-                        result.Merge(DescribeResourceTerm(describeResource, dataSource, result), true, MissingSchemaAction.Add);
+                        MergeTable(result, DescribeResourceTerm(describeResource, dataSource, result));
                         break;
 
                     case RDFVariable describeVariable:
-                        result.Merge(DescribeVariableTerm(describeVariable, dataSource, result, resultTable), true, MissingSchemaAction.Add);
+                        MergeTable(result, DescribeVariableTerm(describeVariable, dataSource, result, resultTable));
                         break;
                 }
 
@@ -613,9 +634,16 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Describes the terms of the given DESCRIBE query with data from the given result datatable
+        /// (thin DataTable-compatibility wrapper kept for the test suite)
+        /// </summary>
+        internal DataTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable resultTable)
+            => DescribeTerms(describeQuery, dataSource, RDFTable.FromDataTable(resultTable)).ToDataTable();
+
+        /// <summary>
         /// Describes the given resource term with data from the given result table
         /// </summary>
-        internal DataTable DescribeResourceTerm(RDFResource describeResource, RDFDataSource dataSource, DataTable describeTemplate)
+        internal RDFTable DescribeResourceTerm(RDFResource describeResource, RDFDataSource dataSource, RDFTable describeTemplate)
         {
             #region Utilities
             RDFGraph QueryGraph(RDFGraph dsGraph)
@@ -648,20 +676,20 @@ namespace RDFSharp.Query
                           .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)));
             #endregion
 
-            DataTable result = describeTemplate.Clone();
+            RDFTable result = describeTemplate.Clone();
 
             switch (dataSource)
             {
                 //GRAPH
                 case RDFGraph dataSourceGraph:
                     RDFGraph graph = QueryGraph(dataSourceGraph);
-                    result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
+                    MergeTable(result, RDFTable.FromDataTable(graph.ToDataTable()));
                     break;
 
                 //STORE
                 case RDFStore dataSourceStore:
                     RDFMemoryStore store = QueryStore(dataSourceStore);
-                    result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
+                    MergeTable(result, RDFTable.FromDataTable(store.ToDataTable()));
                     break;
 
                 //FEDERATION / SPARQL ENDPOINT
@@ -669,7 +697,7 @@ namespace RDFSharp.Query
                     RDFSelectQuery query = BuildFederationOrSPARQLEndpointQuery();
                     RDFSelectQueryResult queryResults = dataSource.IsSPARQLEndpoint() ? query.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
                                                                                       : query.ApplyToFederation((RDFFederation)dataSource);
-                    result.Merge(queryResults.SelectResults, true, MissingSchemaAction.Add);
+                    MergeTable(result, RDFTable.FromDataTable(queryResults.SelectResults));
                     break;
             }
 
@@ -679,7 +707,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Describes the given literal term with data from the given result table
         /// </summary>
-        internal DataTable DescribeLiteralTerm(RDFLiteral describeLiteral, RDFDataSource dataSource, DataTable describeTemplate)
+        internal RDFTable DescribeLiteralTerm(RDFLiteral describeLiteral, RDFDataSource dataSource, RDFTable describeTemplate)
         {
             #region Utilities
             RDFGraph QueryGraph(RDFGraph dsGraph)
@@ -694,20 +722,20 @@ namespace RDFSharp.Query
                           .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeLiteral)));
             #endregion
 
-            DataTable result = describeTemplate.Clone();
+            RDFTable result = describeTemplate.Clone();
 
             switch (dataSource)
             {
                 //GRAPH
                 case RDFGraph dataSourceGraph:
                     RDFGraph graph = QueryGraph(dataSourceGraph);
-                    result.Merge(graph.ToDataTable(), true, MissingSchemaAction.Add);
+                    MergeTable(result, RDFTable.FromDataTable(graph.ToDataTable()));
                     break;
 
                 //STORE
                 case RDFStore dataSourceStore:
                     RDFMemoryStore store = QueryStore(dataSourceStore);
-                    result.Merge(store.ToDataTable(), true, MissingSchemaAction.Add);
+                    MergeTable(result, RDFTable.FromDataTable(store.ToDataTable()));
                     break;
 
                 //FEDERATION / SPARQL ENDPOINT
@@ -716,7 +744,7 @@ namespace RDFSharp.Query
                     RDFSelectQueryResult queryResults =
                         dataSource.IsSPARQLEndpoint() ? query.ApplyToSPARQLEndpoint((RDFSPARQLEndpoint)dataSource)
                                                       : query.ApplyToFederation((RDFFederation)dataSource);
-                    result.Merge(queryResults.SelectResults, true, MissingSchemaAction.Add);
+                    MergeTable(result, RDFTable.FromDataTable(queryResults.SelectResults));
                     break;
             }
 
@@ -726,34 +754,34 @@ namespace RDFSharp.Query
         /// <summary>
         /// Describes the given variable term with data from the given result table
         /// </summary>
-        internal DataTable DescribeVariableTerm(RDFVariable describeVariable, RDFDataSource dataSource, DataTable describeTemplate, DataTable resultTable)
+        internal RDFTable DescribeVariableTerm(RDFVariable describeVariable, RDFDataSource dataSource, RDFTable describeTemplate, RDFTable resultTable)
         {
-            DataTable result = describeTemplate.Clone();
+            RDFTable result = describeTemplate.Clone();
 
             //In order to be processed this variable must be a column of the results table!
             string describeVariableName = describeVariable.ToString();
-            if (!resultTable.Columns.Contains(describeVariableName))
+            if (!resultTable.HasColumn(describeVariableName))
                 return result;
 
             //Iterate the results table's rows to retrieve terms to be described
             foreach (RDFPatternMember describeVariableValue in
-                     from DataRow resultRow in resultTable.Rows
-                     where !resultRow.IsNull(describeVariableName)
-                     select ParseRDFPatternMember(resultRow[describeVariableName].ToString()))
+                     from RDFTableRow resultRow in resultTable.Rows
+                     where !resultRow.IsUnbound(describeVariableName)
+                     select ParseRDFPatternMember(resultRow[describeVariableName]))
             {
                 //Execute most appropriate strategy, depending on the type of the variable value
                 switch (describeVariableValue)
                 {
                     //RESOURCE
                     case RDFResource describeResource:
-                        DataTable describeResourceTable = DescribeResourceTerm(describeResource, dataSource, describeTemplate);
-                        result.Merge(describeResourceTable, true, MissingSchemaAction.Add);
+                        RDFTable describeResourceTable = DescribeResourceTerm(describeResource, dataSource, describeTemplate);
+                        MergeTable(result, describeResourceTable);
                         break;
 
                     //LITERAL
                     case RDFLiteral describeLiteral:
-                        DataTable describeLiteralTable = DescribeLiteralTerm(describeLiteral, dataSource, describeTemplate);
-                        result.Merge(describeLiteralTable, true, MissingSchemaAction.Add);
+                        RDFTable describeLiteralTable = DescribeLiteralTerm(describeLiteral, dataSource, describeTemplate);
+                        MergeTable(result, describeLiteralTable);
                         break;
                 }
             }
@@ -783,45 +811,83 @@ namespace RDFSharp.Query
             }
         }
 
+        #region DataTable wrappers (kept for the test suite)
+        /// <summary>
+        /// Exports an RDFTable to a DataTable carrying its join flags onto ExtendedProperties
+        /// </summary>
+        private static DataTable ToDataTableWithFlags(RDFTable table)
+        {
+            DataTable dataTable = table.ToDataTable();
+            dataTable.ExtendedProperties[IsOptional] = table.IsOptional;
+            dataTable.ExtendedProperties[JoinAsUnion] = table.JoinAsUnion;
+            dataTable.ExtendedProperties[JoinAsMinus] = table.JoinAsMinus;
+            return dataTable;
+        }
+
+        /// <summary>Applies the given pattern to the given data source (DataTable-compatibility wrapper)</summary>
+        internal DataTable ApplyPattern(RDFPattern pattern, RDFDataSource dataSource)
+            => ApplyPatternTable(pattern, dataSource).ToDataTable();
+
+        /// <summary>Applies the given pattern to the given graph (DataTable-compatibility wrapper)</summary>
+        internal DataTable ApplyPatternToGraph(RDFPattern pattern, RDFGraph graph)
+            => ApplyPatternToGraphTable(pattern, graph).ToDataTable();
+
+        /// <summary>Applies the given pattern to the given store (DataTable-compatibility wrapper)</summary>
+        internal DataTable ApplyPatternToStore(RDFPattern pattern, RDFStore store)
+            => ApplyPatternToStoreTable(pattern, store).ToDataTable();
+
+        /// <summary>Applies the given pattern to the given federation (DataTable-compatibility wrapper)</summary>
+        internal DataTable ApplyPatternToFederation(RDFPattern pattern, RDFFederation federation)
+            => ApplyPatternToFederationTable(pattern, federation).ToDataTable();
+
+        /// <summary>Applies the given property path to the given data source (DataTable-compatibility wrapper)</summary>
+        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
+            => ToDataTableWithFlags(ApplyPropertyPathTable(propertyPath, dataSource));
+
+        /// <summary>Applies the given transitive property path to the given data source (DataTable-compatibility wrapper)</summary>
+        internal DataTable ApplyTransitivePropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
+            => ApplyTransitivePropertyPathTable(propertyPath, dataSource).ToDataTable();
+        #endregion
+
         /// <summary>
         /// Applies the given pattern to the given data source
         /// </summary>
-        internal DataTable ApplyPattern(RDFPattern pattern, RDFDataSource dataSource)
+        internal RDFTable ApplyPatternTable(RDFPattern pattern, RDFDataSource dataSource)
         {
             switch (dataSource)
             {
                 case RDFGraph graph:
-                    return ApplyPatternToGraph(pattern, graph);
+                    return ApplyPatternToGraphTable(pattern, graph);
 
                 case RDFStore store:
-                    return ApplyPatternToStore(pattern, store);
+                    return ApplyPatternToStoreTable(pattern, store);
 
                 case RDFFederation federation:
-                    return ApplyPatternToFederation(pattern, federation);
+                    return ApplyPatternToFederationTable(pattern, federation);
             }
-            return new DataTable();
+            return new RDFTable();
         }
 
         /// <summary>
         /// Applies the given pattern to the given graph
         /// </summary>
-        internal DataTable ApplyPatternToGraph(RDFPattern pattern, RDFGraph graph)
+        internal RDFTable ApplyPatternToGraphTable(RDFPattern pattern, RDFGraph graph)
         {
-            DataTable patternResultTable = new DataTable();
+            RDFTable patternResultTable = new RDFTable();
             StringBuilder templateHoleDetector = new StringBuilder();
 
             //Analyze subject of the pattern
             if (pattern.Subject is RDFVariable)
             {
                 templateHoleDetector.Append('S');
-                AddColumn(patternResultTable, pattern.Subject.ToString());
+                patternResultTable.AddColumn(pattern.Subject.ToString());
             }
 
             //Analyze predicate of the pattern
             if (pattern.Predicate is RDFVariable)
             {
                 templateHoleDetector.Append('P');
-                AddColumn(patternResultTable, pattern.Predicate.ToString());
+                patternResultTable.AddColumn(pattern.Predicate.ToString());
             }
 
             //Analyze object of the pattern
@@ -830,7 +896,7 @@ namespace RDFSharp.Query
             if (pattern.Object is RDFVariable)
             {
                 templateHoleDetector.Append('O');
-                AddColumn(patternResultTable, pattern.Object.ToString());
+                patternResultTable.AddColumn(pattern.Object.ToString());
             }
 
             //Analyze templateHoleDetector to refine the set of matching triples
@@ -894,9 +960,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given store
         /// </summary>
-        internal DataTable ApplyPatternToStore(RDFPattern pattern, RDFStore store)
+        internal RDFTable ApplyPatternToStoreTable(RDFPattern pattern, RDFStore store)
         {
-            DataTable patternResultTable = new DataTable();
+            RDFTable patternResultTable = new RDFTable();
             StringBuilder templateHoleDetector = new StringBuilder();
 
             //Analyze context of the pattern
@@ -904,21 +970,21 @@ namespace RDFSharp.Query
             if (hasContext && pattern.Context is RDFVariable)
             {
                 templateHoleDetector.Append('C');
-                AddColumn(patternResultTable, pattern.Context.ToString());
+                patternResultTable.AddColumn(pattern.Context.ToString());
             }
 
             //Analyze subject of the pattern
             if (pattern.Subject is RDFVariable)
             {
                 templateHoleDetector.Append('S');
-                AddColumn(patternResultTable, pattern.Subject.ToString());
+                patternResultTable.AddColumn(pattern.Subject.ToString());
             }
 
             //Analyze predicate of the pattern
             if (pattern.Predicate is RDFVariable)
             {
                 templateHoleDetector.Append('P');
-                AddColumn(patternResultTable, pattern.Predicate.ToString());
+                patternResultTable.AddColumn(pattern.Predicate.ToString());
             }
 
             //Analyze object of the pattern
@@ -927,7 +993,7 @@ namespace RDFSharp.Query
             if (pattern.Object is RDFVariable)
             {
                 templateHoleDetector.Append('O');
-                AddColumn(patternResultTable, pattern.Object.ToString());
+                patternResultTable.AddColumn(pattern.Object.ToString());
             }
 
             //Analyze templateHoleDetector to refine the set of matching quadruples
@@ -1077,9 +1143,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given pattern to the given federation
         /// </summary>
-        internal DataTable ApplyPatternToFederation(RDFPattern pattern, RDFFederation federation)
+        internal RDFTable ApplyPatternToFederationTable(RDFPattern pattern, RDFFederation federation)
         {
-            DataTable resultTable = new DataTable();
+            RDFTable resultTable = new RDFTable();
 
             //Iterate data sources of the federation
             foreach (RDFDataSource dataSource in federation)
@@ -1087,18 +1153,18 @@ namespace RDFSharp.Query
                 switch (dataSource)
                 {
                     case RDFGraph dataSourceGraph:
-                        DataTable graphTable = ApplyPatternToGraph(pattern, dataSourceGraph);
-                        resultTable.Merge(graphTable, true, MissingSchemaAction.Add);
+                        RDFTable graphTable = ApplyPatternToGraphTable(pattern, dataSourceGraph);
+                        MergeTable(resultTable, graphTable);
                         break;
 
                     case RDFStore dataSourceStore:
-                        DataTable storeTable = ApplyPatternToStore(pattern, dataSourceStore);
-                        resultTable.Merge(storeTable, true, MissingSchemaAction.Add);
+                        RDFTable storeTable = ApplyPatternToStoreTable(pattern, dataSourceStore);
+                        MergeTable(resultTable, storeTable);
                         break;
 
                     case RDFFederation dataSourceFederation:
-                        DataTable federationTable = ApplyPatternToFederation(pattern, dataSourceFederation);
-                        resultTable.Merge(federationTable, true, MissingSchemaAction.Add);
+                        RDFTable federationTable = ApplyPatternToFederationTable(pattern, dataSourceFederation);
+                        MergeTable(resultTable, federationTable);
                         break;
 
                     case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
@@ -1107,7 +1173,7 @@ namespace RDFSharp.Query
                         federation.EndpointDataSourcesQueryOptions.TryGetValue(dataSourceSparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions dataSourceSparqlEndpointOptions);
                         RDFSelectQuery sparqlEndpointQuery =  new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup().AddPattern(pattern));
                         RDFSelectQueryResult sparqlEndpointTable = sparqlEndpointQuery.ApplyToSPARQLEndpoint(dataSourceSparqlEndpoint, dataSourceSparqlEndpointOptions);
-                        resultTable.Merge(sparqlEndpointTable.SelectResults, true, MissingSchemaAction.Add);
+                        MergeTable(resultTable, RDFTable.FromDataTable(sparqlEndpointTable.SelectResults));
                         break;
                 }
             }
@@ -1118,41 +1184,41 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the given property path to the given graph
         /// </summary>
-        internal DataTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
+        internal RDFTable ApplyPropertyPathTable(RDFPropertyPath propertyPath, RDFDataSource dataSource)
         {
             //Dispatch to transitive evaluation when any step carries a cardinality constraint
             if (propertyPath.HasTransitiveSteps)
-                return ApplyTransitivePropertyPath(propertyPath, dataSource);
+                return ApplyTransitivePropertyPathTable(propertyPath, dataSource);
 
             //Translate property path into equivalent list of patterns
             List<RDFPattern> patternList = propertyPath.GetPatternList();
-            List<DataTable> patternTables = new List<DataTable>(patternList.Count);
+            List<RDFTable> patternTables = new List<RDFTable>(patternList.Count);
 
             //Evaluate produced list of patterns
             foreach (RDFPattern pattern in patternList)
             {
                 //Apply pattern to graph
-                DataTable patternTable = ApplyPattern(pattern, dataSource);
+                RDFTable patternTable = ApplyPatternTable(pattern, dataSource);
 
-                //Set extended properties
-                patternTable.ExtendedProperties.Add(IsOptional, pattern.IsOptional);
-                patternTable.ExtendedProperties.Add(JoinAsUnion, pattern.JoinAsUnion);
-                patternTable.ExtendedProperties.Add(JoinAsMinus, pattern.JoinAsMinus);
+                //Set join flags
+                patternTable.IsOptional = pattern.IsOptional;
+                patternTable.JoinAsUnion = pattern.JoinAsUnion;
+                patternTable.JoinAsMinus = pattern.JoinAsMinus;
 
                 //Add produced table
                 patternTables.Add(patternTable);
             }
 
             //Merge produced list of tables
-            DataTable resultTable = CombineTables(patternTables);
+            RDFTable resultTable = CombineTables(patternTables);
 
             //Remove property path variables
-            foreach (string ppColumn in (from DataColumn dtCol
+            foreach (string ppColumn in (from RDFTableColumn ppCol
                                          in resultTable.Columns
-                                         where dtCol.ColumnName.StartsWith("?__PP", StringComparison.Ordinal)
-                                         select dtCol.ColumnName).ToArray())
+                                         where ppCol.Name.StartsWith("?__PP", StringComparison.Ordinal)
+                                         select ppCol.Name).ToArray())
             {
-                resultTable.Columns.Remove(ppColumn);
+                resultTable.RemoveColumn(ppColumn);
             }
 
             return resultTable;
@@ -1163,9 +1229,9 @@ namespace RDFSharp.Query
         /// For each seed node, evaluates all path steps via BFS and emits a result row for every reachable end node.
         /// Seeds are either the concrete start resource or all resource nodes in the datasource when the start is a variable.
         /// </summary>
-        internal DataTable ApplyTransitivePropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
+        internal RDFTable ApplyTransitivePropertyPathTable(RDFPropertyPath propertyPath, RDFDataSource dataSource)
         {
-            DataTable resultTable = new DataTable();
+            RDFTable resultTable = new RDFTable();
 
             //Collect information about boundary terms of the property path
             bool startIsVar = propertyPath.Start is RDFVariable;
@@ -1175,9 +1241,9 @@ namespace RDFSharp.Query
 
             //Add output columns only for the terms that are variables
             if (startIsVar)
-                AddColumn(resultTable, propertyPath.Start.ToString());
+                resultTable.AddColumn(propertyPath.Start.ToString());
             if (endIsVar)
-                AddColumn(resultTable, propertyPath.End.ToString());
+                resultTable.AddColumn(propertyPath.End.ToString());
 
             //Track already-added (start, end) pairs to avoid duplicate rows
             HashSet<string> addedRows = new HashSet<string>();
@@ -1205,12 +1271,12 @@ namespace RDFSharp.Query
                         row[propertyPath.Start.ToString()] = s.ToString();
                     if (endIsVar)
                         row[propertyPath.End.ToString()]   = e.ToString();
-                    AddRow(resultTable, row);
+                    resultTable.AddRow(row);
                 }
                 else
                 {
                     //Both terms are concrete: emit a blank existence row (pattern matched)
-                    resultTable.Rows.Add(resultTable.NewRow());
+                    resultTable.AddRow(new string[resultTable.ColumnsCount]);
                 }
             }
 
@@ -1725,6 +1791,71 @@ namespace RDFSharp.Query
                 if (writeO)
                     row[colO] = quadruple.Object.ToString();
                 resultTable.Rows.Add(row);
+            }
+        }
+
+        /// <summary>
+        /// Builds the table results of the pattern with values from the given graph (RDFTable production path)
+        /// </summary>
+        internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFTable resultTable)
+        {
+            //Resolve the target ordinal of each variable position once (-1 for non-variable positions, whose
+            //ToString() is not a column name). Positions binding the same variable resolve to the same ordinal,
+            //so the inequality checks reproduce the previous "first key wins" dedup (in S,P,O order).
+            int colS = resultTable.OrdinalOf(pattern.Subject.ToString());
+            int colP = resultTable.OrdinalOf(pattern.Predicate.ToString());
+            int colO = resultTable.OrdinalOf(pattern.Object.ToString());
+            bool writeS = colS >= 0;
+            bool writeP = colP >= 0 && colP != colS;
+            bool writeO = colO >= 0 && colO != colS && colO != colP;
+            int width = resultTable.ColumnsCount;
+
+            //Iterate result graph's triples
+            foreach (RDFTriple triple in triples)
+            {
+                string[] cells = new string[width];
+                if (writeS)
+                    cells[colS] = triple.Subject.ToString();
+                if (writeP)
+                    cells[colP] = triple.Predicate.ToString();
+                if (writeO)
+                    cells[colO] = triple.Object.ToString();
+                resultTable.AddRow(cells);
+            }
+        }
+
+        /// <summary>
+        /// Builds the table results of the pattern with values from the given store (RDFTable production path)
+        /// </summary>
+        internal static void PopulateTable(RDFPattern pattern, List<RDFQuadruple> quadruples, RDFTable resultTable)
+        {
+            //Resolve the target ordinal of each variable position once (-1 for non-variable positions).
+            //Positions binding the same variable resolve to the same ordinal, so the inequality checks
+            //reproduce the previous "first key wins" dedup (in C,S,P,O order).
+            string patternContext = pattern.Context?.ToString();
+            int colC = patternContext != null ? resultTable.OrdinalOf(patternContext) : -1;
+            int colS = resultTable.OrdinalOf(pattern.Subject.ToString());
+            int colP = resultTable.OrdinalOf(pattern.Predicate.ToString());
+            int colO = resultTable.OrdinalOf(pattern.Object.ToString());
+            bool writeC = colC >= 0;
+            bool writeS = colS >= 0 && colS != colC;
+            bool writeP = colP >= 0 && colP != colC && colP != colS;
+            bool writeO = colO >= 0 && colO != colC && colO != colS && colO != colP;
+            int width = resultTable.ColumnsCount;
+
+            //Iterate result store's quadruples
+            foreach (RDFQuadruple quadruple in quadruples)
+            {
+                string[] cells = new string[width];
+                if (writeC)
+                    cells[colC] = quadruple.Context.ToString();
+                if (writeS)
+                    cells[colS] = quadruple.Subject.ToString();
+                if (writeP)
+                    cells[colP] = quadruple.Predicate.ToString();
+                if (writeO)
+                    cells[colO] = quadruple.Object.ToString();
+                resultTable.AddRow(cells);
             }
         }
 
@@ -2568,6 +2699,105 @@ namespace RDFSharp.Query
 
                 table.EndLoadData();
                 table.AcceptChanges();
+            }
+        }
+
+        /// <summary>
+        /// Applies the projection operator on the given table, based on the given query's projection variables (RDFTable production path)
+        /// </summary>
+        internal static RDFTable ProjectTable(RDFSelectQuery query, RDFTable table)
+        {
+            //Projection expression variables
+            ProjectExpressions(query, table);
+
+            //Execute configured sort modifiers (stable Ordinal sort via RDFTable, UNBOUND sorts smallest)
+            RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
+            if (orderByModifiers.Length > 0)
+            {
+                List<(string, bool)> sortKeys = orderByModifiers
+                    .Select(m => (m.Variable.ToString(), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
+                    .ToList();
+                table = SortTable(table, sortKeys);
+            }
+
+            //Execute projection algorithm
+            if (query.ProjectionVars.Count > 0)
+            {
+                //Build the projected table with the projection variables, ordered by their target ordinal:
+                //values are taken from the matching source column when present, otherwise the column stays UNBOUND
+                List<KeyValuePair<RDFVariable, (int, RDFExpression)>> orderedProjections = query.ProjectionVars
+                    .OrderBy(pv => pv.Value.Item1)
+                    .ToList();
+
+                RDFTable projectedTable = new RDFTable();
+                int projCount = orderedProjections.Count;
+                int[] sourceOrdinals = new int[projCount];
+                for (int i = 0; i < projCount; i++)
+                {
+                    string projVarString = orderedProjections[i].Key.ToString();
+                    projectedTable.AddColumn(projVarString);
+                    sourceOrdinals[i] = table.OrdinalOf(projVarString);
+                }
+
+                foreach (RDFTableRow sourceRow in table.Rows)
+                {
+                    string[] cells = new string[projCount];
+                    for (int i = 0; i < projCount; i++)
+                        cells[i] = sourceOrdinals[i] >= 0 ? sourceRow[sourceOrdinals[i]] : null;
+                    projectedTable.AddRow(cells);
+                }
+                table = projectedTable;
+            }
+            return table;
+        }
+
+        /// <summary>
+        /// Fills the given table with new columns from the given query's projection expressions (RDFTable production path)
+        /// </summary>
+        internal static void ProjectExpressions(RDFSelectQuery query, RDFTable table)
+        {
+            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.Where(pv => pv.Value.Item2 != null)
+                                                                                                                 .OrderBy(pv => pv.Value.Item1))
+                EvaluateExpression(projectionExpression.Value.Item2, projectionExpression.Key, table);
+        }
+
+        /// <summary>
+        /// Fills the given table with new column from the given bind's variable (RDFTable production path)
+        /// </summary>
+        internal static void ProjectBind(RDFBind bind, RDFTable table)
+            => EvaluateExpression(bind.Expression, bind.Variable, table);
+
+        /// <summary>
+        /// Evaluates the given expression on the given table and projects the given variable (RDFTable production path)
+        /// </summary>
+        internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, RDFTable table)
+        {
+            string bindVariable = variable.ToString();
+            if (!table.HasColumn(bindVariable))
+            {
+                //Project bind column
+                table.AddColumn(bindVariable);
+                int bindOrdinal = table.OrdinalOf(bindVariable);
+
+                //Valorize bind column
+                if (table.RowsCount == 0)
+                {
+                    //Ensure to add the row only in case the expression has evaluated without binding errors,
+                    //(otherwise in this scenario we would always answer true for ASK queries due to this row)
+                    RDFPatternMember bindResult = expression.ApplyExpression(table.NewUnboundRow());
+                    if (bindResult != null)
+                        table.AddRow(new Dictionary<string, string> { { bindVariable, bindResult.ToString() } });
+                }
+                else
+                {
+                    int rowCount = table.RowsCount;
+                    RDFTableRowCollection rows = table.Rows;
+                    for (int i = 0; i < rowCount; i++)
+                    {
+                        string[] cells = table.GetRowArray(i);
+                        cells[bindOrdinal] = expression.ApplyExpression(rows[i])?.ToString();
+                    }
+                }
             }
         }
         #endregion

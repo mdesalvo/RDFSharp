@@ -95,10 +95,10 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the modifier on the given datatable
+        /// Applies the modifier on the given table
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        internal override DataTable ApplyModifier(DataTable table)
+        internal override RDFTable ApplyModifier(RDFTable table)
         {
             //Perform consistency checks
             ConsistencyChecks(table);
@@ -107,7 +107,7 @@ namespace RDFSharp.Query
             ExecutePartitionAlgorythm(table);
 
             //Execute projection algorythm
-            DataTable resultTable = ExecuteProjectionAlgorythm();
+            RDFTable resultTable = ExecuteProjectionAlgorythm();
 
             //Execute filter algorythm
             return ExecuteFilterAlgorythm(resultTable);
@@ -117,17 +117,17 @@ namespace RDFSharp.Query
         /// Performs consistency checks
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        private void ConsistencyChecks(DataTable table)
+        private void ConsistencyChecks(RDFTable table)
         {
             //Every partition variable must be found in the working table as a column
-            List<string> unavailablePartitionVariables = PartitionVariables.Where(pv => !table.Columns.Contains(pv.ToString()))
+            List<string> unavailablePartitionVariables = PartitionVariables.Where(pv => !table.HasColumn(pv.ToString()))
                                                                            .Select(pv => pv.ToString())
                                                                            .ToList();
             if (unavailablePartitionVariables.Count > 0)
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {string.Join(",", unavailablePartitionVariables.Distinct())}");
 
             //Every aggregator variable must be found in the working table as a column
-            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.Columns.Contains(ag.AggregatorVariable.ToString()))
+            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.HasColumn(ag.AggregatorVariable.ToString()))
                                                                      .Select(ag => ag.AggregatorVariable.ToString())
                                                                      .ToList();
             if (unavailableAggregatorVariables.Count > 0)
@@ -144,9 +144,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes partition algorithm
         /// </summary>
-        private void ExecutePartitionAlgorythm(DataTable table)
+        private void ExecutePartitionAlgorythm(RDFTable table)
         {
-            foreach (DataRow tableRow in table.Rows)
+            foreach (RDFTableRow tableRow in table.Rows)
             {
                 string partitionKey = GetPartitionKey(tableRow);
                 Aggregators.ForEach(ag => ag.ExecutePartition(partitionKey, tableRow));
@@ -156,10 +156,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes projection algorythm
         /// </summary>
-        private DataTable ExecuteProjectionAlgorythm()
+        private RDFTable ExecuteProjectionAlgorythm()
         {
-            List<DataTable> projFuncTables = new List<DataTable>(Aggregators.Count);
-            Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjection(PartitionVariables)));
+            List<RDFTable> projFuncTables = new List<RDFTable>(Aggregators.Count);
+            Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjectionTable(PartitionVariables)));
             projFuncTables.RemoveAll(pft => pft == null);
 
             return RDFQueryEngine.CombineTables(projFuncTables);
@@ -168,11 +168,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Execute filter algorythm
         /// </summary>
-        private DataTable ExecuteFilterAlgorythm(DataTable resultTable)
+        private RDFTable ExecuteFilterAlgorythm(RDFTable resultTable)
         {
             if (Aggregators.Any(ag => ag.HavingClause.Item1))
             {
-                DataTable filteredTable = resultTable.Clone();
+                RDFTable filteredTable = resultTable.Clone();
                 List<RDFComparisonExpression> havingExpressions = Aggregators
                     .Where(ag => ag.HavingClause.Item1)
                     .Select(ag => new RDFComparisonExpression(
@@ -185,7 +185,8 @@ namespace RDFSharp.Query
                     .ToList();
 
                 #region ExecuteFilters
-                foreach (DataRow resultRow in resultTable.Rows)
+                int width = resultTable.ColumnsCount;
+                foreach (RDFTableRow resultRow in resultTable.Rows)
                 {
                     bool keepRow = true;
                     List<RDFComparisonExpression>.Enumerator comparisonsEnum = havingExpressions.GetEnumerator();
@@ -198,9 +199,10 @@ namespace RDFSharp.Query
 
                     if (keepRow)
                     {
-                        DataRow newRow = filteredTable.NewRow();
-                        newRow.ItemArray = resultRow.ItemArray;
-                        filteredTable.Rows.Add(newRow);
+                        string[] cells = new string[width];
+                        for (int c = 0; c < width; c++)
+                            cells[c] = resultRow[c];
+                        filteredTable.AddRow(cells);
                     }
                 }
                 #endregion
@@ -212,14 +214,14 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Calculates the partition key on the given datarow
+        /// Calculates the partition key on the given table row
         /// </summary>
-        private string GetPartitionKey(DataRow tableRow)
+        private string GetPartitionKey(RDFTableRow tableRow)
         {
             List<string> partitionKey = new List<string>(PartitionVariables.Count);
             PartitionVariables.ForEach(pv =>
             {
-                partitionKey.Add(tableRow.IsNull(pv.VariableName)
+                partitionKey.Add(tableRow.IsUnbound(pv.VariableName)
                     ? $"{pv.VariableName}§PV§{string.Empty}"
                     : $"{pv.VariableName}§PV§{tableRow[pv.VariableName]}");
             });

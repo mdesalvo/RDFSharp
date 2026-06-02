@@ -76,7 +76,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the conditional expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             RDFPatternMember expressionResult = null;
 

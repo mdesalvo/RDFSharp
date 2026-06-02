@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Tabular representation of the SPARQL values wrapped by the filter
         /// </summary>
-        internal DataTable ValuesTable { get; set; }
+        internal RDFTable ValuesTable { get; set; }
         #endregion
 
         #region Ctors
@@ -47,7 +47,13 @@ namespace RDFSharp.Query
         internal RDFValuesFilter(RDFValues values)
         {
             Values = values;
-            ValuesTable = values.GetDataTable();
+            //Build the values table, carrying the join flags from the DataTable's ExtendedProperties
+            //(an all-UNDEF values block is tagged as optional, mirroring RDFValues.GetDataTable)
+            DataTable valuesDataTable = values.GetDataTable();
+            ValuesTable = RDFTable.FromDataTable(valuesDataTable);
+            ValuesTable.IsOptional = valuesDataTable.ExtendedProperties[RDFQueryEngine.IsOptional] is true;
+            ValuesTable.JoinAsUnion = valuesDataTable.ExtendedProperties[RDFQueryEngine.JoinAsUnion] is true;
+            ValuesTable.JoinAsMinus = valuesDataTable.ExtendedProperties[RDFQueryEngine.JoinAsMinus] is true;
         }
         #endregion
 
@@ -62,26 +68,26 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the columns corresponding to the variables in the given datarow
         /// </summary>
-        internal override bool ApplyFilter(DataRow row, bool applyNegation)
+        internal override bool ApplyFilter(RDFTableRow row, bool applyNegation)
         {
             bool keepRow = true;
 
             //Check is performed only on columns found as bindings in the filter
-            List<string> filterColumns = Values.Bindings.Keys.Where(k => row.Table.Columns.Contains(k)).ToList();
+            List<string> filterColumns = Values.Bindings.Keys.Where(k => row.HasColumn(k)).ToList();
             if (filterColumns.Count > 0)
             {
                 //Get the enumerable representation of the filter table
-                IEnumerable<DataRow> valuesTableEnumerable = ValuesTable.Rows.Cast<DataRow>();
+                IEnumerable<RDFTableRow> valuesTableEnumerable = ValuesTable.Rows;
 
                 //Perform the iterative check on the filter columns
                 filterColumns.ForEach(filterColumn =>
                 {
                     //Take the value of the column
-                    string filterColumnValue = row[filterColumn].ToString();
+                    string filterColumnValue = (row[filterColumn] ?? string.Empty);
 
                     //Filter the enumerable representation of the filter table
                     valuesTableEnumerable = valuesTableEnumerable.Where(binding =>
-                        binding.IsNull(filterColumn) || binding[filterColumn].ToString().Equals(filterColumnValue, StringComparison.Ordinal));
+                        binding.IsUnbound(filterColumn) || string.Equals(binding[filterColumn], filterColumnValue, StringComparison.Ordinal));
                 });
 
                 //Analyze the response of the check

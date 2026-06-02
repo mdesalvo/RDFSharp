@@ -25,9 +25,17 @@ namespace RDFSharp.Query
     {
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable
+        /// Applies the modifier on the given table
         /// </summary>
-        internal abstract DataTable ApplyModifier(DataTable tableToFilter);
+        internal abstract RDFTable ApplyModifier(RDFTable tableToFilter);
+
+        /// <summary>
+        /// Applies the modifier on the given datatable (thin DataTable-compatibility wrapper kept for the test
+        /// suite: converts the table to an RDFTable and delegates to the real implementation). Modifiers whose
+        /// legacy DataTable behavior carried DataView.Sort semantics (OrderBy/Limit/Offset) override this.
+        /// </summary>
+        internal virtual DataTable ApplyModifier(DataTable tableToFilter)
+            => ApplyModifier(RDFTable.FromDataTable(tableToFilter)).ToDataTable();
         #endregion
     }
 }

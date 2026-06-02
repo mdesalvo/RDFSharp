@@ -69,6 +69,14 @@ namespace RDFSharp.Query
             }
             return table;
         }
+
+        /// <summary>
+        /// Applies the modifier on the given table (stable Ordinal sort on the variable's column, UNBOUND
+        /// sorts smallest; keys whose column is absent are ignored). In the live pipeline the ORDER BY sort
+        /// is applied by the projection step, so this is exercised mainly by direct callers and tests.
+        /// </summary>
+        internal override RDFTable ApplyModifier(RDFTable table)
+            => RDFQueryEngine.SortTable(table, new[] { (Variable.ToString(), OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC) });
         #endregion
     }
 }

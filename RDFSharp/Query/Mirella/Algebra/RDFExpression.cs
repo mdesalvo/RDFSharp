@@ -103,9 +103,16 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the expression on the given datarow
+        /// Applies the expression on the given table row
         /// </summary>
-        internal abstract RDFPatternMember ApplyExpression(DataRow row);
+        internal abstract RDFPatternMember ApplyExpression(RDFTableRow row);
+
+        /// <summary>
+        /// Applies the expression on the given datarow (thin DataRow-compatibility wrapper kept for the test
+        /// suite: converts the row to an RDFTableRow and delegates to the real implementation)
+        /// </summary>
+        internal RDFPatternMember ApplyExpression(DataRow row)
+            => ApplyExpression(RDFTable.FromDataRow(row));
         #endregion
     }
 

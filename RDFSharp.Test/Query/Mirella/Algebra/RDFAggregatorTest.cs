@@ -208,7 +208,7 @@ public class RDFAggregatorTest
     public void ShouldUpdateProjectionTable()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        aggregator.UpdateProjectionTable(null, null); //Just no-op
+        aggregator.UpdateProjectionTable(null, (RDFTable)null); //Just no-op
     }
 
     //AggregatorContext

@@ -82,7 +82,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the given datarow
         /// </summary>
-        internal override bool ApplyFilter(DataRow row, bool applyNegation)
+        internal override bool ApplyFilter(RDFTableRow row, bool applyNegation)
         {
             bool keepRow = LeftFilter.ApplyFilter(row, false) || RightFilter.ApplyFilter(row, false);
 

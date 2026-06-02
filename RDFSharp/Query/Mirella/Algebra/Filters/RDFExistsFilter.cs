@@ -71,7 +71,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the column corresponding to the pattern in the given datarow
         /// </summary>
-        internal override bool ApplyFilter(DataRow row, bool applyNegation)
+        internal override bool ApplyFilter(RDFTableRow row, bool applyNegation)
         {
             bool keepRow = false;
             string subjectString = Pattern.Subject.ToString();
@@ -80,9 +80,9 @@ namespace RDFSharp.Query
 
             #region Disjoint Evaluation
             //In case of disjointess between the query and the filter's pattern, all solutions are compatible
-            bool disjointSubject = !(Pattern.Subject is RDFVariable) || !row.Table.Columns.Contains(subjectString);
-            bool disjointPredicate = !(Pattern.Predicate is RDFVariable) || !row.Table.Columns.Contains(predicateString);
-            bool disjointObject = !(Pattern.Object is RDFVariable) || !row.Table.Columns.Contains(objectString);
+            bool disjointSubject = !(Pattern.Subject is RDFVariable) || !row.HasColumn(subjectString);
+            bool disjointPredicate = !(Pattern.Predicate is RDFVariable) || !row.HasColumn(predicateString);
+            bool disjointObject = !(Pattern.Object is RDFVariable) || !row.HasColumn(objectString);
             if (disjointSubject && disjointPredicate && disjointObject)
                 keepRow = true;
             #endregion
@@ -97,13 +97,13 @@ namespace RDFSharp.Query
                     bool subjectCompared = false;
                     if (Pattern.Subject is RDFVariable
                          && PatternResults.Columns.Contains(subjectString)
-                         && row.Table.Columns.Contains(subjectString))
+                         && row.HasColumn(subjectString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
-                        if (!row.IsNull(subjectString))
+                        if (!row.IsUnbound(subjectString))
                         {
                             //Get subject filter's value for the given row
-                            RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[subjectString].ToString());
+                            RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember((row[subjectString] ?? string.Empty));
 
                             //Apply subject filter on the pattern resultset
                             patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x[subjectString] as string).Equals(rowMember));
@@ -116,13 +116,13 @@ namespace RDFSharp.Query
                     bool predicateCompared = false;
                     if (Pattern.Predicate is RDFVariable
                          && PatternResults.Columns.Contains(predicateString)
-                         && row.Table.Columns.Contains(predicateString))
+                         && row.HasColumn(predicateString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
-                        if (!row.IsNull(predicateString))
+                        if (!row.IsUnbound(predicateString))
                         {
                             //Get predicate filter's value for the given row
-                            RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[predicateString].ToString());
+                            RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember((row[predicateString] ?? string.Empty));
 
                             //Apply predicate filter on the pattern resultset
                             patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x[predicateString] as string).Equals(rowMember));
@@ -135,13 +135,13 @@ namespace RDFSharp.Query
                     bool objectCompared = false;
                     if (Pattern.Object is RDFVariable
                          && PatternResults.Columns.Contains(objectString)
-                         && row.Table.Columns.Contains(objectString))
+                         && row.HasColumn(objectString))
                     {
                         //In case of emptiness the solution is compatible, otherwise proceed with comparison
-                        if (!row.IsNull(objectString))
+                        if (!row.IsUnbound(objectString))
                         {
                             //Get object filter's value for the given row
-                            RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember(row[objectString].ToString());
+                            RDFPatternMember rowMember = RDFQueryUtilities.ParseRDFPatternMember((row[objectString] ?? string.Empty));
 
                             //Apply object filter on the pattern resultset
                             patternResultsEnumerable = patternResultsEnumerable.Where(x => RDFQueryUtilities.ParseRDFPatternMember(x[objectString] as string).Equals(rowMember));

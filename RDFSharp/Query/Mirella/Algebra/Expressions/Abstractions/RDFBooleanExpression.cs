@@ -42,7 +42,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the boolean "AND" expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             RDFTypedLiteral expressionResult = null;
 

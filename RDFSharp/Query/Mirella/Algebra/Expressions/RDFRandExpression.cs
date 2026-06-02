@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the rand expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
             => new RDFTypedLiteral(Convert.ToString(Source.NextDouble(), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
         #endregion
     }

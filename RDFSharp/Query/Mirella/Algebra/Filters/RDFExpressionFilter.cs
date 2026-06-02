@@ -121,7 +121,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter to the given datarow
         /// </summary>
-        internal override bool ApplyFilter(DataRow row, bool applyNegation)
+        internal override bool ApplyFilter(RDFTableRow row, bool applyNegation)
         {
             //Execute the expression on the given datarow
             RDFTypedLiteral expressionResult = Expression.ApplyExpression(row) as RDFTypedLiteral;

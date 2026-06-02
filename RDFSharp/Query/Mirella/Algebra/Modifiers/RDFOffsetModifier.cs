@@ -69,6 +69,27 @@ namespace RDFSharp.Query
             offsetTable.DefaultView.Sort = tableSort;
             return offsetTable;
         }
+
+        /// <summary>
+        /// Applies the modifier on the given table (drops the first Offset rows, keeping the rest in order)
+        /// </summary>
+        internal override RDFTable ApplyModifier(RDFTable table)
+        {
+            RDFTable offsetTable = table.Clone();
+            if (table.RowsCount > 0 && Offset < table.RowsCount)
+            {
+                int width = table.ColumnsCount;
+                for (int i = Offset; i < table.RowsCount; i++)
+                {
+                    RDFTableRow row = table.Rows[i];
+                    string[] cells = new string[width];
+                    for (int c = 0; c < width; c++)
+                        cells[c] = row[c];
+                    offsetTable.AddRow(cells);
+                }
+            }
+            return offsetTable;
+        }
         #endregion
     }
 }

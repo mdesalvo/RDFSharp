@@ -151,6 +151,41 @@ namespace RDFSharp.Query
         /// </summary>
         public int OrdinalOf(string columnName)
             => columnName != null && _ordinals.TryGetValue(NormalizeColumnName(columnName), out int ordinal) ? ordinal : -1;
+
+        /// <summary>
+        /// Removes the column with the given (possibly non-normalized) name from the table, re-indexing
+        /// the remaining columns and shrinking every existing row accordingly. No-op if the column is absent.
+        /// Counterpart of DataColumnCollection.Remove, used by the engine to drop property-path / non-projection columns.
+        /// </summary>
+        internal void RemoveColumn(string columnName)
+        {
+            if (columnName == null)
+                return;
+            if (!_ordinals.TryGetValue(NormalizeColumnName(columnName), out int removedOrdinal))
+                return;
+
+            //Rebuild the columns list and the ordinal map without the removed column
+            _columns.RemoveAt(removedOrdinal);
+            _ordinals.Clear();
+            for (int i = 0; i < _columns.Count; i++)
+            {
+                _columns[i].Ordinal = i;
+                _ordinals.Add(_columns[i].Name, i);
+            }
+
+            //Shrink every existing row by dropping the removed ordinal
+            int newWidth = _columns.Count;
+            for (int r = 0; r < _rows.Count; r++)
+            {
+                string[] oldCells = _rows[r];
+                string[] newCells = new string[newWidth];
+                if (removedOrdinal > 0)
+                    Array.Copy(oldCells, 0, newCells, 0, removedOrdinal);
+                if (removedOrdinal < newWidth)
+                    Array.Copy(oldCells, removedOrdinal + 1, newCells, removedOrdinal, newWidth - removedOrdinal);
+                _rows[r] = newCells;
+            }
+        }
         #endregion
 
         #region Data
@@ -189,6 +224,38 @@ namespace RDFSharp.Query
                 throw new RDFQueryException($"Cannot add row to table because given \"cells\" parameter has length {cells.Length} but the table has {_columns.Count} columns.");
 
             _rows.Add(cells);
+        }
+
+        /// <summary>
+        /// Builds a transient all-UNBOUND row view sized to the table's current columns, sharing the table's
+        /// ordinal map but NOT added to the table. Counterpart of DataTable.NewRow used by the engine to
+        /// evaluate an expression on an empty table (e.g. BIND on a zero-row table).
+        /// </summary>
+        internal RDFTableRow NewUnboundRow()
+            => new RDFTableRow(new string[_columns.Count], _ordinals);
+
+        /// <summary>
+        /// Gets the mutable backing cells array of the row at the given index (by reference, no copy), so the
+        /// engine can valorize a freshly projected column in place. The array length equals the columns count.
+        /// </summary>
+        internal string[] GetRowArray(int index)
+            => _rows[index];
+
+        /// <summary>
+        /// Creates an empty table with the same columns (and join flags) as this one, but no rows.
+        /// Counterpart of DataTable.Clone (schema-only copy).
+        /// </summary>
+        internal RDFTable Clone()
+        {
+            RDFTable clone = new RDFTable
+            {
+                IsOptional = IsOptional,
+                JoinAsUnion = JoinAsUnion,
+                JoinAsMinus = JoinAsMinus
+            };
+            foreach (RDFTableColumn column in _columns)
+                clone.AddColumn(column.Name);
+            return clone;
         }
         #endregion
 
@@ -244,6 +311,34 @@ namespace RDFSharp.Query
             }
 
             return table;
+        }
+
+        /// <summary>
+        /// Builds a standalone single-row RDFTableRow from the given DataRow, projecting every cell to its
+        /// string representation (DBNull / null -> UNBOUND) and normalizing column names. Used by the thin
+        /// DataRow-signature wrappers kept for the test suite, so they can delegate to the real RDFTableRow
+        /// implementations. The returned row keeps alive the backing storage it references.
+        /// </summary>
+        internal static RDFTableRow FromDataRow(DataRow dataRow)
+        {
+            if (dataRow == null)
+                throw new RDFQueryException("Cannot import RDFTableRow because given \"dataRow\" parameter is null.");
+
+            RDFTable table = new RDFTable();
+            DataColumnCollection columns = dataRow.Table.Columns;
+            int width = columns.Count;
+            foreach (DataColumn column in columns)
+                table.AddColumn(column.ColumnName);
+
+            string[] cells = new string[width];
+            for (int i = 0; i < width; i++)
+            {
+                object value = dataRow[i];
+                cells[i] = value == null || value is DBNull ? null : value.ToString();
+            }
+            table._rows.Add(cells);
+
+            return table.Rows[0];
         }
         #endregion
 

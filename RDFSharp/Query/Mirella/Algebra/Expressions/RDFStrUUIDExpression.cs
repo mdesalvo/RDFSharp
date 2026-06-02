@@ -47,7 +47,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the stringified UUID generator expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
             => new RDFPlainLiteral($"{Guid.NewGuid()}");
         #endregion
     }

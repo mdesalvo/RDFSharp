@@ -90,30 +90,63 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Executes the partition on the given tablerow
+        /// Executes the partition on the given table row
         /// </summary>
-        internal virtual void ExecutePartition(string partitionKey, DataRow tableRow) { }
+        internal virtual void ExecutePartition(string partitionKey, RDFTableRow tableRow) { }
+
+        /// <summary>
+        /// Executes the partition on the given datarow (thin DataRow-compatibility wrapper kept for the test suite)
+        /// </summary>
+        internal void ExecutePartition(string partitionKey, DataRow tableRow)
+            => ExecutePartition(partitionKey, tableRow != null ? RDFTable.FromDataRow(tableRow) : default);
 
         /// <summary>
         /// Executes the projection producing result's table
         /// </summary>
-        internal virtual DataTable ExecuteProjection(List<RDFVariable> partitionVariables) => null;
+        internal virtual RDFTable ExecuteProjectionTable(List<RDFVariable> partitionVariables) => null;
+
+        /// <summary>
+        /// Executes the projection producing result's table (thin DataTable-compatibility wrapper kept for the test suite)
+        /// </summary>
+        internal DataTable ExecuteProjection(List<RDFVariable> partitionVariables)
+            => ExecuteProjectionTable(partitionVariables)?.ToDataTable();
 
         /// <summary>
         /// Helps in finalization step by updating the projection's result table
         /// </summary>
-        internal virtual void UpdateProjectionTable(string partitionKey, DataTable projFuncTable) { }
+        internal virtual void UpdateProjectionTable(string partitionKey, RDFTable projFuncTable) { }
+
+        /// <summary>
+        /// Helps in finalization step by updating the projection's result table (thin DataTable-compatibility
+        /// wrapper kept for the test suite: delegates to the real implementation and reflects the added rows back)
+        /// </summary>
+        internal void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
+        {
+            RDFTable table = RDFTable.FromDataTable(projFuncTable);
+            int rowsBefore = table.RowsCount;
+            UpdateProjectionTable(partitionKey, table);
+
+            int width = projFuncTable.Columns.Count;
+            for (int i = rowsBefore; i < table.RowsCount; i++)
+            {
+                RDFTableRow addedRow = table.Rows[i];
+                DataRow dataRow = projFuncTable.NewRow();
+                for (int c = 0; c < width; c++)
+                    dataRow[c] = addedRow[c] ?? (object)DBNull.Value;
+                projFuncTable.Rows.Add(dataRow);
+            }
+        }
 
         /// <summary>
         /// Gets the row value for the aggregator as number
         /// </summary>
-        internal double GetRowValueAsNumber(DataRow tableRow)
+        internal double GetRowValueAsNumber(RDFTableRow tableRow)
         {
             try
             {
-                if (!tableRow.IsNull(AggregatorVariable.VariableName))
+                if (tableRow.IsBound(AggregatorVariable.VariableName))
                 {
-                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[AggregatorVariable.VariableName].ToString());
+                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[AggregatorVariable.VariableName]);
                     //Only numeric typedliterals are suitable for processing
                     if (rowAggregatorValue is RDFTypedLiteral rowAggregatorValueTLit && rowAggregatorValueTLit.HasDecimalDatatype())
                     {
@@ -130,17 +163,29 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Gets the row value for the aggregator as number (thin DataRow-compatibility wrapper kept for the test suite)
+        /// </summary>
+        internal double GetRowValueAsNumber(DataRow tableRow)
+            => GetRowValueAsNumber(RDFTable.FromDataRow(tableRow));
+
+        /// <summary>
         /// Gets the row value for the aggregator as string
         /// </summary>
-        internal string GetRowValueAsString(DataRow tableRow)
+        internal string GetRowValueAsString(RDFTableRow tableRow)
         {
             try
             {
-                return !tableRow.IsNull(AggregatorVariable.VariableName) ? tableRow[AggregatorVariable.VariableName].ToString()
+                return tableRow.IsBound(AggregatorVariable.VariableName) ? tableRow[AggregatorVariable.VariableName]
                                                                          : string.Empty;
             }
             catch { return string.Empty; }
         }
+
+        /// <summary>
+        /// Gets the row value for the aggregator as string (thin DataRow-compatibility wrapper kept for the test suite)
+        /// </summary>
+        internal string GetRowValueAsString(DataRow tableRow)
+            => GetRowValueAsString(RDFTable.FromDataRow(tableRow));
 
         /// <summary>
         /// Prints the having-clause of the aggregator

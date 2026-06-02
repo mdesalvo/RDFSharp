@@ -65,12 +65,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the string SHA256 function on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             RDFPlainLiteral expressionResult = null;
 
             #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
                 return null;
             #endregion
 
@@ -82,7 +82,7 @@ namespace RDFSharp.Query
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
                 #endregion
 
                 #region Calculate Result

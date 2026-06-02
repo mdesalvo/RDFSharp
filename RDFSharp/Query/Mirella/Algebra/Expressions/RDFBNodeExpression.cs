@@ -46,7 +46,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the blank node generator expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
             => new RDFResource();
         #endregion
     }
