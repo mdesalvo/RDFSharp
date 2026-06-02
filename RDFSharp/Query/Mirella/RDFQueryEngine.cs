@@ -1711,11 +1711,6 @@ namespace RDFSharp.Query
             }
         }
 
-        #region RDFTable (v4)
-        //Lightweight, string-only join/combine/merge operations over RDFTable (null cell = UNBOUND),
-        //backed by a plain hash-join. All of them compare common columns with StringComparison.Ordinal,
-        //so matching is case-sensitive and consistent across inner-join, outer-join and difference.
-
         /// <summary>
         /// Builds a collision-free Ordinal key over the row's common columns, or null if any of them is UNBOUND
         /// (an UNBOUND column can never take part in an equality match)
@@ -2136,7 +2131,6 @@ namespace RDFSharp.Query
             }
             return distinctTable;
         }
-        #endregion
 
         /// <summary>
         /// Applies the projection operator on the given table, based on the given query's projection variables
@@ -2236,6 +2230,7 @@ namespace RDFSharp.Query
                 }
             }
         }
+
         #endregion
 
         #endregion
