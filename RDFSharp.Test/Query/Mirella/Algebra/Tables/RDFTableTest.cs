@@ -309,28 +309,6 @@ public class RDFTableTest
         Assert.IsTrue(roundTripped.Rows[1].IsUnbound("?P"));
     }
 
-    [TestMethod]
-    public void ShouldImportRowFromDataRow()
-    {
-        DataTable dataTable = new DataTable();
-        dataTable.Columns.Add("?s", typeof(string));
-        dataTable.Columns.Add("?P", typeof(string));
-        DataRow dataRow = dataTable.NewRow();
-        dataRow["?s"] = "ex:s";
-        dataRow["?P"] = DBNull.Value;
-        dataTable.Rows.Add(dataRow);
-
-        RDFTableRow row = RDFTable.FromDataRow(dataRow);
-
-        //Column names are normalized (Trim + UpperInvariant)
-        Assert.AreEqual("ex:s", row["?S"]);
-        Assert.IsTrue(row.IsUnbound("?P"));
-        Assert.IsTrue(row.HasColumn("?s"));
-    }
-
-    [TestMethod]
-    public void ShouldThrowImportingRowFromNullDataRow()
-        => Assert.ThrowsExactly<RDFQueryException>(() => RDFTable.FromDataRow(null));
     #endregion
 
     #region Schema (utilities)

@@ -313,32 +313,6 @@ namespace RDFSharp.Query
             return table;
         }
 
-        /// <summary>
-        /// Builds a standalone single-row RDFTableRow from the given DataRow, projecting every cell to its
-        /// string representation (DBNull / null -> UNBOUND) and normalizing column names. Still used by the
-        /// engine's DataTable-facing projection helpers (removed together with them in the engine pass).
-        /// </summary>
-        internal static RDFTableRow FromDataRow(DataRow dataRow)
-        {
-            if (dataRow == null)
-                throw new RDFQueryException("Cannot import RDFTableRow because given \"dataRow\" parameter is null.");
-
-            RDFTable table = new RDFTable();
-            DataColumnCollection columns = dataRow.Table.Columns;
-            int width = columns.Count;
-            foreach (DataColumn column in columns)
-                table.AddColumn(column.ColumnName);
-
-            string[] cells = new string[width];
-            for (int i = 0; i < width; i++)
-            {
-                object value = dataRow[i];
-                cells[i] = value == null || value is DBNull ? null : value.ToString();
-            }
-            table._rows.Add(cells);
-
-            return table.Rows[0];
-        }
         #endregion
 
         #endregion

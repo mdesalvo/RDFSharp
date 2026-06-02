@@ -592,13 +592,6 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fills the given templates with data from the given result datatable (thin DataTable-compatibility
-        /// wrapper kept for the test suite: delegates to the real RDFTable implementation)
-        /// </summary>
-        internal DataTable FillTemplates(List<RDFPattern> templates, DataTable resultTable, bool needsContext)
-            => FillTemplates(templates, RDFTable.FromDataTable(resultTable), needsContext).ToDataTable();
-
-        /// <summary>
         /// Describes the terms of the given DESCRIBE query with data from the given result table
         /// </summary>
         internal RDFTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource dataSource, RDFTable resultTable)
@@ -630,13 +623,6 @@ namespace RDFSharp.Query
 
             return result;
         }
-
-        /// <summary>
-        /// Describes the terms of the given DESCRIBE query with data from the given result datatable
-        /// (thin DataTable-compatibility wrapper kept for the test suite)
-        /// </summary>
-        internal DataTable DescribeTerms(RDFDescribeQuery describeQuery, RDFDataSource dataSource, DataTable resultTable)
-            => DescribeTerms(describeQuery, dataSource, RDFTable.FromDataTable(resultTable)).ToDataTable();
 
         /// <summary>
         /// Describes the given resource term with data from the given result table
@@ -2173,94 +2159,6 @@ namespace RDFSharp.Query
             return distinctTable;
         }
         #endregion
-
-        /// <summary>
-        /// Applies the projection operator on the given table, based on the given query's projection variables
-        /// </summary>
-        internal static DataTable ProjectTable(RDFSelectQuery query, DataTable table)
-        {
-            //Projection expression variables
-            ProjectExpressions(query, table);
-
-            //Execute configured sort modifiers (v4: stable Ordinal sort via RDFTable, UNBOUND sorts smallest)
-            RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
-            if (orderByModifiers.Length > 0)
-            {
-                List<(string, bool)> sortKeys = orderByModifiers
-                    .Select(m => (m.Variable.ToString(), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
-                    .ToList();
-                table = SortTable(RDFTable.FromDataTable(table), sortKeys).ToDataTable();
-            }
-
-            //Execute projection algorithm
-            if (query.ProjectionVars.Count > 0)
-            {
-                //Remove non-projection variables
-                foreach (DataColumn tableColumn in table.Columns.OfType<DataColumn>()
-                                                                .Where(tc => !query.ProjectionVars.Any(pv => string.Equals(pv.Key.ToString(), tc.ColumnName, StringComparison.OrdinalIgnoreCase)))
-                                                                .ToArray())
-                    table.Columns.Remove(tableColumn);
-
-                //Adjust projection ordinals
-                foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionVar in query.ProjectionVars)
-                {
-                    string projVarString = projectionVar.Key.ToString();
-                    AddColumn(table, projVarString);
-                    table.Columns[projVarString].SetOrdinal(projectionVar.Value.Item1);
-                }
-                table.AcceptChanges();
-            }
-            return table;
-        }
-
-        /// <summary>
-        /// Fills the given table with new columns from the given query's projection expressions
-        /// </summary>
-        internal static void ProjectExpressions(RDFSelectQuery query, DataTable table)
-        {
-            foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionExpression in query.ProjectionVars.Where(pv => pv.Value.Item2 != null)
-                                                                                                                 .OrderBy(pv => pv.Value.Item1))
-                EvaluateExpression(projectionExpression.Value.Item2, projectionExpression.Key, table);
-        }
-
-        /// <summary>
-        /// Fills the given table with new column from the given bind's variable
-        /// </summary>
-        internal static void ProjectBind(RDFBind bind, DataTable table)
-            => EvaluateExpression(bind.Expression, bind.Variable, table);
-
-        /// <summary>
-        /// Evaluates the given expression on the given table and projects the given variable
-        /// </summary>
-        internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, DataTable table)
-        {
-            string bindVariable = variable.ToString();
-            if (!table.Columns.Contains(bindVariable))
-            {
-                table.BeginLoadData();
-
-                //Project bind column
-                AddColumn(table, bindVariable);
-
-                //Valorize bind column
-                if (table.Rows.Count == 0)
-                {
-                    //Ensure to add the row only in case the expression has evaluated without binding errors,
-                    //(otherwise in this scenario we would always answer true for ASK queries due to this row)
-                    RDFPatternMember bindResult = expression.ApplyExpression(table.NewRow());
-                    if (bindResult != null)
-                        AddRow(table, new Dictionary<string, string> { { bindVariable, bindResult.ToString() } });
-                }
-                else
-                {
-                    foreach (DataRow row in table.Rows.Cast<DataRow>())
-                        row[bindVariable] = expression.ApplyExpression(row)?.ToString();
-                }
-
-                table.EndLoadData();
-                table.AcceptChanges();
-            }
-        }
 
         /// <summary>
         /// Applies the projection operator on the given table, based on the given query's projection variables (RDFTable production path)

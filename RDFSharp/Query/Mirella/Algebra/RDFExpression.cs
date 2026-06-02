@@ -16,7 +16,6 @@
 
 using RDFSharp.Model;
 using System.Collections.Generic;
-using System.Data;
 
 namespace RDFSharp.Query
 {
@@ -107,12 +106,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal abstract RDFPatternMember ApplyExpression(RDFTableRow row);
 
-        /// <summary>
-        /// Applies the expression on the given datarow: still used by the engine's DataTable-facing
-        /// projection helpers (removed together with them in the engine test-migration pass)
-        /// </summary>
-        internal RDFPatternMember ApplyExpression(DataRow row)
-            => ApplyExpression(RDFTable.FromDataRow(row));
         #endregion
     }
 

@@ -3515,41 +3515,28 @@ public class RDFQueryEngineTest
             new RDFPattern(new RDFResource("ex:bracco"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")),
             new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))
         ];
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = DBNull.Value.ToString(CultureInfo.InvariantCulture); //Will not be considered, since null values are not allowed
-        row2["?X"] = "ex:paperino";
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = "hello"; //Will not be considered, since literal values are not allowed in subject
-        row3["?X"] = "ex:paperino";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "" }, { "?X", "ex:paperino" } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "hello" }, { "?X", "ex:paperino" } });
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable filledTable = queryEngine.FillTemplates(templates, table, false);
+        RDFTable filledTable = queryEngine.FillTemplates(templates, table, false);
 
         Assert.IsNotNull(filledTable);
-        Assert.AreEqual(3, filledTable.Columns.Count);
-        Assert.AreEqual(3, filledTable.Rows.Count);
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.AreEqual(3, filledTable.ColumnsCount);
+        Assert.AreEqual(3, filledTable.RowsCount);
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"], "ex:bracco", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"], $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"], "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"], "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"], $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"], "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"], "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"], $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"], "ex:dog", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3560,44 +3547,31 @@ public class RDFQueryEngineTest
             new RDFPattern(new RDFContext("ex:ctx"), new RDFResource("ex:bracco"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")),
             new RDFPattern(new RDFVariable("?Y"), new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))
         ];
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = DBNull.Value.ToString(CultureInfo.InvariantCulture); //Will not be considered, since null values are not allowed
-        row2["?X"] = "ex:paperino";
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = "hello"; //Will not be considered, since literal values are not allowed in context
-        row3["?X"] = "ex:paperino";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "" }, { "?X", "ex:paperino" } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "hello" }, { "?X", "ex:paperino" } });
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable filledTable = queryEngine.FillTemplates(templates, table, true);
+        RDFTable filledTable = queryEngine.FillTemplates(templates, table, true);
 
         Assert.IsNotNull(filledTable);
-        Assert.AreEqual(4, filledTable.Columns.Count);
-        Assert.AreEqual(3, filledTable.Rows.Count);
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"].ToString(), "ex:bracco", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?CONTEXT"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?CONTEXT"].ToString(), "ex:fido", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        Assert.AreEqual(4, filledTable.ColumnsCount);
+        Assert.AreEqual(3, filledTable.RowsCount);
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?CONTEXT"], "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?SUBJECT"], "ex:bracco", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?PREDICATE"], $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[0]["?OBJECT"], "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?CONTEXT"], "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?SUBJECT"], "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?PREDICATE"], $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[1]["?OBJECT"], "ex:dog", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?CONTEXT"], "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?SUBJECT"], "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?PREDICATE"], $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(filledTable.Rows[2]["?OBJECT"], "ex:dog", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3622,43 +3596,22 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        row0["?N"] = "Mickey Mouse@EN-US";
-        row0["?C"] = null;
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        row1["?N"] = "Donald Duck@EN-US";
-        row1["?C"] = null;
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = "ex:balto";
-        row2["?X"] = "ex:whoever";
-        row2["?N"] = null;
-        row2["?C"] = null;
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = null;
-        row3["?X"] = null;
-        row3["?N"] = null;
-        row3["?C"] = "green@EN";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" }, { "?N", "Mickey Mouse@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" }, { "?N", "Donald Duck@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:balto" }, { "?X", "ex:whoever" }, { "?N", null }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, graph, table);
+        RDFTable result = queryEngine.DescribeTerms(query, graph, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(12, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(12, result.RowsCount);
     }
 
     [TestMethod]
@@ -3684,43 +3637,22 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        row0["?N"] = "Mickey Mouse@EN-US";
-        row0["?C"] = null;
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        row1["?N"] = "Donald Duck@EN-US";
-        row1["?C"] = null;
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = "ex:balto";
-        row2["?X"] = "ex:whoever";
-        row2["?N"] = null;
-        row2["?C"] = null;
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = null;
-        row3["?X"] = null;
-        row3["?N"] = null;
-        row3["?C"] = "green@EN";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" }, { "?N", "Mickey Mouse@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" }, { "?N", "Donald Duck@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:balto" }, { "?X", "ex:whoever" }, { "?N", null }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, graph, table);
+        RDFTable result = queryEngine.DescribeTerms(query, graph, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(2, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(2, result.RowsCount);
     }
 
     [TestMethod]
@@ -3763,49 +3695,23 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        row0["?N"] = "Mickey Mouse@EN-US";
-        row0["?C"] = null;
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        row1["?N"] = "Donald Duck@EN-US";
-        row1["?C"] = null;
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = "ex:balto";
-        row2["?X"] = "ex:whoever";
-        row2["?N"] = null;
-        row2["?C"] = null;
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = null;
-        row3["?X"] = null;
-        row3["?N"] = null;
-        row3["?C"] = "green@EN";
-        table.Rows.Add(row3);
-        DataRow row4 = table.NewRow();
-        row4["?Y"] = "ex:snoopy";
-        row4["?X"] = "ex:linus";
-        row4["?N"] = $"Linus^^{RDFVocabulary.XSD.STRING}";
-        row4["?C"] = null;
-        table.Rows.Add(row4);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" }, { "?N", "Mickey Mouse@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" }, { "?N", "Donald Duck@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:balto" }, { "?X", "ex:whoever" }, { "?N", null }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:snoopy" }, { "?X", "ex:linus" }, { "?N", $"Linus^^{RDFVocabulary.XSD.STRING}" }, { "?C", null } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, federation, table);
+        RDFTable result = queryEngine.DescribeTerms(query, federation, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(3, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(3, result.RowsCount);
     }
 
     [TestMethod]
@@ -3831,43 +3737,22 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        row0["?N"] = "Mickey Mouse@EN-US";
-        row0["?C"] = null;
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        row1["?N"] = "Donald Duck@EN-US";
-        row1["?C"] = null;
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = "ex:balto";
-        row2["?X"] = "ex:whoever";
-        row2["?N"] = null;
-        row2["?C"] = null;
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = null;
-        row3["?X"] = null;
-        row3["?N"] = null;
-        row3["?C"] = "green@EN";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" }, { "?N", "Mickey Mouse@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" }, { "?N", "Donald Duck@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:balto" }, { "?X", "ex:whoever" }, { "?N", null }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, graph, table);
+        RDFTable result = queryEngine.DescribeTerms(query, graph, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(0, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(0, result.RowsCount);
     }
 
     [TestMethod]
@@ -3893,43 +3778,22 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        row0["?N"] = "Mickey Mouse@EN-US";
-        row0["?C"] = null;
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        row1["?N"] = "Donald Duck@EN-US";
-        row1["?C"] = null;
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = "ex:balto";
-        row2["?X"] = "ex:whoever";
-        row2["?N"] = null;
-        row2["?C"] = null;
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = null;
-        row3["?X"] = null;
-        row3["?N"] = null;
-        row3["?C"] = "green@EN";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" }, { "?N", "Mickey Mouse@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" }, { "?N", "Donald Duck@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:balto" }, { "?X", "ex:whoever" }, { "?N", null }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, graph, table);
+        RDFTable result = queryEngine.DescribeTerms(query, graph, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(4, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(4, result.RowsCount);
     }
 
     [TestMethod]
@@ -3960,43 +3824,22 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        row0["?N"] = "Mickey Mouse@EN-US";
-        row0["?C"] = null;
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        row1["?N"] = "Donald Duck@EN-US";
-        row1["?C"] = null;
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = "ex:balto";
-        row2["?X"] = "ex:whoever";
-        row2["?N"] = null;
-        row2["?C"] = null;
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = null;
-        row3["?X"] = null;
-        row3["?N"] = null;
-        row3["?C"] = "green@EN";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" }, { "?N", "Mickey Mouse@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" }, { "?N", "Donald Duck@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:balto" }, { "?X", "ex:whoever" }, { "?N", null }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, federation, table);
+        RDFTable result = queryEngine.DescribeTerms(query, federation, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(6, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(6, result.RowsCount);
     }
 
     [TestMethod]
@@ -4022,43 +3865,22 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = "ex:pluto";
-        row0["?X"] = "ex:topolino";
-        row0["?N"] = "Mickey Mouse@EN-US";
-        row0["?C"] = null;
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?Y"] = "ex:fido";
-        row1["?X"] = "ex:paperino";
-        row1["?N"] = "Donald Duck@EN-US";
-        row1["?C"] = null;
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?Y"] = "ex:balto";
-        row2["?X"] = "ex:whoever";
-        row2["?N"] = null;
-        row2["?C"] = null;
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?Y"] = null;
-        row3["?X"] = null;
-        row3["?N"] = null;
-        row3["?C"] = "green@EN";
-        table.Rows.Add(row3);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:pluto" }, { "?X", "ex:topolino" }, { "?N", "Mickey Mouse@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:fido" }, { "?X", "ex:paperino" }, { "?N", "Donald Duck@EN-US" }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", "ex:balto" }, { "?X", "ex:whoever" }, { "?N", null }, { "?C", null } });
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, graph, table);
+        RDFTable result = queryEngine.DescribeTerms(query, graph, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(0, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(0, result.RowsCount);
     }
 
     [TestMethod]
@@ -4084,25 +3906,19 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = null;
-        row0["?X"] = null;
-        row0["?N"] = null;
-        row0["?C"] = "green@EN";
-        table.Rows.Add(row0);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, graph, table);
+        RDFTable result = queryEngine.DescribeTerms(query, graph, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(3, result.Columns.Count);
-        Assert.AreEqual(1, result.Rows.Count);
+        Assert.AreEqual(3, result.ColumnsCount);
+        Assert.AreEqual(1, result.RowsCount);
     }
 
     [TestMethod]
@@ -4128,25 +3944,19 @@ public class RDFQueryEngineTest
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
 
-        DataTable table = new DataTable();
-        table.Columns.Add("?Y", typeof(string));
-        table.Columns.Add("?X", typeof(string));
-        table.Columns.Add("?N", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        DataRow row0 = table.NewRow();
-        row0["?Y"] = null;
-        row0["?X"] = null;
-        row0["?N"] = null;
-        row0["?C"] = "green@EN";
-        table.Rows.Add(row0);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string> { { "?Y", null }, { "?X", null }, { "?N", null }, { "?C", "green@EN" } });
 
         RDFQueryEngine queryEngine = new RDFQueryEngine();
-        DataTable result = queryEngine.DescribeTerms(query, store, table);
+        RDFTable result = queryEngine.DescribeTerms(query, store, table);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual(4, result.Columns.Count);
-        Assert.AreEqual(1, result.Rows.Count);
+        Assert.AreEqual(4, result.ColumnsCount);
+        Assert.AreEqual(1, result.RowsCount);
     }
 
     [TestMethod]
@@ -5977,11 +5787,11 @@ public class RDFQueryEngineTest
     [TestMethod]
     public void ShouldProjectExpressions()
     {
-        DataTable table = new DataTable();
-        RDFQueryEngine.AddColumn(table, "?Y");
-        RDFQueryEngine.AddColumn(table, "?X");
-        RDFQueryEngine.AddColumn(table, "?N");
-        RDFQueryEngine.AddColumn(table, "?A");
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?A");
         Dictionary<string, string> tableBindings1 = new Dictionary<string, string>
         {
             { "?Y", "ex:pluto" },
@@ -5989,7 +5799,7 @@ public class RDFQueryEngineTest
             { "?N", "Mickey Mouse@EN-US" },
             { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" }
         };
-        RDFQueryEngine.AddRow(table, tableBindings1);
+        table.AddRow(tableBindings1);
         Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
         {
             { "?Y", "ex:fido" },
@@ -5997,7 +5807,7 @@ public class RDFQueryEngineTest
             { "?N", "Donald Duck@EN-US" },
             { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" }
         };
-        RDFQueryEngine.AddRow(table, tableBindings2);
+        table.AddRow(tableBindings2);
         Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
         {
             { "?Y", "ex:balto" },
@@ -6005,7 +5815,7 @@ public class RDFQueryEngineTest
             { "?N", null },
             { "?A", null }
         };
-        RDFQueryEngine.AddRow(table, tableBindings3);
+        table.AddRow(tableBindings3);
 
         RDFSelectQuery query = new RDFSelectQuery()
             .AddProjectionVariable(new RDFVariable("?A"))
@@ -6014,22 +5824,22 @@ public class RDFQueryEngineTest
         RDFQueryEngine.ProjectExpressions(query, table);
 
         Assert.IsNotNull(table);
-        Assert.AreEqual(5, table.Columns.Count);
-        Assert.IsTrue(table.Columns.Contains("?AGEX2"));
-        Assert.AreEqual(3, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), $"170^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), $"166^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
+        Assert.AreEqual(5, table.ColumnsCount);
+        Assert.IsTrue(table.HasColumn("?AGEX2"));
+        Assert.AreEqual(3, table.RowsCount);
+        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"], $"170^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"], $"166^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(table.Rows[2].IsUnbound("?AGEX2"));
     }
 
     [TestMethod]
     public void ShouldProjectExpressionsWithUnexistingVariable()
     {
-        DataTable table = new DataTable();
-        RDFQueryEngine.AddColumn(table, "?Y");
-        RDFQueryEngine.AddColumn(table, "?X");
-        RDFQueryEngine.AddColumn(table, "?N");
-        RDFQueryEngine.AddColumn(table, "?A");
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?A");
         Dictionary<string, string> tableBindings1 = new Dictionary<string, string>
         {
             { "?Y", "ex:pluto" },
@@ -6037,7 +5847,7 @@ public class RDFQueryEngineTest
             { "?N", "Mickey Mouse@EN-US" },
             { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" }
         };
-        RDFQueryEngine.AddRow(table, tableBindings1);
+        table.AddRow(tableBindings1);
         Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
         {
             { "?Y", "ex:fido" },
@@ -6045,7 +5855,7 @@ public class RDFQueryEngineTest
             { "?N", "Donald Duck@EN-US" },
             { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" }
         };
-        RDFQueryEngine.AddRow(table, tableBindings2);
+        table.AddRow(tableBindings2);
         Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
         {
             { "?Y", "ex:balto" },
@@ -6053,7 +5863,7 @@ public class RDFQueryEngineTest
             { "?N", null },
             { "?A", null }
         };
-        RDFQueryEngine.AddRow(table, tableBindings3);
+        table.AddRow(tableBindings3);
 
         RDFSelectQuery query = new RDFSelectQuery()
             .AddProjectionVariable(new RDFVariable("?AGEX2"), new RDFMultiplyExpression(new RDFVariable("?Q"), new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INT)));
@@ -6061,22 +5871,22 @@ public class RDFQueryEngineTest
         RDFQueryEngine.ProjectExpressions(query, table);
 
         Assert.IsNotNull(table);
-        Assert.AreEqual(5, table.Columns.Count);
-        Assert.IsTrue(table.Columns.Contains("?AGEX2"));
-        Assert.AreEqual(3, table.Rows.Count);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(table.Rows[2]["?AGEX2"].ToString(), string.Empty, StringComparison.Ordinal));
+        Assert.AreEqual(5, table.ColumnsCount);
+        Assert.IsTrue(table.HasColumn("?AGEX2"));
+        Assert.AreEqual(3, table.RowsCount);
+        Assert.IsTrue(table.Rows[0].IsUnbound("?AGEX2"));
+        Assert.IsTrue(table.Rows[1].IsUnbound("?AGEX2"));
+        Assert.IsTrue(table.Rows[2].IsUnbound("?AGEX2"));
     }
 
     [TestMethod]
     public void ShouldProjectExpressionsWithoutHavingExpressions()
     {
-        DataTable table = new DataTable();
-        RDFQueryEngine.AddColumn(table, "?Y");
-        RDFQueryEngine.AddColumn(table, "?X");
-        RDFQueryEngine.AddColumn(table, "?N");
-        RDFQueryEngine.AddColumn(table, "?A");
+        RDFTable table = new RDFTable();
+        table.AddColumn("?Y");
+        table.AddColumn("?X");
+        table.AddColumn("?N");
+        table.AddColumn("?A");
         Dictionary<string, string> tableBindings1 = new Dictionary<string, string>
         {
             { "?Y", "ex:pluto" },
@@ -6084,7 +5894,7 @@ public class RDFQueryEngineTest
             { "?N", "Mickey Mouse@EN-US" },
             { "?A", $"85^^{RDFVocabulary.XSD.INTEGER}" }
         };
-        RDFQueryEngine.AddRow(table, tableBindings1);
+        table.AddRow(tableBindings1);
         Dictionary<string, string> tableBindings2 = new Dictionary<string, string>
         {
             { "?Y", "ex:fido" },
@@ -6092,7 +5902,7 @@ public class RDFQueryEngineTest
             { "?N", "Donald Duck@EN-US" },
             { "?A", $"83^^{RDFVocabulary.XSD.INTEGER}" }
         };
-        RDFQueryEngine.AddRow(table, tableBindings2);
+        table.AddRow(tableBindings2);
         Dictionary<string, string> tableBindings3 = new Dictionary<string, string>
         {
             { "?Y", "ex:balto" },
@@ -6100,7 +5910,7 @@ public class RDFQueryEngineTest
             { "?N", null },
             { "?A", null }
         };
-        RDFQueryEngine.AddRow(table, tableBindings3);
+        table.AddRow(tableBindings3);
 
         RDFSelectQuery query = new RDFSelectQuery()
             .AddProjectionVariable(new RDFVariable("?A"));
@@ -6108,8 +5918,8 @@ public class RDFQueryEngineTest
         RDFQueryEngine.ProjectExpressions(query, table);
 
         Assert.IsNotNull(table);
-        Assert.AreEqual(4, table.Columns.Count);
-        Assert.AreEqual(3, table.Rows.Count);
+        Assert.AreEqual(4, table.ColumnsCount);
+        Assert.AreEqual(3, table.RowsCount);
     }
 
     [TestMethod]

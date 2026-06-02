@@ -15,7 +15,6 @@
 */
 
 using System;
-using System.Data;
 using System.Globalization;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
