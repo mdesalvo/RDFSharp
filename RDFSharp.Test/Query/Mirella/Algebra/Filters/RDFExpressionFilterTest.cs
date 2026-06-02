@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -222,14 +222,14 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldCreateExpressionFilterAndKeepRow()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanOrExpression(
@@ -249,14 +249,14 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldCreateExpressionFilterAndKeepRowBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanOrExpression(
@@ -276,14 +276,14 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldCreateExpressionFilterWithIsUriExpressionAndKeepRow()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanAndExpression(
@@ -300,14 +300,14 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldCreateExpressionFilterAndNotKeepRow()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanOrExpression(
@@ -327,14 +327,14 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldCreateExpressionFilterAndNotKeepRowBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFExpressionFilter filter = new RDFExpressionFilter(
             new RDFBooleanOrExpression(

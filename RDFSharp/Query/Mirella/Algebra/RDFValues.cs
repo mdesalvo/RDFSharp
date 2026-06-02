@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using RDFSharp.Model;
 
@@ -88,22 +87,18 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Gets the datatable representing the SPARQL values
+        /// Gets the table representing the SPARQL values
         /// </summary>
-        internal DataTable GetDataTable()
+        internal RDFTable GetRDFTable()
         {
-            DataTable result = new DataTable();
-            result.ExtendedProperties.Add(RDFQueryEngine.IsOptional, false);
-            result.ExtendedProperties.Add(RDFQueryEngine.JoinAsUnion, false);
-            result.ExtendedProperties.Add(RDFQueryEngine.JoinAsMinus, false);
+            RDFTable result = new RDFTable();
 
             //Create the columns of the SPARQL values
             foreach (string bindingKey in Bindings.Keys)
-                RDFQueryEngine.AddColumn(result, bindingKey);
+                result.AddColumn(bindingKey);
 
             //Create the rows of the SPARQL values
             bool containsNullBindings = false;
-            result.BeginLoadData();
             for (int i = 0; i < MaxBindingsLength(); i++)
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
@@ -114,10 +109,11 @@ namespace RDFSharp.Query
                     if (bindingValue == null)
                         containsNullBindings = true;
                 }
-                RDFQueryEngine.AddRow(result, bindings);
+                result.AddRow(bindings);
             }
-            result.ExtendedProperties[RDFQueryEngine.IsOptional] = containsNullBindings;
-            result.EndLoadData();
+
+            //An all-UNDEF values block behaves as optional
+            result.IsOptional = containsNullBindings;
 
             return result;
         }

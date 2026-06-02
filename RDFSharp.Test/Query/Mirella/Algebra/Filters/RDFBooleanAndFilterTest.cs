@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -87,14 +87,14 @@ public class RDFBooleanAndFilterTest
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndKeepRow()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
             new RDFExpressionFilter(
@@ -112,14 +112,14 @@ public class RDFBooleanAndFilterTest
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndKeepRowBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
             new RDFExpressionFilter(
@@ -136,14 +136,14 @@ public class RDFBooleanAndFilterTest
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndNotKeepRowBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
             new RDFExpressionFilter(
@@ -160,14 +160,14 @@ public class RDFBooleanAndFilterTest
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndNotKeepRowBecauseLeftFailure()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
             new RDFExpressionFilter(
@@ -184,14 +184,14 @@ public class RDFBooleanAndFilterTest
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndNotKeepRowBecauseRightFailure()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
             new RDFExpressionFilter(

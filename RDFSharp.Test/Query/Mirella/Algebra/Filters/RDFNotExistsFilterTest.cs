@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -49,16 +49,16 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowDisjointCase()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?Q"), new RDFVariable("?T"), new RDFVariable("?L")));
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
@@ -69,26 +69,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowMatchingSubject()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -97,26 +97,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowMatchingPredicate()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?T", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?T"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?T");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?T", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?T", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?T"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?T");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?T", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -125,26 +125,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowMatchingObject()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -153,30 +153,30 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowMatchingSubjectPredicate()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?B"), RDFVocabulary.RDFS.CLASS))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        filter.PatternResults.Columns.Add("?B", typeof(string));
-        filter.PatternResults.Columns.Add("?C", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        filterRow["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        filterRow["?C"] = new RDFResource("ex:org2").ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddColumn("?B");
+        filter.PatternResults.AddColumn("?C");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org2").ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -185,26 +185,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsFalse(keepRow);
@@ -213,26 +213,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowBecauseNullValueInSubject()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -241,26 +241,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowBecauseNullValueInPredicate()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:org").ToString();
-        row["?B"] = null;
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:org").ToString() },
+            { "?B", null },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?B"), new RDFVariable("?Q")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?B", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?B"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?B");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?B", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -269,26 +269,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndNotKeepRowBecauseNullValueInObject()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:org").ToString();
-        row["?B"] = new RDFResource("ex:org").ToString();
-        row["?C"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:org").ToString() },
+            { "?B", new RDFResource("ex:org").ToString() },
+            { "?C", null },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?C")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?C", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?C"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?C");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?C", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsFalse(keepRow);
@@ -297,26 +297,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndKeepRowUnmatchingSubject()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFPlainLiteral("hello").ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
@@ -325,26 +325,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndKeepRowUnmatchingPredicate()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?T", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?T"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?T");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?T", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), new RDFVariable("?T"), new RDFVariable("?L")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?T", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?T"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?T");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?T", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
@@ -353,26 +353,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndKeepRowUnmatchingObject()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFResource("ex:org").ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:org").ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);
@@ -381,26 +381,26 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndKeepRowBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?T"), new RDFVariable("?Q"), new RDFVariable("?A")))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        DataRow filterRow = filter.PatternResults.NewRow();
-        filterRow["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        filter.PatternResults.Rows.Add(filterRow);
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
+        filter.PatternResults.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+        });
         bool keepRow = filter.ApplyFilter(table.Rows[0], true);
 
         Assert.IsTrue(keepRow);
@@ -409,23 +409,22 @@ public class RDFNotExistsFilterTest
     [TestMethod]
     public void ShouldCreateNotExistsFilterAndKeepRowBecauseEmptyResponseTable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:org").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row["?C"] = new RDFResource("ex:org").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:org").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:org").ToString() },
+        });
 
         RDFNotExistsFilter filter = new RDFNotExistsFilter(new RDFPattern(new RDFVariable("?A"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
         {
-            PatternResults = new DataTable()
+            PatternResults = new RDFTable()
         };
-        filter.PatternResults.Columns.Add("?A", typeof(string));
-        filter.PatternResults.AcceptChanges();
+        filter.PatternResults.AddColumn("?A");
         bool keepRow = filter.ApplyFilter(table.Rows[0], false);
 
         Assert.IsTrue(keepRow);

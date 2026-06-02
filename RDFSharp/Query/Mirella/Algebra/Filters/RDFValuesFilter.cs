@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using RDFSharp.Model;
 
@@ -47,13 +46,7 @@ namespace RDFSharp.Query
         internal RDFValuesFilter(RDFValues values)
         {
             Values = values;
-            //Build the values table, carrying the join flags from the DataTable's ExtendedProperties
-            //(an all-UNDEF values block is tagged as optional, mirroring RDFValues.GetDataTable)
-            DataTable valuesDataTable = values.GetDataTable();
-            ValuesTable = RDFTable.FromDataTable(valuesDataTable);
-            ValuesTable.IsOptional = valuesDataTable.ExtendedProperties[RDFQueryEngine.IsOptional] is true;
-            ValuesTable.JoinAsUnion = valuesDataTable.ExtendedProperties[RDFQueryEngine.JoinAsUnion] is true;
-            ValuesTable.JoinAsMinus = valuesDataTable.ExtendedProperties[RDFQueryEngine.JoinAsMinus] is true;
+            ValuesTable = values.GetRDFTable();
         }
         #endregion
 

@@ -309,10 +309,8 @@ namespace RDFSharp.Query
                             break;
 
                         case RDFExistsFilter existsFilter:
-                            //Evaluate exists filter's pattern on the given data source and save its result
-                            //directly into the filter (kept as a DataTable on the filter's boundary, carrying
-                            //the (false) join flags onto its ExtendedProperties as the old engine did)
-                            existsFilter.PatternResults = ToDataTableWithFlags(ApplyPatternTable(existsFilter.Pattern, dataSource));
+                            //Evaluate exists filter's pattern on the given data source and save its result directly into the filter
+                            existsFilter.PatternResults = ApplyPatternTable(existsFilter.Pattern, dataSource);
                             break;
                     }
             }

@@ -3289,10 +3289,10 @@ public class RDFQueryEngineTest
 
         RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().First();
         Assert.IsNotNull(existsFilter.PatternResults);
-        Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
-        Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.IsOptional]);
-        Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
-        Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
+        Assert.IsTrue(existsFilter.PatternResults != null);
+        Assert.IsFalse((bool)existsFilter.PatternResults.IsOptional);
+        Assert.IsTrue(existsFilter.PatternResults != null);
+        Assert.IsFalse((bool)existsFilter.PatternResults.JoinAsUnion);
         Assert.AreEqual(2, existsFilter.PatternResults.Columns.Count);
         Assert.AreEqual(3, existsFilter.PatternResults.Rows.Count);
         Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3327,10 +3327,10 @@ public class RDFQueryEngineTest
 
         RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().First();
         Assert.IsNotNull(existsFilter.PatternResults);
-        Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
-        Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.IsOptional]);
-        Assert.IsTrue(existsFilter.PatternResults.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
-        Assert.IsFalse((bool)existsFilter.PatternResults.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
+        Assert.IsTrue(existsFilter.PatternResults != null);
+        Assert.IsFalse((bool)existsFilter.PatternResults.IsOptional);
+        Assert.IsTrue(existsFilter.PatternResults != null);
+        Assert.IsFalse((bool)existsFilter.PatternResults.JoinAsUnion);
         Assert.AreEqual(2, existsFilter.PatternResults.Columns.Count);
         Assert.AreEqual(0, existsFilter.PatternResults.Rows.Count);
     }
