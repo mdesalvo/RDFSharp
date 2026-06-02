@@ -58,11 +58,6 @@ namespace RDFSharp.Query
         /// Attribute denoting a pattern/patternGroup/query to be joined as minus
         /// </summary>
         internal const string JoinAsMinus = nameof(JoinAsMinus);
-
-        /// <summary>
-        /// Attribute denoting a logically deleted intermediate results table
-        /// </summary>
-        internal const string LogicallyDeleted = nameof(LogicallyDeleted);
         #endregion
 
         #region Ctors
@@ -1652,7 +1647,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds the table results of the pattern with values from the given graph (RDFTable production path)
+        /// Builds the table results of the pattern with values from the given graph
         /// </summary>
         internal static void PopulateTable(RDFPattern pattern, List<RDFTriple> triples, RDFTable resultTable)
         {
@@ -1682,7 +1677,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds the table results of the pattern with values from the given store (RDFTable production path)
+        /// Builds the table results of the pattern with values from the given store
         /// </summary>
         internal static void PopulateTable(RDFPattern pattern, List<RDFQuadruple> quadruples, RDFTable resultTable)
         {
@@ -1717,12 +1712,10 @@ namespace RDFSharp.Query
         }
 
         #region RDFTable (v4)
-        //Lightweight, string-only counterparts of the DataTable join/combine/merge operations above.
-        //They operate on RDFTable (null cell = UNBOUND) and replace the DataSet/DataRelation machinery
-        //with a plain hash-join. Behavior is isofunctional with the old code, with ONE deliberate change:
-        //the inner-join compares common columns with StringComparison.Ordinal (the old DataRelation used
-        //the DataTable default locale, i.e. case-INSENSITIVE), aligning it with the Ordinal CheckJoin
-        //already used by the outer-join and the difference. See RDFTableCharacterizationTest for the oracle.
+        //Lightweight, string-only join/combine/merge operations over RDFTable (null cell = UNBOUND),
+        //backed by a plain hash-join (no DataSet/DataRelation). One deliberate semantic: the inner-join
+        //compares common columns with StringComparison.Ordinal (the pre-v4 DataRelation was case-INSENSITIVE),
+        //aligning it with the Ordinal CheckJoin used by the outer-join and the difference.
 
         /// <summary>
         /// Builds a collision-free Ordinal key over the row's common columns, or null if any of them is UNBOUND
@@ -2147,7 +2140,7 @@ namespace RDFSharp.Query
         #endregion
 
         /// <summary>
-        /// Applies the projection operator on the given table, based on the given query's projection variables (RDFTable production path)
+        /// Applies the projection operator on the given table, based on the given query's projection variables
         /// </summary>
         internal static RDFTable ProjectTable(RDFSelectQuery query, RDFTable table)
         {
@@ -2196,7 +2189,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fills the given table with new columns from the given query's projection expressions (RDFTable production path)
+        /// Fills the given table with new columns from the given query's projection expressions
         /// </summary>
         internal static void ProjectExpressions(RDFSelectQuery query, RDFTable table)
         {
@@ -2206,13 +2199,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Fills the given table with new column from the given bind's variable (RDFTable production path)
+        /// Fills the given table with new column from the given bind's variable
         /// </summary>
         internal static void ProjectBind(RDFBind bind, RDFTable table)
             => EvaluateExpression(bind.Expression, bind.Variable, table);
 
         /// <summary>
-        /// Evaluates the given expression on the given table and projects the given variable (RDFTable production path)
+        /// Evaluates the given expression on the given table and projects the given variable
         /// </summary>
         internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, RDFTable table)
         {
