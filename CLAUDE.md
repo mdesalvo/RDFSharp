@@ -38,7 +38,7 @@ dotnet test --filter "FullyQualifiedName~RDFGraphTest"
 dotnet test --filter "Name=ShouldCreateEmptyGraph"
 ```
 
-The package version is set in `RDFSharp/RDFSharp.csproj` via `<Version>` (currently `3.24.0`). `GeneratePackageOnBuild` is true, so a Release build emits the `.nupkg` + `.snupkg` into `bin/Release`.
+The package version is set in `RDFSharp/RDFSharp.csproj` via `<Version>`. `GeneratePackageOnBuild` is true, so a Release build emits the `.nupkg` + `.snupkg` into `bin/Release`.
 
 ## Conventions worth preserving
 
