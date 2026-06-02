@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using System.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -69,35 +69,37 @@ public class RDFCountAggregatorTest
     [TestMethod]
     public void ShouldApplyModifierWithCountAggregator()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row2["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ")));
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual("?COUNTPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual("?COUNTPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"2^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
@@ -108,35 +110,37 @@ public class RDFCountAggregatorTest
     [TestMethod]
     public void ShouldApplyModifierWithDistinctCountAggregator()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row2["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ")).Distinct());
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual("?COUNTPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual("?COUNTPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
@@ -147,37 +151,39 @@ public class RDFCountAggregatorTest
     [TestMethod]
     public void ShouldApplyModifierWithCountAggregatorAndHavingClause()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.LessThan, new RDFTypedLiteral("2.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT)) as RDFCountAggregator;
         modifier.AddAggregator(aggregator);
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual("?COUNTPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual("?COUNTPROJ", result.Columns[1].Name);
         Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));

@@ -315,9 +315,8 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Builds a standalone single-row RDFTableRow from the given DataRow, projecting every cell to its
-        /// string representation (DBNull / null -> UNBOUND) and normalizing column names. Used by the thin
-        /// DataRow-signature wrappers kept for the test suite, so they can delegate to the real RDFTableRow
-        /// implementations. The returned row keeps alive the backing storage it references.
+        /// string representation (DBNull / null -> UNBOUND) and normalizing column names. Still used by the
+        /// engine's DataTable-facing projection helpers (removed together with them in the engine pass).
         /// </summary>
         internal static RDFTableRow FromDataRow(DataRow dataRow)
         {

@@ -15,7 +15,7 @@
 */
 
 using System;
-using System.Data;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -95,49 +95,45 @@ public class RDFAggregatorTest
     public void ShouldGetRowValueAsNumber()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        DataTable table = new DataTable();
-        DataColumn column = new DataColumn("?AGGVAR", typeof(string));
-        table.Columns.Add(column);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?AGGVAR");
 
-        DataRow row0 = table.NewRow();
-        row0["?AGGVAR"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        table.Rows.Add(row0);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+        });
         double value0 = aggregator.GetRowValueAsNumber(table.Rows[0]);
         Assert.IsTrue(value0.Equals(25.0d));
 
-        DataRow row1 = table.NewRow();
-        row1["?AGGVAR"] = DBNull.Value;
-        table.Rows.Add(row1);
-        table.AcceptChanges();
+        table.AddRow(new string[] { null });
         double value1 = aggregator.GetRowValueAsNumber(table.Rows[1]);
         Assert.IsTrue(value1.Equals(double.NaN));
 
-        DataRow row2 = table.NewRow();
-        row2["?AGGVAR"] = null;
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", null },
+        });
         double value2 = aggregator.GetRowValueAsNumber(table.Rows[2]);
         Assert.IsTrue(value2.Equals(double.NaN));
 
-        DataRow row3 = table.NewRow();
-        row3["?AGGVAR"] = new RDFResource("ex:res").ToString();
-        table.Rows.Add(row3);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", new RDFResource("ex:res").ToString() },
+        });
         double value3 = aggregator.GetRowValueAsNumber(table.Rows[3]);
         Assert.IsTrue(value3.Equals(double.NaN));
 
-        DataRow row4 = table.NewRow();
-        row4["?AGGVAR"] = new RDFTypedLiteral("2012", RDFModelEnums.RDFDatatypes.XSD_GYEAR).ToString();
-        table.Rows.Add(row4);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", new RDFTypedLiteral("2012", RDFModelEnums.RDFDatatypes.XSD_GYEAR).ToString() },
+        });
         double value4 = aggregator.GetRowValueAsNumber(table.Rows[4]);
         Assert.IsTrue(value4.Equals(double.NaN));
 
-        DataRow row5 = table.NewRow();
-        row5["?AGGVAR"] = "73523534763524347325732573573257673257382568732587638756328756387563875638756587537567356735";
-        table.Rows.Add(row5);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", "73523534763524347325732573573257673257382568732587638756328756387563875638756587537567356735" },
+        });
         double value5 = aggregator.GetRowValueAsNumber(table.Rows[5]);
         Assert.IsTrue(value5.Equals(double.NaN));
     }
@@ -146,42 +142,38 @@ public class RDFAggregatorTest
     public void ShouldGetRowValueAsString()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        DataTable table = new DataTable();
-        DataColumn column = new DataColumn("?AGGVAR", typeof(string));
-        table.Columns.Add(column);
+        RDFTable table = new RDFTable();
+        table.AddColumn("?AGGVAR");
 
-        DataRow row0 = table.NewRow();
-        row0["?AGGVAR"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        table.Rows.Add(row0);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+        });
         string value0 = aggregator.GetRowValueAsString(table.Rows[0]);
         Assert.IsTrue(value0.Equals($"25^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
 
-        DataRow row1 = table.NewRow();
-        row1["?AGGVAR"] = DBNull.Value;
-        table.Rows.Add(row1);
-        table.AcceptChanges();
+        table.AddRow(new string[] { null });
         string value1 = aggregator.GetRowValueAsString(table.Rows[1]);
         Assert.IsTrue(value1.Equals(string.Empty, StringComparison.Ordinal));
 
-        DataRow row2 = table.NewRow();
-        row2["?AGGVAR"] = null;
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", null },
+        });
         string value2 = aggregator.GetRowValueAsString(table.Rows[2]);
         Assert.IsTrue(value2.Equals(string.Empty, StringComparison.Ordinal));
 
-        DataRow row3 = table.NewRow();
-        row3["?AGGVAR"] = new RDFResource("ex:res").ToString();
-        table.Rows.Add(row3);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", new RDFResource("ex:res").ToString() },
+        });
         string value3 = aggregator.GetRowValueAsString(table.Rows[3]);
         Assert.IsTrue(value3.Equals("ex:res", StringComparison.Ordinal));
 
-        DataRow row4 = table.NewRow();
-        row4["?AGGVAR"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row4);
-        table.AcceptChanges();
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?AGGVAR", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
         string value4 = aggregator.GetRowValueAsString(table.Rows[4]);
         Assert.IsTrue(value4.Equals("hello@EN-US", StringComparison.Ordinal));
     }
@@ -192,14 +184,14 @@ public class RDFAggregatorTest
     public void ShouldExecutePartition()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        aggregator.ExecutePartition(null, null); //Just no-op
+        aggregator.ExecutePartition(null, default(RDFTableRow)); //Just no-op
     }
 
     [TestMethod]
     public void ShouldExecuteProjection()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        DataTable projectionTable = aggregator.ExecuteProjection(null); //Just no-op
+        RDFTable projectionTable = aggregator.ExecuteProjectionTable(null); //Just no-op
 
         Assert.IsNull(projectionTable);
     }

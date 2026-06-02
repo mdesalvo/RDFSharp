@@ -108,8 +108,8 @@ namespace RDFSharp.Query
         internal abstract RDFPatternMember ApplyExpression(RDFTableRow row);
 
         /// <summary>
-        /// Applies the expression on the given datarow (thin DataRow-compatibility wrapper kept for the test
-        /// suite: converts the row to an RDFTableRow and delegates to the real implementation)
+        /// Applies the expression on the given datarow: still used by the engine's DataTable-facing
+        /// projection helpers (removed together with them in the engine test-migration pass)
         /// </summary>
         internal RDFPatternMember ApplyExpression(DataRow row)
             => ApplyExpression(RDFTable.FromDataRow(row));
