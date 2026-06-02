@@ -195,10 +195,9 @@ namespace RDFSharp.Query
                         //Get the result table of the subquery
                         RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
 
-                        //Bring the subquery's public DataTable result into the RDFTable pipeline, carrying
-                        //its join flags (the subquery may itself already be tagged as optional)
-                        RDFTable subQueryTable = ToRDFTableWithFlags(subQueryResult.SelectResults);
-                        subQueryTable.IsOptional = subQuery.IsOptional || subQueryTable.IsOptional;
+                        //Make it the correct format
+                        RDFTable subQueryTable = RDFTable.FromDataTable(subQueryResult.SelectResults);
+                        subQueryTable.IsOptional = subQuery.IsOptional || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
                         subQueryTable.JoinAsUnion = subQuery.JoinAsUnion;
                         subQueryTable.JoinAsMinus = subQuery.JoinAsMinus;
 
@@ -1715,19 +1714,6 @@ namespace RDFSharp.Query
                     cells[colO] = quadruple.Object.ToString();
                 resultTable.AddRow(cells);
             }
-        }
-
-        /// <summary>
-        /// Converts a DataTable into an RDFTable, carrying over the Optional/Union/Minus join flags
-        /// from the DataTable's ExtendedProperties (the way the engine tags pattern/group result tables)
-        /// </summary>
-        private static RDFTable ToRDFTableWithFlags(DataTable dataTable)
-        {
-            RDFTable table = RDFTable.FromDataTable(dataTable);
-            table.IsOptional = dataTable.ExtendedProperties.ContainsKey(IsOptional) && dataTable.ExtendedProperties[IsOptional] is true;
-            table.JoinAsUnion = dataTable.ExtendedProperties.ContainsKey(JoinAsUnion) && dataTable.ExtendedProperties[JoinAsUnion] is true;
-            table.JoinAsMinus = dataTable.ExtendedProperties.ContainsKey(JoinAsMinus) && dataTable.ExtendedProperties[JoinAsMinus] is true;
-            return table;
         }
 
         #region RDFTable (v4)
