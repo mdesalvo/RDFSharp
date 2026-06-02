@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -160,14 +160,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B")),
@@ -181,14 +181,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B")),
@@ -202,14 +202,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithETAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B")),
@@ -223,14 +223,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFVariable("?A"),
@@ -244,14 +244,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -263,14 +263,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVTAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFVariable("?A"),
@@ -284,14 +284,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
@@ -304,14 +304,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownRightExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B")),
@@ -324,14 +324,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseUnknownLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
@@ -344,14 +344,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseUnknownRightExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B")),
@@ -364,14 +364,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithETAndNotCalculateResultBecauseUnknownExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(
             new RDFMultiplyExpression(new RDFVariable("?Z"), new RDFVariable("?B")),
@@ -384,14 +384,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownLeftColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?Z"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -402,14 +402,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseUnknownRightColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?Z"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -420,14 +420,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseResourceLeftColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj").ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -438,14 +438,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecausePlainLiteralLeftColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("55").ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("55").ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -456,14 +456,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseTypedLiteralNotNumericLeftColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("---05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
-        row["?B"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("---05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -474,14 +474,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseResourceRightColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFResource("ex:subj").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -492,14 +492,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecausePlainLiteralRightColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row["?B"] = new RDFPlainLiteral("55").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("55").ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -510,14 +510,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseTypedLiteralNotNumericRightColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        row["?B"] = new RDFTypedLiteral("---05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("---05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -528,14 +528,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNullLeftColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        row["?B"] = new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+            { "?B", new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
@@ -546,14 +546,14 @@ public class RDFMultiplyExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNullRightColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString();
-        row["?B"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?B", null },
+        });
 
         RDFMultiplyExpression expression = new RDFMultiplyExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);

@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -114,12 +114,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2);
@@ -132,12 +132,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithNestedExpressionAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFSubstringExpression(new RDFVariableExpression(new RDFVariable("?A")), 2), 2);
@@ -150,12 +150,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, 7);
@@ -168,12 +168,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2);
@@ -186,12 +186,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, 7);
@@ -204,12 +204,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, -7);
@@ -222,12 +222,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndNegativeLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, -7);
@@ -240,12 +240,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingStartAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 19);
@@ -258,12 +258,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingStartAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 20);
@@ -276,12 +276,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingStartAndLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 20, 4);
@@ -294,12 +294,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingStartAndExceedingLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 20, 44);
@@ -312,12 +312,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingStartAndNegativeLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 20, -4);
@@ -330,12 +330,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 19);
@@ -348,12 +348,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 20);
@@ -366,12 +366,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1);
@@ -384,12 +384,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseUnboundColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?A")), 1);
@@ -401,12 +401,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseUnknownColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFAddExpression(new RDFVariable("?Q"), new RDFVariable("?A")), 1);
@@ -418,12 +418,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseNotStringTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1);
@@ -435,12 +435,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2);
@@ -453,12 +453,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, 3);
@@ -471,12 +471,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2);
@@ -489,12 +489,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, 3);
@@ -507,12 +507,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, -7);
@@ -525,12 +525,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndNegativeLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, -7);
@@ -543,12 +543,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingStartAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 5);
@@ -561,12 +561,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingStartAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 6);
@@ -579,12 +579,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 5);
@@ -597,12 +597,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 6);
@@ -615,12 +615,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2);
@@ -633,12 +633,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, 3);
@@ -651,12 +651,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2);
@@ -669,12 +669,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, 3);
@@ -687,12 +687,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, -7);
@@ -705,12 +705,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndNegativeLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, -7);
@@ -723,12 +723,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingStartAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 5);
@@ -741,12 +741,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingStartAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 6);
@@ -759,12 +759,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 5);
@@ -777,12 +777,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 6);
@@ -795,12 +795,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2);
@@ -813,12 +813,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, 3);
@@ -831,12 +831,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2);
@@ -849,12 +849,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, 3);
@@ -867,12 +867,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 2, -7);
@@ -885,12 +885,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNegativeStartAndNegativeLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), -2, -7);
@@ -903,12 +903,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingStartAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 5);
@@ -921,12 +921,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingStartAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 6);
@@ -939,12 +939,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExactEndingLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 5);
@@ -957,12 +957,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndExceedingLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariableExpression(new RDFVariable("?A")), 1, 6);
@@ -975,12 +975,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2);
@@ -993,12 +993,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, 7);
@@ -1011,12 +1011,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2);
@@ -1029,12 +1029,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, 7);
@@ -1047,12 +1047,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, -7);
@@ -1065,12 +1065,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndNegativeLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, -7);
@@ -1083,12 +1083,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingStartAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 19);
@@ -1101,12 +1101,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingStartAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 20);
@@ -1119,12 +1119,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingStartAndLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 20, 4);
@@ -1137,12 +1137,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingStartAndExceedingLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 20, 44);
@@ -1155,12 +1155,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingStartAndNegativeLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 20, -4);
@@ -1173,12 +1173,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 19);
@@ -1191,12 +1191,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingLengthAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 20);
@@ -1209,12 +1209,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1);
@@ -1227,12 +1227,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseUnknownColumn()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?Q"), 1);
@@ -1244,12 +1244,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseNotStringTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1);
@@ -1261,12 +1261,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2);
@@ -1279,12 +1279,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, 3);
@@ -1297,12 +1297,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2);
@@ -1315,12 +1315,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, 3);
@@ -1333,12 +1333,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, -7);
@@ -1351,12 +1351,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndNegativeLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, -7);
@@ -1369,12 +1369,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingStartAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 5);
@@ -1387,12 +1387,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingStartAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 6);
@@ -1405,12 +1405,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 5);
@@ -1423,12 +1423,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingLengthAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 6);
@@ -1441,12 +1441,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2);
@@ -1459,12 +1459,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, 3);
@@ -1477,12 +1477,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2);
@@ -1495,12 +1495,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, 3);
@@ -1513,12 +1513,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, -7);
@@ -1531,12 +1531,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndNegativeLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, -7);
@@ -1549,12 +1549,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingStartAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 5);
@@ -1567,12 +1567,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingStartAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 6);
@@ -1585,12 +1585,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 5);
@@ -1603,12 +1603,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingLengthAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 6);
@@ -1621,12 +1621,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2);
@@ -1639,12 +1639,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, 3);
@@ -1657,12 +1657,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2);
@@ -1675,12 +1675,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, 3);
@@ -1693,12 +1693,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 2, -7);
@@ -1711,12 +1711,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNegativeStartAndNegativeLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), -2, -7);
@@ -1729,12 +1729,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingStartAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 5);
@@ -1747,12 +1747,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingStartAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 6);
@@ -1765,12 +1765,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExactEndingLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 5);
@@ -1783,12 +1783,12 @@ public class RDFSubstringExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndExceedingLengthAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
             new RDFVariable("?A"), 1, 6);

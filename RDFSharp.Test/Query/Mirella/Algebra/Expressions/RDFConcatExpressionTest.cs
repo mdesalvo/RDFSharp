@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -129,14 +129,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("A");
-        row["?B"] = new RDFPlainLiteral("B");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("A").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -150,14 +150,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("A");
-        row["?B"] = new RDFPlainLiteral("B");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("A").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -171,14 +171,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("A");
-        row["?B"] = new RDFPlainLiteral("B");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("A").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariable("?A"),
@@ -192,14 +192,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("A");
-        row["?B"] = new RDFPlainLiteral("B");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("A").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariable("?A"),
@@ -213,14 +213,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVV2AndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("---13", RDFModelEnums.RDFDatatypes.XSD_GDAY);
-        row["?B"] = new RDFPlainLiteral("B");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("---13", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariable("?A"),
@@ -234,14 +234,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVV3AndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("B");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariable("?A"),
@@ -255,14 +255,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVV4AndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("B");
-        row["?B"] = new RDFResource("http://example.org/");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("B").ToString() },
+            { "?B", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariable("?A"),
@@ -276,16 +276,16 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndCalculateComplexResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?V1", typeof(string));
-        table.Columns.Add("?V2", typeof(string));
-        table.Columns.Add("?V3", typeof(string));
-        DataRow row = table.NewRow();
-        row["?V1"] = new RDFTypedLiteral("56", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        row["?V2"] = new RDFTypedLiteral("4.2", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        row["?V3"] = new RDFResource("ex:org");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?V1");
+        table.AddColumn("?V2");
+        table.AddColumn("?V3");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?V1", new RDFTypedLiteral("56", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?V2", new RDFTypedLiteral("4.2", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?V3", new RDFResource("ex:org").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
@@ -301,14 +301,14 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndCalculateResultAllEmpties()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?V1", typeof(string));
-        table.Columns.Add("?V2", typeof(string));
-        DataRow row = table.NewRow();
-        row["?V1"] = null;
-        row["?V2"] = new RDFTypedLiteral("4.2", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?V1");
+        table.AddColumn("?V2");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?V1", null },
+            { "?V2", new RDFTypedLiteral("4.2", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
@@ -322,16 +322,16 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndCalculateResultOnUnboundLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        row["?B"] = new RDFPlainLiteral("B");
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")),
@@ -345,16 +345,16 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndCalculateResultOnUnboundRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        row["?B"] = new RDFPlainLiteral("B");
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFConcatExpression(new RDFConcatExpression(new RDFVariable("?C"), new RDFVariable("?C")), new RDFVariable("?C")),
@@ -368,16 +368,16 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnknownVariableLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        row["?B"] = new RDFPlainLiteral("B");
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariable("?Q"),
@@ -390,16 +390,16 @@ public class RDFConcatExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnknownVariableRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        row["?B"] = new RDFPlainLiteral("B");
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFConcatExpression expression = new RDFConcatExpression(
             new RDFVariable("?A"),

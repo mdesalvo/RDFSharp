@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -71,12 +71,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariableExpression(new RDFVariable("?A")), new Regex("^hello$"));
@@ -89,12 +89,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hEllo").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hEllo").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariableExpression(new RDFVariable("?A")), new Regex("^he", RegexOptions.IgnoreCase));
@@ -107,12 +107,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello","en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello","en-US").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariableExpression(new RDFVariable("?A")), new Regex("US$", RegexOptions.IgnoreCase));
@@ -125,12 +125,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariableExpression(new RDFVariable("?A")), new Regex("ell"));
@@ -143,12 +143,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariableExpression(new RDFVariable("?A")), new Regex("^ex:"));
@@ -161,12 +161,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseNotBoundVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariableExpression(new RDFVariable("?Q")), new Regex("^ex:"));
@@ -178,12 +178,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariable("?A"), new Regex("^hello$"));
@@ -196,12 +196,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hEllo").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hEllo").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariable("?A"), new Regex("^he", RegexOptions.IgnoreCase));
@@ -214,12 +214,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello","en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello","en-US").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariable("?A"), new Regex("US$", RegexOptions.IgnoreCase));
@@ -232,12 +232,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariable("?A"), new Regex("ell"));
@@ -250,12 +250,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariable("?A"), new Regex("^ex:"));
@@ -268,12 +268,12 @@ public class RDFRegexExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseNotBoundVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariable("?Q"), new Regex("^ex:"));

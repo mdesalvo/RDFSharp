@@ -17,7 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System.Data;
+using System.Collections.Generic;
 
 namespace RDFSharp.Test.Query;
 
@@ -62,14 +62,14 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResultPoint()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariableExpression(new RDFVariable("?MILAN")));
@@ -82,14 +82,14 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVARAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariable("?ROME"));
@@ -102,14 +102,14 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResultLineString()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILANROME", typeof(string));
-        table.Columns.Add("?ROMENAPLES", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILANROME"] = new RDFTypedLiteral("LINESTRING (9.18854 45.464664, 12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROMENAPLES"] = new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>12.496365 41.902782 14.2681244 40.8517746</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILANROME");
+        table.AddColumn("?ROMENAPLES");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILANROME", new RDFTypedLiteral("LINESTRING (9.18854 45.464664, 12.496365 41.902782)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROMENAPLES", new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>12.496365 41.902782 14.2681244 40.8517746</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariableExpression(new RDFVariable("?MILANROME")));
@@ -122,14 +122,14 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResultPolygon()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILANROMENAPLES", typeof(string));
-        table.Columns.Add("?ROMENAPLESMILAN", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILANROMENAPLES"] = new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROMENAPLESMILAN"] = new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILANROMENAPLES");
+        table.AddColumn("?ROMENAPLESMILAN");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILANROMENAPLES", new RDFTypedLiteral("POLYGON ((9.18854 45.464664, 12.496365 41.902782, 14.2681244 40.8517746, 9.18854 45.464664))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROMENAPLESMILAN", new RDFTypedLiteral("<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:exterior><gml:LinearRing><gml:posList>12.496365 41.902782 14.2681244 40.8517746 9.18854 45.464664 12.496365 41.902782</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariableExpression(new RDFVariable("?MILANROMENAPLES")));
@@ -142,12 +142,12 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEXPAndCalculateResultMultiPoint()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILANROMENAPLES", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILANROMENAPLES"] = new RDFTypedLiteral("MULTIPOINT ((9.18854 45.464664), (12.496365 41.902782), (14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILANROMENAPLES");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILANROMENAPLES", new RDFTypedLiteral("MULTIPOINT ((9.18854 45.464664), (12.496365 41.902782), (14.2681244 40.8517746))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariableExpression(new RDFVariable("?MILANROMENAPLES")));
@@ -160,14 +160,14 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnknownLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariable("?NAPLES"));
@@ -179,14 +179,14 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseNotGeographicLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariableExpression(new RDFVariable("?ROME")));
@@ -198,16 +198,16 @@ public class RDFGeoConvexHullExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnboundLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        table.Columns.Add("?NAPLES", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        row["?NAPLES"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddColumn("?NAPLES");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?NAPLES", null },
+        });
 
         RDFGeoConvexHullExpression expression = new RDFGeoConvexHullExpression(
             new RDFVariableExpression(new RDFVariable("?NAPLES")));

@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -62,12 +62,12 @@ public class RDFYearExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFYearExpression expression = new RDFYearExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -80,12 +80,12 @@ public class RDFYearExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFYearExpression expression = new RDFYearExpression(
             new RDFVariable("?A"));
@@ -98,12 +98,12 @@ public class RDFYearExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseNotDateTimeLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFYearExpression expression = new RDFYearExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -115,12 +115,12 @@ public class RDFYearExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseUnboundLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFYearExpression expression = new RDFYearExpression(
             new RDFVariableExpression(new RDFVariable("?C")));
@@ -132,12 +132,12 @@ public class RDFYearExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseNotDateTimeLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFYearExpression expression = new RDFYearExpression(
             new RDFVariable("?A"));
@@ -149,12 +149,12 @@ public class RDFYearExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseUnboundLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFYearExpression expression = new RDFYearExpression(
             new RDFVariable("?C"));

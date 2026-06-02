@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -62,12 +62,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -80,12 +80,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello everybody").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello everybody").ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -98,12 +98,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello everybody", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello everybody", "en-US").ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -116,12 +116,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -134,12 +134,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -152,12 +152,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseNotBoundVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariableExpression(new RDFVariable("?Q")));
@@ -169,12 +169,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseBindingError()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFAddExpression(new RDFVariable("?A"), new RDFConstantExpression(new RDFTypedLiteral("10", RDFModelEnums.RDFDatatypes.XSD_INT))));
@@ -186,12 +186,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariable("?A"));
@@ -204,12 +204,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello everybody").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello everybody").ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariable("?A"));
@@ -222,12 +222,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello everybody", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello everybody", "en-US").ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariable("?A"));
@@ -240,12 +240,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariable("?A"));
@@ -258,12 +258,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariable("?A"));
@@ -276,12 +276,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseNotBoundVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariable("?Q"));
@@ -293,12 +293,12 @@ public class RDFEncodeForURIExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseBindingError()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+        });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
             new RDFVariable("?A"));

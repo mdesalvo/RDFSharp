@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -140,14 +140,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultOnSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -162,14 +162,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultOnStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"hello^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -184,14 +184,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotWellFormedLanguageTag()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -205,14 +205,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello@EN-US";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello@EN-US" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -226,14 +226,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"34^^{RDFVocabulary.XSD.BYTE}";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -249,14 +249,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndCalculateResultOnSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -271,14 +271,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndCalculateResultOnStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"hello^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -293,14 +293,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseNotWellFormedLanguageTag()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -314,14 +314,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseNotSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello@EN-US";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello@EN-US" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -335,14 +335,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseNotStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"34^^{RDFVocabulary.XSD.BYTE}";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -358,14 +358,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndCalculateResultOnSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -380,14 +380,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndCalculateResultOnStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"hello^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -402,14 +402,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndNotCalculateResultBecauseNotWellFormedLanguageTag()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -423,14 +423,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndNotCalculateResultBecauseNotSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello@EN-US";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello@EN-US" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -444,14 +444,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndNotCalculateResultBecauseNotStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"34^^{RDFVocabulary.XSD.BYTE}";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -467,14 +467,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultOnSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -489,14 +489,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultOnStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"hello^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -511,14 +511,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNotWellFormedLanguageTag()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -532,14 +532,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNotSimplePlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello@EN-US";
-        row["?B"] = "en-US";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello@EN-US" },
+            { "?B", "en-US" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -553,14 +553,14 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNotStringBasedTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"34^^{RDFVocabulary.XSD.BYTE}";
-        row["?B"] = "en-";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
+            { "?B", "en-" },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),
@@ -574,16 +574,16 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnknownVariableLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = RDFVocabulary.XSD.FLOAT;
-        row["?B"] = "en-US";
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", RDFVocabulary.XSD.FLOAT.ToString() },
+            { "?B", "en-US" },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?Q"),
@@ -597,16 +597,16 @@ public class RDFStrLangDirExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnknownVariableRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = new RDFPlainLiteral("B");
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
             new RDFVariable("?A"),

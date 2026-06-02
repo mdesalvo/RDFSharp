@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -129,14 +129,14 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultCoalesceLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("hello");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -150,14 +150,14 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultCoalesceRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("hello");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFAddExpression(new RDFConstantExpression(RDFTypedLiteral.One), new RDFVariable("?B")),
@@ -171,14 +171,14 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultCoalesceNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("hello");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFAddExpression(new RDFConstantExpression(new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)), new RDFVariable("?A")),
@@ -191,12 +191,12 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultCoalesceLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFVariable("?A"),
@@ -210,12 +210,12 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultCoalesceRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFVariable("?Q"),
@@ -229,12 +229,12 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultCoalesceNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFVariable("?Q"),
@@ -247,16 +247,16 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithNestedCoalesce()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("hello");
-        row["?C"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFCoalesceExpression(
@@ -274,16 +274,16 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithNestedCoalesceNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("hello");
-        row["?C"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFCoalesceExpression(
@@ -300,16 +300,16 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithDeepNestedCoalesce()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("hello");
-        row["?C"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFCoalesceExpression(
@@ -329,16 +329,16 @@ public class RDFCoalesceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithDeepNestedCoalesceNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/");
-        row["?B"] = new RDFPlainLiteral("hello");
-        row["?C"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+        });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
             new RDFCoalesceExpression(

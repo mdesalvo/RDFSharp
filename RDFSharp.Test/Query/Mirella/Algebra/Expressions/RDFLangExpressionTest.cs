@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -62,12 +62,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -80,12 +80,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -97,12 +97,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -115,12 +115,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello","en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello","en-US").ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -133,12 +133,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -150,12 +150,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseNotBoundVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariableExpression(new RDFVariable("?Q")));
@@ -167,12 +167,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnResource()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("ex:subj").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("ex:subj").ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariable("?A"));
@@ -184,12 +184,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariable("?A"));
@@ -202,12 +202,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiteralWithLanguage()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariable("?A"));
@@ -220,12 +220,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariable("?A"));
@@ -237,12 +237,12 @@ public class RDFLangExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseNotBoundVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+        });
 
         RDFLangExpression expression = new RDFLangExpression(
             new RDFVariable("?Q"));
