@@ -283,5 +283,98 @@ public class RDFGroupByModifierTest
         Assert.AreEqual(1, result.RowsCount);
         Assert.IsTrue(result.Rows[0]["?C"].Equals("ex:value0", StringComparison.Ordinal));
     }
+
+    //The following two tests guard against a regression where the aggregators' execution
+    //context was created once and never reset: re-applying the same modifier (i.e. re-executing
+    //the same query object, as happens with cached/reused queries) carried over sums and counters
+    //from the previous run, corrupting the computed aggregates. The modifier must be idempotent.
+
+    [TestMethod]
+    public void ShouldApplyModifierTwiceWithoutCarryingOverAggregatorState()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+
+        //GROUP BY ?C with SUM(?A) AS ?S : ex:value0 -> 51, ex:value1 -> 27
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?S")));
+
+        string expectedSum0 = new RDFTypedLiteral("51", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+        string expectedSum1 = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+
+        //First application
+        RDFTable firstResult = modifier.ApplyModifier(table);
+        Assert.IsNotNull(firstResult);
+        Assert.AreEqual(2, firstResult.RowsCount);
+        Assert.IsTrue(firstResult.Rows[0]["?S"].Equals(expectedSum0, StringComparison.Ordinal));
+        Assert.IsTrue(firstResult.Rows[1]["?S"].Equals(expectedSum1, StringComparison.Ordinal));
+
+        //Second application of the very same modifier must produce identical results
+        //(before the fix the sums would have doubled to 102 and 54, since state was carried over)
+        RDFTable secondResult = modifier.ApplyModifier(table);
+        Assert.IsNotNull(secondResult);
+        Assert.AreEqual(2, secondResult.RowsCount);
+        Assert.IsTrue(secondResult.Rows[0]["?S"].Equals(expectedSum0, StringComparison.Ordinal));
+        Assert.IsTrue(secondResult.Rows[1]["?S"].Equals(expectedSum1, StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldApplyModifierWithHavingTwiceWithoutCarryingOverAggregatorState()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+
+        //GROUP BY ?C with AVG(?A) AS ?AVG HAVING (?AVG >= 28) : ex:value0 -> 25.5 (dropped), ex:value1 -> 30 (kept)
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVG"))
+            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                             new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+
+        //First application : only ex:value1 survives the HAVING clause
+        RDFTable firstResult = modifier.ApplyModifier(table);
+        Assert.IsNotNull(firstResult);
+        Assert.AreEqual(1, firstResult.RowsCount);
+        Assert.IsTrue(firstResult.Rows[0]["?C"].Equals("ex:value1", StringComparison.Ordinal));
+
+        //Second application must keep the same surviving row: before the fix the averages drifted
+        //downward across runs (ex:value1 dropping below 28), so the HAVING clause discarded every
+        //group and the second result was empty
+        RDFTable secondResult = modifier.ApplyModifier(table);
+        Assert.IsNotNull(secondResult);
+        Assert.AreEqual(1, secondResult.RowsCount);
+        Assert.IsTrue(secondResult.Rows[0]["?C"].Equals("ex:value1", StringComparison.Ordinal));
+    }
     #endregion
 }

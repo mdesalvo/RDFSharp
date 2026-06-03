@@ -89,6 +89,14 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Resets the aggregator's execution context, so that the same aggregator (and the
+        /// query owning it) can be safely re-executed without carrying over state from a
+        /// previous run (which would otherwise corrupt sums, counters and caches)
+        /// </summary>
+        internal void ResetContext()
+            => AggregatorContext = new RDFAggregatorContext();
+
+        /// <summary>
         /// Executes the partition on the given table row
         /// </summary>
         internal virtual void ExecutePartition(string partitionKey, RDFTableRow tableRow) { }

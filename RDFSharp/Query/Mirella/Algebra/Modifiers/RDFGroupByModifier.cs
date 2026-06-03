@@ -102,6 +102,10 @@ namespace RDFSharp.Query
             //Perform consistency checks
             ConsistencyChecks(table);
 
+            //Reset aggregators' execution context, so that re-executing the same query
+            //(or the same modifier) does not carry over state from a previous run
+            Aggregators.ForEach(ag => ag.ResetContext());
+
             //Execute partition algorythm
             ExecutePartitionAlgorythm(table);
 
