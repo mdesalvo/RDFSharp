@@ -2540,5 +2540,220 @@ public class RDFPropertyPathTest
 
     #endregion
 
+
+    #region Engine — Transitive acceleration (adjacency + SCC closure)
+
+    // Helper: brute-force reference transitive closure (one-or-more) of `prop` over a graph,
+    // computed with an independent per-node BFS — the exact semantics the fast path must preserve.
+    private static Dictionary<string, HashSet<string>> ReferenceOneOrMore(RDFGraph graph, RDFResource prop)
+    {
+        // Build plain adjacency from the graph
+        Dictionary<string, List<string>> adj = new Dictionary<string, List<string>>();
+        HashSet<string> nodes = new HashSet<string>();
+        foreach (RDFTriple t in graph.SelectTriples(p: prop))
+        {
+            string s = t.Subject.ToString(), o = t.Object.ToString();
+            nodes.Add(s); nodes.Add(o);
+            if (!adj.TryGetValue(s, out List<string> succ)) adj[s] = succ = new List<string>();
+            succ.Add(o);
+        }
+
+        Dictionary<string, HashSet<string>> closure = new Dictionary<string, HashSet<string>>();
+        foreach (string start in nodes)
+        {
+            HashSet<string> reached = new HashSet<string>();
+            Queue<string> q = new Queue<string>();
+            HashSet<string> enq = new HashSet<string> { start };
+            q.Enqueue(start);
+            while (q.Count > 0)
+            {
+                string cur = q.Dequeue();
+                if (!adj.TryGetValue(cur, out List<string> succ)) continue;
+                foreach (string n in succ)
+                {
+                    reached.Add(n); // one-or-more: every neighbor reached in >=1 hop counts (incl. cycle back to start)
+                    if (enq.Add(n)) q.Enqueue(n);
+                }
+            }
+            if (reached.Count > 0)
+                closure[start] = reached;
+        }
+        return closure;
+    }
+
+    private static HashSet<(string, string)> EnginePairs(RDFGraph graph, RDFPropertyPath path)
+    {
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, graph);
+        return result.Rows.Select(r => (r["?S"].ToString(), r["?E"].ToString())).ToHashSet();
+    }
+
+    [TestMethod]
+    public void Transitive_Diamond_DAG_ClosureSharedAcrossPaths()
+    {
+        // a->b, a->c, b->d, c->d : d reachable from a via two distinct paths (no duplicate row)
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph.AddTriple(new RDFTriple(Alice, Knows, Carol));
+        graph.AddTriple(new RDFTriple(Bob,   Knows, Dave));
+        graph.AddTriple(new RDFTriple(Carol, Knows, Dave));
+
+        HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+
+        // alice -> b,c,d ; bob -> d ; carol -> d  => 5 distinct pairs, dave reaches nothing
+        Assert.HasCount(5, pairs.ToList());
+        Assert.Contains((Alice.ToString(), Dave.ToString()), pairs);
+        Assert.Contains((Bob.ToString(),   Dave.ToString()), pairs);
+        Assert.Contains((Carol.ToString(), Dave.ToString()), pairs);
+        Assert.DoesNotContain((Dave.ToString(), Dave.ToString()), pairs);
+    }
+
+    [TestMethod]
+    public void Transitive_MultiNodeCycle_ReachesSelfAndDownstream()
+    {
+        // a->b->c->a (3-cycle) and c->d (downstream sink)
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        graph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+        graph.AddTriple(new RDFTriple(Carol, Knows, Alice));
+        graph.AddTriple(new RDFTriple(Carol, Knows, Dave));
+
+        HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+
+        // Every node of the cycle reaches all cycle members (incl. itself) plus dave
+        foreach (RDFResource n in new[] { Alice, Bob, Carol })
+            foreach (RDFResource m in new[] { Alice, Bob, Carol, Dave })
+                Assert.Contains((n.ToString(), m.ToString()), pairs, $"{n} should reach {m}");
+        // dave is a sink: reaches nothing
+        Assert.IsFalse(pairs.Any(p => p.Item1 == Dave.ToString()));
+        Assert.HasCount(12, pairs.ToList()); // 3 cycle nodes × 4 targets
+    }
+
+    [TestMethod]
+    public void Transitive_SelfLoop_Singleton_ReachesItself()
+    {
+        // a->a self loop
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Knows, Alice));
+
+        HashSet<(string, string)> plus = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+        Assert.Contains((Alice.ToString(), Alice.ToString()), plus);
+        Assert.HasCount(1, plus.ToList());
+
+        // ZeroOrMore must not duplicate the self pair
+        HashSet<(string, string)> star = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore()));
+        Assert.Contains((Alice.ToString(), Alice.ToString()), star);
+        Assert.HasCount(1, star.ToList());
+    }
+
+    [TestMethod]
+    public void Transitive_OneOrMore_AcyclicChain_HasNoIdentityPairs()
+    {
+        // Seed pruning must not introduce identity (x,x) rows for an acyclic chain under "+"
+        RDFGraph graph = BuildTestGraph(); // alice->bob->carol->dave
+        HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+
+        Assert.IsFalse(pairs.Any(p => p.Item1 == p.Item2), "Acyclic chain must yield no identity pairs under +");
+        Assert.HasCount(6, pairs.ToList()); // (a,b)(a,c)(a,d)(b,c)(b,d)(c,d)
+    }
+
+    [TestMethod]
+    public void Transitive_ZeroOrMore_BothVars_IncludesIdentityForSinkOnlyNode()
+    {
+        // dave appears only as an object (no outgoing knows edge): "*" must still emit (dave,dave).
+        // This guards against the seed pruning wrongly excluding sink nodes for the reflexive case.
+        RDFGraph graph = BuildTestGraph();
+        HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore()));
+
+        Assert.Contains((Dave.ToString(),  Dave.ToString()),  pairs, "sink-only node keeps its * identity");
+        Assert.Contains((Alice.ToString(), Alice.ToString()), pairs);
+        Assert.Contains((Alice.ToString(), Dave.ToString()),  pairs);
+    }
+
+    [TestMethod]
+    public void Transitive_ConcreteEnd_VariableStart_PushDown()
+    {
+        // ?s knows+ dave  =>  alice, bob, carol (push-down via inverse closure from dave)
+        RDFGraph graph = BuildTestGraph();
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(
+            new RDFPropertyPath(VarS, Dave)
+                .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()), graph);
+
+        HashSet<string> starts = result.Rows.Select(r => r["?S"].ToString()).ToHashSet();
+        Assert.Contains(Alice.ToString(), starts);
+        Assert.Contains(Bob.ToString(),   starts);
+        Assert.Contains(Carol.ToString(), starts);
+        Assert.DoesNotContain(Dave.ToString(), starts); // dave does not reach itself (acyclic)
+        Assert.HasCount(3, starts.ToList());
+    }
+
+    [TestMethod]
+    public void Transitive_ConcreteEnd_InverseStep_PushDown()
+    {
+        // dave ^knows+ ?s evaluated with concrete end on the inverse step direction
+        RDFGraph graph = BuildTestGraph();
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(
+            new RDFPropertyPath(VarS, Alice)
+                .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore()), graph);
+
+        // ?s (^knows)+ alice  => nodes reachable from alice following knows forward: bob, carol, dave
+        HashSet<string> starts = result.Rows.Select(r => r["?S"].ToString()).ToHashSet();
+        Assert.Contains(Bob.ToString(),   starts);
+        Assert.Contains(Carol.ToString(), starts);
+        Assert.Contains(Dave.ToString(),  starts);
+        Assert.HasCount(3, starts.ToList());
+    }
+
+    [TestMethod]
+    public void Transitive_DifferentialAgainstBruteForce_CyclicBranchingGraph()
+    {
+        // A graph with branches, a shared sink (diamond), a multi-node cycle and a self loop:
+        // the fast SCC-based closure must match an independent per-node BFS exactly.
+        RDFGraph graph = new RDFGraph();
+        void E(RDFResource s, RDFResource o) => graph.AddTriple(new RDFTriple(s, Knows, o));
+        E(Alice, Bob);   E(Alice, Carol);   // branch
+        E(Bob,   Dave);  E(Carol, Dave);    // diamond join
+        E(Dave,  Eve);
+        E(Eve,   Frank); E(Frank, Eve);     // 2-cycle eve<->frank
+        E(Frank, Frank);                    // self loop
+
+        Dictionary<string, HashSet<string>> reference = ReferenceOneOrMore(graph, Knows);
+        HashSet<(string, string)> expected = reference
+            .SelectMany(kv => kv.Value.Select(v => (kv.Key, v)))
+            .ToHashSet();
+
+        HashSet<(string, string)> actual = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+
+        Assert.IsTrue(expected.SetEquals(actual),
+            $"SCC closure diverges from brute force.\nExpected\\Actual: {string.Join(",", expected.Except(actual))}\nActual\\Expected: {string.Join(",", actual.Except(expected))}");
+    }
+
+    [TestMethod]
+    public void Transitive_LongChain_DoesNotStackOverflow()
+    {
+        // Deep linear chain n0->n1->...->n2000 : iterative Tarjan must not overflow the stack,
+        // and the closure size must be n*(n-1)/2 (every node reaches all its successors).
+        const int n = 2000;
+        RDFGraph graph = new RDFGraph();
+        RDFResource[] nodes = new RDFResource[n + 1];
+        for (int i = 0; i <= n; i++)
+            nodes[i] = new RDFResource($"ex:n{i}");
+        for (int i = 0; i < n; i++)
+            graph.AddTriple(new RDFTriple(nodes[i], Knows, nodes[i + 1]));
+
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()), graph);
+
+        Assert.AreEqual((long)n * (n + 1) / 2, result.RowsCount);
+    }
+
+    #endregion
+
     #endregion
 }
