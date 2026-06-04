@@ -16,7 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -48,97 +48,92 @@ public class RDFLimitModifierTest
     [TestMethod]
     public void ShouldApplyLimitModifier()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = DBNull.Value;
-        table.Rows.Add(row2);
-        table.AcceptChanges();
-        table.DefaultView.Sort = "?A DESC";
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString()
+        });
 
-        DataTable limitedTable = new RDFLimitModifier(1).ApplyModifier(table);
+        RDFTable limitedTable = new RDFLimitModifier(1).ApplyModifier(table);
 
         Assert.IsNotNull(limitedTable);
-        Assert.AreEqual(3, limitedTable.Columns.Count);
-        Assert.IsTrue(limitedTable.Columns.Contains("?A"));
-        Assert.IsTrue(limitedTable.Columns.Contains("?B"));
-        Assert.IsTrue(limitedTable.Columns.Contains("?C"));
-        Assert.AreEqual(1, limitedTable.Rows.Count);
-        Assert.IsTrue(limitedTable.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(limitedTable.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(limitedTable.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC", StringComparison.Ordinal));
+        Assert.AreEqual(3, limitedTable.ColumnsCount);
+        Assert.IsTrue(limitedTable.HasColumn("?A"));
+        Assert.IsTrue(limitedTable.HasColumn("?B"));
+        Assert.IsTrue(limitedTable.HasColumn("?C"));
+        Assert.AreEqual(1, limitedTable.RowsCount);
+        Assert.IsTrue(limitedTable.Rows[0]["?A"].Equals(new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(limitedTable.Rows[0]["?B"].Equals(new RDFPlainLiteral("hello", "en-US").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(limitedTable.Rows[0]["?C"].Equals(new RDFResource("ex:value0").ToString(), StringComparison.Ordinal));
     }
 
     [TestMethod]
     public void ShouldApplyLimitZeroModifier()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = DBNull.Value;
-        table.Rows.Add(row2);
-        table.AcceptChanges();
-        table.DefaultView.Sort = "?A DESC";
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString()
+        });
 
-        DataTable limitedTable = new RDFLimitModifier(0).ApplyModifier(table);
+        RDFTable limitedTable = new RDFLimitModifier(0).ApplyModifier(table);
 
         Assert.IsNotNull(limitedTable);
-        Assert.AreEqual(3, limitedTable.Columns.Count);
-        Assert.IsTrue(limitedTable.Columns.Contains("?A"));
-        Assert.IsTrue(limitedTable.Columns.Contains("?B"));
-        Assert.IsTrue(limitedTable.Columns.Contains("?C"));
-        Assert.AreEqual(0, limitedTable.Rows.Count);
-        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC", StringComparison.Ordinal));
+        Assert.AreEqual(3, limitedTable.ColumnsCount);
+        Assert.IsTrue(limitedTable.HasColumn("?A"));
+        Assert.IsTrue(limitedTable.HasColumn("?B"));
+        Assert.IsTrue(limitedTable.HasColumn("?C"));
+        Assert.AreEqual(0, limitedTable.RowsCount);
     }
 
     [TestMethod]
     public void ShouldApplyLimitModifierToEmptyTable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        table.AcceptChanges();
-        table.DefaultView.Sort = "?A DESC";
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
 
-        DataTable limitedTable = new RDFLimitModifier(35).ApplyModifier(table);
+        RDFTable limitedTable = new RDFLimitModifier(35).ApplyModifier(table);
 
         Assert.IsNotNull(limitedTable);
-        Assert.AreEqual(3, limitedTable.Columns.Count);
-        Assert.IsTrue(limitedTable.Columns.Contains("?A"));
-        Assert.IsTrue(limitedTable.Columns.Contains("?B"));
-        Assert.IsTrue(limitedTable.Columns.Contains("?C"));
-        Assert.AreEqual(0, limitedTable.Rows.Count);
-        Assert.IsTrue(limitedTable.DefaultView.Sort.Equals("?A DESC", StringComparison.Ordinal));
+        Assert.AreEqual(3, limitedTable.ColumnsCount);
+        Assert.IsTrue(limitedTable.HasColumn("?A"));
+        Assert.IsTrue(limitedTable.HasColumn("?B"));
+        Assert.IsTrue(limitedTable.HasColumn("?C"));
+        Assert.AreEqual(0, limitedTable.RowsCount);
     }
     #endregion
 }

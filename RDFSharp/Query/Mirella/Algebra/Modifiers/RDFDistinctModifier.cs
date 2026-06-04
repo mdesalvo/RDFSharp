@@ -14,9 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
-using System.Linq;
-
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -41,12 +38,10 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable
+        /// Applies the modifier on the given table
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable table)
-            => table.DefaultView.ToTable(true, table.Columns.OfType<DataColumn>()
-                                                            .Select(c => c.ColumnName)
-                                                            .ToArray());
+        internal override RDFTable ApplyModifier(RDFTable table)
+            => RDFQueryEngine.DistinctTable(table);
         #endregion
     }
 }

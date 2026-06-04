@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -36,9 +35,9 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the filter on the given datarow
+        /// Applies the filter on the given table row
         /// </summary>
-        internal abstract bool ApplyFilter(DataRow row, bool applyNegation);
+        internal abstract bool ApplyFilter(RDFTableRow row, bool applyNegation);
         #endregion
     }
 }

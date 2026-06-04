@@ -16,7 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -59,14 +59,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithSingleBinding()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")]));
@@ -78,14 +78,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithUndefSingleBinding()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [null]));
@@ -97,14 +97,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithSingleBindingAndUnknownVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?Q"), [new RDFResource("http://example.org/")]));
@@ -116,14 +116,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithSingleBindingBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")]));
@@ -135,14 +135,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndNotKeepRowWithSingleBinding()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")]));
@@ -154,14 +154,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndNotKeepRowWithSingleBindingBecauseNullValue()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null;
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")]));
@@ -173,14 +173,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndNotKeepRowWithSingleBindingBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")]));
@@ -224,14 +224,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithMultipleBindings()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
@@ -244,14 +244,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithUndefMultipleBindings()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [null])
@@ -264,14 +264,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithMultipleBindingsAndUnknownVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
@@ -284,14 +284,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithMultipleBindingsBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
@@ -304,14 +304,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowWithMultipleBindingsHavingNull()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", null },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
@@ -324,18 +324,19 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndKeepRowsWithMultipleBindings()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFResource("http://example.org/").ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US");
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFResource("http://example2.org/").ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en-US");
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example2.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/"), new RDFResource("http://example2.org/")])
@@ -350,14 +351,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndNotKeepRowWithMultipleBindings()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/test/")])
@@ -370,14 +371,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndNotKeepRowWithUndefMultipleBindings()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [null])
@@ -390,14 +391,14 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndNotKeepRowWithMultipleBindingsBecauseNegation()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFResource("http://example.org/").ToString();
-        row["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/")])
@@ -410,18 +411,19 @@ public class RDFValuesFilterTest
     [TestMethod]
     public void ShouldCreateValuesFilterAndNotKeepRowsWithMultipleBindings()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFResource("http://example.org/").ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US");
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFResource("http://example2.org/").ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en-US");
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFResource("http://example2.org/").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+        });
 
         RDFValuesFilter filter = new RDFValuesFilter(
             new RDFValues().AddColumn(new RDFVariable("?A"), [new RDFResource("http://example.org/"), new RDFResource("http://example3.org/")])

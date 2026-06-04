@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using RDFSharp.Model;
@@ -48,7 +47,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the partition on the given tablerow
         /// </summary>
-        internal override void ExecutePartition(string partitionKey, DataRow tableRow)
+        internal override void ExecutePartition(string partitionKey, RDFTableRow tableRow)
         {
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
@@ -68,14 +67,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Executes the projection producing result's table
         /// </summary>
-        internal override DataTable ExecuteProjection(List<RDFVariable> partitionVariables)
+        internal override RDFTable ExecuteProjectionTable(List<RDFVariable> partitionVariables)
         {
-            DataTable projFuncTable = new DataTable();
+            RDFTable projFuncTable = new RDFTable();
 
             //Initialization
             partitionVariables.ForEach(pv =>
-                RDFQueryEngine.AddColumn(projFuncTable, pv.VariableName));
-            RDFQueryEngine.AddColumn(projFuncTable, ProjectionVariable.VariableName);
+                projFuncTable.AddColumn(pv.VariableName));
+            projFuncTable.AddColumn(ProjectionVariable.VariableName);
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
@@ -90,7 +89,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Helps in finalization step by updating the projection's result table
         /// </summary>
-        internal override void UpdateProjectionTable(string partitionKey, DataTable projFuncTable)
+        internal override void UpdateProjectionTable(string partitionKey, RDFTable projFuncTable)
         {
             //Get bindings from context
             Dictionary<string, string> bindings = partitionKey.Split(ProjectionKeyPlaceholder, StringSplitOptions.RemoveEmptyEntries)
@@ -101,7 +100,7 @@ namespace RDFSharp.Query
             bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
 
             //Add bindings to result's table
-            RDFQueryEngine.AddRow(projFuncTable, bindings);
+            projFuncTable.AddRow(bindings);
         }
         #endregion
     }

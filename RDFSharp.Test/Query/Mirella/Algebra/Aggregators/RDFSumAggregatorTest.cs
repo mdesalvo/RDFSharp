@@ -14,8 +14,8 @@
    limitations under the License.
 */
 
-using System.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -69,35 +69,37 @@ public class RDFSumAggregatorTest
     [TestMethod]
     public void ShouldApplyModifierWithSumAggregator()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("54/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row2["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("54/2", RDFModelEnums.RDFDatatypes.OWL_RATIONAL).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ")));
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
@@ -108,35 +110,37 @@ public class RDFSumAggregatorTest
     [TestMethod]
     public void ShouldApplyModifierWithDistinctSumAggregator()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row2["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ")).Distinct());
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
@@ -147,37 +151,39 @@ public class RDFSumAggregatorTest
     [TestMethod]
     public void ShouldApplyModifierWithSumAggregatorAndHavingClause()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         RDFSumAggregator aggregator = new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_BYTE)) as RDFSumAggregator;
         modifier.AddAggregator(aggregator);
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].Name);
         Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
@@ -188,40 +194,43 @@ public class RDFSumAggregatorTest
     [TestMethod]
     public void ShouldApplyModifierWithSumAggregatorOperatingOnNonNumericValues()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row2["?C"] = new RDFResource("ex:value1").ToString();
-        table.Rows.Add(row2);
-        DataRow row3 = table.NewRow();
-        row3["?A"] = new RDFTypedLiteral("2022-09-04Z", RDFModelEnums.RDFDatatypes.XSD_DATE).ToString();
-        row3["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row3["?C"] = new RDFResource("ex:value2").ToString();
-        table.Rows.Add(row3);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() },
+        });
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-09-04Z", RDFModelEnums.RDFDatatypes.XSD_DATE).ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?C", new RDFResource("ex:value2").ToString() },
+        });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?SUMPROJ")));
-        DataTable result = modifier.ApplyModifier(table);
+        RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(2, result.Columns.Count);
-        Assert.AreEqual("?C", result.Columns[0].ColumnName);
-        Assert.AreEqual("?SUMPROJ", result.Columns[1].ColumnName);
+        Assert.AreEqual("?C", result.Columns[0].Name);
+        Assert.AreEqual("?SUMPROJ", result.Columns[1].Name);
         Assert.AreEqual(3, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?SUMPROJ"].ToString().Equals($"53.7^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));

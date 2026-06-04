@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
-
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -25,9 +23,9 @@ namespace RDFSharp.Query
     {
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable
+        /// Applies the modifier on the given table
         /// </summary>
-        internal abstract DataTable ApplyModifier(DataTable tableToFilter);
+        internal abstract RDFTable ApplyModifier(RDFTable tableToFilter);
         #endregion
     }
 }

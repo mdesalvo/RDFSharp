@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -66,7 +65,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the filter on the given datarow
         /// </summary>
-        internal override bool ApplyFilter(DataRow row, bool applyNegation)
+        internal override bool ApplyFilter(RDFTableRow row, bool applyNegation)
         {
             //Negation logic is applied on the given filter result
             bool keepRow = Filter.ApplyFilter(row, true);

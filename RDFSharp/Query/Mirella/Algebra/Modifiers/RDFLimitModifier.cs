@@ -14,9 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
-using System.Linq;
-
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -57,17 +54,25 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable
+        /// Applies the modifier on the given table (keeps at most the first Limit rows, in order)
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable table)
+        internal override RDFTable ApplyModifier(RDFTable table)
         {
-            string tableSort = table.DefaultView.Sort;
-            if (table.Rows.Count == 0 || Limit == 0)
-                table = table.Clone();
-            else
-                table = table.AsEnumerable().Take(Limit).CopyToDataTable();
-            table.DefaultView.Sort = tableSort;
-            return table;
+            RDFTable limitedTable = table.Clone();
+            if (table.RowsCount > 0 && Limit != 0)
+            {
+                int width = table.ColumnsCount;
+                int take = Limit < table.RowsCount ? Limit : table.RowsCount;
+                for (int i = 0; i < take; i++)
+                {
+                    RDFTableRow row = table.Rows[i];
+                    string[] cells = new string[width];
+                    for (int c = 0; c < width; c++)
+                        cells[c] = row[c];
+                    limitedTable.AddRow(cells);
+                }
+            }
+            return limitedTable;
         }
         #endregion
     }

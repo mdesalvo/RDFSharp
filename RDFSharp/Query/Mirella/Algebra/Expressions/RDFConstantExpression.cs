@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
@@ -63,7 +62,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the constant expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
             => (RDFPatternMember)LeftArgument;
         #endregion
     }

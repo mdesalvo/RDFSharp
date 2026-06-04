@@ -16,8 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Data;
-using System.Globalization;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -44,41 +43,42 @@ public class RDFDistinctModifierTest
     [TestMethod]
     public void ShouldApplyDistinctModifier()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row0 = table.NewRow();
-        row0["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row0["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row0["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row0);
-        DataRow row1 = table.NewRow();
-        row1["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row1["?B"] = new RDFPlainLiteral("hello", "en-US").ToString();
-        row1["?C"] = new RDFResource("ex:value0").ToString();
-        table.Rows.Add(row1);
-        DataRow row2 = table.NewRow();
-        row2["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString();
-        row2["?B"] = new RDFPlainLiteral("hello", "en").ToString();
-        row2["?C"] = DBNull.Value;
-        table.Rows.Add(row2);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en-US").ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?B"] = new RDFPlainLiteral("hello", "en").ToString()
+        });
 
-        DataTable table2 = new RDFDistinctModifier().ApplyModifier(table);
+        RDFTable table2 = new RDFDistinctModifier().ApplyModifier(table);
 
         Assert.IsNotNull(table2);
-        Assert.AreEqual(3, table2.Columns.Count);
-        Assert.IsTrue(table2.Columns.Contains("?A"));
-        Assert.IsTrue(table2.Columns.Contains("?B"));
-        Assert.IsTrue(table2.Columns.Contains("?C"));
-        Assert.AreEqual(2, table2.Rows.Count);
-        Assert.IsTrue(table2.Rows[0]["?A"].ToString().Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(table2.Rows[0]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en-US").ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(table2.Rows[0]["?C"].ToString().Equals(new RDFResource("ex:value0").ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(table2.Rows[1]["?A"].ToString().Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(table2.Rows[1]["?B"].ToString().Equals(new RDFPlainLiteral("hello", "en").ToString(), StringComparison.Ordinal));
-        Assert.IsTrue(table2.Rows[1]["?C"].ToString().Equals(DBNull.Value.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.AreEqual(3, table2.ColumnsCount);
+        Assert.IsTrue(table2.HasColumn("?A"));
+        Assert.IsTrue(table2.HasColumn("?B"));
+        Assert.IsTrue(table2.HasColumn("?C"));
+        Assert.AreEqual(2, table2.RowsCount);
+        Assert.IsTrue(table2.Rows[0]["?A"].Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[0]["?B"].Equals(new RDFPlainLiteral("hello", "en-US").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[0]["?C"].Equals(new RDFResource("ex:value0").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[1]["?A"].Equals(new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[1]["?B"].Equals(new RDFPlainLiteral("hello", "en").ToString(), StringComparison.Ordinal));
+        Assert.IsTrue(table2.Rows[1].IsUnbound("?C"));
     }
     #endregion
 }

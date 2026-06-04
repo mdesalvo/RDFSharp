@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
@@ -72,12 +71,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the variable expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             RDFPatternMember expressionResult = null;
 
             #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
                 return null;
             #endregion
 
@@ -89,7 +88,7 @@ namespace RDFSharp.Query
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
                 #endregion
 
                 #region Calculate Result

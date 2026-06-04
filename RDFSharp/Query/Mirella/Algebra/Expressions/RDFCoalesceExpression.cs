@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 using RDFSharp.Model;
 
@@ -79,7 +78,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the string coalesce function on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             try
             {
@@ -88,8 +87,8 @@ namespace RDFSharp.Query
                 RDFPatternMember leftArgumentPMember = null;
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
-                else if (row.Table.Columns.Contains(LeftArgument.ToString()))
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+                else if (row.HasColumn(LeftArgument.ToString()))
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
 
                 //Coalesce left argument
                 if (leftArgumentPMember != null)
@@ -99,8 +98,8 @@ namespace RDFSharp.Query
                 RDFPatternMember rightArgumentPMember = null;
                 if (RightArgument is RDFExpression rightArgumentExpression)
                     rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
-                else if (row.Table.Columns.Contains(RightArgument.ToString()))
-                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+                else if (row.HasColumn(RightArgument.ToString()))
+                    rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[RightArgument.ToString()] ?? string.Empty));
 
                 //Coalesce right argument
                 if (rightArgumentPMember != null)

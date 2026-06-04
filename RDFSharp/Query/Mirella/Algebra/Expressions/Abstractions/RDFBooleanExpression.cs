@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -42,7 +41,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the boolean "AND" expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             RDFTypedLiteral expressionResult = null;
 

@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -90,30 +89,38 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Executes the partition on the given tablerow
+        /// Resets the aggregator's execution context, so that the same aggregator (and the
+        /// query owning it) can be safely re-executed without carrying over state from a
+        /// previous run (which would otherwise corrupt sums, counters and caches)
         /// </summary>
-        internal virtual void ExecutePartition(string partitionKey, DataRow tableRow) { }
+        internal void ResetContext()
+            => AggregatorContext = new RDFAggregatorContext();
+
+        /// <summary>
+        /// Executes the partition on the given table row
+        /// </summary>
+        internal virtual void ExecutePartition(string partitionKey, RDFTableRow tableRow) { }
 
         /// <summary>
         /// Executes the projection producing result's table
         /// </summary>
-        internal virtual DataTable ExecuteProjection(List<RDFVariable> partitionVariables) => null;
+        internal virtual RDFTable ExecuteProjectionTable(List<RDFVariable> partitionVariables) => null;
 
         /// <summary>
         /// Helps in finalization step by updating the projection's result table
         /// </summary>
-        internal virtual void UpdateProjectionTable(string partitionKey, DataTable projFuncTable) { }
+        internal virtual void UpdateProjectionTable(string partitionKey, RDFTable projFuncTable) { }
 
         /// <summary>
         /// Gets the row value for the aggregator as number
         /// </summary>
-        internal double GetRowValueAsNumber(DataRow tableRow)
+        internal double GetRowValueAsNumber(RDFTableRow tableRow)
         {
             try
             {
-                if (!tableRow.IsNull(AggregatorVariable.VariableName))
+                if (tableRow.IsBound(AggregatorVariable.VariableName))
                 {
-                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[AggregatorVariable.VariableName].ToString());
+                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[AggregatorVariable.VariableName]);
                     //Only numeric typedliterals are suitable for processing
                     if (rowAggregatorValue is RDFTypedLiteral rowAggregatorValueTLit && rowAggregatorValueTLit.HasDecimalDatatype())
                     {
@@ -132,11 +139,11 @@ namespace RDFSharp.Query
         /// <summary>
         /// Gets the row value for the aggregator as string
         /// </summary>
-        internal string GetRowValueAsString(DataRow tableRow)
+        internal string GetRowValueAsString(RDFTableRow tableRow)
         {
             try
             {
-                return !tableRow.IsNull(AggregatorVariable.VariableName) ? tableRow[AggregatorVariable.VariableName].ToString()
+                return tableRow.IsBound(AggregatorVariable.VariableName) ? tableRow[AggregatorVariable.VariableName]
                                                                          : string.Empty;
             }
             catch { return string.Empty; }

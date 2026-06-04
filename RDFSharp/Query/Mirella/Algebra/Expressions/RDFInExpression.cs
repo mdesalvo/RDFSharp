@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 using RDFSharp.Model;
@@ -85,10 +84,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the lookup function on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
                 return null;
             #endregion
 

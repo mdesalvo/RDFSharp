@@ -15,7 +15,6 @@
 */
 
 using System;
-using System.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Query;
 using RDFSharp.Model;
@@ -80,30 +79,29 @@ public class RDFValuesTest
     }
 
     [TestMethod]
-    public void ShouldGetDataTable()
+    public void ShouldGetRDFTable()
     {
         RDFValues values = new RDFValues();
         values.AddColumn(new RDFVariable("?V1"), [RDFVocabulary.RDF.TYPE, RDFVocabulary.RDF.ALT]);
         values.AddColumn(new RDFVariable("?V2"), [RDFVocabulary.FOAF.KNOWS]);
         values.AddColumn(new RDFVariable("?V3"), null);
-        DataTable valuesTable = values.GetDataTable();
+        RDFTable valuesTable = values.GetRDFTable();
 
         Assert.IsNotNull(valuesTable);
-        Assert.IsTrue(valuesTable.ExtendedProperties.ContainsKey(RDFQueryEngine.IsOptional));
-        Assert.IsTrue((bool)valuesTable.ExtendedProperties[RDFQueryEngine.IsOptional]);
-        Assert.IsTrue(valuesTable.ExtendedProperties.ContainsKey(RDFQueryEngine.JoinAsUnion));
-        Assert.IsFalse((bool)valuesTable.ExtendedProperties[RDFQueryEngine.JoinAsUnion]);
+        //Contains an UNDEF binding (?V3) => the values block behaves as optional
+        Assert.IsTrue(valuesTable.IsOptional);
+        Assert.IsFalse(valuesTable.JoinAsUnion);
         Assert.AreEqual(3, valuesTable.Columns.Count);
-        Assert.IsTrue(valuesTable.Columns.Contains("?V1"));
-        Assert.IsTrue(valuesTable.Columns.Contains("?V2"));
-        Assert.IsTrue(valuesTable.Columns.Contains("?V3"));
+        Assert.IsTrue(valuesTable.HasColumn("?V1"));
+        Assert.IsTrue(valuesTable.HasColumn("?V2"));
+        Assert.IsTrue(valuesTable.HasColumn("?V3"));
         Assert.AreEqual(2, valuesTable.Rows.Count);
-        Assert.IsTrue(valuesTable.Rows[0]["?V1"].Equals(RDFVocabulary.RDF.TYPE.ToString()));
-        Assert.IsTrue(valuesTable.Rows[0]["?V2"].Equals(RDFVocabulary.FOAF.KNOWS.ToString()));
-        Assert.IsTrue(valuesTable.Rows[0]["?V3"].Equals(DBNull.Value));
-        Assert.IsTrue(valuesTable.Rows[1]["?V1"].Equals(RDFVocabulary.RDF.ALT.ToString()));
-        Assert.IsTrue(valuesTable.Rows[1]["?V2"].Equals(DBNull.Value));
-        Assert.IsTrue(valuesTable.Rows[1]["?V3"].Equals(DBNull.Value));
+        Assert.AreEqual(RDFVocabulary.RDF.TYPE.ToString(), valuesTable.Rows[0]["?V1"]);
+        Assert.AreEqual(RDFVocabulary.FOAF.KNOWS.ToString(), valuesTable.Rows[0]["?V2"]);
+        Assert.IsTrue(valuesTable.Rows[0].IsUnbound("?V3"));
+        Assert.AreEqual(RDFVocabulary.RDF.ALT.ToString(), valuesTable.Rows[1]["?V1"]);
+        Assert.IsTrue(valuesTable.Rows[1].IsUnbound("?V2"));
+        Assert.IsTrue(valuesTable.Rows[1].IsUnbound("?V3"));
     }
 
     [TestMethod]

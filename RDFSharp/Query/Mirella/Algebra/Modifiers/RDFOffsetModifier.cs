@@ -14,9 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
-using System.Linq;
-
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -57,17 +54,24 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the given datatable
+        /// Applies the modifier on the given table (drops the first Offset rows, keeping the rest in order)
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable table)
+        internal override RDFTable ApplyModifier(RDFTable table)
         {
-            string tableSort = table.DefaultView.Sort;
-            if (table.Rows.Count == 0 || Offset >= table.Rows.Count)
-                table = table.Clone();
-            else
-                table = table.AsEnumerable().Skip(Offset).CopyToDataTable();
-            table.DefaultView.Sort = tableSort;
-            return table;
+            RDFTable offsetTable = table.Clone();
+            if (table.RowsCount > 0 && Offset < table.RowsCount)
+            {
+                int width = table.ColumnsCount;
+                for (int i = Offset; i < table.RowsCount; i++)
+                {
+                    RDFTableRow row = table.Rows[i];
+                    string[] cells = new string[width];
+                    for (int c = 0; c < width; c++)
+                        cells[c] = row[c];
+                    offsetTable.AddRow(cells);
+                }
+            }
+            return offsetTable;
         }
         #endregion
     }

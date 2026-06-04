@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -207,14 +207,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNullLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -229,14 +229,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNullRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?B")),
@@ -251,14 +251,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnNullLeftRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = null!;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", null! },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -273,14 +273,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "abab";
-        row["?B"] = "Z";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "abab" },
+            { "?B", "Z" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -295,14 +295,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnStringTypedLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"abab^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = $"Z^^{RDFVocabulary.XSD.STRING}";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -317,14 +317,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultOnResources()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "http://example.org/test/ex1";
-        row["?B"] = "http://example.com/";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "http://example.org/test/ex1" },
+            { "?B", "http://example.com/" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -341,14 +341,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNullLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -363,14 +363,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNullRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -385,14 +385,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnNullLeftRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = null!;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", null! },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -407,14 +407,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnPlainLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "abab";
-        row["?B"] = "Z";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "abab" },
+            { "?B", "Z" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -429,14 +429,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnStringTypedLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"abab^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = $"Z^^{RDFVocabulary.XSD.STRING}";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -451,14 +451,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultOnResources()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "http://example.org/test/ex1";
-        row["?B"] = "http://example.com/";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "http://example.org/test/ex1" },
+            { "?B", "http://example.com/" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -475,14 +475,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnNullLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -497,14 +497,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnNullRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -519,14 +519,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnNullLeftRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = null!;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", null! },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -541,14 +541,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnPlainLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "abab";
-        row["?B"] = "Z";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "abab" },
+            { "?B", "Z" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -563,14 +563,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnStringTypedLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"abab^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = $"Z^^{RDFVocabulary.XSD.STRING}";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -585,14 +585,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithExpressionAndCalculateResultOnResources()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "http://example.org/test/ex1";
-        row["?B"] = "http://example.com/";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "http://example.org/test/ex1" },
+            { "?B", "http://example.com/" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -609,14 +609,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnNullLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -631,14 +631,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnNullRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = "hello";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", "hello" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -653,14 +653,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnNullLeftRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = null!;
-        row["?B"] = null!;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", null! },
+            { "?B", null! },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -675,14 +675,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnPlainLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "abab";
-        row["?B"] = "Z";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "abab" },
+            { "?B", "Z" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -697,14 +697,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnStringTypedLiterals()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"abab^^{RDFVocabulary.XSD.STRING}";
-        row["?B"] = $"Z^^{RDFVocabulary.XSD.STRING}";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -719,14 +719,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndCalculateResultOnResources()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "http://example.org/test/ex1";
-        row["?B"] = "http://example.com/";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "http://example.org/test/ex1" },
+            { "?B", "http://example.com/" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -741,14 +741,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseNotStringLeftTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"25^^{RDFVocabulary.XSD.INTEGER}";
-        row["?B"] = $"Z^^{RDFVocabulary.XSD.STRING}";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"25^^{RDFVocabulary.XSD.INTEGER}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),
@@ -762,14 +762,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseNotStringRightTypedLiteral()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = $"25^^{RDFVocabulary.XSD.INTEGER}";
-        row["?B"] = $"Z^^{RDFVocabulary.XSD.STRING}";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", $"25^^{RDFVocabulary.XSD.INTEGER}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?B"),
@@ -783,14 +783,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseUnknownLeftVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "http://example.org/test/ex1";
-        row["?B"] = "http://example.com/";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "http://example.org/test/ex1" },
+            { "?B", "http://example.com/" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?Q"),
@@ -804,14 +804,14 @@ public class RDFReplaceExpressionTest
     [TestMethod]
     public void ShouldApplyVariableWithVariableAndNotCalculateResultBecauseUnknownRightVariable()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "http://example.org/test/ex1";
-        row["?B"] = "http://example.com/";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "http://example.org/test/ex1" },
+            { "?B", "http://example.com/" },
+        });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
             new RDFVariable("?A"),

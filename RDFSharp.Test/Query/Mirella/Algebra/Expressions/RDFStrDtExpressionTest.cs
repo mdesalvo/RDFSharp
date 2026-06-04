@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 using System;
@@ -132,14 +132,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultOnKnownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -153,14 +153,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResultOnUnknownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = "http://example.org/testdt";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", "http://example.org/testdt" },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -174,14 +174,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotWellFormedDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -196,14 +196,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndCalculateResultOnKnownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -217,14 +217,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndCalculateResultOnUnknownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = "http://example.org/testdt";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", "http://example.org/testdt" },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -238,14 +238,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseNotWellFormedDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
@@ -260,14 +260,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndCalculateResultOnKnownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -281,14 +281,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndCalculateResultOnUnknownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = "http://example.org/testdt";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", "http://example.org/testdt" },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -302,14 +302,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndNotCalculateResultBecauseNotWellFormedDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -324,14 +324,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultOnKnownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -345,14 +345,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultOnLeftResourceAndKnownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "http://example.org/";
-        row["?B"] = RDFVocabulary.XSD.ANY_URI;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "http://example.org/" },
+            { "?B", RDFVocabulary.XSD.ANY_URI.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -366,14 +366,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResultOnUnknownDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "44";
-        row["?B"] = "http://example.org/testdt";
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "44" },
+            { "?B", "http://example.org/testdt" },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -387,14 +387,14 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseNotWellFormedDatatype()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = "hello";
-        row["?B"] = RDFVocabulary.XSD.INTEGER;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", "hello" },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -407,16 +407,16 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnknownVariableLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = RDFVocabulary.XSD.FLOAT;
-        row["?B"] = new RDFPlainLiteral("B");
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", RDFVocabulary.XSD.FLOAT.ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?Q"),
@@ -429,16 +429,16 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseUnknownVariableRight()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        row["?B"] = new RDFPlainLiteral("B");
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -451,16 +451,16 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseNotDatatypeGiven()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-        row["?B"] = "hello";
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?B", "hello" },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -473,16 +473,16 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseForbiddenDatatype1Given()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello@EN");
-        row["?B"] = RDFVocabulary.RDF.PLAIN_LITERAL;
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello@EN").ToString() },
+            { "?B", RDFVocabulary.RDF.PLAIN_LITERAL.ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -495,16 +495,16 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseForbiddenDatatype2Given()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello@EN");
-        row["?B"] = RDFVocabulary.RDF.LANG_STRING;
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello@EN").ToString() },
+            { "?B", RDFVocabulary.RDF.LANG_STRING.ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),
@@ -517,16 +517,16 @@ public class RDFStrDtExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionAndNotCalculateResultBecauseForbiddenDatatype3Given()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        table.Columns.Add("?B", typeof(string));
-        table.Columns.Add("?C", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFPlainLiteral("hello@EN--ltr");
-        row["?B"] = RDFVocabulary.RDF.DIR_LANG_STRING;
-        row["?C"] = new RDFPlainLiteral("C");
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFPlainLiteral("hello@EN--ltr").ToString() },
+            { "?B", RDFVocabulary.RDF.DIR_LANG_STRING.ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() },
+        });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
             new RDFVariable("?A"),

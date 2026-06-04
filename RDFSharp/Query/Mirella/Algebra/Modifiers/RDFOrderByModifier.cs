@@ -14,8 +14,6 @@
    limitations under the License.
 */
 
-using System.Data;
-
 namespace RDFSharp.Query
 {
     /// <summary>
@@ -57,18 +55,12 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the modifier on the column corresponding to the variable in the given datatable
+        /// Applies the modifier on the given table (stable Ordinal sort on the variable's column, UNBOUND
+        /// sorts smallest; keys whose column is absent are ignored). In the live pipeline the ORDER BY sort
+        /// is applied by the projection step, so this is exercised mainly by direct callers and tests.
         /// </summary>
-        internal override DataTable ApplyModifier(DataTable table)
-        {
-            if (table.Columns.Contains(Variable.ToString()))
-            {
-                table.DefaultView.Sort = !string.IsNullOrEmpty(table.DefaultView.Sort)
-                                            ? $"{table.DefaultView.Sort}, {Variable} {OrderByFlavor}"
-                                            : $"{Variable} {OrderByFlavor}";
-            }
-            return table;
-        }
+        internal override RDFTable ApplyModifier(RDFTable table)
+            => RDFQueryEngine.SortTable(table, new[] { (Variable.ToString(), OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC) });
         #endregion
     }
 }

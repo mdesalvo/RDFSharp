@@ -15,7 +15,7 @@
 */
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+using System.Collections.Generic;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
@@ -62,12 +62,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:24.612", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:24.612", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -80,12 +80,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultWithNonZeroDotZero()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:24.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:24.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -98,12 +98,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultWithZeroDotNonZero()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:00.417Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.417Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -116,12 +116,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndCalculateResultWithZeroDotZero()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -134,12 +134,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:24.612", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:24.612", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariable("?A"));
@@ -152,12 +152,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultWithNonZeroDotZero()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:24.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:24.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariable("?A"));
@@ -170,12 +170,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultWithZeroDotNonZero()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:00.417Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.417Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariable("?A"));
@@ -188,12 +188,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndCalculateResultWithZeroDotZero()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariable("?A"));
@@ -206,12 +206,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseNotDateTimeLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariableExpression(new RDFVariable("?A")));
@@ -223,12 +223,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithExpressionAndNotCalculateResultBecauseUnboundLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariableExpression(new RDFVariable("?C")));
@@ -240,12 +240,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseNotDateTimeLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariable("?A"));
@@ -257,12 +257,12 @@ public class RDFSecondsExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVariableAndNotCalculateResultBecauseUnboundLeft()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?A", typeof(string));
-        DataRow row = table.NewRow();
-        row["?A"] = new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+        });
 
         RDFSecondsExpression expression = new RDFSecondsExpression(
             new RDFVariable("?C"));

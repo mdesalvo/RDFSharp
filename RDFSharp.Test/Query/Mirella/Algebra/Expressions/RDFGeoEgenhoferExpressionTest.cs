@@ -17,7 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
-using System.Data;
+using System.Collections.Generic;
 
 namespace RDFSharp.Test.Query;
 
@@ -204,14 +204,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?PL", typeof(string));
-        table.Columns.Add("?LS", typeof(string));
-        DataRow row = table.NewRow();
-        row["?PL"] = new RDFTypedLiteral("POLYGON ((9.18854 45, 12.496365 41.902782, 14.268124 40.851774, 9.18854 45))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?LS"] = new RDFTypedLiteral("LINESTRING(10.705256576624173 43.75731680339918,10.62217247017886 43.72631206695182)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?PL");
+        table.AddColumn("?LS");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?PL", new RDFTypedLiteral("POLYGON ((9.18854 45, 12.496365 41.902782, 14.268124 40.851774, 9.18854 45))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?LS", new RDFTypedLiteral("LINESTRING(10.705256576624173 43.75731680339918,10.62217247017886 43.72631206695182)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariableExpression(new RDFVariable("?PL")),
@@ -226,14 +226,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEVAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?PL1", typeof(string));
-        table.Columns.Add("?PL2", typeof(string));
-        DataRow row = table.NewRow();
-        row["?PL1"] = new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,11.60323105691032 44.64005141513215,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?PL2"] = new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,12.19649277566032 44.42075815909547,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?PL1");
+        table.AddColumn("?PL2");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?PL1", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,11.60323105691032 44.64005141513215,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,12.19649277566032 44.42075815909547,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariableExpression(new RDFVariable("?PL1")),
@@ -248,14 +248,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithETAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?PL1", typeof(string));
-        table.Columns.Add("?PL2", typeof(string));
-        DataRow row = table.NewRow();
-        row["?PL1"] = new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,11.60323105691032 44.64005141513215,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?PL2"] = new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,12.19649277566032 44.42075815909547,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?PL1");
+        table.AddColumn("?PL2");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?PL1", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,11.60323105691032 44.64005141513215,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,12.19649277566032 44.42075815909547,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariableExpression(new RDFVariable("?PL2")),
@@ -270,14 +270,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVEAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?PL1", typeof(string));
-        table.Columns.Add("?PL2", typeof(string));
-        DataRow row = table.NewRow();
-        row["?PL1"] = new RDFTypedLiteral("POLYGON((9.93880234597282 45.14206714385015,9.85640488503532 44.84294151328678,10.12007676003532 44.90133518584387,9.93880234597282 45.14206714385015))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?PL2"] = new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,12.19649277566032 44.42075815909547,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?PL1");
+        table.AddColumn("?PL2");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?PL1", new RDFTypedLiteral("POLYGON((9.93880234597282 45.14206714385015,9.85640488503532 44.84294151328678,10.12007676003532 44.90133518584387,9.93880234597282 45.14206714385015))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,12.19649277566032 44.42075815909547,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariable("?PL1"),
@@ -292,12 +292,12 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVVAndCalculateResult()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?PL", typeof(string));
-        DataRow row = table.NewRow();
-        row["?PL"] = new RDFTypedLiteral("POLYGON((12.396842691027471 42.77775532402146,12.619315835558721 42.95691699452285,12.745658608996221 42.737422725317835,12.396842691027471 42.77775532402146))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?PL");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?PL", new RDFTypedLiteral("POLYGON((12.396842691027471 42.77775532402146,12.619315835558721 42.95691699452285,12.745658608996221 42.737422725317835,12.396842691027471 42.77775532402146))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariable("?PL"),
@@ -312,12 +312,12 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVTAndCalculateResult1()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?LS", typeof(string));
-        DataRow row = table.NewRow();
-        row["?LS"] = new RDFTypedLiteral("LINESTRING(11.05940781472282 44.874092178351034,11.27364121316032 44.7727908998851)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?LS");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?LS", new RDFTypedLiteral("LINESTRING(11.05940781472282 44.874092178351034,11.27364121316032 44.7727908998851)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariable("?LS"),
@@ -332,12 +332,12 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVTAndCalculateResult2()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?LS", typeof(string));
-        DataRow row = table.NewRow();
-        row["?LS"] = new RDFTypedLiteral("LINESTRING(11.05940781472282 44.874092178351034,11.27364121316032 44.7727908998851)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?LS");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?LS", new RDFTypedLiteral("LINESTRING(11.05940781472282 44.874092178351034,11.27364121316032 44.7727908998851)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariable("?LS"),
@@ -352,12 +352,12 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithVTAndCalculateResult3()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?PL", typeof(string));
-        DataRow row = table.NewRow();
-        row["?PL"] = new RDFTypedLiteral("POLYGON((10.79024277566032 45.16143690467078,10.03218613503532 45.130442127495094,10.31783066628532 44.79618391717168,10.87264023659782 44.78448859345848,10.79024277566032 45.16143690467078))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?PL");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?PL", new RDFTypedLiteral("POLYGON((10.79024277566032 45.16143690467078,10.03218613503532 45.130442127495094,10.31783066628532 44.79618391717168,10.87264023659782 44.78448859345848,10.79024277566032 45.16143690467078))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariable("?PL"),
@@ -372,14 +372,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariableExpression(new RDFVariable("?NAPLES")),
@@ -393,14 +393,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnknownRightExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
@@ -414,14 +414,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotGeographicLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariableExpression(new RDFVariable("?ROME")),
@@ -435,14 +435,14 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseNotGeographicRightExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString();
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),
@@ -456,16 +456,16 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnboundLeftExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        table.Columns.Add("?NAPLES", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        row["?NAPLES"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddColumn("?NAPLES");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?NAPLES", null },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFVariableExpression(new RDFVariable("?NAPLES")),
@@ -479,16 +479,16 @@ public class RDFGeoEgenhoferExpressionTest
     [TestMethod]
     public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseUnboundRightExpression()
     {
-        DataTable table = new DataTable();
-        table.Columns.Add("?MILAN", typeof(string));
-        table.Columns.Add("?ROME", typeof(string));
-        table.Columns.Add("?NAPLES", typeof(string));
-        DataRow row = table.NewRow();
-        row["?MILAN"] = new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString();
-        row["?ROME"] = new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString();
-        row["?NAPLES"] = null;
-        table.Rows.Add(row);
-        table.AcceptChanges();
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?ROME");
+        table.AddColumn("?NAPLES");
+        table.AddRow(new Dictionary<string, string>()
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?NAPLES", null },
+        });
 
         RDFGeoEgenhoferExpression expression = new RDFGeoEgenhoferExpression(
             new RDFConstantExpression(new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML)),

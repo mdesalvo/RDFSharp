@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
@@ -159,14 +158,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the arithmetical expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
             RDFTypedLiteral expressionResult = null;
 
             #region Guards
-            if (LeftArgument is RDFVariable && !row.Table.Columns.Contains(LeftArgument.ToString()))
+            if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
                 return null;
-            if (RightArgument is RDFVariable && !row.Table.Columns.Contains(RightArgument.ToString()))
+            if (RightArgument is RDFVariable && !row.HasColumn(RightArgument.ToString()))
                 return null;
             #endregion
 
@@ -178,7 +177,7 @@ namespace RDFSharp.Query
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[LeftArgument.ToString()].ToString());
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
 
                 //Evaluate right argument (Expression VS Variable VS TypedLiteral)
                 RDFPatternMember rightArgumentPMember;
@@ -188,7 +187,7 @@ namespace RDFSharp.Query
                         rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
                         break;
                     case RDFVariable _:
-                        rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember(row[RightArgument.ToString()].ToString());
+                        rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[RightArgument.ToString()] ?? string.Empty));
                         break;
                     default:
                         rightArgumentPMember = (RDFTypedLiteral)RightArgument;

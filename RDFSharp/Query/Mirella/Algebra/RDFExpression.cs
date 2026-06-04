@@ -16,7 +16,6 @@
 
 using RDFSharp.Model;
 using System.Collections.Generic;
-using System.Data;
 
 namespace RDFSharp.Query
 {
@@ -103,9 +102,10 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the expression on the given datarow
+        /// Applies the expression on the given table row
         /// </summary>
-        internal abstract RDFPatternMember ApplyExpression(DataRow row);
+        internal abstract RDFPatternMember ApplyExpression(RDFTableRow row);
+
         #endregion
     }
 

@@ -12,7 +12,6 @@
 */
 
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using RDFSharp.Query;
@@ -102,11 +101,11 @@ namespace RDFSharp.Model
                                     propertyShape.SequencePath.Start = focusNode;
 
                                 //Compute property path on the given focus node
-                                DataTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
+                                RDFTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
                                     isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
-                                result.AddRange(from DataRow pathResultRow
+                                result.AddRange(from RDFTableRow pathResultRow
                                                 in pathResult.Rows
-                                                select pathResultRow["?END"].ToString()
+                                                select pathResultRow["?END"]
                                                 into prValue where !string.IsNullOrEmpty(prValue)
                                                 select RDFQueryUtilities.ParseRDFPatternMember(prValue));
 

@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -47,7 +46,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the now expression on the given datarow
         /// </summary>
-        internal override RDFPatternMember ApplyExpression(DataRow row)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
             => new RDFTypedLiteral(DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"), RDFModelEnums.RDFDatatypes.XSD_DATETIME);
         #endregion
     }
