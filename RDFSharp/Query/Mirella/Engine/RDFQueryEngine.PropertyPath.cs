@@ -281,7 +281,7 @@ namespace RDFSharp.Query
         /// reading from the pre-materialized adjacency map held by <paramref name="cache"/>.<br/>
         /// When <paramref name="inverse"/> is true, traversal goes in the opposite direction (object → subject).
         /// </summary>
-        private static List<RDFResource> GetDirectSuccessors(RDFResource node, RDFResource property, bool inverse, RDFTransitivePathCache cache)
+        private List<RDFResource> GetDirectSuccessors(RDFResource node, RDFResource property, bool inverse, RDFTransitivePathCache cache)
         {
             Dictionary<long, List<RDFResource>> map = cache.GetMap(property, inverse);
             return map.TryGetValue(node.PatternMemberID, out List<RDFResource> successors) ? successors : EmptyResourceList;
@@ -346,7 +346,7 @@ namespace RDFSharp.Query
         /// Pass <paramref name="maxHops"/> = -1 for an unbounded search.
         /// Cycles are handled by the <c>enqueued</c> set, which prevents re-enqueuing already-seen nodes.
         /// </summary>
-        private static List<RDFResource> BFSReachable(RDFResource startNode, RDFResource property, bool inverse, RDFTransitivePathCache cache, int minHops, int maxHops)
+        private List<RDFResource> BFSReachable(RDFResource startNode, RDFResource property, bool inverse, RDFTransitivePathCache cache, int minHops, int maxHops)
         {
             List<RDFResource> result = new List<RDFResource>();
 
@@ -390,7 +390,7 @@ namespace RDFSharp.Query
         /// </summary>
         private static readonly List<RDFResource> EmptyResourceList = new List<RDFResource>(0);
 
-        #region Utilities
+        #region Transitive property path acceleration
         /// <summary>
         /// Holds, for the lifetime of a single transitive property path evaluation, the in-memory adjacency
         /// maps of every step property (materialized once from the datasource) and the lazily-built, memoized
