@@ -2288,6 +2288,123 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Partitions the right table's rows for a compatible-mappings join (OPTIONAL/UNION/MINUS): rows whose
+        /// common cells are ALL bound are hash-indexed by their join key (so a fully-bound left row finds its
+        /// exact matches in O(1)); rows carrying at least one UNBOUND common cell are kept apart as "wildcard"
+        /// rows, because an UNBOUND cell is compatible with any value and so would escape a plain hash lookup.
+        /// </summary>
+        private static void PartitionRightRowsForCompatibleJoin(
+            RDFTableRowCollection rightRows,
+            int[] rightCommonOrdinals,
+            out Dictionary<string, List<int>> boundRightRowsByKey,
+            out List<int> wildcardRightRows)
+        {
+            boundRightRowsByKey = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+            wildcardRightRows = new List<int>();
+
+            for (int rightRowIndex = 0; rightRowIndex < rightRows.Count; rightRowIndex++)
+            {
+                //A null key means at least one common cell is UNBOUND => the row joins as a wildcard
+                string joinKey = BuildJoinKey(rightRows[rightRowIndex], rightCommonOrdinals);
+                if (joinKey == null)
+                {
+                    wildcardRightRows.Add(rightRowIndex);
+                }
+                else
+                {
+                    if (!boundRightRowsByKey.TryGetValue(joinKey, out List<int> sameKeyRows))
+                        boundRightRowsByKey[joinKey] = sameKeyRows = new List<int>();
+                    sameKeyRows.Add(rightRowIndex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns, in ascending original order, the indexes of the right rows join-compatible with the given
+        /// left row, using the partitioned index. A fully-bound left row resolves its exact matches via the
+        /// hash and only scans the (typically empty) wildcard rows; a left row with an UNBOUND common cell is
+        /// itself a wildcard, so it falls back to scanning every right row. The ascending order reproduces the
+        /// left-major/right-minor emission order of the former nested-loop join.
+        /// </summary>
+        private static List<int> FindCompatibleRightRows(
+            RDFTableRow leftRow,
+            int[] leftCommonOrdinals,
+            RDFTableRowCollection rightRows,
+            int[] rightCommonOrdinals,
+            Dictionary<string, List<int>> boundRightRowsByKey,
+            List<int> wildcardRightRows)
+        {
+            string leftKey = BuildJoinKey(leftRow, leftCommonOrdinals);
+
+            //Left row is itself a wildcard (some common cell UNBOUND): it can match broadly => scan all right
+            if (leftKey == null)
+            {
+                List<int> scannedMatches = new List<int>();
+                for (int rightRowIndex = 0; rightRowIndex < rightRows.Count; rightRowIndex++)
+                {
+                    if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRows[rightRowIndex], rightCommonOrdinals))
+                        scannedMatches.Add(rightRowIndex);
+                }
+                return scannedMatches;
+            }
+
+            //Left row is fully bound: the exact-key right rows are guaranteed compatible (all common cells equal)
+            boundRightRowsByKey.TryGetValue(leftKey, out List<int> exactMatches);
+
+            //Fast path: no wildcard right rows => the exact bucket is already the (ascending) answer
+            if (wildcardRightRows.Count == 0)
+                return exactMatches ?? new List<int>();
+
+            //Otherwise merge the exact matches with the compatible wildcard rows, restoring ascending order
+            List<int> matches = exactMatches != null ? new List<int>(exactMatches) : new List<int>();
+            foreach (int wildcardRowIndex in wildcardRightRows)
+            {
+                if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRows[wildcardRowIndex], rightCommonOrdinals))
+                    matches.Add(wildcardRowIndex);
+            }
+            matches.Sort();
+            return matches;
+        }
+
+        /// <summary>
+        /// Tells whether the given left row has at least one join-compatible right row, using the partitioned
+        /// index. Used by MINUS, which keeps only the left rows that have NO compatible right row.
+        /// </summary>
+        private static bool HasCompatibleRightRow(
+            RDFTableRow leftRow,
+            int[] leftCommonOrdinals,
+            RDFTableRowCollection rightRows,
+            int[] rightCommonOrdinals,
+            Dictionary<string, List<int>> boundRightRowsByKey,
+            List<int> wildcardRightRows)
+        {
+            string leftKey = BuildJoinKey(leftRow, leftCommonOrdinals);
+
+            //Left wildcard row => scan all right rows, stopping at the first compatible one
+            if (leftKey == null)
+            {
+                for (int rightRowIndex = 0; rightRowIndex < rightRows.Count; rightRowIndex++)
+                {
+                    if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRows[rightRowIndex], rightCommonOrdinals))
+                        return true;
+                }
+                return false;
+            }
+
+            //Fully-bound left: any exact-key right row is an immediate match...
+            if (boundRightRowsByKey.TryGetValue(leftKey, out List<int> exactMatches) && exactMatches.Count > 0)
+                return true;
+
+            //...otherwise a wildcard right row may still be compatible
+            foreach (int wildcardRowIndex in wildcardRightRows)
+            {
+                if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRows[wildcardRowIndex], rightCommonOrdinals))
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Joins two tables WITH support for OPTIONAL/UNION (compatible-mappings outer-join with coalescing)
         /// </summary>
         internal static RDFTable OuterJoinTables(RDFTable leftTable, RDFTable rightTable)
@@ -2312,17 +2429,22 @@ namespace RDFSharp.Query
             int[] leftCommonOrdinals = commonNames.Select(leftTable.OrdinalOf).ToArray();
             int[] rightCommonOrdinals = commonNames.Select(rightTable.OrdinalOf).ToArray();
 
+            //Hash the right rows once (bound rows by key + wildcard rows apart) to avoid the O(n*m) nested scan
             RDFTableRowCollection rightRows = rightTable.Rows;
+            PartitionRightRowsForCompatibleJoin(
+                rightRows,
+                rightCommonOrdinals,
+                out Dictionary<string, List<int>> boundRightRowsByKey,
+                out List<int> wildcardRightRows);
+
             foreach (RDFTableRow leftRow in leftTable.Rows)
             {
-                bool foundRelated = false;
-                for (int ri = 0; ri < rightRows.Count; ri++)
-                {
-                    RDFTableRow rightRow = rightRows[ri];
-                    if (!AreJoinCompatible(leftRow, leftCommonOrdinals, rightRow, rightCommonOrdinals))
-                        continue;
+                List<int> compatibleRightRows = FindCompatibleRightRows(
+                    leftRow, leftCommonOrdinals, rightRows, rightCommonOrdinals, boundRightRowsByKey, wildcardRightRows);
 
-                    foundRelated = true;
+                foreach (int rightRowIndex in compatibleRightRows)
+                {
+                    RDFTableRow rightRow = rightRows[rightRowIndex];
                     string[] cells = new string[joinColumnsWidth];
                     //Left part (includes common columns, taken from left)
                     for (int i = 0; i < leftColumnsWidth; i++)
@@ -2341,7 +2463,7 @@ namespace RDFSharp.Query
                 }
 
                 //No related rows but right table is OPTIONAL => keep left row, right non-common stay UNBOUND
-                if (!foundRelated && rightIsOptional)
+                if (compatibleRightRows.Count == 0 && rightIsOptional)
                 {
                     string[] cells = new string[joinColumnsWidth];
                     for (int i = 0; i < leftColumnsWidth; i++)
@@ -2380,25 +2502,24 @@ namespace RDFSharp.Query
 
             int[] leftCommonOrdinals = commonNames.Select(leftTable.OrdinalOf).ToArray();
             int[] rightCommonOrdinals = commonNames.Select(rightTable.OrdinalOf).ToArray();
-            RDFTableRowCollection rightRows = rightTable.Rows;
-            foreach (RDFTableRow leftRow in leftTable.Rows)
-            {
-                bool hasMatch = false;
-                for (int ri = 0; ri < rightRows.Count; ri++)
-                    if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRows[ri], rightCommonOrdinals))
-                    {
-                        hasMatch = true;
-                        break;
-                    }
 
-                if (!hasMatch)
+            //Hash the right rows once to answer "has a compatible right row?" without the O(n*m) nested scan
+            RDFTableRowCollection rightRows = rightTable.Rows;
+            PartitionRightRowsForCompatibleJoin(
+                rightRows,
+                rightCommonOrdinals,
+                out Dictionary<string, List<int>> boundRightRowsByKey,
+                out List<int> wildcardRightRows);
+
+            foreach (RDFTableRow leftRow in leftTable.Rows)
+                //Keep the left row only when no compatible right row exists (set-difference semantics)
+                if (!HasCompatibleRightRow(leftRow, leftCommonOrdinals, rightRows, rightCommonOrdinals, boundRightRowsByKey, wildcardRightRows))
                 {
                     string[] cells = new string[width];
                     for (int i = 0; i < width; i++)
                         cells[i] = leftRow[i];
                     diffTable.AddRow(cells);
                 }
-            }
             return diffTable;
         }
 

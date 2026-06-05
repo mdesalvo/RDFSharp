@@ -6128,7 +6128,10 @@ public class RDFQueryEngineTest
     }
 
     #region Utilities
-    private static RDFTable Tab(string[] columns, params string[][] rows)
+    /// <summary>
+    /// Builds an RDFTable from a column list and a set of row arrays (a null cell models an UNBOUND value)
+    /// </summary>
+    private static RDFTable BuildTable(string[] columns, params string[][] rows)
     {
         RDFTable table = new RDFTable();
         foreach (string column in columns)
@@ -6138,7 +6141,11 @@ public class RDFQueryEngineTest
         return table;
     }
 
-    private static string Dump(RDFTable table)
+    /// <summary>
+    /// Renders a table to a compact, assert-friendly string: header line "col|col", then one "v|v" line per row
+    /// (UNBOUND cells shown as "U"). Two tables are equal iff their renderings are equal, order included.
+    /// </summary>
+    private static string RenderTable(RDFTable table)
     {
         StringBuilder sb = new StringBuilder();
         sb.Append(string.Join("|", table.Columns.Select(c => c.Name)));
@@ -6147,9 +6154,165 @@ public class RDFQueryEngineTest
         return sb.ToString();
     }
 
-    //Left [?S,?X] and Right [?X,?O] sharing ?X, with nulls in the common column on both sides
-    private static RDFTable Left() => Tab(["?S", "?X"], ["s1", "v1"], ["s2", null], ["s3", "v3"]);
-    private static RDFTable Right() => Tab(["?X", "?O"], ["v1", "o1"], [null, "o2"], ["v3", "o3"]);
+    //Canonical join fixtures: left [?S,?X] and right [?X,?O] share ?X and carry UNBOUND cells in that shared
+    //column on BOTH sides, so they exercise the wildcard/coalescing paths of inner/outer/diff joins
+    private static RDFTable LeftWithNulls() => BuildTable(["?S", "?X"], ["s1", "v1"], ["s2", null], ["s3", "v3"]);
+    private static RDFTable RightWithNulls() => BuildTable(["?X", "?O"], ["v1", "o1"], [null, "o2"], ["v3", "o3"]);
+
+    #region Naive reference joins (oracle for the hash-based OuterJoin/DiffJoin)
+    // These helpers re-implement the join semantics in the simplest possible way (plain O(n*m) nested loops,
+    // no hashing/partitioning). They are intentionally "obviously correct" so they can serve as the ORACLE
+    // the optimized production joins are diff-tested against: if the fast version ever diverges from this
+    // naive version on any random input, the differential test below fails.
+
+    /// <summary>
+    /// Two rows are "join-compatible" on their shared columns when, for EACH shared column, at least one side
+    /// is UNBOUND (null acts as a wildcard) or both sides hold the very same value. leftCommon[i]/rightCommon[i]
+    /// are the column ordinals of the i-th shared variable on the left/right row respectively.
+    /// </summary>
+    private static bool AreRowsJoinCompatible(RDFTableRow leftRow, int[] leftCommon, RDFTableRow rightRow, int[] rightCommon)
+    {
+        for (int i = 0; i < leftCommon.Length; i++)
+        {
+            string leftCell = leftRow[leftCommon[i]];
+            string rightCell = rightRow[rightCommon[i]];
+            //Incompatible only when BOTH sides are bound to DIFFERENT values
+            if (leftCell != null && rightCell != null && !string.Equals(leftCell, rightCell, StringComparison.Ordinal))
+                return false;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Naive outer-join oracle: for every left row, emit one joined row per compatible right row (coalescing
+    /// shared columns); if a left row matches nothing and the right side is OPTIONAL, emit the padded left row.
+    /// </summary>
+    private static RDFTable NaiveOuterJoin(RDFTable leftTable, RDFTable rightTable)
+    {
+        RDFTable joinTable = new RDFTable();
+
+        //Result schema = all left columns, then the right columns NOT already present on the left
+        List<string> common = leftTable.Columns.Where(c => rightTable.HasColumn(c.Name)).Select(c => c.Name).ToList();
+        foreach (RDFTableColumn leftColumn in leftTable.Columns)
+            joinTable.AddColumn(leftColumn.Name);
+        List<int> rightNonCommon = new List<int>();
+        foreach (RDFTableColumn rightColumn in rightTable.Columns)
+            if (!leftTable.HasColumn(rightColumn.Name))
+            {
+                joinTable.AddColumn(rightColumn.Name);
+                rightNonCommon.Add(rightColumn.Ordinal);   //remember where to read these from the right row
+            }
+
+        int leftWidth = leftTable.ColumnsCount, joinWidth = joinTable.ColumnsCount;
+        //Ordinals of the shared variables, aligned by position (leftCommon[i] <-> rightCommon[i])
+        int[] leftCommon = common.Select(leftTable.OrdinalOf).ToArray();
+        int[] rightCommon = common.Select(rightTable.OrdinalOf).ToArray();
+
+        foreach (RDFTableRow leftRow in leftTable.Rows)
+        {
+            bool found = false;
+            //Scan every right row in order (this is the O(m) the production code replaces with a hash lookup)
+            for (int ri = 0; ri < rightTable.Rows.Count; ri++)
+            {
+                RDFTableRow rightRow = rightTable.Rows[ri];
+                if (!AreRowsJoinCompatible(leftRow, leftCommon, rightRow, rightCommon))
+                    continue;
+
+                found = true;
+                string[] cells = new string[joinWidth];
+                //1) copy the left row as-is
+                for (int i = 0; i < leftWidth; i++)
+                    cells[i] = leftRow[i];
+                //2) coalesce shared columns: if left is UNBOUND there, take the (bound) right value
+                for (int c = 0; c < leftCommon.Length; c++)
+                    if (cells[leftCommon[c]] == null)
+                        cells[leftCommon[c]] = rightRow[rightCommon[c]];
+                //3) append the right-only columns
+                for (int k = 0; k < rightNonCommon.Count; k++)
+                    cells[leftWidth + k] = rightRow[rightNonCommon[k]];
+                joinTable.AddRow(cells);
+            }
+
+            //OPTIONAL right with no match => keep the left row, right-only columns stay UNBOUND
+            if (!found && rightTable.IsOptional)
+            {
+                string[] cells = new string[joinWidth];
+                for (int i = 0; i < leftWidth; i++)
+                    cells[i] = leftRow[i];
+                joinTable.AddRow(cells);
+            }
+        }
+        return joinTable;
+    }
+
+    /// <summary>
+    /// Naive set-difference (MINUS) oracle: keep a left row only when NO right row is compatible with it.
+    /// When the two tables share no variable, MINUS removes nothing (every left row is kept).
+    /// </summary>
+    private static RDFTable NaiveDiffJoin(RDFTable leftTable, RDFTable rightTable)
+    {
+        RDFTable diffTable = new RDFTable();
+        //Result schema = the left schema unchanged (MINUS never adds right columns)
+        foreach (RDFTableColumn leftColumn in leftTable.Columns)
+            diffTable.AddColumn(leftColumn.Name);
+
+        List<string> common = leftTable.Columns.Where(c => rightTable.HasColumn(c.Name)).Select(c => c.Name).ToList();
+        int width = leftTable.ColumnsCount;
+
+        //No shared variable => keep all left rows verbatim
+        if (common.Count == 0)
+        {
+            foreach (RDFTableRow leftRow in leftTable.Rows)
+            {
+                string[] cells = new string[width];
+                for (int i = 0; i < width; i++)
+                    cells[i] = leftRow[i];
+                diffTable.AddRow(cells);
+            }
+            return diffTable;
+        }
+
+        int[] leftCommon = common.Select(leftTable.OrdinalOf).ToArray();
+        int[] rightCommon = common.Select(rightTable.OrdinalOf).ToArray();
+        foreach (RDFTableRow leftRow in leftTable.Rows)
+        {
+            //Stop at the first compatible right row (its mere existence is enough to drop the left row)
+            bool hasMatch = false;
+            for (int ri = 0; ri < rightTable.Rows.Count && !hasMatch; ri++)
+                hasMatch = AreRowsJoinCompatible(leftRow, leftCommon, rightTable.Rows[ri], rightCommon);
+
+            if (!hasMatch)
+            {
+                string[] cells = new string[width];
+                for (int i = 0; i < width; i++)
+                    cells[i] = leftRow[i];
+                diffTable.AddRow(cells);
+            }
+        }
+        return diffTable;
+    }
+
+    /// <summary>
+    /// Builds a random table over the given columns: 0..4 rows, each cell drawn from {a,b,c,null}. The null
+    /// entry models an UNBOUND cell, so the generated data exercises the wildcard paths of the joins.
+    /// </summary>
+    private static RDFTable RandomTable(string[] columns, Random rng)
+    {
+        string[] domain = ["a", "b", "c", null];
+        RDFTable table = new RDFTable();
+        foreach (string column in columns)
+            table.AddColumn(column);
+        int rows = rng.Next(0, 5);
+        for (int r = 0; r < rows; r++)
+        {
+            string[] cells = new string[columns.Length];
+            for (int i = 0; i < columns.Length; i++)
+                cells[i] = domain[rng.Next(domain.Length)];   //may be null => UNBOUND
+            table.AddRow(cells);
+        }
+        return table;
+    }
+    #endregion
 
     [TestMethod]
     public void ShouldInnerJoinOnCommonColumnDroppingUnbound()
@@ -6158,7 +6321,7 @@ public class RDFQueryEngineTest
             "?S|?X|?O\n" +
             "s1|v1|o1\n" +
             "s3|v3|o3",
-            Dump(RDFQueryEngine.InnerJoinTables(Left(), Right())));
+            RenderTable(RDFQueryEngine.InnerJoinTables(LeftWithNulls(), RightWithNulls())));
     }
 
     [TestMethod]
@@ -6170,7 +6333,7 @@ public class RDFQueryEngineTest
             "a|p2\n" +
             "b|p1\n" +
             "b|p2",
-            Dump(RDFQueryEngine.InnerJoinTables(Tab(["?S"], ["a"], ["b"]), Tab(["?O"], ["p1"], ["p2"]))));
+            RenderTable(RDFQueryEngine.InnerJoinTables(BuildTable(["?S"], ["a"], ["b"]), BuildTable(["?O"], ["p1"], ["p2"]))));
     }
 
     [TestMethod]
@@ -6179,7 +6342,7 @@ public class RDFQueryEngineTest
         //Deliberate v4 change: "ABC" no longer matches "abc" (old DataRelation was case-insensitive)
         Assert.AreEqual(
             "?X|?S|?O",
-            Dump(RDFQueryEngine.InnerJoinTables(Tab(["?X", "?S"], ["ABC", "s1"]), Tab(["?X", "?O"], ["abc", "o1"]))));
+            RenderTable(RDFQueryEngine.InnerJoinTables(BuildTable(["?X", "?S"], ["ABC", "s1"]), BuildTable(["?X", "?O"], ["abc", "o1"]))));
     }
 
     [TestMethod]
@@ -6194,19 +6357,19 @@ public class RDFQueryEngineTest
             "s2|v3|o3\n" +
             "s3|v3|o2\n" +
             "s3|v3|o3",
-            Dump(RDFQueryEngine.OuterJoinTables(Left(), Right())));
+            RenderTable(RDFQueryEngine.OuterJoinTables(LeftWithNulls(), RightWithNulls())));
     }
 
     [TestMethod]
     public void ShouldOuterJoinPadUnmatchedLeftWhenOptional()
     {
-        RDFTable right = Tab(["?X", "?O"], ["vA", "o1"]);
+        RDFTable right = BuildTable(["?X", "?O"], ["vA", "o1"]);
         right.IsOptional = true;
         Assert.AreEqual(
             "?S|?X|?O\n" +
             "s1|vA|o1\n" +
             "s2|vB|<U>",
-            Dump(RDFQueryEngine.OuterJoinTables(Tab(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]), right)));
+            RenderTable(RDFQueryEngine.OuterJoinTables(BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]), right)));
     }
 
     [TestMethod]
@@ -6215,7 +6378,7 @@ public class RDFQueryEngineTest
         Assert.AreEqual(
             "?S|?X|?O\n" +
             "s1|vA|o1",
-            Dump(RDFQueryEngine.OuterJoinTables(Tab(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]), Tab(["?X", "?O"], ["vA", "o1"]))));
+            RenderTable(RDFQueryEngine.OuterJoinTables(BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]), BuildTable(["?X", "?O"], ["vA", "o1"]))));
     }
 
     [TestMethod]
@@ -6224,7 +6387,7 @@ public class RDFQueryEngineTest
         //Every left row is compatible with some right row (null is compatible with anything) => empty
         Assert.AreEqual(
             "?S|?X",
-            Dump(RDFQueryEngine.DiffJoinTables(Left(), Right())));
+            RenderTable(RDFQueryEngine.DiffJoinTables(LeftWithNulls(), RightWithNulls())));
     }
 
     [TestMethod]
@@ -6234,7 +6397,7 @@ public class RDFQueryEngineTest
             "?S\n" +
             "a\n" +
             "b",
-            Dump(RDFQueryEngine.DiffJoinTables(Tab(["?S"], ["a"], ["b"]), Tab(["?O"], ["p1"], ["p2"]))));
+            RenderTable(RDFQueryEngine.DiffJoinTables(BuildTable(["?S"], ["a"], ["b"]), BuildTable(["?O"], ["p1"], ["p2"]))));
     }
 
     [TestMethod]
@@ -6243,47 +6406,100 @@ public class RDFQueryEngineTest
         Assert.AreEqual(
             "?S|?X\n" +
             "s2|vB",
-            Dump(RDFQueryEngine.DiffJoinTables(Tab(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]), Tab(["?X", "?O"], ["vA", "o1"]))));
+            RenderTable(RDFQueryEngine.DiffJoinTables(BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]), BuildTable(["?X", "?O"], ["vA", "o1"]))));
+    }
+
+    [TestMethod]
+    public void ShouldOuterJoinAsProductWhenNoCommonColumn()
+    {
+        //No shared variable => every left row is compatible with every right row (cartesian product)
+        Assert.AreEqual(
+            "?S|?O\n" +
+            "a|p1\n" +
+            "a|p2\n" +
+            "b|p1\n" +
+            "b|p2",
+            RenderTable(RDFQueryEngine.OuterJoinTables(BuildTable(["?S"], ["a"], ["b"]), BuildTable(["?O"], ["p1"], ["p2"]))));
+    }
+
+    [TestMethod]
+    public void ShouldOuterJoinOnTwoCommonColumns()
+    {
+        //Two shared variables (?X,?Y) => the join key is composite: only rows agreeing on BOTH match
+        RDFTable left = BuildTable(["?S", "?X", "?Y"], ["s1", "a", "b"], ["s2", "a", "c"]);
+        RDFTable right = BuildTable(["?X", "?Y", "?O"], ["a", "b", "o1"], ["a", "c", "o2"], ["a", "b", "o3"]);
+        Assert.AreEqual(
+            "?S|?X|?Y|?O\n" +
+            "s1|a|b|o1\n" +
+            "s1|a|b|o3\n" +
+            "s2|a|c|o2",
+            RenderTable(RDFQueryEngine.OuterJoinTables(left, right)));
+    }
+
+    [TestMethod]
+    public void ShouldMatchBruteForceOuterAndDiffJoinsOnRandomTables()
+    {
+        //Differential test: the hash-based joins must be byte-for-byte equal to a nested-loop oracle across
+        //many random shapes (one/two common columns, UNBOUND cells on both sides, OPTIONAL right, empties)
+        Random rng = new Random(20260605);
+        for (int iteration = 0; iteration < 3000; iteration++)
+        {
+            bool twoCommon = rng.Next(2) == 0;
+            string[] leftColumns = twoCommon ? ["?S", "?X", "?Y"] : ["?S", "?X"];
+            string[] rightColumns = twoCommon ? ["?X", "?Y", "?O"] : ["?X", "?O"];
+            RDFTable left = RandomTable(leftColumns, rng);
+            RDFTable right = RandomTable(rightColumns, rng);
+            right.IsOptional = rng.Next(2) == 0;
+
+            Assert.AreEqual(
+                RenderTable(NaiveOuterJoin(left, right)),
+                RenderTable(RDFQueryEngine.OuterJoinTables(left, right)),
+                $"OuterJoin mismatch at iteration {iteration} (twoCommon={twoCommon}, optional={right.IsOptional})");
+            Assert.AreEqual(
+                RenderTable(NaiveDiffJoin(left, right)),
+                RenderTable(RDFQueryEngine.DiffJoinTables(left, right)),
+                $"DiffJoin mismatch at iteration {iteration} (twoCommon={twoCommon})");
+        }
     }
 
     [TestMethod]
     public void ShouldCombineUnionMergingRows()
     {
-        RDFTable a = Tab(["?X"], ["a"], ["b"]);
+        RDFTable a = BuildTable(["?X"], ["a"], ["b"]);
         a.JoinAsUnion = true;
-        RDFTable b = Tab(["?X"], ["c"]);
+        RDFTable b = BuildTable(["?X"], ["c"]);
         //Union merges previous (a) into current (b): current rows first, then merged rows
         Assert.AreEqual(
             "?X\n" +
             "c\n" +
             "a\n" +
             "b",
-            Dump(RDFQueryEngine.CombineTables([a, b])));
+            RenderTable(RDFQueryEngine.CombineTables([a, b])));
     }
 
     [TestMethod]
     public void ShouldCombineDispatchingOuterJoinOnOptional()
     {
-        RDFTable a = Tab(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]);
-        RDFTable b = Tab(["?X", "?O"], ["vA", "o1"]);
+        RDFTable a = BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]);
+        RDFTable b = BuildTable(["?X", "?O"], ["vA", "o1"]);
         b.IsOptional = true;
         Assert.AreEqual(
             "?S|?X|?O\n" +
             "s1|vA|o1\n" +
             "s2|vB|<U>",
-            Dump(RDFQueryEngine.CombineTables([a, b])));
+            RenderTable(RDFQueryEngine.CombineTables([a, b])));
     }
 
     [TestMethod]
     public void ShouldCombineDispatchingMinus()
     {
-        RDFTable a = Tab(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]);
+        RDFTable a = BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]);
         a.JoinAsMinus = true;
-        RDFTable b = Tab(["?X", "?O"], ["vA", "o1"]);
+        RDFTable b = BuildTable(["?X", "?O"], ["vA", "o1"]);
         Assert.AreEqual(
             "?S|?X\n" +
             "s2|vB",
-            Dump(RDFQueryEngine.CombineTables([a, b])));
+            RenderTable(RDFQueryEngine.CombineTables([a, b])));
     }
 
     [TestMethod]
@@ -6293,103 +6509,103 @@ public class RDFQueryEngineTest
     [TestMethod]
     public void ShouldCombineReturnSingleTableUnchanged()
     {
-        RDFTable only = Tab(["?X"], ["a"]);
+        RDFTable only = BuildTable(["?X"], ["a"]);
         Assert.AreSame(only, RDFQueryEngine.CombineTables([only]));
     }
 
     [TestMethod]
     public void ShouldSortAscendingWithUnboundFirst()
     {
-        RDFTable table = Tab(["?N"], ["N2"], [null], ["N1"]);
+        RDFTable table = BuildTable(["?N"], ["N2"], [null], ["N1"]);
         Assert.AreEqual(
             "?N\n<U>\nN1\nN2",
-            Dump(RDFQueryEngine.SortTable(table, [("?N", false)])));
+            RenderTable(RDFQueryEngine.SortTable(table, [("?N", false)])));
     }
 
     [TestMethod]
     public void ShouldSortDescendingWithUnboundLast()
     {
-        RDFTable table = Tab(["?N"], ["N2"], [null], ["N1"]);
+        RDFTable table = BuildTable(["?N"], ["N2"], [null], ["N1"]);
         Assert.AreEqual(
             "?N\nN2\nN1\n<U>",
-            Dump(RDFQueryEngine.SortTable(table, [("?N", true)])));
+            RenderTable(RDFQueryEngine.SortTable(table, [("?N", true)])));
     }
 
     [TestMethod]
     public void ShouldSortStablyKeepingInsertionOrderOnTies()
     {
         //Two rows tie on ?N=T; their ?S order (s1 before s2) must be preserved in both directions
-        RDFTable table = Tab(["?N", "?S"], ["T", "s1"], ["A", "s0"], ["T", "s2"]);
+        RDFTable table = BuildTable(["?N", "?S"], ["T", "s1"], ["A", "s0"], ["T", "s2"]);
         Assert.AreEqual(
             "?N|?S\nA|s0\nT|s1\nT|s2",
-            Dump(RDFQueryEngine.SortTable(table, [("?N", false)])));
+            RenderTable(RDFQueryEngine.SortTable(table, [("?N", false)])));
         Assert.AreEqual(
             "?N|?S\nT|s1\nT|s2\nA|s0",
-            Dump(RDFQueryEngine.SortTable(table, [("?N", true)])));
+            RenderTable(RDFQueryEngine.SortTable(table, [("?N", true)])));
     }
 
     [TestMethod]
     public void ShouldSortByOrdinalCodePointNotCulture()
     {
         //Ordinal puts uppercase before lowercase (A<B<C<a<b), unlike DataView's culture collation
-        RDFTable table = Tab(["?N"], ["B"], ["a"], ["C"], ["b"], ["A"]);
+        RDFTable table = BuildTable(["?N"], ["B"], ["a"], ["C"], ["b"], ["A"]);
         Assert.AreEqual(
             "?N\nA\nB\nC\na\nb",
-            Dump(RDFQueryEngine.SortTable(table, [("?N", false)])));
+            RenderTable(RDFQueryEngine.SortTable(table, [("?N", false)])));
     }
 
     [TestMethod]
     public void ShouldSortByMultipleKeys()
     {
-        RDFTable table = Tab(["?A", "?B"], ["x", "2"], ["x", "1"], ["y", "1"]);
+        RDFTable table = BuildTable(["?A", "?B"], ["x", "2"], ["x", "1"], ["y", "1"]);
         Assert.AreEqual(
             "?A|?B\nx|1\nx|2\ny|1",
-            Dump(RDFQueryEngine.SortTable(table, [("?A", false), ("?B", false)])));
+            RenderTable(RDFQueryEngine.SortTable(table, [("?A", false), ("?B", false)])));
     }
 
     [TestMethod]
     public void ShouldSortIgnoringKeysWhoseColumnIsAbsent()
     {
-        RDFTable table = Tab(["?N"], ["b"], ["a"]);
+        RDFTable table = BuildTable(["?N"], ["b"], ["a"]);
         Assert.AreEqual(
             "?N\na\nb",
-            Dump(RDFQueryEngine.SortTable(table, [("?MISSING", false), ("?N", false)])));
+            RenderTable(RDFQueryEngine.SortTable(table, [("?MISSING", false), ("?N", false)])));
     }
 
     [TestMethod]
     public void ShouldDistinctCollapsingDuplicatesPreservingOrder()
     {
-        RDFTable table = Tab(["?N"], ["N2"], ["N1"], ["N2"], ["N1"]);
+        RDFTable table = BuildTable(["?N"], ["N2"], ["N1"], ["N2"], ["N1"]);
         Assert.AreEqual(
             "?N\nN2\nN1",
-            Dump(RDFQueryEngine.DistinctTable(table)));
+            RenderTable(RDFQueryEngine.DistinctTable(table)));
     }
 
     [TestMethod]
     public void ShouldDistinctTreatingUnboundAsEqual()
     {
-        RDFTable table = Tab(["?N"], [null], ["N1"], [null]);
+        RDFTable table = BuildTable(["?N"], [null], ["N1"], [null]);
         Assert.AreEqual(
             "?N\n<U>\nN1",
-            Dump(RDFQueryEngine.DistinctTable(table)));
+            RenderTable(RDFQueryEngine.DistinctTable(table)));
     }
 
     [TestMethod]
     public void ShouldDistinctCaseSensitively()
     {
-        RDFTable table = Tab(["?N"], ["ABC"], ["abc"], ["ABC"]);
+        RDFTable table = BuildTable(["?N"], ["ABC"], ["abc"], ["ABC"]);
         Assert.AreEqual(
             "?N\nABC\nabc",
-            Dump(RDFQueryEngine.DistinctTable(table)));
+            RenderTable(RDFQueryEngine.DistinctTable(table)));
     }
 
     [TestMethod]
     public void ShouldDistinctOverMultipleColumnsIncludingUnbound()
     {
-        RDFTable table = Tab(["?S", "?N"], ["s", "N1"], ["s", null], ["s", "N1"], ["s", null]);
+        RDFTable table = BuildTable(["?S", "?N"], ["s", "N1"], ["s", null], ["s", "N1"], ["s", null]);
         Assert.AreEqual(
             "?S|?N\ns|N1\ns|<U>",
-            Dump(RDFQueryEngine.DistinctTable(table)));
+            RenderTable(RDFQueryEngine.DistinctTable(table)));
     }
     #endregion
 
