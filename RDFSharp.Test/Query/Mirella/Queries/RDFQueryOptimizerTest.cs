@@ -23,14 +23,17 @@ using RDFSharp.Store;
 namespace RDFSharp.Test.Query;
 
 /// <summary>
+/// <para>
 /// Unit tests for RDFQueryOptimizer.OptimizePatternOrder.
 /// The optimizer reorders contiguous blocks of plain inner-join RDFPattern instances
 /// by ascending estimated cardinality. OPTIONAL, UNION/MINUS pairs, BIND, VALUES,
 /// and PropertyPath members act as ordering barriers and must never be moved.
-///
+/// </para>
+/// <para>
 /// When the datasource is null the cardinality estimate falls back to the pattern's
 /// variable count, so a pattern with fewer variables (more bound terms) is considered
 /// more selective and is placed first.
+/// </para>
 /// </summary>
 [TestClass]
 public class RDFQueryOptimizerTest

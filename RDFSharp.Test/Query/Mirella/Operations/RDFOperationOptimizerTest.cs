@@ -22,19 +22,23 @@ using RDFSharp.Store;
 namespace RDFSharp.Test.Query;
 
 /// <summary>
+/// <para>
 /// Regression suite verifying that RDFQueryOptimizer does not alter the functional
 /// correctness of SPARQL UPDATE operations (INSERT WHERE, DELETE WHERE,
 /// DELETE/INSERT WHERE) when the optimizer reorganizes the WHERE-clause patterns.
-///
+/// </para>
+/// <para>
 /// Every test follows the same structure:
 ///   1. Build a known RDF graph/store.
 ///   2. Execute a SPARQL UPDATE operation whose WHERE clause contains a combination
 ///      of plain patterns, OPTIONAL, UNION, MINUS, BIND and/or VALUES.
 ///   3. Assert that the triples/quadruples that were expected to change actually
 ///      changed, and that triples/quadruples that should be untouched are intact.
-///
+/// </para>
+/// <para>
 /// The optimizer is invoked transparently by RDFOperationEngine; these tests ensure
 /// that reordering does not alter join semantics or filter evaluation.
+/// </para>
 /// </summary>
 [TestClass]
 public class RDFOperationOptimizerTest
