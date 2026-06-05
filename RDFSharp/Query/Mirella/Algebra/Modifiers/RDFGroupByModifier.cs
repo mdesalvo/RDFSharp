@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -217,18 +218,28 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Calculates the partition key on the given table row
+        /// Calculates the partition key on the given table row. The key is built by appending, for every
+        /// partition variable, "name§PV§value" (an UNBOUND value contributes an empty string) and joining the
+        /// pieces with "§PK§". The exact layout MUST be preserved: the projection step splits the key back on
+        /// these very placeholders to recover the bindings (see RDFAggregator.UpdateProjectionTable).
         /// </summary>
         private string GetPartitionKey(RDFTableRow tableRow)
         {
-            List<string> partitionKey = new List<string>(PartitionVariables.Count);
-            PartitionVariables.ForEach(pv =>
+            StringBuilder partitionKey = new StringBuilder();
+            for (int i = 0; i < PartitionVariables.Count; i++)
             {
-                partitionKey.Add(tableRow.IsUnbound(pv.VariableName)
-                    ? $"{pv.VariableName}§PV§{string.Empty}"
-                    : $"{pv.VariableName}§PV§{tableRow[pv.VariableName]}");
-            });
-            return string.Join("§PK§", partitionKey);
+                RDFVariable partitionVariable = PartitionVariables[i];
+
+                //"§PK§" separates one variable's chunk from the next (only between chunks, not before the first)
+                if (i > 0)
+                    partitionKey.Append("§PK§");
+
+                //"name§PV§" then the bound value (nothing when UNBOUND, matching the old empty-string behaviour)
+                partitionKey.Append(partitionVariable.VariableName).Append("§PV§");
+                if (!tableRow.IsUnbound(partitionVariable.VariableName))
+                    partitionKey.Append(tableRow[partitionVariable.VariableName]);
+            }
+            return partitionKey.ToString();
         }
         #endregion
     }

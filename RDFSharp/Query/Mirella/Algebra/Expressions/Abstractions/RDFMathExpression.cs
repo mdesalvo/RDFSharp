@@ -163,9 +163,11 @@ namespace RDFSharp.Query
             RDFTypedLiteral expressionResult = null;
 
             #region Guards
-            if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
+            string leftColumnName = LeftArgument is RDFVariable ? LeftArgument.ToString() : null;
+            if (leftColumnName != null && !row.HasColumn(leftColumnName))
                 return null;
-            if (RightArgument is RDFVariable && !row.HasColumn(RightArgument.ToString()))
+            string rightColumnName = RightArgument is RDFVariable ? RightArgument.ToString() : null;
+            if (rightColumnName != null && !row.HasColumn(rightColumnName))
                 return null;
             #endregion
 
@@ -177,7 +179,7 @@ namespace RDFSharp.Query
                 if (LeftArgument is RDFExpression leftArgumentExpression)
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
-                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
+                    leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[leftColumnName] ?? string.Empty));
 
                 //Evaluate right argument (Expression VS Variable VS TypedLiteral)
                 RDFPatternMember rightArgumentPMember;
@@ -187,7 +189,7 @@ namespace RDFSharp.Query
                         rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
                         break;
                     case RDFVariable _:
-                        rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[RightArgument.ToString()] ?? string.Empty));
+                        rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[rightColumnName] ?? string.Empty));
                         break;
                     default:
                         rightArgumentPMember = (RDFTypedLiteral)RightArgument;
