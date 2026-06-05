@@ -24,7 +24,7 @@ namespace RDFSharp.Test.Query;
 
 /// <summary>
 /// <para>
-/// Unit tests for RDFQueryOptimizer.OptimizePatternOrder.
+/// Unit tests for RDFQueryOptimizer.OptimizePatternGroup.
 /// The optimizer reorders contiguous blocks of plain inner-join RDFPattern instances
 /// by ascending estimated cardinality. OPTIONAL, UNION/MINUS pairs, BIND, VALUES,
 /// and PropertyPath members act as ordering barriers and must never be moved.
@@ -73,6 +73,15 @@ public class RDFQueryOptimizerTest
     private static RDFPropertyPath MakePropertyPath()
         => new RDFPropertyPath(new RDFVariable("?start"), new RDFVariable("?end"))
             .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:prop")));
+
+    // Builds an inner-join pattern from S/P/O tokens: a token starting with '?' becomes a variable, otherwise a
+    // resource (prefixed "ex:"). This lets tests wire SHARED variables across patterns to drive the join-graph
+    // heuristic (connectivity, filter-first, components), which the suffix-based MakePlainPattern cannot express.
+    private static RDFPattern JoinPattern(string subject, string predicate, string @object)
+        => new RDFPattern(AsPatternMember(subject), AsPatternMember(predicate), AsPatternMember(@object));
+
+    private static RDFPatternMember AsPatternMember(string token)
+        => token[0] == '?' ? new RDFVariable(token) : new RDFResource("ex:" + token);
     #endregion
 
     #region Tests
@@ -82,7 +91,7 @@ public class RDFQueryOptimizerTest
     public void ShouldReturnEmptyListUnchanged()
     {
         List<RDFPatternGroupMember> members = [];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreEqual(0, result.Count);
     }
 
@@ -92,7 +101,7 @@ public class RDFQueryOptimizerTest
     {
         RDFPattern p = MakePlainPattern(2);
         List<RDFPatternGroupMember> members = [p];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreEqual(1, result.Count);
         Assert.AreSame(p, result[0]);
     }
@@ -105,7 +114,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p0 = MakePlainPattern(0, "a");
         RDFPattern p1 = MakePlainPattern(1, "b");
         List<RDFPatternGroupMember> members = [p0, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p0, result[0]);
         Assert.AreSame(p1, result[1]);
     }
@@ -118,7 +127,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p3 = MakePlainPattern(3, "a");
         RDFPattern p1 = MakePlainPattern(1, "b");
         List<RDFPatternGroupMember> members = [p3, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p1, result[0], "Lower cardinality must come first");
         Assert.AreSame(p3, result[1]);
     }
@@ -131,7 +140,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p0 = MakePlainPattern(0, "b");
         RDFPattern p1 = MakePlainPattern(1, "c");
         List<RDFPatternGroupMember> members = [p3, p0, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p0, result[0]);
         Assert.AreSame(p1, result[1]);
         Assert.AreSame(p3, result[2]);
@@ -144,7 +153,7 @@ public class RDFQueryOptimizerTest
         RDFPattern plain  = MakePlainPattern(3, "a");   // higher cardinality
         RDFPattern opt    = MakePlainPattern(0, "b").Optional(); // lower cardinality but OPTIONAL
         List<RDFPatternGroupMember> members = [plain, opt];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         // 'plain' is the only reorderable element (block length=1, no sort), 'opt' stays put
         Assert.AreSame(plain, result[0]);
         Assert.AreSame(opt,   result[1]);
@@ -162,7 +171,7 @@ public class RDFQueryOptimizerTest
         RDFPattern unionFollower = MakePlainPattern(0, "b");
         RDFPattern plain         = MakePlainPattern(1, "c");
         List<RDFPatternGroupMember> members = [unionLeader, unionFollower, plain];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(unionLeader,   result[0]);
         Assert.AreSame(unionFollower, result[1]);
         Assert.AreSame(plain,         result[2]);
@@ -176,7 +185,7 @@ public class RDFQueryOptimizerTest
         RDFPattern minusFollower = MakePlainPattern(0, "b");
         RDFPattern plain         = MakePlainPattern(1, "c");
         List<RDFPatternGroupMember> members = [minusLeader, minusFollower, plain];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(minusLeader,   result[0]);
         Assert.AreSame(minusFollower, result[1]);
         Assert.AreSame(plain,         result[2]);
@@ -191,7 +200,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p1  = MakePlainPattern(1, "b");
         // [p3, bind, p1] → p3 is alone in its block, p1 is alone in its block; bind is never moved
         List<RDFPatternGroupMember> members = [p3, bind, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p3,   result[0]);
         Assert.AreSame(bind, result[1]);
         Assert.AreSame(p1,   result[2]);
@@ -205,7 +214,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p3    = MakePlainPattern(3, "a");
         RDFPattern p1    = MakePlainPattern(1, "b");
         List<RDFPatternGroupMember> members = [p3, values, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p3,     result[0]);
         Assert.AreSame(values, result[1]);
         Assert.AreSame(p1,     result[2]);
@@ -219,7 +228,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p3        = MakePlainPattern(3, "a");
         RDFPattern p1        = MakePlainPattern(1, "b");
         List<RDFPatternGroupMember> members = [p3, path, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p3,   result[0]);
         Assert.AreSame(path, result[1]);
         Assert.AreSame(p1,   result[2]);
@@ -238,7 +247,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p2 = MakePlainPattern(2, "c");
         RDFPattern p0 = MakePlainPattern(0, "d");
         List<RDFPatternGroupMember> members = [p3, p1, bind, p2, p0];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         // Block 1 sorted
         Assert.AreSame(p1,   result[0]);
         Assert.AreSame(p3,   result[1]);
@@ -259,7 +268,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p2   = MakePlainPattern(2, "c");
         RDFPattern p1   = MakePlainPattern(1, "d");
         List<RDFPatternGroupMember> members = [p3, p0, values, p2, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p0,     result[0]);
         Assert.AreSame(p3,     result[1]);
         Assert.AreSame(values, result[2]);
@@ -282,7 +291,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p2           = MakePlainPattern(2, "e");
         RDFPattern p0           = MakePlainPattern(0, "f");
         List<RDFPatternGroupMember> members = [p3, p1, unionLeader, unionFollower, p2, p0];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p1,           result[0]);
         Assert.AreSame(p3,           result[1]);
         Assert.AreSame(unionLeader,  result[2]);
@@ -302,7 +311,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p2           = MakePlainPattern(2, "e");
         RDFPattern p1           = MakePlainPattern(1, "f");
         List<RDFPatternGroupMember> members = [p3, p0, minusLeader, minusFollower, p2, p1];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
         Assert.AreSame(p0,            result[0]);
         Assert.AreSame(p3,            result[1]);
         Assert.AreSame(minusLeader,   result[2]);
@@ -359,7 +368,7 @@ public class RDFQueryOptimizerTest
             p3e, p1e
         ];
 
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
 
         // Block 1 sorted
         Assert.AreSame(p1a,    result[0],  "Block1[0] must be p1a (card=1)");
@@ -411,7 +420,7 @@ public class RDFQueryOptimizerTest
 
         // Intentionally put the higher-cardinality pattern first
         List<RDFPatternGroupMember> members = [patternAlice, patternBob];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, graph);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, graph);
 
         // patternBob has fewer index hits (1) → should come first
         Assert.AreSame(patternBob,   result[0], "patternBob (1 triple) must come first");
@@ -439,7 +448,7 @@ public class RDFQueryOptimizerTest
         RDFPattern patternCtx2 = new RDFPattern(ctx2, new RDFVariable("?s"), name, new RDFVariable("?o"));
 
         List<RDFPatternGroupMember> members = [patternCtx1, patternCtx2];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, store);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, store);
 
         // ctx2 has 1 quadruple → lower cardinality → comes first
         Assert.AreSame(patternCtx2, result[0], "patternCtx2 (1 quadruple) must come first");
@@ -456,7 +465,7 @@ public class RDFQueryOptimizerTest
         // Keep a snapshot of the original order
         List<RDFPatternGroupMember> snapshot = new List<RDFPatternGroupMember>(original);
 
-        _ = RDFQueryOptimizer.OptimizePatternOrder(original, null);
+        _ = RDFQueryOptimizer.OptimizePatternGroup(original, null);
 
         // The returned list is a copy; the original list instance itself is also a copy
         // made inside the optimizer, but what the caller passed must be unchanged in identity
@@ -481,7 +490,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p1b = MakePlainPattern(1, "e");
 
         List<RDFPatternGroupMember> members = [p2, p3, p0, bind, p3b, p1b];
-        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternOrder(members, null);
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
 
         Assert.AreSame(p0,   result[0]);
         Assert.AreSame(p2,   result[1]);
@@ -489,6 +498,85 @@ public class RDFQueryOptimizerTest
         Assert.AreSame(bind, result[3]);
         Assert.AreSame(p1b,  result[4]);
         Assert.AreSame(p3b,  result[5]);
+    }
+
+    // ── 21. Join-graph: a CONNECTED pattern beats an equally/more selective DISCONNECTED one ──
+    [TestMethod]
+    public void ShouldPreferConnectedPatternOverDisconnected()
+    {
+        // With a null datasource cardinality == variable count, so 'seed' (1 var) is the most selective seed.
+        // After it binds ?s, 'connected' shares ?s while 'disconnected' shares nothing: a pure cardinality sort
+        // would keep declared order [seed, disconnected, connected], but the join-graph heuristic must pull the
+        // connected pattern forward to avoid a cartesian product.
+        RDFPattern seed         = JoinPattern("?s", "knows", "bob");  // {?s}    card 1
+        RDFPattern disconnected = JoinPattern("?x", "p",     "?y");   // {?x,?y} card 2, shares nothing with ?s
+        RDFPattern connected    = JoinPattern("?s", "age",   "?a");   // {?s,?a} card 2, shares ?s
+
+        List<RDFPatternGroupMember> members = [seed, disconnected, connected];
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
+
+        Assert.AreSame(seed,         result[0], "Most selective pattern must seed the chain");
+        Assert.AreSame(connected,    result[1], "Connected pattern must be preferred over the disconnected one");
+        Assert.AreSame(disconnected, result[2]);
+    }
+
+    // ── 22. Join-graph: a FILTER pattern (binds nothing new) runs before an expanding one ──
+    [TestMethod]
+    public void ShouldRunFilterPatternBeforeExpandingPattern()
+    {
+        // Once ?s and ?c are bound, 'filter' adds no new variable (it can only shrink the intermediate) while
+        // 'expand' introduces ?d (it can grow it). Despite equal static cardinality, the filter must run first.
+        RDFPattern seed   = JoinPattern("?s", "a", "o1");  // {?s}    card 1  -> seed
+        RDFPattern bindC  = JoinPattern("?s", "b", "?c");  // {?s,?c} card 2  -> binds ?c
+        RDFPattern expand = JoinPattern("?c", "d", "?d");  // {?c,?d} card 2  -> adds new ?d
+        RDFPattern filter = JoinPattern("?s", "e", "?c");  // {?s,?c} card 2  -> all bound later => 0 new vars
+
+        List<RDFPatternGroupMember> members = [seed, bindC, expand, filter];
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
+
+        Assert.AreSame(seed,   result[0]);
+        Assert.AreSame(bindC,  result[1]);
+        Assert.AreSame(filter, result[2], "Filter (0 new variables) must precede the expanding pattern");
+        Assert.AreSame(expand, result[3]);
+    }
+
+    // ── 23. Join-graph: two disconnected components stay contiguous (no cartesian interleaving) ──
+    [TestMethod]
+    public void ShouldKeepDisconnectedComponentsContiguous()
+    {
+        // Two independent chains A(?a..) and B(?x..). The heuristic seeds with the most selective pattern, then
+        // exhausts that whole connected component before seeding the next one, so the two chains never interleave.
+        RDFPattern a2 = JoinPattern("?a", "q", "?b");  // {?a,?b} card 2
+        RDFPattern b1 = JoinPattern("?x", "p", "o2");  // {?x}    card 1  -> most selective => first seed
+        RDFPattern a1 = JoinPattern("?a", "p", "o");   // {?a}    card 1
+        RDFPattern b2 = JoinPattern("?x", "q", "?y");  // {?x,?y} card 2
+
+        List<RDFPatternGroupMember> members = [a2, b1, a1, b2];
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
+
+        // Component B (seeded by b1) is fully consumed before component A starts
+        Assert.AreSame(b1, result[0], "Most selective pattern seeds first");
+        Assert.AreSame(b2, result[1], "Rest of B's component follows contiguously");
+        Assert.AreSame(a1, result[2], "Next component is seeded by its most selective pattern");
+        Assert.AreSame(a2, result[3]);
+    }
+
+    // ── 24. Determinism: equally-ranked patterns keep their declared order (stable) ──
+    [TestMethod]
+    public void ShouldKeepDeclaredOrderAmongEquallyRankedPatterns()
+    {
+        // Three disconnected patterns with identical cardinality (3 vars each) and no shared variables: every
+        // tie-breaker is equal, so the optimizer must return them in their original declared order.
+        RDFPattern first  = MakePlainPattern(3, "a");
+        RDFPattern second = MakePlainPattern(3, "b");
+        RDFPattern third  = MakePlainPattern(3, "c");
+
+        List<RDFPatternGroupMember> members = [first, second, third];
+        List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
+
+        Assert.AreSame(first,  result[0]);
+        Assert.AreSame(second, result[1]);
+        Assert.AreSame(third,  result[2]);
     }
 
     #endregion

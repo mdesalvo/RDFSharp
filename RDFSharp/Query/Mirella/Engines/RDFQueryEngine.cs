@@ -226,7 +226,7 @@ namespace RDFSharp.Query
             //Determine if query optimizations are eligible on the given set of patternGroup members
             //(tries to optimize the execution order of patterns within reorderable inner-join blocks)
             if (dataSource is RDFGraph || dataSource is RDFMemoryStore)
-                evaluablePGMembers = RDFQueryOptimizer.OptimizePatternOrder(evaluablePGMembers, dataSource);
+                evaluablePGMembers = RDFQueryOptimizer.OptimizePatternGroup(evaluablePGMembers, dataSource);
 
             //Before starting effective evaluation, initialize the list of result tables for this patternGroup
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<RDFTable>(evaluablePGMembers.Count);
