@@ -99,11 +99,13 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
+            //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(selectQuery, datasource);
+
+            //Evaluate the modifiers of the query
             RDFTable finalTable = ApplyModifiers(selectQuery, queryResultTable);
 
-            //Export to the public DataTable result, carrying the join flags onto its ExtendedProperties
-            //so that consumers can read them back off the result
+            //Expose the result of the query
             DataTable selectResults = finalTable.ToDataTable();
             selectResults.ExtendedProperties[IsOptional] = finalTable.IsOptional;
             selectResults.ExtendedProperties[JoinAsUnion] = finalTable.JoinAsUnion;
@@ -136,7 +138,10 @@ namespace RDFSharp.Query
             }
             #endregion
 
+            //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(describeQuery, datasource);
+
+            //Expose the result of the query
             return new RDFDescribeQueryResult
             {
                 DescribeResults = ApplyModifiers(describeQuery, FillDescribeTerms(queryResultTable)).ToDataTable()
@@ -148,7 +153,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFConstructQueryResult EvaluateConstructQuery(RDFConstructQuery constructQuery, RDFDataSource datasource)
         {
+            //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(constructQuery, datasource);
+
+            //Expose the result of the query
             return new RDFConstructQueryResult
             {
                 ConstructResults = ApplyModifiers(constructQuery, FillTemplates(constructQuery.Templates, queryResultTable, false)).ToDataTable()
@@ -160,7 +168,10 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
+            //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(askQuery, datasource);
+
+            //Expose the result of the query
             return new RDFAskQueryResult
             {
                  AskResult = queryResultTable.RowsCount > 0
@@ -176,13 +187,13 @@ namespace RDFSharp.Query
                 switch (evaluableQueryMember)
                 {
                     case RDFPatternGroup patternGroup:
-                        //Get the intermediate result tables of the pattern group
+                        //Get the intermediate result tables of the patternGroup
                         EvaluatePatternGroup(patternGroup, datasource);
 
-                        //Get the result table of the pattern group
+                        //Get the result table of the patternGroup
                         FinalizePatternGroup(patternGroup);
 
-                        //Apply the filters of the pattern group to its result table
+                        //Apply the filters of the patternGroup to its result table
                         ApplyFilters(patternGroup);
                         break;
 
@@ -190,7 +201,7 @@ namespace RDFSharp.Query
                         //Get the result table of the subquery
                         RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
 
-                        //Make it the correct format
+                        //Expose it in internal format
                         RDFTable subQueryTable = RDFTable.FromDataTable(subQueryResult.SelectResults);
                         subQueryTable.IsOptional = subQuery.IsOptional || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
                         subQueryTable.JoinAsUnion = subQuery.JoinAsUnion;
@@ -203,24 +214,27 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Gets the intermediate result tables of the given pattern group
+        /// Gets the intermediate result tables of the given patternGroup
         /// </summary>
         internal void EvaluatePatternGroup(RDFPatternGroup patternGroup, RDFDataSource dataSource)
         {
+            //Grab the set of evaluable patternGroup members
             List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
                                                                          .Distinct()
                                                                          .ToList();
 
-            //Optimize execution order of patterns within reorderable inner-join blocks
+            //Determine if query optimizations are eligible on the given set of patternGroup members
+            //(tries to optimize the execution order of patterns within reorderable inner-join blocks)
             if (dataSource is RDFGraph || dataSource is RDFMemoryStore)
                 evaluablePGMembers = RDFQueryOptimizer.OptimizePatternOrder(evaluablePGMembers, dataSource);
 
+            //Before starting effective evaluation, initialize the list of result tables for this patternGroup
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<RDFTable>(evaluablePGMembers.Count);
 
             //**Service** evaluation => send it querified to SPARQL endpoint
             if (patternGroup.EvaluateAsService.HasValue)
             {
-                //Cleanup pattern group in order to stringify into vanilla "SELECT *"
+                //Cleanup patternGroup in order to stringify into vanilla "SELECT *"
                 bool isOptional = patternGroup.IsOptional;
                 bool joinAsUnion = patternGroup.JoinAsUnion;
                 bool joinAsMinus = patternGroup.JoinAsMinus;
@@ -236,18 +250,18 @@ namespace RDFSharp.Query
                                                         .ApplyToSPARQLEndpoint(asService.Value.Item1, asService.Value.Item2);
                 RDFTable serviceResultsTable = RDFTable.FromDataTable(serviceResults.SelectResults);
 
-                //Restore pattern group to its official state
+                //Restore patternGroup to its official state
                 patternGroup.IsOptional = isOptional;
                 patternGroup.JoinAsUnion = joinAsUnion;
                 patternGroup.JoinAsMinus = joinAsMinus;
                 patternGroup.EvaluateAsService = asService;
 
-                //Set metadata of result table
+                //Set metadata of the result table
                 serviceResultsTable.IsOptional = patternGroup.IsOptional;
                 serviceResultsTable.JoinAsUnion = patternGroup.JoinAsUnion;
                 serviceResultsTable.JoinAsMinus = patternGroup.JoinAsMinus;
 
-                //Save result table
+                //Save the result table
                 PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(serviceResultsTable);
             }
 
@@ -260,36 +274,36 @@ namespace RDFSharp.Query
                         case RDFPattern pattern:
                             //Evaluate pattern on the given data source
                             RDFTable patternResultsTable = ApplyPattern(pattern, dataSource);
-                            //Set metadata of result table
+                            //Set metadata of the result table
                             patternResultsTable.IsOptional = pattern.IsOptional;
                             patternResultsTable.JoinAsUnion = pattern.JoinAsUnion;
                             patternResultsTable.JoinAsMinus = pattern.JoinAsMinus;
-                            //Save result table
+                            //Save the result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                             break;
 
                         case RDFPropertyPath propertyPath:
                             //Evaluate property path on the given data source
                             RDFTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-                            //Set metadata of result table
+                            //Set metadata of the result table
                             pPathResultsTable.IsOptional = propertyPath.IsOptional;
                             pPathResultsTable.JoinAsUnion = propertyPath.JoinAsUnion;
                             pPathResultsTable.JoinAsMinus = propertyPath.JoinAsMinus;
-                            //Save result table
+                            //Save the result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                             break;
 
                         case RDFValues values:
                             //Transform SPARQL values into an equivalent filter
                             RDFValuesFilter valuesFilter = values.GetValuesFilter();
-                            //Save result table
+                            //Save the result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
                             //Inject SPARQL values filter
                             patternGroup.AddFilter(valuesFilter);
                             break;
 
                         case RDFBind bind:
-                            //Bind operator is evaluated like an artificial ending of the pattern group:
+                            //Bind operator is evaluated like an "artificial ending" of the patternGroup:
                             // first we combine the tables collected until this moment
                             // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
                             // finally we drop all tables collected until this moment, except the comprehensive bind table
@@ -315,15 +329,17 @@ namespace RDFSharp.Query
         /// </summary>
         internal void FinalizePatternGroup(RDFPatternGroup patternGroup)
         {
-            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            //Grab the set of evaluable patternGroup members
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
+                                                                         .Distinct()
+                                                                         .ToList();
             if (evaluablePGMembers.Count > 0)
             {
                 //Populate patternGroup result table
                 RDFTable patternGroupResultTable = CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
 
                 //Populate its metadata (IsOptional)
-                patternGroupResultTable.IsOptional = patternGroup.IsOptional
-                  || patternGroupResultTable.IsOptional;
+                patternGroupResultTable.IsOptional = patternGroup.IsOptional || patternGroupResultTable.IsOptional;
 
                 //Populate its metadata (JoinAsUnion)
                 patternGroupResultTable.JoinAsUnion = patternGroup.JoinAsUnion;
@@ -341,16 +357,19 @@ namespace RDFSharp.Query
         /// </summary>
         internal void ApplyFilters(RDFPatternGroup patternGroup)
         {
-            List<RDFPatternGroupMember> evaluablePatternGroupMembers = patternGroup.GetEvaluablePatternGroupMembers().ToList();
+            //Grab the set of evaluable patternGroup members
+            List<RDFPatternGroupMember> evaluablePGMembers = patternGroup.GetEvaluablePatternGroupMembers()
+                                                                         .Distinct()
+                                                                         .ToList();
             List<RDFFilter> filters = patternGroup.GetFilters().ToList();
-            if (evaluablePatternGroupMembers.Count > 0 && filters.Count > 0)
+            if (evaluablePGMembers.Count > 0 && filters.Count > 0)
             {
-                RDFTable sourceTable = QueryMemberResultTables[patternGroup.QueryMemberID];
-                RDFTable filteredTable = sourceTable.Clone();
-                int width = sourceTable.ColumnsCount;
+                RDFTable patternGroupMemberTable = QueryMemberResultTables[patternGroup.QueryMemberID];
+                RDFTable filteredPatternGroupMemberTable = patternGroupMemberTable.Clone();
+                int columnsCount = patternGroupMemberTable.ColumnsCount;
 
                 //Iterate the rows of the pattern group's result table
-                foreach (RDFTableRow currentRow in sourceTable.Rows)
+                foreach (RDFTableRow currentRow in patternGroupMemberTable.Rows)
                 {
                     //Apply the pattern group's filters on the row
                     bool keepRow = true;
@@ -365,15 +384,15 @@ namespace RDFSharp.Query
                     //If the row has passed all the filters, keep it in the filtered result table
                     if (keepRow)
                     {
-                        string[] cells = new string[width];
-                        for (int c = 0; c < width; c++)
+                        string[] cells = new string[columnsCount];
+                        for (int c = 0; c < columnsCount; c++)
                             cells[c] = currentRow[c];
-                        filteredTable.AddRow(cells);
+                        filteredPatternGroupMemberTable.AddRow(cells);
                     }
                 }
 
                 //Save the result table
-                QueryMemberResultTables[patternGroup.QueryMemberID] = filteredTable;
+                QueryMemberResultTables[patternGroup.QueryMemberID] = filteredPatternGroupMemberTable;
             }
         }
 
@@ -428,8 +447,7 @@ namespace RDFSharp.Query
                 table = limitModifier.ApplyModifier(table);
             #endregion
 
-            //Carry the incoming join flags (IsOptional/Union/Minus) through the modifiers
-            //onto the query result table
+            //Carry the incoming join flags through the modifiers onto the query result table
             table.IsOptional = inOptional;
             table.JoinAsUnion = inUnion;
             table.JoinAsMinus = inMinus;
@@ -743,9 +761,10 @@ namespace RDFSharp.Query
 
             //Iterate the results table's rows to retrieve terms to be described
             foreach (RDFPatternMember describeVariableValue in
-                     from RDFTableRow resultRow in resultTable.Rows
-                     where !resultRow.IsUnbound(describeVariableName)
-                     select ParseRDFPatternMember(resultRow[describeVariableName]))
+                      (from RDFTableRow resultRow
+                       in resultTable.Rows
+                       where !resultRow.IsUnbound(describeVariableName)
+                       select ParseRDFPatternMember(resultRow[describeVariableName])))
             {
                 //Execute most appropriate strategy, depending on the type of the variable value
                 switch (describeVariableValue)
@@ -1111,7 +1130,8 @@ namespace RDFSharp.Query
                         //Pattern is transformed into an equivalent "SELECT *" query which is sent to the SPARQL endpoint.
                         //SPARQL endpoint options are eventually retrieved directly from the federation.
                         federation.EndpointDataSourcesQueryOptions.TryGetValue(dataSourceSparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions dataSourceSparqlEndpointOptions);
-                        RDFSelectQuery sparqlEndpointQuery =  new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup().AddPattern(pattern));
+                        RDFSelectQuery sparqlEndpointQuery =  new RDFSelectQuery()
+                                                                .AddPatternGroup(new RDFPatternGroup().AddPattern(pattern));
                         RDFSelectQueryResult sparqlEndpointTable = sparqlEndpointQuery.ApplyToSPARQLEndpoint(dataSourceSparqlEndpoint, dataSourceSparqlEndpointOptions);
                         MergeTable(resultTable, RDFTable.FromDataTable(sparqlEndpointTable.SelectResults));
                         break;
@@ -1130,6 +1150,7 @@ namespace RDFSharp.Query
             if (propertyPath.HasTransitiveSteps)
                 return ApplyTransitivePropertyPath(propertyPath, dataSource);
 
+            //Otherwise evaluate a standard "finite-set" property path
             //Translate property path into equivalent list of patterns
             List<RDFPattern> patternList = propertyPath.GetPatternList();
             List<RDFTable> patternTables = new List<RDFTable>(patternList.Count);
@@ -1164,6 +1185,7 @@ namespace RDFSharp.Query
             return resultTable;
         }
 
+        #region PropertyPath Engine (Transitive Closure)
         /// <summary>
         /// Applies a property path containing at least one transitive cardinality step (?, *, +, {min,max}).<br/>
         /// The datasource adjacency for every step property is materialized once into in-memory maps and the
@@ -1192,6 +1214,7 @@ namespace RDFSharp.Query
             //Track already-added (start, end) pairs to avoid duplicate rows
             HashSet<string> addedRows = new HashSet<string>();
 
+            #region Utilities
             //Emits one result row for the (s, e) pair, applying concrete-term filters and deduplication
             void AddBindingRow(RDFResource s, RDFResource e)
             {
@@ -1223,9 +1246,10 @@ namespace RDFSharp.Query
                     resultTable.AddRow(new string[resultTable.ColumnsCount]);
                 }
             }
+            #endregion
 
             //Materialize the datasource adjacency once and reuse it (plus memoized closures) across all seeds
-            RDFTransitivePathCache cache = new RDFTransitivePathCache(dataSource);
+            RDFTransitivePathCache transitivePathCache = new RDFTransitivePathCache(dataSource);
 
             //Fast path: concrete end + variable start on a single OneOrMore step, e.g. "?s prop+ <end>".
             //The naive plan seeds from every node and keeps only those reaching <end>. But "x reaches end over
@@ -1238,17 +1262,19 @@ namespace RDFSharp.Query
                  && propertyPath.Steps[0].StepCardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore)
             {
                 RDFPropertyPathStep onlyStep = propertyPath.Steps[0];
-                foreach (RDFResource startNode in cache.GetClosure(onlyStep.StepProperty, !onlyStep.IsInverseStep).Reachable(endResource))
+                foreach (RDFResource startNode in transitivePathCache.GetTransitiveClosureindex(onlyStep.StepProperty, !onlyStep.IsInverseStep)
+                                                                     .EnumerateReachableNodes(endResource))
+                {
                     AddBindingRow(startNode, endResource);
+                }
                 return resultTable;
             }
 
             //Determine the seed set, pruning it to the actual domain whenever the path cannot produce a
             //zero-length (identity) match; otherwise every resource node in the datasource is a candidate
-            IEnumerable<RDFResource> seeds = GetTransitiveSeeds(propertyPath, startIsVar, startResource, cache);
-            foreach (RDFResource seed in seeds)
+            foreach (RDFResource seed in GetTransitiveSeeds(propertyPath, startIsVar, startResource, transitivePathCache))
             {
-                foreach (RDFResource reached in EvaluateStepsFromNode(seed, propertyPath.Steps, cache))
+                foreach (RDFResource reached in EvaluateStepsFromNode(seed, propertyPath.Steps, transitivePathCache))
                     AddBindingRow(seed, reached);
             }
 
@@ -1262,7 +1288,7 @@ namespace RDFSharp.Query
         /// the step property (its domain). In every other case (?, *, {0,n} or multi-step paths) a zero-length
         /// match is possible, so all resource nodes in the datasource remain candidate seeds.
         /// </summary>
-        private IEnumerable<RDFResource> GetTransitiveSeeds(RDFPropertyPath propertyPath, bool startIsVar, RDFResource startResource, RDFTransitivePathCache cache)
+        private IEnumerable<RDFResource> GetTransitiveSeeds(RDFPropertyPath propertyPath, bool startIsVar, RDFResource startResource, RDFTransitivePathCache transitivePathCache)
         {
             if (!startIsVar)
                 return new List<RDFResource> { startResource };
@@ -1273,10 +1299,10 @@ namespace RDFSharp.Query
                 bool requiresHop = step.StepCardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore
                                     || (step.StepCardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange && step.MinCardinality >= 1);
                 if (requiresHop)
-                    return cache.GetSources(step.StepProperty, step.IsInverseStep);
+                    return transitivePathCache.GetSources(step.StepProperty, step.IsInverseStep);
             }
 
-            return GetAllResourceNodes(cache.DataSource);
+            return GetAllResourceNodes(transitivePathCache.DataSource);
         }
 
         /// <summary>
@@ -1286,7 +1312,7 @@ namespace RDFSharp.Query
         /// (the output of one feeds the input of the next); a run of consecutive Alternative-flavored steps forms
         /// a single group whose branches are taken in parallel and unioned, modelling "a | b | c" within the path.
         /// </summary>
-        private List<RDFResource> EvaluateStepsFromNode(RDFResource startNode, List<RDFPropertyPathStep> steps, RDFTransitivePathCache cache)
+        private List<RDFResource> EvaluateStepsFromNode(RDFResource startNode, List<RDFPropertyPathStep> steps, RDFTransitivePathCache transitivePathCache)
         {
             //The frontier starts as the single seed node and is rewritten group by group
             List<RDFResource> current = new List<RDFResource> { startNode };
@@ -1308,8 +1334,8 @@ namespace RDFSharp.Query
                 Dictionary<long, RDFResource> next = new Dictionary<long, RDFResource>();
                 foreach (RDFResource node in current)
                 {
-                    IEnumerable<RDFResource> reached = group.Count == 1 ? EvaluateSingleStepFromNode(node, group[0], cache)
-                                                                        : group.SelectMany(step => EvaluateSingleStepFromNode(node, step, cache));
+                    IEnumerable<RDFResource> reached = group.Count == 1 ? EvaluateSingleStepFromNode(node, group[0], transitivePathCache)
+                                                                        : group.SelectMany(step => EvaluateSingleStepFromNode(node, step, transitivePathCache));
                     foreach (RDFResource r in reached)
                         next[r.PatternMemberID] = r;
                 }
@@ -1329,7 +1355,7 @@ namespace RDFSharp.Query
         /// - ZeroOrMore   → node itself plus the memoized transitive closure (* operator)<br/>
         /// - BoundedRange → BFS keeping only nodes at depth [min, max], including node itself when min is 0
         /// </summary>
-        private IEnumerable<RDFResource> EvaluateSingleStepFromNode(RDFResource node, RDFPropertyPathStep step, RDFTransitivePathCache cache)
+        private IEnumerable<RDFResource> EvaluateSingleStepFromNode(RDFResource node, RDFPropertyPathStep step, RDFTransitivePathCache transitivePathCache)
         {
             switch (step.StepCardinality)
             {
@@ -1337,20 +1363,20 @@ namespace RDFSharp.Query
                 {
                     //Include the node itself (zero hops) and any direct successor (one hop)
                     Dictionary<long, RDFResource> result = new Dictionary<long, RDFResource> { [node.PatternMemberID] = node };
-                    foreach (RDFResource r in GetDirectSuccessors(node, step.StepProperty, step.IsInverseStep, cache))
+                    foreach (RDFResource r in GetDirectSuccessors(node, step.StepProperty, step.IsInverseStep, transitivePathCache))
                         result[r.PatternMemberID] = r;
                     return result.Values;
                 }
 
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:
                     //At least one hop: reuse the memoized transitive closure of the step property
-                    return cache.GetClosure(step.StepProperty, step.IsInverseStep).Reachable(node);
+                    return transitivePathCache.GetTransitiveClosureindex(step.StepProperty, step.IsInverseStep).EnumerateReachableNodes(node);
 
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore:
                 {
                     //Include the node itself (zero hops) and all closure-reachable nodes
                     Dictionary<long, RDFResource> result = new Dictionary<long, RDFResource> { [node.PatternMemberID] = node };
-                    foreach (RDFResource r in cache.GetClosure(step.StepProperty, step.IsInverseStep).Reachable(node))
+                    foreach (RDFResource r in transitivePathCache.GetTransitiveClosureindex(step.StepProperty, step.IsInverseStep).EnumerateReachableNodes(node))
                         result[r.PatternMemberID] = r;
                     return result.Values;
                 }
@@ -1361,25 +1387,25 @@ namespace RDFSharp.Query
                     //When min is 0 the start node is a valid result (zero hops)
                     if (step.MinCardinality == 0)
                         result[node.PatternMemberID] = node;
-                    foreach (RDFResource r in BFSReachable(node, step.StepProperty, step.IsInverseStep, cache, step.MinCardinality, step.MaxCardinality))
+                    foreach (RDFResource r in BFSReachable(node, step.StepProperty, step.IsInverseStep, transitivePathCache, step.MinCardinality, step.MaxCardinality))
                         result[r.PatternMemberID] = r;
                     return result.Values;
                 }
 
                 default: // ExactlyOne
-                    return GetDirectSuccessors(node, step.StepProperty, step.IsInverseStep, cache);
+                    return GetDirectSuccessors(node, step.StepProperty, step.IsInverseStep, transitivePathCache);
             }
         }
 
         /// <summary>
         /// Returns the resources reachable from the given node in exactly one hop via the given property,
-        /// reading from the pre-materialized adjacency map held by <paramref name="cache"/>.<br/>
+        /// reading from the pre-materialized adjacency successorsMap held by <paramref name="transitivePathCache"/>.<br/>
         /// When <paramref name="inverse"/> is true, traversal goes in the opposite direction (object → subject).
         /// </summary>
-        private List<RDFResource> GetDirectSuccessors(RDFResource node, RDFResource property, bool inverse, RDFTransitivePathCache cache)
+        private List<RDFResource> GetDirectSuccessors(RDFResource node, RDFResource property, bool inverse, RDFTransitivePathCache transitivePathCache)
         {
-            Dictionary<long, List<RDFResource>> map = cache.GetMap(property, inverse);
-            return map.TryGetValue(node.PatternMemberID, out List<RDFResource> successors) ? successors : EmptyResourceList;
+            Dictionary<long, List<RDFResource>> successorsMap = transitivePathCache.GetSuccessorsMap(property, inverse);
+            return successorsMap.TryGetValue(node.PatternMemberID, out List<RDFResource> successors) ? successors : EmptyResourceList;
         }
 
         /// <summary>
@@ -1404,29 +1430,29 @@ namespace RDFSharp.Query
             switch (dataSource)
             {
                 case RDFGraph graph:
-                    foreach (RDFTriple t in graph.SelectTriples())
+                    foreach (RDFTriple triple in graph.SelectTriples())
                     {
-                        if (t.Subject is RDFResource tSubj)
+                        if (triple.Subject is RDFResource tSubj)
                             CollectNode(tSubj);
-                        if (t.Object is RDFResource tObj)
+                        if (triple.Object is RDFResource tObj)
                             CollectNode(tObj);
                     }
                     break;
 
                 case RDFStore store:
-                    foreach (RDFQuadruple q in store.SelectQuadruples())
+                    foreach (RDFQuadruple quadruple in store.SelectQuadruples())
                     {
-                        if (q.Subject is RDFResource qSubj)
+                        if (quadruple.Subject is RDFResource qSubj)
                             CollectNode(qSubj);
-                        if (q.Object is RDFResource qObj)
+                        if (quadruple.Object is RDFResource qObj)
                             CollectNode(qObj);
                     }
                     break;
 
                 case RDFFederation federation:
-                    foreach (RDFDataSource member in federation)
+                    foreach (RDFDataSource federationMember in federation)
                     {
-                        foreach (RDFResource r in GetAllResourceNodes(member))
+                        foreach (RDFResource r in GetAllResourceNodes(federationMember))
                             CollectNode(r);
                     }
                     break;
@@ -1453,6 +1479,7 @@ namespace RDFSharp.Query
 
             while (queue.Count > 0)
             {
+                //Dequeue the node to be visited
                 (RDFResource current, int depth) = queue.Dequeue();
 
                 //Do not expand beyond the maximum depth (avoids unnecessary work when bounded)
@@ -1485,7 +1512,6 @@ namespace RDFSharp.Query
         /// </summary>
         private static readonly List<RDFResource> EmptyResourceList = new List<RDFResource>(0);
 
-        #region Transitive property path acceleration
         /// <summary>
         /// Holds, for the lifetime of a single transitive property path evaluation, the in-memory adjacency
         /// maps of every step property (materialized once from the datasource) and the lazily-built, memoized
@@ -1500,22 +1526,22 @@ namespace RDFSharp.Query
             internal RDFTransitivePathCache(RDFDataSource dataSource)
                 => DataSource = dataSource;
 
-            private RDFPropertyAdjacency GetAdjacency(RDFResource property)
+            private RDFPropertyAdjacency GetPropertyAdjacency(RDFResource property)
             {
                 if (!byProperty.TryGetValue(property.PatternMemberID, out RDFPropertyAdjacency adjacency))
                 {
-                    adjacency = RDFPropertyAdjacency.Build(property, DataSource);
+                    adjacency = RDFPropertyAdjacency.BuildPropertyAdjaceny(property, DataSource);
                     byProperty[property.PatternMemberID] = adjacency;
                 }
                 return adjacency;
             }
 
             /// <summary>
-            /// Returns the (node hash → successors) adjacency map for the step property in the requested direction.
+            /// Returns the (node hash → successors) adjacency successors adjacencyMap for the step property in the requested direction.
             /// </summary>
-            internal Dictionary<long, List<RDFResource>> GetMap(RDFResource property, bool inverse)
+            internal Dictionary<long, List<RDFResource>> GetSuccessorsMap(RDFResource property, bool inverse)
             {
-                RDFPropertyAdjacency adjacency = GetAdjacency(property);
+                RDFPropertyAdjacency adjacency = GetPropertyAdjacency(property);
                 return inverse ? adjacency.Reverse : adjacency.Forward;
             }
 
@@ -1525,10 +1551,10 @@ namespace RDFSharp.Query
             /// </summary>
             internal IEnumerable<RDFResource> GetSources(RDFResource property, bool inverse)
             {
-                RDFPropertyAdjacency adjacency = GetAdjacency(property);
-                Dictionary<long, List<RDFResource>> map = inverse ? adjacency.Reverse : adjacency.Forward;
-                List<RDFResource> sources = new List<RDFResource>(map.Count);
-                foreach (long key in map.Keys)
+                RDFPropertyAdjacency adjacency = GetPropertyAdjacency(property);
+                Dictionary<long, List<RDFResource>> adjacencyMap = inverse ? adjacency.Reverse : adjacency.Forward;
+                List<RDFResource> sources = new List<RDFResource>(adjacencyMap.Count);
+                foreach (long key in adjacencyMap.Keys)
                     sources.Add(adjacency.Nodes[key]);
                 return sources;
             }
@@ -1537,12 +1563,12 @@ namespace RDFSharp.Query
             /// Returns the memoized transitive closure of the step property in the requested direction,
             /// building it once on first use.
             /// </summary>
-            internal RDFTransitiveClosureIndex GetClosure(RDFResource property, bool inverse)
+            internal RDFTransitiveClosureIndex GetTransitiveClosureindex(RDFResource property, bool inverse)
             {
-                RDFPropertyAdjacency adjacency = GetAdjacency(property);
+                RDFPropertyAdjacency adjacency = GetPropertyAdjacency(property);
                 if (inverse)
-                    return adjacency.ReverseClosure ?? (adjacency.ReverseClosure = RDFTransitiveClosureIndex.Build(adjacency.Reverse, adjacency.Nodes));
-                return adjacency.ForwardClosure ?? (adjacency.ForwardClosure = RDFTransitiveClosureIndex.Build(adjacency.Forward, adjacency.Nodes));
+                    return adjacency.ReverseClosure ?? (adjacency.ReverseClosure = RDFTransitiveClosureIndex.BuildTransitiveClosureIndex(adjacency.Reverse, adjacency.Nodes));
+                return adjacency.ForwardClosure ?? (adjacency.ForwardClosure = RDFTransitiveClosureIndex.BuildTransitiveClosureIndex(adjacency.Forward, adjacency.Nodes));
             }
         }
 
@@ -1563,12 +1589,13 @@ namespace RDFSharp.Query
             /// Scans the datasource once for the triples/quadruples carrying the given property and builds the
             /// forward and reverse adjacency maps (with duplicate edges collapsed) plus the node registry.
             /// </summary>
-            internal static RDFPropertyAdjacency Build(RDFResource property, RDFDataSource dataSource)
+            internal static RDFPropertyAdjacency BuildPropertyAdjaceny(RDFResource property, RDFDataSource dataSource)
             {
                 Dictionary<long, Dictionary<long, RDFResource>> forward = new Dictionary<long, Dictionary<long, RDFResource>>();
                 Dictionary<long, Dictionary<long, RDFResource>> reverse = new Dictionary<long, Dictionary<long, RDFResource>>();
                 Dictionary<long, RDFResource> nodes = new Dictionary<long, RDFResource>();
 
+                #region Utilities
                 void AddEdge(RDFResource subj, RDFResource obj)
                 {
                     long subjHash = subj.PatternMemberID, objHash = obj.PatternMemberID;
@@ -1583,43 +1610,49 @@ namespace RDFSharp.Query
                         reverse[objHash] = rOut = new Dictionary<long, RDFResource>();
                     rOut[subjHash] = subj;
                 }
-                CollectEdges(property, dataSource, AddEdge);
+                #endregion
+
+                CollectPropertyEdges(property, dataSource, AddEdge);
 
                 return new RDFPropertyAdjacency
                 {
-                    Forward = Flatten(forward),
-                    Reverse = Flatten(reverse),
+                    Forward = FlattenSuccessorsList(forward),
+                    Reverse = FlattenSuccessorsList(reverse),
                     Nodes = nodes
                 };
             }
 
             //Walks the datasource (recursing over federation members) emitting every (subject, resource-object)
             //edge carrying the given property; literal objects are skipped as they cannot continue a path
-            private static void CollectEdges(RDFResource property, RDFDataSource dataSource, Action<RDFResource, RDFResource> addEdge)
+            private static void CollectPropertyEdges(RDFResource property, RDFDataSource dataSource, Action<RDFResource, RDFResource> addEdge)
             {
                 switch (dataSource)
                 {
                     case RDFGraph graph:
-                        foreach (RDFTriple t in graph.SelectTriples(p: property))
-                            if (t.Object is RDFResource o)
-                                addEdge((RDFResource)t.Subject, o);
+                        foreach (RDFTriple triple in graph.SelectTriples(p: property))
+                        {
+                            if (triple.Object is RDFResource o)
+                                addEdge((RDFResource)triple.Subject, o);
+                        }
                         break;
 
                     case RDFStore store:
-                        foreach (RDFQuadruple q in store.SelectQuadruples(p: property))
-                            if (q.Object is RDFResource o)
-                                addEdge((RDFResource)q.Subject, o);
+                        foreach (RDFQuadruple quadruple in store.SelectQuadruples(p: property))
+                        {
+                            if (quadruple.Object is RDFResource o)
+                                addEdge((RDFResource)quadruple.Subject, o);
+                        }
                         break;
 
                     case RDFFederation federation:
                         foreach (RDFDataSource member in federation)
-                            CollectEdges(property, member, addEdge);
+                            CollectPropertyEdges(property, member, addEdge);
                         break;
                 }
             }
 
             //Collapses the dedup dictionaries into plain successor lists
-            private static Dictionary<long, List<RDFResource>> Flatten(Dictionary<long, Dictionary<long, RDFResource>> source)
+            private static Dictionary<long, List<RDFResource>> FlattenSuccessorsList(Dictionary<long, Dictionary<long, RDFResource>> source)
             {
                 Dictionary<long, List<RDFResource>> result = new Dictionary<long, List<RDFResource>>(source.Count);
                 foreach (KeyValuePair<long, Dictionary<long, RDFResource>> kv in source)
@@ -1647,9 +1680,9 @@ namespace RDFSharp.Query
         /// same reachable set, so the closure is computed once per component instead of once per node.
         /// </para>
         /// <para>
-        /// THE ALGORITHM. <see cref="Build"/> runs Tarjan's SCC algorithm (a single DFS, here made iterative to
+        /// THE ALGORITHM. <see cref="BuildTransitiveClosureIndex"/> runs Tarjan's SCC algorithm (a single DFS, here made iterative to
         /// survive very deep chains without blowing the call stack) to label every node with its component, then
-        /// builds the condensation edges and propagates reachability across them. Querying a node (<see cref="Reachable"/>)
+        /// builds the condensation edges and propagates reachability across them. Querying a node (<see cref="EnumerateReachableNodes"/>)
         /// is then just "emit my own component's members if it is cyclic, plus the members of every downstream
         /// component".
         /// </para>
@@ -1657,8 +1690,7 @@ namespace RDFSharp.Query
         /// THE "+" SEMANTICS. "+" requires at least one hop, so a node reaches ITSELF only if a non-trivial cycle
         /// brings it back: that happens exactly when its component is cyclic — either it has more than one member,
         /// or it is a single node carrying a self-loop edge (x knows x). A singleton component without a self-loop
-        /// never reaches itself. This reproduces, set-for-set, the result of the previous per-seed BFS, including
-        /// the tricky case of a cycle closing back onto the start node. The caller turns "+" into "*" simply by
+        /// never reaches itself. The caller turns "+" into "*" simply by
         /// adding the start node itself (the zero-hop reflexive match).
         /// </para>
         /// </summary>
@@ -1692,7 +1724,7 @@ namespace RDFSharp.Query
             /// These are disjoint because a node belongs to exactly one component, and a component never appears
             /// among its own downstream reachable components (the condensation is acyclic).
             /// </remarks>
-            internal IEnumerable<RDFResource> Reachable(RDFResource node)
+            internal IEnumerable<RDFResource> EnumerateReachableNodes(RDFResource node)
             {
                 //A node outside the relation (no incident edge on this property/direction) reaches nothing
                 if (node == null || !sccOf.TryGetValue(node.PatternMemberID, out int component))
@@ -1700,13 +1732,17 @@ namespace RDFSharp.Query
 
                 //(1) A cyclic component reaches all of its own members, including the node itself
                 if (selfReaching[component])
+                {
                     foreach (RDFResource member in members[component])
                         yield return member;
+                }
 
                 //(2) Plus every member of every downstream component (disjoint from the above, so no duplicates)
                 foreach (int reachedComponent in reachableComponents[component])
+                {
                     foreach (RDFResource member in members[reachedComponent])
                         yield return member;
+                }
             }
 
             /// <summary>
@@ -1714,7 +1750,7 @@ namespace RDFSharp.Query
             /// strongly-connected components with Tarjan's algorithm, then (2) propagating reachability across
             /// the resulting acyclic condensation.
             /// </summary>
-            internal static RDFTransitiveClosureIndex Build(Dictionary<long, List<RDFResource>> map, Dictionary<long, RDFResource> nodes)
+            internal static RDFTransitiveClosureIndex BuildTransitiveClosureIndex(Dictionary<long, List<RDFResource>> map, Dictionary<long, RDFResource> nodes)
             {
                 // ───────────────────────────────────────────────────────────────────────────────────────────
                 // PHASE 1 — Tarjan's strongly-connected-components algorithm.
@@ -1740,13 +1776,14 @@ namespace RDFSharp.Query
                 Dictionary<long, int> sccOf = new Dictionary<long, int>();
                 List<List<long>> componentHashes = new List<List<long>>();
                 int nextIndex = 0;
-
                 Stack<(long node, int pos)> work = new Stack<(long, int)>();
+ 
                 foreach (long start in nodes.Keys)
                 {
                     //Every node must be a DFS root once; skip the ones already reached by a previous DFS tree
                     if (index.ContainsKey(start))
                         continue;
+ 
                     work.Push((start, 0));
                     while (work.Count > 0)
                     {
@@ -1833,7 +1870,7 @@ namespace RDFSharp.Query
 
                 int componentCount = componentHashes.Count;
 
-                //Map each component's node hashes back to their resources (kept for emission by Reachable)
+                //Map each component's node hashes back to their resources (kept for emission by EnumerateReachableNodes)
                 List<List<RDFResource>> members = new List<List<RDFResource>>(componentCount);
                 for (int c = 0; c < componentCount; c++)
                 {
@@ -2566,7 +2603,7 @@ namespace RDFSharp.Query
             //Execute projection algorithm
             if (query.ProjectionVars.Count > 0)
             {
-                //Build the projected table with the projection variables, ordered by their target ordinal:
+                //BuildTransitiveClosureIndex the projected table with the projection variables, ordered by their target ordinal:
                 //values are taken from the matching source column when present, otherwise the column stays UNBOUND
                 List<KeyValuePair<RDFVariable, (int, RDFExpression)>> orderedProjections = query.ProjectionVars
                     .OrderBy(pv => pv.Value.Item1)
