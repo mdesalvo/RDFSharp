@@ -29,8 +29,8 @@ namespace RDFSharp.Query
     {
         #region Methods
         /// <summary>
-        /// Optimizes the execution order of pattern group patternGroupMembers by reordering each block of inner-join
-        /// RDFPattern patternGroupMembers with a greedy join-graph heuristic that minimizes the size of the intermediate
+        /// Optimizes the execution order of pattern group members by reordering each block of inner-join
+        /// with a greedy join-graph heuristic that minimizes the size of the intermediate
         /// results, without altering the declared query representation. Since inner-join is commutative and
         /// associative, this changes only the execution order and never the produced result set.
         /// OPTIONAL, UNION, MINUS pairs, BIND, VALUES and PropertyPath patternGroupMembers act as ordering barriers.
