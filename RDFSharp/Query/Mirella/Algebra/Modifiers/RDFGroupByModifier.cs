@@ -166,7 +166,7 @@ namespace RDFSharp.Query
             Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjectionTable(PartitionVariables)));
             projFuncTables.RemoveAll(pft => pft == null);
 
-            return RDFQueryEngine.CombineTables(projFuncTables);
+            return RDFTableEngine.CombineTables(projFuncTables);
         }
 
         /// <summary>

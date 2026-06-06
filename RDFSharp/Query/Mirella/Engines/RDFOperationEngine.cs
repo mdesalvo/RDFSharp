@@ -358,7 +358,7 @@ namespace RDFSharp.Query
                 EvaluateQueryMembers(evaluableQueryMembers, datasource);
 
                 //Get the result table of the operation
-                resultTable = CombineTables(QueryMemberResultTables.Values.ToList());
+                resultTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
             }
 
             //Fill the templates from the result table
@@ -413,7 +413,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", insertTriple.Subject.ToString());
                         bindings.Add("?PREDICATE", insertTriple.Predicate.ToString());
                         bindings.Add("?OBJECT", insertTriple.Object.ToString());
-                        AddRow(resultTable, bindings);
+                        RDFTableEngine.AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Add the triple to the graph
@@ -435,7 +435,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", insertQuadruple.Subject.ToString());
                         bindings.Add("?PREDICATE", insertQuadruple.Predicate.ToString());
                         bindings.Add("?OBJECT", insertQuadruple.Object.ToString());
-                        AddRow(resultTable, bindings);
+                        RDFTableEngine.AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Add the quadruple to the store
@@ -476,7 +476,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", deleteTriple.Subject.ToString());
                         bindings.Add("?PREDICATE", deleteTriple.Predicate.ToString());
                         bindings.Add("?OBJECT", deleteTriple.Object.ToString());
-                        AddRow(resultTable, bindings);
+                        RDFTableEngine.AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Remove the triple from the graph
@@ -498,7 +498,7 @@ namespace RDFSharp.Query
                         bindings.Add("?SUBJECT", deleteQuadruple.Subject.ToString());
                         bindings.Add("?PREDICATE", deleteQuadruple.Predicate.ToString());
                         bindings.Add("?OBJECT", deleteQuadruple.Object.ToString());
-                        AddRow(resultTable, bindings);
+                        RDFTableEngine.AddRow(resultTable, bindings);
                         bindings.Clear();
 
                         //Remove the quadruple from the store

@@ -41,7 +41,7 @@ namespace RDFSharp.Query
         /// Applies the modifier on the given table
         /// </summary>
         internal override RDFTable ApplyModifier(RDFTable table)
-            => RDFQueryEngine.DistinctTable(table);
+            => RDFTableEngine.DistinctTable(table);
         #endregion
     }
 }

@@ -263,7 +263,7 @@ namespace RDFSharp.Query
                                         if (string.IsNullOrEmpty(varNode.Attributes["name"]?.Value))
                                             throw new Exception("one \"variable\" node was found without, or with empty, \"name\" attribute.");
 
-                                        RDFQueryEngine.AddColumn(result.SelectResults, varNode.Attributes["name"].Value);
+                                        RDFTableEngine.AddColumn(result.SelectResults, varNode.Attributes["name"].Value);
                                     }
                                     #endregion
                                 }
@@ -330,7 +330,7 @@ namespace RDFSharp.Query
                                             if (!foundUri && !foundLit)
                                                 throw new Exception("one \"binding\" node was found without mandatory child \"uri\" or \"literal\".");
                                         }
-                                        RDFQueryEngine.AddRow(result.SelectResults, results);
+                                        RDFTableEngine.AddRow(result.SelectResults, results);
                                     }
                                     #endregion
                                 }

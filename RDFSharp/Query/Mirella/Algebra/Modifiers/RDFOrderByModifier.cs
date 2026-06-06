@@ -60,7 +60,7 @@ namespace RDFSharp.Query
         /// is applied by the projection step, so this is exercised mainly by direct callers and tests.
         /// </summary>
         internal override RDFTable ApplyModifier(RDFTable table)
-            => RDFQueryEngine.SortTable(table, new[] { (Variable.ToString(), OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC) });
+            => RDFTableEngine.SortTable(table, new[] { (Variable.ToString(), OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC) });
         #endregion
     }
 }

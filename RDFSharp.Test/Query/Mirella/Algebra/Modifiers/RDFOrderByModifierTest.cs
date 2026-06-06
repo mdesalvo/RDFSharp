@@ -178,7 +178,7 @@ public class RDFOrderByModifierTest
         });
 
         //Compound ORDER BY ?A ASC, ?B DESC (the live engine composes all sort keys in the projection step)
-        RDFTable orderedTable = RDFQueryEngine.SortTable(table, new[]
+        RDFTable orderedTable = RDFTableEngine.SortTable(table, new[]
         {
             (new RDFVariable("?A").ToString(), false),
             (new RDFVariable("?B").ToString(), true)
