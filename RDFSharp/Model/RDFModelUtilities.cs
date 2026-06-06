@@ -35,6 +35,14 @@ namespace RDFSharp.Model
     {
         #region Hashing
         /// <summary>
+        /// Per-thread reusable MD5 engine. MD5 is not thread-safe, so each thread keeps its own instance:
+        /// this avoids allocating/initializing a fresh crypto provider on every hash (the bulk-load hot path)
+        /// while preserving the exact same digest produced by the former per-call MD5CryptoServiceProvider.
+        /// </summary>
+        [ThreadStatic]
+        private static MD5 MD5Engine;
+
+        /// <summary>
         /// Creates a unique long representation of the given string
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
@@ -45,8 +53,8 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot create hash because given \"input\" string parameter is null.");
             #endregion
 
-            using (MD5CryptoServiceProvider md5Encryptor = new MD5CryptoServiceProvider())
-                return BitConverter.ToInt64(md5Encryptor.ComputeHash(UTF8_NoBOM.GetBytes(input)), 0);
+            MD5 md5Encryptor = MD5Engine ?? (MD5Engine = MD5.Create());
+            return BitConverter.ToInt64(md5Encryptor.ComputeHash(UTF8_NoBOM.GetBytes(input)), 0);
         }
         #endregion
 
