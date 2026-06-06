@@ -10,7 +10,7 @@ The codebase is logically split into three layers, all inside the single `RDFSha
 
 - `RDFSharp.Model` — RDF primitives (`RDFResource`, `RDFLiteral`, `RDFTriple`, `RDFGraph`), namespaces, datatypes, RDF format serializers (N-Triples, TriX, Turtle, RDF/Xml), and the SHACL validation engine (`Model/Validation`, `Model/Facets`).
 - `RDFSharp.Store` — context-aware quadruple storage. `RDFStore` is the abstract base; `RDFMemoryStore` is the in-process implementation. Out-of-process providers live in the separate `RDFSharp.Extensions` repo.
-- `RDFSharp.Query` — SPARQL query/operation engine (codename **Mirella**, see `Query/Mirella/RDFQueryEngine.cs` and `RDFOperationEngine.cs`). Hosts query types (`RDFSelectQuery`, `RDFAskQuery`, `RDFConstructQuery`, `RDFDescribeQuery`), SPARQL UPDATE operations, expressions, filters, modifiers, aggregators, federation (`RDFFederation`), and SPARQL endpoint client (`RDFSPARQLEndpoint`).
+- `RDFSharp.Query` — SPARQL query/operation engine (codename **Mirella**, see `Query/Mirella/Engines/RDFQueryEngine.cs` and `RDFOperationEngine.cs`). Hosts query types (`RDFSelectQuery`, `RDFAskQuery`, `RDFConstructQuery`, `RDFDescribeQuery`), SPARQL UPDATE operations, expressions, filters, modifiers, aggregators, federation (`RDFFederation`), and SPARQL endpoint client (`RDFSPARQLEndpoint`).
 
 Anchor abstractions to know before changing things:
 
