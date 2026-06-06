@@ -230,12 +230,13 @@ namespace RDFSharp.Query
             {
                 RDFVariable partitionVariable = PartitionVariables[i];
 
-                //"§PK§" separates one variable's chunk from the next (only between chunks, not before the first)
+                //ProjectionKeyPlaceholder separates one variable's chunk from the next (between chunks only)
                 if (i > 0)
-                    partitionKey.Append("§PK§");
+                    partitionKey.Append(RDFAggregator.ProjectionKeyPlaceholder);
 
-                //"name§PV§" then the bound value (nothing when UNBOUND, matching the old empty-string behaviour)
-                partitionKey.Append(partitionVariable.VariableName).Append("§PV§");
+                //"name<PV>" then the bound value (nothing when UNBOUND)
+                partitionKey.Append(partitionVariable.VariableName)
+                            .Append(RDFAggregator.ProjectionValuePlaceholder);
                 if (!tableRow.IsUnbound(partitionVariable.VariableName))
                     partitionKey.Append(tableRow[partitionVariable.VariableName]);
             }

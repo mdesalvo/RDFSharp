@@ -55,14 +55,16 @@ namespace RDFSharp.Query
         internal RDFAggregatorContext AggregatorContext { get; set; }
 
         /// <summary>
-        /// Placeholders indicating presence of an aggregator key
+        /// Delimiter separating one partition-variable chunk from the next inside a partition key
         /// </summary>
-        internal readonly string[] ProjectionKeyPlaceholder = { "§PK§" };
+        internal const string ProjectionKeyPlaceholder = "§PK§";
+        internal static readonly string[] ProjectionKeyPlaceholders = { ProjectionKeyPlaceholder };
 
         /// <summary>
-        /// Placeholders indicating presence of an aggregator value
+        /// Delimiter separating a partition variable's name from its value inside a partition key
         /// </summary>
-        internal readonly string[] ProjectionValuePlaceholder = { "§PV§" };
+        internal const string ProjectionValuePlaceholder = "§PV§";
+        internal static readonly string[] ProjectionValuePlaceholders = { ProjectionValuePlaceholder };
         #endregion
 
         #region Ctors
@@ -143,10 +145,27 @@ namespace RDFSharp.Query
         {
             try
             {
-                return tableRow.IsBound(AggregatorVariable.VariableName) ? tableRow[AggregatorVariable.VariableName]
-                                                                         : string.Empty;
+                return tableRow.IsBound(AggregatorVariable.VariableName)
+                    ? tableRow[AggregatorVariable.VariableName]
+                    : string.Empty;
             }
             catch { return string.Empty; }
+        }
+
+        /// <summary>
+        /// Parses a partition key ("name§PV§value§PK§name§PV§value…") back into its variable => value bindings.
+        /// This is the inverse of RDFGroupByModifier.GetPartitionKey, used by every aggregator's projection step.
+        /// </summary>
+        internal static Dictionary<string, string> GetProjectionBindings(string partitionKey)
+        {
+            Dictionary<string, string> bindings = new Dictionary<string, string>();
+            foreach (string variableChunk in partitionKey.Split(ProjectionKeyPlaceholders, StringSplitOptions.RemoveEmptyEntries))
+            {
+                //"name§PV§value" => [name, value] (an UNBOUND value yields an empty second slot)
+                string[] nameAndValue = variableChunk.Split(ProjectionValuePlaceholders, StringSplitOptions.None);
+                bindings.Add(nameAndValue[0], nameAndValue[1]);
+            }
+            return bindings;
         }
 
         /// <summary>
@@ -210,15 +229,45 @@ namespace RDFSharp.Query
 
     #region RDFAggregatorContext
     /// <summary>
+    /// RDFAggregatorPartitionState holds the running aggregation state of a single partition: the current
+    /// result and how many rows have been folded into it so far. It replaces the former
+    /// Dictionary&lt;string,object&gt; keyed by the literal strings "ExecutionResult"/"ExecutionCounter",
+    /// removing - on every aggregated row - two string-keyed dictionary lookups and the boxing of the counter.
+    /// </summary>
+    internal sealed class RDFAggregatorPartitionState
+    {
+        /// <summary>
+        /// Running result of the aggregation for this partition. It stays an object because its concrete type is
+        /// aggregator-dependent: a double for COUNT/SUM/AVG/MIN/MAX over numbers, a string for GROUP_CONCAT/
+        /// SAMPLE/PARTITION and for MIN/MAX over strings.
+        /// </summary>
+        internal object ExecutionResult { get; set; }
+
+        /// <summary>
+        /// Number of rows folded into this partition so far (used e.g. by AVG). A plain double, never boxed.
+        /// </summary>
+        internal double ExecutionCounter { get; set; }
+
+        /// <summary>
+        /// Builds the partition state seeded with the given initial result (counter starts at zero)
+        /// </summary>
+        internal RDFAggregatorPartitionState(object initResult)
+        {
+            ExecutionResult = initResult;
+            ExecutionCounter = 0d;
+        }
+    }
+
+    /// <summary>
     /// RDFAggregatorContext represents a registry for keeping track of aggregator's execution
     /// </summary>
     internal sealed class RDFAggregatorContext
     {
         #region Properties
         /// <summary>
-        /// Registry to keep track of aggregator execution flow
+        /// Registry to keep track of aggregator execution flow (one state object per partition key)
         /// </summary>
-        internal Dictionary<string, Dictionary<string, object>> ExecutionRegistry { get; set; }
+        internal Dictionary<string, RDFAggregatorPartitionState> ExecutionRegistry { get; set; }
 
         /// <summary>
         /// Cache to keep track of aggregator execution values
@@ -232,7 +281,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAggregatorContext()
         {
-            ExecutionRegistry = new Dictionary<string, Dictionary<string, object>>();
+            ExecutionRegistry = new Dictionary<string, RDFAggregatorPartitionState>();
             ExecutionCache = new Dictionary<string, HashSet<object>>();
         }
         #endregion
@@ -244,41 +293,39 @@ namespace RDFSharp.Query
         internal void AddPartitionKey<T>(string partitionKey, T initValue)
         {
             if (!ExecutionRegistry.ContainsKey(partitionKey))
-                ExecutionRegistry.Add(partitionKey, new Dictionary<string, object>()
-                {
-                    { "ExecutionResult", initValue },
-                    { "ExecutionCounter", 0d }
-                });
+                ExecutionRegistry.Add(partitionKey, new RDFAggregatorPartitionState(initValue));
         }
 
         /// <summary>
-        /// Gets the execution result for the given partition key
+        /// Gets the execution result for the given partition key (creating the partition state if absent)
         /// </summary>
         internal T GetPartitionKeyExecutionResult<T>(string partitionKey, T initValue)
         {
-            if (!ExecutionRegistry.ContainsKey(partitionKey))
-                AddPartitionKey(partitionKey, initValue);
-
-            return (T)ExecutionRegistry[partitionKey]["ExecutionResult"];
+            if (!ExecutionRegistry.TryGetValue(partitionKey, out RDFAggregatorPartitionState partitionState))
+            {
+                partitionState = new RDFAggregatorPartitionState(initValue);
+                ExecutionRegistry.Add(partitionKey, partitionState);
+            }
+            return (T)partitionState.ExecutionResult;
         }
 
         /// <summary>
         /// Gets the execution counter for the given partition key
         /// </summary>
         internal double GetPartitionKeyExecutionCounter(string partitionKey)
-            => (double)ExecutionRegistry[partitionKey]["ExecutionCounter"];
+            => ExecutionRegistry[partitionKey].ExecutionCounter;
 
         /// <summary>
         /// Updates the execution result for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionResult<T>(string partitionKey, T newValue)
-            => ExecutionRegistry[partitionKey]["ExecutionResult"] = newValue;
+            => ExecutionRegistry[partitionKey].ExecutionResult = newValue;
 
         /// <summary>
         /// Updates the execution counter for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(string partitionKey)
-            => ExecutionRegistry[partitionKey]["ExecutionCounter"] = GetPartitionKeyExecutionCounter(partitionKey) + 1d;
+            => ExecutionRegistry[partitionKey].ExecutionCounter += 1d;
 
         /// <summary>
         /// Checks for presence of the given value in given partitionkey's cache

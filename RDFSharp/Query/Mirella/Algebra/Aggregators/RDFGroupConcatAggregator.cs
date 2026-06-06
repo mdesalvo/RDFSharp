@@ -100,8 +100,7 @@ namespace RDFSharp.Query
         internal override void UpdateProjectionTable(string partitionKey, RDFTable projFuncTable)
         {
             //Get bindings from context
-            Dictionary<string, string> bindings = partitionKey.Split(ProjectionKeyPlaceholder, StringSplitOptions.RemoveEmptyEntries)
-                                                              .Select(pkValue => pkValue.Split(ProjectionValuePlaceholder, StringSplitOptions.None)).ToDictionary(pValues => pValues[0], pValues => pValues[1]);
+            Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
             string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
