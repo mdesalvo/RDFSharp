@@ -1041,7 +1041,7 @@ namespace RDFSharp.Model
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.FIRST, elem));
 
                     //Last element of a collection must give a triple to a "rdf:nil" object
-                    RDFResource newObj = elem != lastElement
+                    RDFResource newObj = !elem.Equals(lastElement)
                         ? new RDFResource()      // obj -> rdf:rest -> newObj
                         : RDFVocabulary.RDF.NIL; // obj -> rdf:rest -> rdf:nil
                     result.AddTriple(new RDFTriple(obj, RDFVocabulary.RDF.REST, newObj));

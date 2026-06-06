@@ -132,10 +132,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("HELLO","EN-US").ToString() },
-            { "?B", new RDFPlainLiteral("LO").ToString() },
+            { "?B", new RDFPlainLiteral("LO").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -153,10 +153,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/test1").ToString() },
-            { "?B", new RDFResource("http://example.org/test1").ToString() },
+            { "?B", new RDFResource("http://example.org/test1").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -174,10 +174,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("ex:org").ToString() },
-            { "?B", new RDFPlainLiteral(":org").ToString() },
+            { "?B", new RDFPlainLiteral(":org").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -195,10 +195,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
-            { "?B", new RDFTypedLiteral("lo", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?B", new RDFTypedLiteral("lo", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -216,10 +216,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("HELO", "EN-US").ToString() },
-            { "?B", new RDFPlainLiteral("LL").ToString() },
+            { "?B", new RDFPlainLiteral("LL").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -237,10 +237,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://e.org/test1").ToString() },
-            { "?B", new RDFResource("http://e.org/test12").ToString() },
+            { "?B", new RDFResource("http://e.org/test12").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -258,10 +258,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("I am ex:Org literal").ToString() },
-            { "?B", new RDFResource("ex:org literal").ToString() },
+            { "?B", new RDFResource("ex:org literal").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -279,10 +279,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("helo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
-            { "?B", new RDFTypedLiteral("ll", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?B", new RDFTypedLiteral("ll", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -300,10 +300,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -321,10 +321,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("hello").ToString() },
-            { "?B", null },
+            { "?B", null }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -342,10 +342,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", null },
+            { "?B", null }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -363,10 +363,10 @@ public class RDFStrEndsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", RDFPlainLiteral.Empty.ToString() },
+            { "?B", RDFPlainLiteral.Empty.ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -385,11 +385,11 @@ public class RDFStrEndsExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -407,11 +407,11 @@ public class RDFStrEndsExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -429,11 +429,11 @@ public class RDFStrEndsExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -451,11 +451,11 @@ public class RDFStrEndsExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -473,11 +473,11 @@ public class RDFStrEndsExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(
@@ -495,11 +495,11 @@ public class RDFStrEndsExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrEndsExpression expression = new RDFStrEndsExpression(

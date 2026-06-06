@@ -64,9 +64,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -82,9 +82,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("heLLo").ToString() },
+            { "?A", new RDFPlainLiteral("heLLo").ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -100,9 +100,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("heLLo","en-US").ToString() },
+            { "?A", new RDFPlainLiteral("heLLo","en-US").ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -118,9 +118,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hEllo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hEllo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -136,9 +136,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -153,9 +153,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -170,9 +170,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -187,9 +187,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hEllo").ToString() },
+            { "?A", new RDFPlainLiteral("hEllo").ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -205,9 +205,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hELlo", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hELlo", "en-US").ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -223,9 +223,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("heLlo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("heLlo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -241,9 +241,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -258,9 +258,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -275,9 +275,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(
@@ -292,9 +292,9 @@ public class RDFLowerCaseExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFLowerCaseExpression expression = new RDFLowerCaseExpression(

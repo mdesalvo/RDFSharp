@@ -90,10 +90,10 @@ public class RDFBooleanAndFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
@@ -115,10 +115,10 @@ public class RDFBooleanAndFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
@@ -139,10 +139,10 @@ public class RDFBooleanAndFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
@@ -163,10 +163,10 @@ public class RDFBooleanAndFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(
@@ -187,10 +187,10 @@ public class RDFBooleanAndFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanAndFilter filter = new RDFBooleanAndFilter(

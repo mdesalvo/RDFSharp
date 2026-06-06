@@ -163,10 +163,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -184,10 +184,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -205,10 +205,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -226,10 +226,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -247,10 +247,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("50", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -266,10 +266,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("50", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -287,10 +287,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -307,10 +307,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -327,10 +327,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -347,10 +347,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -367,10 +367,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -388,11 +388,11 @@ public class RDFDivideExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("50", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
             { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
-            { "?C", RDFTypedLiteral.Zero.ToString() },
+            { "?C", RDFTypedLiteral.Zero.ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -409,10 +409,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(
@@ -429,10 +429,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?Z"), new RDFVariable("?B"));
@@ -447,10 +447,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?Z"));
@@ -465,10 +465,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
-            { "?B", RDFTypedLiteral.Zero.ToString() },
+            { "?B", RDFTypedLiteral.Zero.ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -483,10 +483,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("ex:subj").ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -501,10 +501,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("55").ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -519,10 +519,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("---05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString() },
-            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?B", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -537,10 +537,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFResource("ex:subj").ToString() },
+            { "?B", new RDFResource("ex:subj").ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -555,10 +555,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("55").ToString() },
+            { "?B", new RDFPlainLiteral("55").ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -573,10 +573,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
-            { "?B", new RDFTypedLiteral("---05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString() },
+            { "?B", new RDFTypedLiteral("---05", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -591,10 +591,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?B", new RDFTypedLiteral("25.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -609,10 +609,10 @@ public class RDFDivideExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
-            { "?B", null },
+            { "?B", null }
         });
 
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));

@@ -132,10 +132,10 @@ public class RDFCoalesceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -153,10 +153,10 @@ public class RDFCoalesceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -174,10 +174,10 @@ public class RDFCoalesceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -193,9 +193,9 @@ public class RDFCoalesceExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -212,9 +212,9 @@ public class RDFCoalesceExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -231,9 +231,9 @@ public class RDFCoalesceExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -251,11 +251,11 @@ public class RDFCoalesceExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
             { "?B", new RDFPlainLiteral("hello").ToString() },
-            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -278,11 +278,11 @@ public class RDFCoalesceExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
             { "?B", new RDFPlainLiteral("hello").ToString() },
-            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -304,11 +304,11 @@ public class RDFCoalesceExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
             { "?B", new RDFPlainLiteral("hello").ToString() },
-            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(
@@ -333,11 +333,11 @@ public class RDFCoalesceExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
             { "?B", new RDFPlainLiteral("hello").ToString() },
-            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?C", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFCoalesceExpression expression = new RDFCoalesceExpression(

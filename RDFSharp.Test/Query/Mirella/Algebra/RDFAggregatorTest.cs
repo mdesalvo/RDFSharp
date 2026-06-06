@@ -98,41 +98,41 @@ public class RDFAggregatorTest
         RDFTable table = new RDFTable();
         table.AddColumn("?AGGVAR");
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?AGGVAR", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() }
         });
         double value0 = aggregator.GetRowValueAsNumber(table.Rows[0]);
         Assert.IsTrue(value0.Equals(25.0d));
 
-        table.AddRow(new string[] { null });
+        table.AddRow([null]);
         double value1 = aggregator.GetRowValueAsNumber(table.Rows[1]);
         Assert.IsTrue(value1.Equals(double.NaN));
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", null },
+            { "?AGGVAR", null }
         });
         double value2 = aggregator.GetRowValueAsNumber(table.Rows[2]);
         Assert.IsTrue(value2.Equals(double.NaN));
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", new RDFResource("ex:res").ToString() },
+            { "?AGGVAR", new RDFResource("ex:res").ToString() }
         });
         double value3 = aggregator.GetRowValueAsNumber(table.Rows[3]);
         Assert.IsTrue(value3.Equals(double.NaN));
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", new RDFTypedLiteral("2012", RDFModelEnums.RDFDatatypes.XSD_GYEAR).ToString() },
+            { "?AGGVAR", new RDFTypedLiteral("2012", RDFModelEnums.RDFDatatypes.XSD_GYEAR).ToString() }
         });
         double value4 = aggregator.GetRowValueAsNumber(table.Rows[4]);
         Assert.IsTrue(value4.Equals(double.NaN));
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", "73523534763524347325732573573257673257382568732587638756328756387563875638756587537567356735" },
+            { "?AGGVAR", "73523534763524347325732573573257673257382568732587638756328756387563875638756587537567356735" }
         });
         double value5 = aggregator.GetRowValueAsNumber(table.Rows[5]);
         Assert.IsTrue(value5.Equals(double.NaN));
@@ -145,34 +145,34 @@ public class RDFAggregatorTest
         RDFTable table = new RDFTable();
         table.AddColumn("?AGGVAR");
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?AGGVAR", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() }
         });
         string value0 = aggregator.GetRowValueAsString(table.Rows[0]);
         Assert.IsTrue(value0.Equals($"25^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
 
-        table.AddRow(new string[] { null });
+        table.AddRow([null]);
         string value1 = aggregator.GetRowValueAsString(table.Rows[1]);
         Assert.IsTrue(value1.Equals(string.Empty, StringComparison.Ordinal));
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", null },
+            { "?AGGVAR", null }
         });
         string value2 = aggregator.GetRowValueAsString(table.Rows[2]);
         Assert.IsTrue(value2.Equals(string.Empty, StringComparison.Ordinal));
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", new RDFResource("ex:res").ToString() },
+            { "?AGGVAR", new RDFResource("ex:res").ToString() }
         });
         string value3 = aggregator.GetRowValueAsString(table.Rows[3]);
         Assert.IsTrue(value3.Equals("ex:res", StringComparison.Ordinal));
 
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?AGGVAR", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?AGGVAR", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
         string value4 = aggregator.GetRowValueAsString(table.Rows[4]);
         Assert.IsTrue(value4.Equals("hello@EN-US", StringComparison.Ordinal));
@@ -200,7 +200,7 @@ public class RDFAggregatorTest
     public void ShouldUpdateProjectionTable()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        aggregator.UpdateProjectionTable(null, (RDFTable)null); //Just no-op
+        aggregator.UpdateProjectionTable(null, null); //Just no-op
     }
 
     //AggregatorContext

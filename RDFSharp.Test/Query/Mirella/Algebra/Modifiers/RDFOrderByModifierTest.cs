@@ -178,11 +178,10 @@ public class RDFOrderByModifierTest
         });
 
         //Compound ORDER BY ?A ASC, ?B DESC (the live engine composes all sort keys in the projection step)
-        RDFTable orderedTable = RDFTableEngine.SortTable(table, new[]
-        {
+        RDFTable orderedTable = RDFTableEngine.SortTable(table, [
             (new RDFVariable("?A").ToString(), false),
             (new RDFVariable("?B").ToString(), true)
-        });
+        ]);
 
         Assert.IsNotNull(orderedTable);
         Assert.AreEqual(3, orderedTable.ColumnsCount);

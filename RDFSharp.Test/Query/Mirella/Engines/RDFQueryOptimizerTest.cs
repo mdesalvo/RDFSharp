@@ -38,7 +38,7 @@ namespace RDFSharp.Test.Query;
 [TestClass]
 public class RDFQueryOptimizerTest
 {
-    #region Helpers
+    #region Utilities
     // Returns a plain inner-join pattern whose cardinality estimate (with null datasource)
     // equals the number of variable slots, controlled via the variableCount parameter.
     // variableCount 0 → fully bound (S rdf:type rdf:Class), cardinality 0

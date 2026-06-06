@@ -116,9 +116,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -134,9 +134,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -152,9 +152,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -170,9 +170,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -188,9 +188,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -206,9 +206,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -224,9 +224,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -242,9 +242,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -260,9 +260,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -278,9 +278,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -296,9 +296,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -314,9 +314,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -332,9 +332,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -350,9 +350,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -368,9 +368,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -386,9 +386,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -403,9 +403,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -420,9 +420,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() },
+            { "?A", new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -437,9 +437,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -455,9 +455,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -473,9 +473,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -491,9 +491,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -509,9 +509,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -527,9 +527,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -545,9 +545,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -563,9 +563,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -581,9 +581,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -599,9 +599,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -617,9 +617,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -635,9 +635,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -653,9 +653,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -671,9 +671,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -689,9 +689,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -707,9 +707,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -725,9 +725,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -743,9 +743,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -761,9 +761,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -779,9 +779,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -797,9 +797,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -815,9 +815,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -833,9 +833,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -851,9 +851,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -869,9 +869,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -887,9 +887,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -905,9 +905,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -923,9 +923,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -941,9 +941,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -959,9 +959,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -977,9 +977,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -995,9 +995,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1013,9 +1013,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1031,9 +1031,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1049,9 +1049,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1067,9 +1067,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1085,9 +1085,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1103,9 +1103,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1121,9 +1121,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1139,9 +1139,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1157,9 +1157,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1175,9 +1175,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1193,9 +1193,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1211,9 +1211,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1229,9 +1229,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1246,9 +1246,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() },
+            { "?A", new RDFTypedLiteral("35", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1263,9 +1263,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1281,9 +1281,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1299,9 +1299,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1317,9 +1317,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1335,9 +1335,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1353,9 +1353,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1371,9 +1371,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1389,9 +1389,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1407,9 +1407,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1425,9 +1425,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1443,9 +1443,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1461,9 +1461,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1479,9 +1479,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1497,9 +1497,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1515,9 +1515,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1533,9 +1533,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1551,9 +1551,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1569,9 +1569,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1587,9 +1587,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1605,9 +1605,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1623,9 +1623,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1641,9 +1641,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1659,9 +1659,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1677,9 +1677,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1695,9 +1695,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1713,9 +1713,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1731,9 +1731,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1749,9 +1749,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1767,9 +1767,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(
@@ -1785,9 +1785,9 @@ public class RDFSubstringExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSubstringExpression expression = new RDFSubstringExpression(

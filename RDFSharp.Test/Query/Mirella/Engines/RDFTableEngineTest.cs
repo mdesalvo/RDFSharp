@@ -1125,7 +1125,7 @@ public class RDFTableEngineTest
         List<string> common = leftTable.Columns.Where(c => rightTable.HasColumn(c.Name)).Select(c => c.Name).ToList();
         foreach (RDFTableColumn leftColumn in leftTable.Columns)
             joinTable.AddColumn(leftColumn.Name);
-        List<int> rightNonCommon = new List<int>();
+        List<int> rightNonCommon = [];
         foreach (RDFTableColumn rightColumn in rightTable.Columns)
             if (!leftTable.HasColumn(rightColumn.Name))
             {
@@ -1155,8 +1155,7 @@ public class RDFTableEngineTest
                     cells[i] = leftRow[i];
                 //2) coalesce shared columns: if left is UNBOUND there, take the (bound) right value
                 for (int c = 0; c < leftCommon.Length; c++)
-                    if (cells[leftCommon[c]] == null)
-                        cells[leftCommon[c]] = rightRow[rightCommon[c]];
+                    cells[leftCommon[c]] ??= rightRow[rightCommon[c]];
                 //3) append the right-only columns
                 for (int k = 0; k < rightNonCommon.Count; k++)
                     cells[leftWidth + k] = rightRow[rightNonCommon[k]];
@@ -1434,7 +1433,7 @@ public class RDFTableEngineTest
 
     [TestMethod]
     public void ShouldCombineReturnEmptyOnNoTables()
-        => Assert.AreEqual(0, RDFTableEngine.CombineTables(new List<RDFTable>()).RowsCount);
+        => Assert.AreEqual(0, RDFTableEngine.CombineTables([]).RowsCount);
 
     [TestMethod]
     public void ShouldCombineReturnSingleTableUnchanged()

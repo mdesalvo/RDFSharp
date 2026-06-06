@@ -232,7 +232,7 @@ namespace RDFSharp.Query
                         if (i < Steps.Count - 1 && Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                         {
                             //Adjust start/end
-                            if (!Steps.Skip(i + 1).Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
+                            if (Steps.Skip(i + 1).All(p => p.StepFlavor != RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
                                 currEnd = End;
 
                             patterns.Add(Steps[i].IsInverseStep
@@ -254,7 +254,7 @@ namespace RDFSharp.Query
                             if (i < Steps.Count - 1)
                             {
                                 currStart = currEnd;
-                                if (i == Steps.Count - 2 || !Steps.Skip(i + 1).Any(p => p.StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
+                                if (i == Steps.Count - 2 || Steps.Skip(i + 1).All(p => p.StepFlavor != RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
                                     currEnd = End;
                                 else
                                     currEnd = new RDFVariable($"__PP{i+1}");

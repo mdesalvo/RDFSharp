@@ -64,9 +64,9 @@ public class RDFMinutesExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() }
         });
 
         RDFMinutesExpression expression = new RDFMinutesExpression(
@@ -82,9 +82,9 @@ public class RDFMinutesExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+            { "?A", new RDFTypedLiteral("2022-01-15T10:30:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() }
         });
 
         RDFMinutesExpression expression = new RDFMinutesExpression(
@@ -100,9 +100,9 @@ public class RDFMinutesExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFMinutesExpression expression = new RDFMinutesExpression(
@@ -117,9 +117,9 @@ public class RDFMinutesExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() }
         });
 
         RDFMinutesExpression expression = new RDFMinutesExpression(
@@ -134,9 +134,9 @@ public class RDFMinutesExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?A", new RDFTypedLiteral("5.1", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFMinutesExpression expression = new RDFMinutesExpression(
@@ -151,9 +151,9 @@ public class RDFMinutesExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() },
+            { "?A", new RDFTypedLiteral("2022-01-15T10:00:00.000Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME).ToString() }
         });
 
         RDFMinutesExpression expression = new RDFMinutesExpression(

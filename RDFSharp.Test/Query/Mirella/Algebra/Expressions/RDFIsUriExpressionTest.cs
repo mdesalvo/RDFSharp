@@ -64,9 +64,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -82,9 +82,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -100,9 +100,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello","en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello","en-US").ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -118,9 +118,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -136,9 +136,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -154,9 +154,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -172,9 +172,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -190,9 +190,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -208,9 +208,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -226,9 +226,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -244,9 +244,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(
@@ -262,9 +262,9 @@ public class RDFIsUriExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFIsUriExpression expression = new RDFIsUriExpression(

@@ -64,9 +64,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -82,9 +82,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello everybody").ToString() },
+            { "?A", new RDFPlainLiteral("hello everybody").ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -100,9 +100,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello everybody", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello everybody", "en-US").ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -118,9 +118,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -136,9 +136,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -154,9 +154,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -171,9 +171,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() },
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INT).ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -188,9 +188,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -206,9 +206,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello everybody").ToString() },
+            { "?A", new RDFPlainLiteral("hello everybody").ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -224,9 +224,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello everybody", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello everybody", "en-US").ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -242,9 +242,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello everybody", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -260,9 +260,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -278,9 +278,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(
@@ -295,9 +295,9 @@ public class RDFEncodeForURIExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
         });
 
         RDFEncodeForURIExpression expression = new RDFEncodeForURIExpression(

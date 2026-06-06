@@ -104,10 +104,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en-us")));
@@ -123,10 +123,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?B")), new RDFConstantExpression(new RDFPlainLiteral("en-us")));
@@ -142,10 +142,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US--rtl").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US--rtl").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("EN")));
@@ -161,10 +161,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US--rtl").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US--rtl").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("EN-us")));
@@ -180,10 +180,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US--rtl").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US--rtl").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?B")), new RDFConstantExpression(new RDFPlainLiteral("EN")));
@@ -199,10 +199,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("en-US").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?A"));
@@ -218,10 +218,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("en-US").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?B")), new RDFVariable("?A"));
@@ -237,10 +237,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("EN-US")));
@@ -256,10 +256,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en-UK")));
@@ -275,9 +275,9 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("http://example.org/").ToString() },
+            { "?A", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty));
@@ -293,10 +293,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("en-UK")));
@@ -312,10 +312,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?A"), new RDFConstantExpression(new RDFPlainLiteral("EN-US")));
@@ -330,10 +330,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?Q"), new RDFConstantExpression(new RDFPlainLiteral("en-us")));
@@ -348,10 +348,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("en-US").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?Q"));
@@ -366,10 +366,10 @@ public class RDFLangMatchesExpressionTest
        RDFTable table = new RDFTable();
        table.AddColumn("?A");
        table.AddColumn("?B");
-       table.AddRow(new Dictionary<string, string>()
+       table.AddRow(new Dictionary<string, string>
        {
            { "?A", new RDFResource("http://example.org/").ToString() },
-           { "?B", new RDFPlainLiteral("hello", "en-US--ltr").ToString() },
+           { "?B", new RDFPlainLiteral("hello", "en-US--ltr").ToString() }
        });
 
        RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")));
@@ -385,10 +385,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("*").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US--ltr").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US--ltr").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?A"));
@@ -404,10 +404,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFPlainLiteral("*")));
@@ -423,10 +423,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty));
@@ -442,10 +442,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariableExpression(new RDFVariable("?A")));
@@ -461,10 +461,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFConstantExpression(RDFPlainLiteral.Empty));
@@ -480,10 +480,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", RDFPlainLiteral.Empty.ToString() },
+            { "?B", RDFPlainLiteral.Empty.ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?A"), new RDFVariable("?B"));
@@ -498,10 +498,10 @@ public class RDFLangMatchesExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFLangMatchesExpression expression = new RDFLangMatchesExpression(new RDFVariable("?B"), new RDFVariable("?A"));

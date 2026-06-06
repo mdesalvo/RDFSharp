@@ -44,8 +44,10 @@ public class RDFTableColumnTest
     [TestMethod]
     public void ShouldUpdateOrdinal()
     {
-        RDFTableColumn column = new RDFTableColumn("?OBJECT", 2);
-        column.Ordinal = 5;
+        RDFTableColumn column = new RDFTableColumn("?OBJECT", 2)
+        {
+            Ordinal = 5
+        };
 
         Assert.AreEqual(5, column.Ordinal);
     }

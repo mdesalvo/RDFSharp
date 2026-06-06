@@ -143,10 +143,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -165,10 +165,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -187,10 +187,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -208,10 +208,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello@EN-US" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -229,10 +229,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -252,10 +252,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -274,10 +274,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -296,10 +296,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -317,10 +317,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello@EN-US" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -338,10 +338,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -361,10 +361,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -383,10 +383,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -405,10 +405,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -426,10 +426,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello@EN-US" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -447,10 +447,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -470,10 +470,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -492,10 +492,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"hello^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -514,10 +514,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -535,10 +535,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello@EN-US" },
-            { "?B", "en-US" },
+            { "?B", "en-US" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -556,10 +556,10 @@ public class RDFStrLangDirExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"34^^{RDFVocabulary.XSD.BYTE}" },
-            { "?B", "en-" },
+            { "?B", "en-" }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -578,11 +578,11 @@ public class RDFStrLangDirExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", RDFVocabulary.XSD.FLOAT.ToString() },
             { "?B", "en-US" },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
@@ -601,11 +601,11 @@ public class RDFStrLangDirExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrLangDirExpression expression = new RDFStrLangDirExpression(

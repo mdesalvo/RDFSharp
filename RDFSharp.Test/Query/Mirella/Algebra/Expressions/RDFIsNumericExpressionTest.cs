@@ -64,9 +64,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -82,9 +82,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -100,9 +100,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello","en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello","en-US").ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -118,9 +118,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -136,9 +136,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_BYTE).ToString() },
+            { "?A", new RDFTypedLiteral("22", RDFModelEnums.RDFDatatypes.XSD_BYTE).ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -154,9 +154,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -172,9 +172,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -190,9 +190,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -208,9 +208,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -226,9 +226,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -244,9 +244,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -262,9 +262,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("8.14", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?A", new RDFTypedLiteral("8.14", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -280,9 +280,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(
@@ -298,9 +298,9 @@ public class RDFIsNumericExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFIsNumericExpression expression = new RDFIsNumericExpression(

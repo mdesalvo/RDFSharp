@@ -171,10 +171,10 @@ public class RDFGeoContainsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?NAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?NAPLES", new RDFTypedLiteral("POINT (14.2681244 40.8517746)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?NAPLES", new RDFTypedLiteral("POINT (14.2681244 40.8517746)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -192,10 +192,10 @@ public class RDFGeoContainsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?MILANNAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?MILANNAPLES", new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45 14.2681244 40.8517746</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?MILANNAPLES", new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45 14.2681244 40.8517746</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -212,9 +212,9 @@ public class RDFGeoContainsExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?PL");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?PL", new RDFTypedLiteral("POLYGON ((9.18854 45, 12.496365 41.902782, 14.268124 40.851774, 9.18854 45))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL", new RDFTypedLiteral("POLYGON ((9.18854 45, 12.496365 41.902782, 14.268124 40.851774, 9.18854 45))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -232,10 +232,10 @@ public class RDFGeoContainsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?PL");
         table.AddColumn("?MPT");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?PL", new RDFTypedLiteral("POLYGON ((9.55854 46, 12.496365 41.902782, 14.268124 40.851774, 9.55854 46))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?MPT", new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>9.18854 39</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?MPT", new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>9.18854 39</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -252,9 +252,9 @@ public class RDFGeoContainsExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -271,9 +271,9 @@ public class RDFGeoContainsExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -291,10 +291,10 @@ public class RDFGeoContainsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -311,10 +311,10 @@ public class RDFGeoContainsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -331,10 +331,10 @@ public class RDFGeoContainsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -351,10 +351,10 @@ public class RDFGeoContainsExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -372,11 +372,11 @@ public class RDFGeoContainsExpressionTest
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
         table.AddColumn("?NAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
             { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?NAPLES", null },
+            { "?NAPLES", null }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(
@@ -394,11 +394,11 @@ public class RDFGeoContainsExpressionTest
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
         table.AddColumn("?NAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
             { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?NAPLES", null },
+            { "?NAPLES", null }
         });
 
         RDFGeoContainsExpression expression = new RDFGeoContainsExpression(

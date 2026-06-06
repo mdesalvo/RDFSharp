@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using RDFSharp.Model;
 
@@ -157,14 +158,9 @@ namespace RDFSharp.Query
         /// </summary>
         internal static Dictionary<string, string> GetProjectionBindings(string partitionKey)
         {
-            Dictionary<string, string> bindings = new Dictionary<string, string>();
-            foreach (string variableChunk in partitionKey.Split(ProjectionKeyPlaceholders, StringSplitOptions.RemoveEmptyEntries))
-            {
-                //"name§PV§value" => [name, value] (an UNBOUND value yields an empty second slot)
-                string[] nameAndValue = variableChunk.Split(ProjectionValuePlaceholders, StringSplitOptions.None);
-                bindings.Add(nameAndValue[0], nameAndValue[1]);
-            }
-            return bindings;
+            return partitionKey.Split(ProjectionKeyPlaceholders, StringSplitOptions.RemoveEmptyEntries)
+                               .Select(variableChunk => variableChunk.Split(ProjectionValuePlaceholders, StringSplitOptions.None))
+                               .ToDictionary(nameAndValue => nameAndValue[0], nameAndValue => nameAndValue[1]);
         }
 
         /// <summary>

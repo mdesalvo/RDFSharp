@@ -45,7 +45,7 @@ namespace RDFSharp.Model
         /// Asynchronously validates the given data graph against the given SHACL shapes graph
         /// </summary>
         public static Task<RDFValidationReport> ValidateAsync(this RDFShapesGraph shapesGraph, RDFGraph dataGraph)
-            => Task.Run(() => Validate(shapesGraph, dataGraph));
+            => Task.Run(() => shapesGraph.Validate(dataGraph));
 
         /// <summary>
         /// Validates the given data graph against the given SHACL shape

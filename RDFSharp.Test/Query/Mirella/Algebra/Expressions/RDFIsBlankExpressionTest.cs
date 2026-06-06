@@ -64,9 +64,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -82,9 +82,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -100,9 +100,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello","en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello","en-US").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -118,9 +118,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -136,9 +136,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -154,9 +154,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource().ToString() },
+            { "?A", new RDFResource().ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -172,9 +172,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -190,9 +190,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -208,9 +208,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -226,9 +226,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -244,9 +244,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -262,9 +262,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -280,9 +280,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("bnode:12345").ToString() },
+            { "?A", new RDFResource("bnode:12345").ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(
@@ -298,9 +298,9 @@ public class RDFIsBlankExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFIsBlankExpression expression = new RDFIsBlankExpression(

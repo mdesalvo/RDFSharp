@@ -170,9 +170,9 @@ public class RDFGeoSymDifferenceExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?MPT");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?MPT", new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>9.18854 48.89</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?MPT", new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>9.18854 48.89</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -190,10 +190,10 @@ public class RDFGeoSymDifferenceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?PL1");
         table.AddColumn("?PL2");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?PL1", new RDFTypedLiteral("POLYGON((9.188690185546873 45.46590974421454,7.667083740234373 45.056061242744164,8.916778564453123 44.406316252661384,9.188690185546873 45.46590974421454))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?PL2", new RDFTypedLiteral("POLYGON((8.212581852537832 44.9137259976078,9.157406071287832 45.189259240893335,9.701229313475332 45.06135959832709,8.212581852537832 44.9137259976078))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((8.212581852537832 44.9137259976078,9.157406071287832 45.189259240893335,9.701229313475332 45.06135959832709,8.212581852537832 44.9137259976078))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -211,10 +211,10 @@ public class RDFGeoSymDifferenceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?LS");
         table.AddColumn("?PT");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?LS", new RDFTypedLiteral("<gml:LineString xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:posList>9.18854 45 9.18854 49</gml:posList></gml:LineString>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?PT", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PT", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -231,9 +231,9 @@ public class RDFGeoSymDifferenceExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?PL");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?PL", new RDFTypedLiteral("POLYGON((9.188690185546873 45.46590974421454,7.667083740234373 45.056061242744164,8.916778564453123 44.406316252661384,9.188690185546873 45.46590974421454))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL", new RDFTypedLiteral("POLYGON((9.188690185546873 45.46590974421454,7.667083740234373 45.056061242744164,8.916778564453123 44.406316252661384,9.188690185546873 45.46590974421454))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -251,10 +251,10 @@ public class RDFGeoSymDifferenceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILANANDROME");
         table.AddColumn("?MILAN");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILANANDROME", new RDFTypedLiteral("<gml:MultiPoint xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pointMember><gml:Point><gml:pos>9.18854 45</gml:pos></gml:Point></gml:pointMember><gml:pointMember><gml:Point><gml:pos>9.18854 54</gml:pos></gml:Point></gml:pointMember></gml:MultiPoint>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -271,9 +271,9 @@ public class RDFGeoSymDifferenceExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -290,9 +290,9 @@ public class RDFGeoSymDifferenceExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?LS");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?LS", new RDFTypedLiteral("LINESTRING (9.18854 45, 9.18854 54)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?LS", new RDFTypedLiteral("LINESTRING (9.18854 45, 9.18854 54)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -310,10 +310,10 @@ public class RDFGeoSymDifferenceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -330,10 +330,10 @@ public class RDFGeoSymDifferenceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -350,10 +350,10 @@ public class RDFGeoSymDifferenceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -370,10 +370,10 @@ public class RDFGeoSymDifferenceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -391,11 +391,11 @@ public class RDFGeoSymDifferenceExpressionTest
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
         table.AddColumn("?NAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
             { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?NAPLES", null },
+            { "?NAPLES", null }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(
@@ -413,11 +413,11 @@ public class RDFGeoSymDifferenceExpressionTest
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
         table.AddColumn("?NAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
             { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?NAPLES", null },
+            { "?NAPLES", null }
         });
 
         RDFGeoSymDifferenceExpression expression = new RDFGeoSymDifferenceExpression(

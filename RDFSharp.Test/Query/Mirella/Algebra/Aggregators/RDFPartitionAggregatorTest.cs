@@ -73,23 +73,23 @@ public class RDFPartitionAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
 
         //Partition aggregator is not available to users and it is always associated to a GroupBy modifier
@@ -111,23 +111,23 @@ public class RDFPartitionAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
 
         //Partition aggregator is not available to users and it is always associated to a GroupBy modifier

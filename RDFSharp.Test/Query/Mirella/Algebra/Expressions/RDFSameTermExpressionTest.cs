@@ -132,10 +132,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("HELLO","EN-US").ToString() },
-            { "?B", new RDFPlainLiteral("HELLO","EN-US").ToString() },
+            { "?B", new RDFPlainLiteral("HELLO","EN-US").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -153,10 +153,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/test1").ToString() },
-            { "?B", new RDFResource("http://example.org/test1").ToString() },
+            { "?B", new RDFResource("http://example.org/test1").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -174,10 +174,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("ex:org").ToString() },
-            { "?B", new RDFPlainLiteral("ex:org").ToString() },
+            { "?B", new RDFPlainLiteral("ex:org").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -195,10 +195,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
-            { "?B", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?B", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -216,10 +216,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("HELO", "EN-US").ToString() },
-            { "?B", new RDFPlainLiteral("HELO").ToString() },
+            { "?B", new RDFPlainLiteral("HELO").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -237,10 +237,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://e.org/test1").ToString() },
-            { "?B", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -258,10 +258,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("I am ex:Org literal").ToString() },
-            { "?B", new RDFResource("ex:org").ToString() },
+            { "?B", new RDFResource("ex:org").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -279,10 +279,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("helo", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
-            { "?B", new RDFTypedLiteral("helo", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?B", new RDFTypedLiteral("helo", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -300,10 +300,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -321,10 +321,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("hello").ToString() },
-            { "?B", null },
+            { "?B", null }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -342,10 +342,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", null },
+            { "?B", null }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -363,10 +363,10 @@ public class RDFSameTermExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", RDFPlainLiteral.Empty.ToString() },
+            { "?B", RDFPlainLiteral.Empty.ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -385,11 +385,11 @@ public class RDFSameTermExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -407,11 +407,11 @@ public class RDFSameTermExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -429,11 +429,11 @@ public class RDFSameTermExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(
@@ -451,11 +451,11 @@ public class RDFSameTermExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFSameTermExpression expression = new RDFSameTermExpression(

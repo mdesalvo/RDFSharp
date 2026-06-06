@@ -85,10 +85,10 @@ public class RDFBooleanNotFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanNotFilter filter = new RDFBooleanNotFilter(
@@ -108,10 +108,10 @@ public class RDFBooleanNotFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanNotFilter filter = new RDFBooleanNotFilter(
@@ -127,10 +127,10 @@ public class RDFBooleanNotFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanNotFilter filter = new RDFBooleanNotFilter(
@@ -150,10 +150,10 @@ public class RDFBooleanNotFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.7", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFBooleanNotFilter filter = new RDFBooleanNotFilter(

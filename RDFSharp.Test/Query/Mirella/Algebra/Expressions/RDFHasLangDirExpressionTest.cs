@@ -64,9 +64,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", null },
+            { "?A", null }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -82,9 +82,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -100,9 +100,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -118,9 +118,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello","en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello","en-US").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -136,9 +136,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US--ltr").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US--ltr").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -154,9 +154,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US--rtl").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US--rtl").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -172,9 +172,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -190,9 +190,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -208,9 +208,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFResource("ex:subj").ToString() },
+            { "?A", new RDFResource("ex:subj").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -226,9 +226,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?A", new RDFPlainLiteral("hello").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -244,9 +244,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -262,9 +262,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US--ltr").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US--ltr").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -280,9 +280,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFPlainLiteral("hello", "en-US--rtl").ToString() },
+            { "?A", new RDFPlainLiteral("hello", "en-US--rtl").ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -298,9 +298,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?A", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(
@@ -316,9 +316,9 @@ public class RDFHasLangDirExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() },
+            { "?A", new RDFTypedLiteral("45", RDFModelEnums.RDFDatatypes.XSD_NORMALIZEDSTRING).ToString() }
         });
 
         RDFHasLangDirExpression expression = new RDFHasLangDirExpression(

@@ -135,10 +135,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -156,10 +156,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", "http://example.org/testdt" },
+            { "?B", "http://example.org/testdt" }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -177,10 +177,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -199,10 +199,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -220,10 +220,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", "http://example.org/testdt" },
+            { "?B", "http://example.org/testdt" }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -241,10 +241,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -263,10 +263,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -284,10 +284,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", "http://example.org/testdt" },
+            { "?B", "http://example.org/testdt" }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -305,10 +305,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -327,10 +327,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -348,10 +348,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "http://example.org/" },
-            { "?B", RDFVocabulary.XSD.ANY_URI.ToString() },
+            { "?B", RDFVocabulary.XSD.ANY_URI.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -369,10 +369,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "44" },
-            { "?B", "http://example.org/testdt" },
+            { "?B", "http://example.org/testdt" }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -390,10 +390,10 @@ public class RDFStrDtExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "hello" },
-            { "?B", RDFVocabulary.XSD.INTEGER.ToString() },
+            { "?B", RDFVocabulary.XSD.INTEGER.ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -411,11 +411,11 @@ public class RDFStrDtExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", RDFVocabulary.XSD.FLOAT.ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -433,11 +433,11 @@ public class RDFStrDtExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -455,11 +455,11 @@ public class RDFStrDtExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", "hello" },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -477,11 +477,11 @@ public class RDFStrDtExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("hello@EN").ToString() },
             { "?B", RDFVocabulary.RDF.PLAIN_LITERAL.ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -499,11 +499,11 @@ public class RDFStrDtExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("hello@EN").ToString() },
             { "?B", RDFVocabulary.RDF.LANG_STRING.ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(
@@ -521,11 +521,11 @@ public class RDFStrDtExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("hello@EN--ltr").ToString() },
             { "?B", RDFVocabulary.RDF.DIR_LANG_STRING.ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFStrDtExpression expression = new RDFStrDtExpression(

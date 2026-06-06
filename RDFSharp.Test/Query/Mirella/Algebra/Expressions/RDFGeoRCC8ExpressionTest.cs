@@ -207,10 +207,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?PL1");
         table.AddColumn("?PL2");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?PL1", new RDFTypedLiteral("POLYGON((10.497706267187477 43.83853444111245,11.228297087499977 43.779072001707746,10.898707243749977 43.94146242961902,10.497706267187477 43.83853444111245))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,12.299464079687477 43.53266599350556,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,12.299464079687477 43.53266599350556,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -229,10 +229,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?PL1");
         table.AddColumn("?PL2");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?PL1", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,12.299464079687477 43.53266599350556,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,11.129420134374977 43.68778129452736,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,11.129420134374977 43.68778129452736,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -251,10 +251,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?PL1");
         table.AddColumn("?PL2");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?PL1", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,11.60323105691032 44.64005141513215,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?PL2", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,11.60323105691032 44.64005141513215,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.62520371316032 44.84294151328678,11.33955918191032 44.491335321453306,11.60323105691032 44.64005141513215,11.62520371316032 44.84294151328678))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -273,10 +273,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?PL1");
         table.AddColumn("?PL2");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?PL1", new RDFTypedLiteral("POLYGON((11.228297087499977 43.62021611668259,11.244776579687477 43.54063035550621,11.464503142187477 43.6679170744954,11.371119353124977 43.68778129452736,11.228297087499977 43.62021611668259))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,11.129420134374977 43.68778129452736,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,11.129420134374977 43.68778129452736,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -295,10 +295,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?PL1");
         table.AddColumn("?PL2");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?PL1", new RDFTypedLiteral("POLYGON((11.228297087499977 43.62021611668259,11.244776579687477 43.54063035550621,11.464503142187477 43.6679170744954,11.371119353124977 43.68778129452736,11.228297087499977 43.62021611668259))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,11.129420134374977 43.68778129452736,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL2", new RDFTypedLiteral("POLYGON((11.656763884374977 43.80286408108511,11.217310759374977 43.317230644814956,11.129420134374977 43.68778129452736,11.656763884374977 43.80286408108511))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -316,9 +316,9 @@ public class RDFGeoRCC8ExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?PL");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?PL", new RDFTypedLiteral("POLYGON((11.312090143014858 43.600781279343785,11.363588556100796 43.62116478406795,11.346422418405483 43.56994432121584,11.312090143014858 43.600781279343785))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL", new RDFTypedLiteral("POLYGON((11.312090143014858 43.600781279343785,11.363588556100796 43.62116478406795,11.346422418405483 43.56994432121584,11.312090143014858 43.600781279343785))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -336,9 +336,9 @@ public class RDFGeoRCC8ExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?PL");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?PL", new RDFTypedLiteral("POLYGON((11.312090143014858 43.600781279343785,11.363588556100796 43.62116478406795,11.346422418405483 43.56994432121584,11.312090143014858 43.600781279343785))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL", new RDFTypedLiteral("POLYGON((11.312090143014858 43.600781279343785,11.363588556100796 43.62116478406795,11.346422418405483 43.56994432121584,11.312090143014858 43.600781279343785))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -356,9 +356,9 @@ public class RDFGeoRCC8ExpressionTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?PL");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
-            { "?PL", new RDFTypedLiteral("POLYGON((11.312090143014858 43.600781279343785,11.363588556100796 43.62116478406795,11.351915582467983 43.5067289768788,11.312090143014858 43.600781279343785))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?PL", new RDFTypedLiteral("POLYGON((11.312090143014858 43.600781279343785,11.363588556100796 43.62116478406795,11.351915582467983 43.5067289768788,11.312090143014858 43.600781279343785))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -377,10 +377,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -398,10 +398,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
+            { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -419,10 +419,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -440,10 +440,10 @@ public class RDFGeoRCC8ExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
-            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() },
+            { "?ROME", new RDFTypedLiteral("hello", RDFModelEnums.RDFDatatypes.RDFS_LITERAL).ToString() }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -462,11 +462,11 @@ public class RDFGeoRCC8ExpressionTest
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
         table.AddColumn("?NAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
             { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?NAPLES", null },
+            { "?NAPLES", null }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(
@@ -485,11 +485,11 @@ public class RDFGeoRCC8ExpressionTest
         table.AddColumn("?MILAN");
         table.AddColumn("?ROME");
         table.AddColumn("?NAPLES");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
             { "?ROME", new RDFTypedLiteral("<gml:Point xmlns:gml=\"http://www.opengis.net/gml/3.2\"><gml:pos>12.496365 41.902782</gml:pos></gml:Point>", RDFModelEnums.RDFDatatypes.GEOSPARQL_GML).ToString() },
-            { "?NAPLES", null },
+            { "?NAPLES", null }
         });
 
         RDFGeoRCC8Expression expression = new RDFGeoRCC8Expression(

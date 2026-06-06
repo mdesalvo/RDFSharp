@@ -66,7 +66,7 @@ namespace RDFSharp.Query
             bool keepRow = true;
 
             //Check is performed only on columns found as bindings in the filter
-            List<string> filterColumns = Values.Bindings.Keys.Where(k => row.HasColumn(k)).ToList();
+            List<string> filterColumns = Values.Bindings.Keys.Where(row.HasColumn).ToList();
             if (filterColumns.Count > 0)
             {
                 //Get the enumerable representation of the filter table

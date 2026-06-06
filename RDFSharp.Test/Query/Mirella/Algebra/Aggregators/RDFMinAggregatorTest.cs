@@ -83,29 +83,29 @@ public class RDFMinAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-UK").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -130,29 +130,29 @@ public class RDFMinAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFResource("http://example.org/test/test1").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("29", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -177,23 +177,23 @@ public class RDFMinAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -222,29 +222,29 @@ public class RDFMinAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25.114", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("22.47", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-UK").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -269,29 +269,29 @@ public class RDFMinAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFResource("http://example.org/test/test1").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("29", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -316,23 +316,23 @@ public class RDFMinAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("28.24", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_NONNEGATIVEINTEGER).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("77.77", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -359,29 +359,29 @@ public class RDFMinAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27.5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("ex:value0").ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26.09", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("22.47", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-UK").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);

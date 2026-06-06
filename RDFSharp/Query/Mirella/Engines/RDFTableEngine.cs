@@ -166,13 +166,10 @@ namespace RDFSharp.Query
         /// </summary>
         private static List<string> CommonColumnNames(RDFTable leftTable, RDFTable rightTable)
         {
-            List<string> commonNames = new List<string>();
-            foreach (RDFTableColumn leftColumn in leftTable.Columns)
-            {
-                if (rightTable.HasColumn(leftColumn.Name))
-                    commonNames.Add(leftColumn.Name);
-            }
-            return commonNames;
+            return (from leftColumn
+                    in leftTable.Columns
+                    where rightTable.HasColumn(leftColumn.Name)
+                    select leftColumn.Name).ToList();
         }
 
         /// <summary>
@@ -587,13 +584,12 @@ namespace RDFSharp.Query
         internal static RDFTable SortTable(RDFTable table, IList<(string column, bool descending)> sortKeys)
         {
             //Resolve sort-key ordinals once, dropping keys whose column is not in the table
-            List<(int ordinal, bool descending)> keys = new List<(int, bool)>();
-            foreach ((string column, bool descending) sortKey in sortKeys)
-            {
-                int ordinal = table.OrdinalOf(sortKey.column);
-                if (ordinal >= 0)
-                    keys.Add((ordinal, sortKey.descending));
-            }
+            List<(int ordinal, bool descending)> keys = (
+                from sortKey
+                in sortKeys
+                let ordinal = table.OrdinalOf(sortKey.column)
+                where ordinal >= 0
+                select (ordinal, sortKey.@descending)).ToList();
 
             RDFTable sortedTable = new RDFTable();
             foreach (RDFTableColumn column in table.Columns)

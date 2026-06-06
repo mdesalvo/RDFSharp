@@ -73,23 +73,23 @@ public class RDFSampleAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -114,23 +114,23 @@ public class RDFSampleAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
@@ -155,23 +155,23 @@ public class RDFSampleAggregatorTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
-            { "?C", new RDFResource("ex:value0").ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("hello", "en").ToString() },
-            { "?C", new RDFResource("ex:value1").ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);

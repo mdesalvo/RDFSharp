@@ -151,7 +151,7 @@ public class RDFTableTest
         RDFTable table = new RDFTable();
         table.AddColumn("?S");
         table.AddColumn("?P");
-        table.AddRow(new[] { "ex:s", (string)null });
+        table.AddRow(["ex:s", null]);
 
         Assert.AreEqual(1, table.RowsCount);
         Assert.AreEqual("ex:s", table.Rows[0]["?S"]);
@@ -169,7 +169,7 @@ public class RDFTableTest
         table.AddColumn("?S");
         table.AddColumn("?P");
 
-        Assert.ThrowsExactly<RDFQueryException>(() => table.AddRow(new[] { "ex:s" }));
+        Assert.ThrowsExactly<RDFQueryException>(() => table.AddRow(["ex:s"]));
     }
 
     [TestMethod]
@@ -177,7 +177,7 @@ public class RDFTableTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?S");
-        table.AddRow(new[] { "ex:s" });
+        table.AddRow(["ex:s"]);
         table.AddColumn("?P");
 
         Assert.AreEqual(2, table.ColumnsCount);
@@ -193,10 +193,10 @@ public class RDFTableTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?S");
-        table.AddRow(new[] { "ex:s1" });
-        table.AddRow(new[] { "ex:s2" });
+        table.AddRow(["ex:s1"]);
+        table.AddRow(["ex:s2"]);
 
-        List<string> subjects = new List<string>();
+        List<string> subjects = [];
         foreach (RDFTableRow row in table.Rows)
             subjects.Add(row["?S"]);
 
@@ -208,8 +208,8 @@ public class RDFTableTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?S");
-        table.AddRow(new[] { "ex:s1" });
-        table.AddRow(new[] { "ex:s2" });
+        table.AddRow(["ex:s1"]);
+        table.AddRow(["ex:s2"]);
 
         Assert.AreEqual(2, table.Rows.Count());
         Assert.AreEqual("ex:s2", table.Rows.Last()["?S"]);
@@ -220,8 +220,8 @@ public class RDFTableTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?S");
-        table.AddRow(new[] { "ex:s1" });
-        table.AddRow(new[] { "ex:s2" });
+        table.AddRow(["ex:s1"]);
+        table.AddRow(["ex:s2"]);
 
         RDFTableRowCollection.Enumerator enumerator = table.Rows.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
@@ -243,7 +243,7 @@ public class RDFTableTest
         RDFTable table = new RDFTable();
         table.AddColumn("?S");
         table.AddColumn("?P");
-        table.AddRow(new[] { "ex:s", (string)null });
+        table.AddRow(["ex:s", null]);
 
         DataTable dataTable = table.ToDataTable();
 
@@ -296,8 +296,8 @@ public class RDFTableTest
         RDFTable table = new RDFTable();
         table.AddColumn("?S");
         table.AddColumn("?P");
-        table.AddRow(new[] { "ex:s", "ex:p" });
-        table.AddRow(new[] { "ex:s2", (string)null });
+        table.AddRow(["ex:s", "ex:p"]);
+        table.AddRow(["ex:s2", null]);
 
         RDFTable roundTripped = RDFTable.FromDataTable(table.ToDataTable());
 
@@ -327,8 +327,8 @@ public class RDFTableTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new[] { "a1", "b1", "c1" });
-        table.AddRow(new[] { "a2", (string)null, "c2" });
+        table.AddRow(["a1", "b1", "c1"]);
+        table.AddRow(["a2", null, "c2"]);
 
         table.RemoveColumn("?b");
 
@@ -353,7 +353,7 @@ public class RDFTableTest
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
-        table.AddRow(new[] { "a1" });
+        table.AddRow(["a1"]);
 
         table.RemoveColumn("?MISSING");
         table.RemoveColumn(null);
@@ -371,7 +371,7 @@ public class RDFTableTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new[] { "a1", "b1" });
+        table.AddRow(["a1", "b1"]);
 
         RDFTableRow unboundRow = table.NewRow();
 
@@ -387,7 +387,7 @@ public class RDFTableTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new[] { "a1", (string)null });
+        table.AddRow(["a1", null]);
 
         string[] cells = table.GetRowArray(0);
         Assert.AreEqual("a1", cells[0]);
@@ -404,7 +404,7 @@ public class RDFTableTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new[] { "a1", "b1" });
+        table.AddRow(["a1", "b1"]);
         table.IsOptional = true;
         table.JoinAsUnion = true;
         table.JoinAsMinus = true;

@@ -193,10 +193,7 @@ namespace RDFSharp.Model
             /// </summary>
             internal int Column => _column;
 
-            internal RDFPushbackReader(TextReader reader)
-                : this(reader, DefaultPushbackCapacity) { }
-
-            internal RDFPushbackReader(TextReader reader, int pushbackCapacity)
+            internal RDFPushbackReader(TextReader reader, int pushbackCapacity=DefaultPushbackCapacity)
             {
                 _reader = reader;
                 _pushback = new char[pushbackCapacity];

@@ -57,19 +57,24 @@ namespace RDFSharp.Query
             for (int i = 0; i <= result.Count; i++)
             {
                 bool isReorderable = i < result.Count && IsPatternGroupReorderableAt(result, i);
-
-                if (isReorderable && blockStart == -1)
-                    //Entering a new run: remember where it starts
-                    blockStart = i;
-                else if (!isReorderable && blockStart != -1)
+                switch (isReorderable)
                 {
-                    //Hit a barrier (or the end) while inside a run: the run spans [blockStart, i)
-                    int blockLength = i - blockStart;
-                    //A run of a single pattern has nothing to reorder; only reorder runs of 2+ patterns
-                    if (blockLength > 1)
-                        ReorderPatternGroupByJoinGraph(result, blockStart, blockLength, dataSource);
-                    //Close the run and look for the next one
-                    blockStart = -1;
+                    //Entering a new run: remember where it starts
+                    case true when blockStart == -1:
+                        blockStart = i;
+                        break;
+                    //Leaving a run at a barrier (or the virtual end-of-list): flush it
+                    case false when blockStart != -1:
+                    {
+                        //The run spans [blockStart, i)
+                        int blockLength = i - blockStart;
+                        //A run of a single pattern has nothing to reorder; only reorder runs of 2+ patterns
+                        if (blockLength > 1)
+                            ReorderPatternGroupByJoinGraph(result, blockStart, blockLength, dataSource);
+                        //Close the run and look for the next one
+                        blockStart = -1;
+                        break;
+                    }
                 }
             }
 

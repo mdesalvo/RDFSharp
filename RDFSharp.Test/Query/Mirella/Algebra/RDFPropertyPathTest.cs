@@ -1203,11 +1203,10 @@ public class RDFPropertyPathTest
 
         // alice (knows+|parent+) ?e  =  knows+ from alice UNION parent+ from alice
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddAlternativeSteps(new List<RDFPropertyPathStep>
-            {
+            .AddAlternativeSteps([
                 new RDFPropertyPathStep(Knows).OneOrMore(),
                 new RDFPropertyPathStep(Parent).OneOrMore()
-            });
+            ]);
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -2549,21 +2548,21 @@ public class RDFPropertyPathTest
     {
         // Build plain adjacency from the graph
         Dictionary<string, List<string>> adj = new Dictionary<string, List<string>>();
-        HashSet<string> nodes = new HashSet<string>();
+        HashSet<string> nodes = [];
         foreach (RDFTriple t in graph.SelectTriples(p: prop))
         {
             string s = t.Subject.ToString(), o = t.Object.ToString();
             nodes.Add(s); nodes.Add(o);
-            if (!adj.TryGetValue(s, out List<string> succ)) adj[s] = succ = new List<string>();
+            if (!adj.TryGetValue(s, out List<string> succ)) adj[s] = succ = [];
             succ.Add(o);
         }
 
         Dictionary<string, HashSet<string>> closure = new Dictionary<string, HashSet<string>>();
         foreach (string start in nodes)
         {
-            HashSet<string> reached = new HashSet<string>();
+            HashSet<string> reached = [];
             Queue<string> q = new Queue<string>();
-            HashSet<string> enq = new HashSet<string> { start };
+            HashSet<string> enq = [start];
             q.Enqueue(start);
             while (q.Count > 0)
             {

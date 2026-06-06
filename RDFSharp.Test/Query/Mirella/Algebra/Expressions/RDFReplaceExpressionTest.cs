@@ -210,10 +210,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -232,10 +232,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -254,10 +254,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", null! },
+            { "?B", null! }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -276,10 +276,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "abab" },
-            { "?B", "Z" },
+            { "?B", "Z" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -298,10 +298,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -320,10 +320,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "http://example.org/test/ex1" },
-            { "?B", "http://example.com/" },
+            { "?B", "http://example.com/" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -344,10 +344,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -366,10 +366,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -388,10 +388,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", null! },
+            { "?B", null! }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -410,10 +410,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "abab" },
-            { "?B", "Z" },
+            { "?B", "Z" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -432,10 +432,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -454,10 +454,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "http://example.org/test/ex1" },
-            { "?B", "http://example.com/" },
+            { "?B", "http://example.com/" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -478,10 +478,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -500,10 +500,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -522,10 +522,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", null! },
+            { "?B", null! }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -544,10 +544,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "abab" },
-            { "?B", "Z" },
+            { "?B", "Z" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -566,10 +566,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -588,10 +588,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "http://example.org/test/ex1" },
-            { "?B", "http://example.com/" },
+            { "?B", "http://example.com/" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -612,10 +612,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -634,10 +634,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", "hello" },
+            { "?B", "hello" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -656,10 +656,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null! },
-            { "?B", null! },
+            { "?B", null! }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -678,10 +678,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "abab" },
-            { "?B", "Z" },
+            { "?B", "Z" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -700,10 +700,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"abab^^{RDFVocabulary.XSD.STRING}" },
-            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -722,10 +722,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "http://example.org/test/ex1" },
-            { "?B", "http://example.com/" },
+            { "?B", "http://example.com/" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -744,10 +744,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"25^^{RDFVocabulary.XSD.INTEGER}" },
-            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -765,10 +765,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", $"25^^{RDFVocabulary.XSD.INTEGER}" },
-            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" },
+            { "?B", $"Z^^{RDFVocabulary.XSD.STRING}" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -786,10 +786,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "http://example.org/test/ex1" },
-            { "?B", "http://example.com/" },
+            { "?B", "http://example.com/" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(
@@ -807,10 +807,10 @@ public class RDFReplaceExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", "http://example.org/test/ex1" },
-            { "?B", "http://example.com/" },
+            { "?B", "http://example.com/" }
         });
 
         RDFReplaceExpression expression = new RDFReplaceExpression(

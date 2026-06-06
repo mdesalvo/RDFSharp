@@ -132,10 +132,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("A").ToString() },
-            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -153,10 +153,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("A").ToString() },
-            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -174,10 +174,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("A").ToString() },
-            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -195,10 +195,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("A").ToString() },
-            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -216,10 +216,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("---13", RDFModelEnums.RDFDatatypes.XSD_GDAY).ToString() },
-            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -237,10 +237,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("B").ToString() },
+            { "?B", new RDFPlainLiteral("B").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -258,10 +258,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFPlainLiteral("B").ToString() },
-            { "?B", new RDFResource("http://example.org/").ToString() },
+            { "?B", new RDFResource("http://example.org/").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -280,11 +280,11 @@ public class RDFConcatExpressionTest
         table.AddColumn("?V1");
         table.AddColumn("?V2");
         table.AddColumn("?V3");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?V1", new RDFTypedLiteral("56", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
             { "?V2", new RDFTypedLiteral("4.2", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
-            { "?V3", new RDFResource("ex:org").ToString() },
+            { "?V3", new RDFResource("ex:org").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -304,10 +304,10 @@ public class RDFConcatExpressionTest
         RDFTable table = new RDFTable();
         table.AddColumn("?V1");
         table.AddColumn("?V2");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?V1", null },
-            { "?V2", new RDFTypedLiteral("4.2", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?V2", new RDFTypedLiteral("4.2", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -326,11 +326,11 @@ public class RDFConcatExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -349,11 +349,11 @@ public class RDFConcatExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -372,11 +372,11 @@ public class RDFConcatExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(
@@ -394,11 +394,11 @@ public class RDFConcatExpressionTest
         table.AddColumn("?A");
         table.AddColumn("?B");
         table.AddColumn("?C");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
             { "?B", new RDFPlainLiteral("B").ToString() },
-            { "?C", new RDFPlainLiteral("C").ToString() },
+            { "?C", new RDFPlainLiteral("C").ToString() }
         });
 
         RDFConcatExpression expression = new RDFConcatExpression(

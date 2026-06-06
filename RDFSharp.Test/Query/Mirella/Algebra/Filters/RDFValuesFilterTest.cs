@@ -62,10 +62,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -81,10 +81,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -100,10 +100,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -119,10 +119,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -138,10 +138,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -157,10 +157,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", null },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -176,10 +176,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -227,10 +227,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -247,10 +247,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -267,10 +267,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -287,10 +287,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -307,10 +307,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", null },
+            { "?B", null }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -327,15 +327,15 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example2.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -354,10 +354,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -374,10 +374,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -394,10 +394,10 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
@@ -414,15 +414,15 @@ public class RDFValuesFilterTest
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
         table.AddColumn("?B");
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
-        table.AddRow(new Dictionary<string, string>()
+        table.AddRow(new Dictionary<string, string>
         {
             { "?A", new RDFResource("http://example2.org/").ToString() },
-            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() },
+            { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
         RDFValuesFilter filter = new RDFValuesFilter(
