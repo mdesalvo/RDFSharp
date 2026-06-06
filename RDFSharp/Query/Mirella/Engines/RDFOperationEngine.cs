@@ -27,13 +27,11 @@ using static RDFSharp.Query.RDFQueryUtilities;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFOperationEngine is the engine for execution of SPARQL UPDATE operations
+    /// RDFOperationEngine is the engine for execution of SPARQL UPDATE operations (MIRELLA)
     /// </summary>
     internal sealed class RDFOperationEngine : RDFQueryEngine
     {
         #region Methods
-
-        #region MIRELLA SPARQL UPDATE
         /// <summary>
         /// Evaluates the given SPARQL UPDATE operation on the given RDF datasource
         /// </summary>
@@ -509,8 +507,6 @@ namespace RDFSharp.Query
 
             return resultTable;
         }
-        #endregion
-
         #endregion
     }
 }
