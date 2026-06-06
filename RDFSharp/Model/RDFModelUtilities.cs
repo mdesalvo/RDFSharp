@@ -422,27 +422,51 @@ namespace RDFSharp.Model
         /// </summary>
         internal static List<RDFNamespace> GetGraphNamespaces(RDFGraph graph)
         {
-            List<RDFNamespace> result = new List<RDFNamespace>();
+            //Snapshot the register once and pre-materialize each namespace's string form
+            List<RDFNamespace> register = RDFNamespaceRegister.Instance.Register;
+            int registerCount = register.Count;
+            string[] registerStrings = new string[registerCount];
+            for (int i = 0; i < registerCount; i++)
+                registerStrings[i] = register[i].ToString();
+
+            //Deduplicate as we go, so the result never grows to one entry per matching triple.
+            //The "seen" check also skips namespaces already collected, shrinking the scan as more of them are found
+            List<RDFNamespace> graphNamespaces = new List<RDFNamespace>();
+            HashSet<RDFNamespace> visitedNamespaces = new HashSet<RDFNamespace>();
+
+            #region Utilities
+            //Records every still-unseen namespace that is a prefix of the given term
+            void CollectNamespacesPrefixing(string term)
+            {
+                if (string.IsNullOrEmpty(term))
+                    return;
+                for (int i = 0; i < registerCount; i++)
+                {
+                    RDFNamespace ns = register[i];
+                    if (!visitedNamespaces.Contains(ns)
+                         && term.StartsWith(registerStrings[i], StringComparison.Ordinal))
+                    {
+                        visitedNamespaces.Add(ns);
+                        graphNamespaces.Add(ns);
+                    }
+                }
+            }
+            #endregion
+
             foreach (RDFTriple triple in graph)
             {
-                string subj = triple.Subject.ToString();
-                string pred = triple.Predicate.ToString();
-                string obj = triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
+                //Every registered namespace already collected: nothing more can be discovered
+                if (visitedNamespaces.Count == registerCount)
+                    break;
+
+                //Collect the namespaces used by the components of the current triple
+                CollectNamespacesPrefixing(triple.Subject.ToString());
+                CollectNamespacesPrefixing(triple.Predicate.ToString());
+                CollectNamespacesPrefixing(triple.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO
                     ? triple.Object.ToString()
-                    : triple.Object is RDFTypedLiteral tlitObj
-                        ? tlitObj.Datatype.ToString() : string.Empty;
-
-                //Resolve subject Uri
-                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => subj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
-
-                //Resolve predicate Uri
-                result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => pred.StartsWith(ns.ToString(), StringComparison.Ordinal)));
-
-                //Resolve object Uri (if needed)
-                if (!string.IsNullOrEmpty(obj))
-                    result.AddRange(RDFNamespaceRegister.Instance.Register.Where(ns => obj.StartsWith(ns.ToString(), StringComparison.Ordinal)));
+                    : triple.Object is RDFTypedLiteral tlitObj ? tlitObj.Datatype.ToString() : null);
             }
-            return result.Distinct().ToList();
+            return graphNamespaces;
         }
         #endregion
 
