@@ -323,80 +323,70 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot access a store when both object and literals are given: they must be mutually exclusive!");
             #endregion
 
-            #region Utilities
-            void LookupIndex(HashSet<long> lookup, out List<RDFHashedQuadruple> result)
-            {
-                result = new List<RDFHashedQuadruple>(lookup.Count);
-                result.AddRange(lookup.Select(q => Index.Hashes[q]));
-            }
-            #endregion
-
-            StringBuilder queryFilters = new StringBuilder();
-            List<RDFHashedQuadruple> C=null, S=null, P=null, O=null, L=null;
-
-            //Filter by Context
+            //Collect the live id-sets of the present accessors (each a HashSet<long> of quadruple IDs from the
+            //index). A missing accessor resolves to the shared empty set, short-circuiting to no matches below.
+            List<HashSet<long>> idxSets = new List<HashSet<long>>(5);
             if (c != null)
-            {
-                queryFilters.Append('C');
-                LookupIndex(Index.LookupIndexByContext(c), out C);
-            }
-
-            //Filter by Subject
+                idxSets.Add(Index.LookupIndexByContext(c));
             if (s != null)
-            {
-                queryFilters.Append('S');
-                LookupIndex(Index.LookupIndexBySubject(s), out S);
-            }
-
-            //Filter by Predicate
+                idxSets.Add(Index.LookupIndexBySubject(s));
             if (p != null)
-            {
-                queryFilters.Append('P');
-                LookupIndex(Index.LookupIndexByPredicate(p), out P);
-            }
-
-            //Filter by Object
+                idxSets.Add(Index.LookupIndexByPredicate(p));
             if (o != null)
-            {
-                queryFilters.Append('O');
-                LookupIndex(Index.LookupIndexByObject(o), out O);
-            }
-
-            //Filter by Literal
+                idxSets.Add(Index.LookupIndexByObject(o));
             if (l != null)
+                idxSets.Add(Index.LookupIndexByLiteral(l));
+
+            //No accessor given => return every quadruple (full scan, in index order)
+            if (idxSets.Count == 0)
             {
-                queryFilters.Append('L');
-                LookupIndex(Index.LookupIndexByLiteral(l), out L);
+                List<RDFQuadruple> allQuadruples = new List<RDFQuadruple>(Index.Hashes.Count);
+                foreach (RDFHashedQuadruple hashedQuadruple in Index.Hashes.Values)
+                    allQuadruples.Add(new RDFQuadruple(hashedQuadruple, Index));
+                return allQuadruples;
             }
 
-            //Intersect the filters
-            switch (queryFilters.ToString())
+            //Drive the intersection from the SMALLEST id-set and probe the others with O(1) hash lookups, so the
+            //cost is bound by the most selective accessor instead of by the first-declared one. We never copy
+            //the larger sets, and we materialize an RDFQuadruple only for the surviving (intersected) ids.
+            int driverIndex = 0;
+            HashSet<long> smallestSet = idxSets[0];
+            for (int i = 1; i < idxSets.Count; i++)
+                if (idxSets[i].Count < smallestSet.Count)
+                {
+                    smallestSet = idxSets[i];
+                    driverIndex = i;
+                }
+
+            //An empty present set means the intersection is empty
+            if (smallestSet.Count == 0)
+                return new List<RDFQuadruple>();
+
+            //Walk only the driver (smallest) set: every quadruple in the intersection MUST appear here, so any id
+            //outside it can be ignored for free. Pre-size the result to the driver count (it is the upper bound).
+            List<RDFQuadruple> matchingQuadruples = new List<RDFQuadruple>(smallestSet.Count);
+            foreach (long quadrupleID in smallestSet)
             {
-                case "C":    return C.ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "S":    return S.ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "P":    return P.ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "O":    return O.ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "L":    return L.ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CS":   return C.Intersect(S).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CP":   return C.Intersect(P).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CO":   return C.Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CL":   return C.Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CSP":  return C.Intersect(S).Intersect(P).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CSO":  return C.Intersect(S).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CSL":  return C.Intersect(S).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CPO":  return C.Intersect(P).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CPL":  return C.Intersect(P).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CSPO": return C.Intersect(S).Intersect(P).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "CSPL": return C.Intersect(S).Intersect(P).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "SP":   return S.Intersect(P).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "SO":   return S.Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "SL":   return S.Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "SPO":  return S.Intersect(P).Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "SPL":  return S.Intersect(P).Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "PO":   return P.Intersect(O).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                case "PL":   return P.Intersect(L).ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
-                default:     return Index.Hashes.Values.ToList().ConvertAll(hq => new RDFQuadruple(hq, Index));
+                //A candidate id survives only if it is also present in EVERY other accessor's set. We probe each
+                //of them with an O(1) HashSet.Contains and bail out on the first miss (no need to test the rest).
+                bool inAllSets = true;
+                for (int i = 0; i < idxSets.Count; i++)
+                {
+                    //Skip the driver itself: it is the set we are iterating, so membership is implied
+                    if (i == driverIndex)
+                        continue;
+                    if (!idxSets[i].Contains(quadrupleID))
+                    {
+                        inAllSets = false;
+                        break;
+                    }
+                }
+
+                //Only the surviving ids pay the cost of being rehydrated into a full RDFQuadruple
+                if (inAllSets)
+                    matchingQuadruples.Add(new RDFQuadruple(Index.Hashes[quadrupleID], Index));
             }
+            return matchingQuadruples;
         }
 
         /// <summary>

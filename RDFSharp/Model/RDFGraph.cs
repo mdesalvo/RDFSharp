@@ -376,61 +376,68 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot access a graph when both object and literals are given: they must be mutually exclusive!");
             #endregion
 
-            #region Utilities
-            void LookupIndex(HashSet<long> lookup, out List<RDFHashedTriple> result)
-            {
-                result = new List<RDFHashedTriple>(lookup.Count);
-                result.AddRange(lookup.Select(t => Index.Hashes[t]));
-            }
-            #endregion
-
-            StringBuilder queryFilters = new StringBuilder();
-            List<RDFHashedTriple> S=null, P=null, O=null, L=null;
-
-            //Filter by Subject
+            //Collect the live id-sets of the present accessors (each a HashSet<long> of triple IDs from the
+            //index). A missing accessor resolves to the shared empty set, short-circuiting to no matches below.
+            List<HashSet<long>> idxSets = new List<HashSet<long>>(4);
             if (s != null)
-            {
-                queryFilters.Append('S');
-                LookupIndex(Index.LookupIndexBySubject(s), out S);
-            }
-
-            //Filter by Predicate
+                idxSets.Add(Index.LookupIndexBySubject(s));
             if (p != null)
-            {
-                queryFilters.Append('P');
-                LookupIndex(Index.LookupIndexByPredicate(p), out P);
-            }
-
-            //Filter by Object
+                idxSets.Add(Index.LookupIndexByPredicate(p));
             if (o != null)
-            {
-                queryFilters.Append('O');
-                LookupIndex(Index.LookupIndexByObject(o), out O);
-            }
-
-            //Filter by Literal
+                idxSets.Add(Index.LookupIndexByObject(o));
             if (l != null)
+                idxSets.Add(Index.LookupIndexByLiteral(l));
+
+            //No accessor given => return every triple (full scan, in index order)
+            if (idxSets.Count == 0)
             {
-                queryFilters.Append('L');
-                LookupIndex(Index.LookupIndexByLiteral(l), out L);
+                List<RDFTriple> allTriples = new List<RDFTriple>(Index.Hashes.Count);
+                foreach (RDFHashedTriple hashedTriple in Index.Hashes.Values)
+                    allTriples.Add(new RDFTriple(hashedTriple, Index));
+                return allTriples;
             }
 
-            //Intersect the filters
-            switch (queryFilters.ToString())
+            //Drive the intersection from the SMALLEST id-set and probe the others with O(1) hash lookups, so the
+            //cost is bound by the most selective accessor instead of by the first-declared one. We never copy
+            //the larger sets, and we materialize an RDFTriple only for the surviving (intersected) ids.
+            int driverIndex = 0;
+            HashSet<long> smallestSet = idxSets[0];
+            for (int i = 1; i < idxSets.Count; i++)
+                if (idxSets[i].Count < smallestSet.Count)
+                {
+                    smallestSet = idxSets[i];
+                    driverIndex = i;
+                }
+
+            //An empty present set means the intersection is empty
+            if (smallestSet.Count == 0)
+                return new List<RDFTriple>();
+
+            //Walk only the driver (smallest) set: every triple in the intersection MUST appear here, so any id
+            //outside it can be ignored for free. Pre-size the result to the driver count (it is the upper bound).
+            List<RDFTriple> matchingTriples = new List<RDFTriple>(smallestSet.Count);
+            foreach (long tripleID in smallestSet)
             {
-                case "S":   return S.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "P":   return P.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "O":   return O.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "L":   return L.ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SP":  return S.Intersect(P).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SO":  return S.Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SL":  return S.Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "PO":  return P.Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "PL":  return P.Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SPO": return S.Intersect(P).Intersect(O).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                case "SPL": return S.Intersect(P).Intersect(L).ToList().ConvertAll(ht => new RDFTriple(ht, Index));
-                default:    return Index.Hashes.Values.ToList().ConvertAll(ht => new RDFTriple(ht, Index));
+                //A candidate id survives only if it is also present in EVERY other accessor's set. We probe each
+                //of them with an O(1) HashSet.Contains and bail out on the first miss (no need to test the rest).
+                bool inAllSets = true;
+                for (int i = 0; i < idxSets.Count; i++)
+                {
+                    //Skip the driver itself: it is the set we are iterating, so membership is implied
+                    if (i == driverIndex)
+                        continue;
+                    if (!idxSets[i].Contains(tripleID))
+                    {
+                        inAllSets = false;
+                        break;
+                    }
+                }
+
+                //Only the surviving ids pay the cost of being rehydrated into a full RDFTriple
+                if (inAllSets)
+                    matchingTriples.Add(new RDFTriple(Index.Hashes[tripleID], Index));
             }
+            return matchingTriples;
         }
 
         /// <summary>
