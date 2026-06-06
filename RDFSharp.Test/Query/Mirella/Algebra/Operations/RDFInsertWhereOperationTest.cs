@@ -630,6 +630,64 @@ public class RDFInsertWhereOperationTest
     }
 
     [TestMethod]
+    public void ShouldApplyToGraphCollapsingDuplicateMaterializedTemplates()
+    {
+        //Two triples sharing the same subject but different objects: the WHERE clause below matches both,
+        //while the INSERT template projects only ?Y, so the two bindings materialize the SAME triple. This
+        //pins that materializing templates straight from the result table (without the former intermediate
+        //RDFGraph that deduplicated them) stays correct: the Contains-gate in the insert collapses the
+        //duplicate to a single applied row.
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino")),
+            new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:minnie"))
+        ]);
+        RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
+        operation.AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")));
+        operation.AddPatternGroup(new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+        RDFOperationResult result = operation.ApplyToGraph(graph);
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.InsertResults);
+        //Both WHERE bindings collapsed to "ex:pluto rdf:type ex:dog": a single applied insert row
+        Assert.AreEqual(1, result.InsertResultsCount);
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.RDF.TYPE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), "ex:dog", StringComparison.Ordinal));
+        //The 2 original triples plus the single newly inserted one
+        Assert.AreEqual(3, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:pluto"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))));
+    }
+
+    [TestMethod]
+    public void ShouldApplyToStoreCollapsingDuplicateMaterializedTemplates()
+    {
+        //Store counterpart of the test above: two quadruples sharing context+subject, an INSERT template
+        //projecting only ?Y, so both bindings materialize the same quadruple and must collapse to one insert.
+        RDFMemoryStore store = new RDFMemoryStore(
+        [
+            new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino")),
+            new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:minnie"))
+        ]);
+        RDFInsertWhereOperation operation = new RDFInsertWhereOperation();
+        operation.AddInsertTemplate(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")));
+        operation.AddPatternGroup(new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFContext("ex:ctx"), new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+        RDFOperationResult result = operation.ApplyToStore(store);
+
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.InsertResults);
+        //Both WHERE bindings collapsed to "ex:ctx ex:pluto rdf:type ex:dog": a single applied insert row
+        Assert.AreEqual(1, result.InsertResultsCount);
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?CONTEXT"].ToString(), "ex:ctx", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        //The 2 original quadruples plus the single newly inserted one
+        Assert.AreEqual(3, store.QuadruplesCount);
+        Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext("ex:ctx"), new RDFResource("ex:pluto"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog"))));
+    }
+
+    [TestMethod]
     public void ShouldApplyToGraphWithExpressionsFromSubQuery()
     {
         RDFGraph graph = new RDFGraph(
