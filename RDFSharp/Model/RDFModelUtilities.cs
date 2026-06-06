@@ -119,10 +119,12 @@ namespace RDFSharp.Model
                 return asciiString;
 
             //UNICODE (UTF-16)
-            string u8Replaced = RDFShims.EightBytesUnicodeRegex.Value.Replace(asciiString, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)));
+            string u8Replaced = RDFShims.EightBytesUnicodeRegex.Value.Replace(asciiString,
+                match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)));
 
             //UNICODE (UTF-8)
-            return RDFShims.FourBytesUnicodeRegex.Value.Replace(u8Replaced, match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)));
+            return RDFShims.FourBytesUnicodeRegex.Value.Replace(u8Replaced,
+                match => char.ConvertFromUtf32(int.Parse(match.Groups[1].Value, NumberStyles.HexNumber)));
         }
 
         /// <summary>
