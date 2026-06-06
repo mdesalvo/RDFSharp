@@ -549,26 +549,43 @@ namespace RDFSharp.Model
             new DateTimeFormatPair("---ddzzz", "---ddZ")
         };
 
+        //Bidirectional datatype<->description maps, built once by reflecting over the enum's
+        //DescriptionAttributes, so the two lookups below become O(1) dictionary hits instead of a
+        //per-call reflection scan. The maps are populated in enum declaration order, so when two
+        //members were to share a description the first one wins (preserving the former FirstOrDefault).
+        private static readonly Dictionary<RDFModelEnums.RDFDatatypes, string> DatatypeDescriptionByEnum;
+        private static readonly Dictionary<string, RDFModelEnums.RDFDatatypes> DatatypeEnumByDescription;
+
+        static RDFModelUtilities()
+        {
+            Type enumType = typeof(RDFModelEnums.RDFDatatypes);
+            Array enumValues = enumType.GetEnumValues();
+            DatatypeDescriptionByEnum = new Dictionary<RDFModelEnums.RDFDatatypes, string>(enumValues.Length);
+            DatatypeEnumByDescription = new Dictionary<string, RDFModelEnums.RDFDatatypes>(enumValues.Length, StringComparer.Ordinal);
+            foreach (RDFModelEnums.RDFDatatypes enumValue in enumValues)
+            {
+                string description = ((DescriptionAttribute)enumType
+                    .GetField(enumValue.ToString())
+                    .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
+                DatatypeDescriptionByEnum[enumValue] = description;
+                if (!DatatypeEnumByDescription.ContainsKey(description))
+                    DatatypeEnumByDescription.Add(description, enumValue);
+            }
+        }
+
         /// <summary>
         /// Gives the string representation of the given datatype
         /// </summary>
         public static string GetDatatypeFromEnum(this RDFModelEnums.RDFDatatypes datatype)
-            => ((DescriptionAttribute)RDFModelEnums_RDFDatatypes_EnumType
-                .GetField(datatype.ToString())
-                .GetCustomAttributes(typeof(DescriptionAttribute), false)[0]).Description;
-        private static readonly Type RDFModelEnums_RDFDatatypes_EnumType = typeof(RDFModelEnums.RDFDatatypes);
-        private static readonly Array RDFModelEnums_RDFDatatypes_EnumValues = RDFModelEnums_RDFDatatypes_EnumType.GetEnumValues();
+            => DatatypeDescriptionByEnum[datatype];
 
         /// <summary>
         /// Gives the Enum representation of the given datatype
         /// </summary>
         public static RDFModelEnums.RDFDatatypes GetEnumFromDatatype(this string datatype)
-            => (from RDFModelEnums.RDFDatatypes enumValue
-                in RDFModelEnums_RDFDatatypes_EnumValues
-                let enumValueInfo = RDFModelEnums_RDFDatatypes_EnumType.GetMember(enumValue.ToString())[0]
-                let enumValueDescriptionAttribute = enumValueInfo.GetCustomAttribute<DescriptionAttribute>()
-                where string.Equals(datatype, enumValueDescriptionAttribute.Description)
-                select enumValue).FirstOrDefault();
+            => DatatypeEnumByDescription.TryGetValue(datatype ?? string.Empty, out RDFModelEnums.RDFDatatypes enumValue)
+                ? enumValue
+                : default; //RDFS_LITERAL (=0)
 
         /// <summary>
         /// Validates the value of the given typed literal against its datatype
