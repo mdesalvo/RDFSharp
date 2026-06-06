@@ -77,11 +77,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFSelectQueryResult EvaluateSelectQuery(RDFSelectQuery selectQuery, RDFDataSource datasource)
         {
-            //Evaluate the body of the query
-            RDFTable queryResultTable = EvaluateQuery(selectQuery, datasource);
-
-            //Evaluate the modifiers of the query
-            RDFTable finalTable = ApplyModifiers(selectQuery, queryResultTable);
+            //Evaluate the query down to its internal RDFTable (body + modifiers)
+            RDFTable finalTable = EvaluateSelectQueryToTable(selectQuery, datasource);
 
             //Expose the result of the query
             DataTable selectResults = finalTable.ToDataTable();
@@ -92,6 +89,21 @@ namespace RDFSharp.Query
             {
                 SelectResults = selectResults
             };
+        }
+
+        /// <summary>
+        /// Evaluates the given SPARQL SELECT query on the given RDF datasource down to its internal RDFTable
+        /// (body + modifiers), carrying the OPTIONAL/UNION/MINUS join flags on the table itself. This is the
+        /// shared core of EvaluateSelectQuery and lets in-memory subqueries be consumed directly as RDFTable,
+        /// without the RDFTable -> DataTable -> RDFTable round-trip imposed by the public result type.
+        /// </summary>
+        internal RDFTable EvaluateSelectQueryToTable(RDFSelectQuery selectQuery, RDFDataSource datasource)
+        {
+            //Evaluate the body of the query
+            RDFTable queryResultTable = EvaluateQuery(selectQuery, datasource);
+
+            //Evaluate the modifiers of the query
+            return ApplyModifiers(selectQuery, queryResultTable);
         }
 
         /// <summary>
@@ -196,12 +208,22 @@ namespace RDFSharp.Query
                         break;
 
                     case RDFSelectQuery subQuery:
-                        //Get the result table of the subquery
-                        RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
-
-                        //Expose it in internal format
-                        RDFTable subQueryTable = RDFTable.FromDataTable(subQueryResult.SelectResults);
-                        subQueryTable.IsOptional = subQuery.IsOptional || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
+                        RDFTable subQueryTable;
+                        if (datasource.IsSPARQLEndpoint())
+                        {
+                            //Remote subquery: results come back over the wire as a DataTable, so import them
+                            RDFSelectQueryResult subQueryResult = subQuery.ApplyToDataSource(datasource);
+                            subQueryTable = RDFTable.FromDataTable(subQueryResult.SelectResults);
+                            subQueryTable.IsOptional = subQuery.IsOptional || subQueryResult.SelectResults.ExtendedProperties[IsOptional] is true;
+                        }
+                        else
+                        {
+                            //In-memory subquery (graph/store/federation): evaluate straight to RDFTable on a
+                            //dedicated engine, skipping the RDFTable -> DataTable -> RDFTable round-trip
+                            //which we would have if we used the public query   evaluation APIs
+                            subQueryTable = new RDFQueryEngine().EvaluateSelectQueryToTable(subQuery, datasource);
+                            subQueryTable.IsOptional = subQuery.IsOptional || subQueryTable.IsOptional;
+                        }
                         subQueryTable.JoinAsUnion = subQuery.JoinAsUnion;
                         subQueryTable.JoinAsMinus = subQuery.JoinAsMinus;
 
