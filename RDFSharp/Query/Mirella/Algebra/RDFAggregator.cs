@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using RDFSharp.Model;
 
@@ -325,7 +324,7 @@ namespace RDFSharp.Query
         /// Updates the execution counter for the given partition key
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(string partitionKey)
-            => ExecutionRegistry[partitionKey].ExecutionCounter += 1d;
+            => ExecutionRegistry[partitionKey].ExecutionCounter++;
 
         /// <summary>
         /// Checks for presence of the given value in given partitionkey's cache
@@ -334,7 +333,7 @@ namespace RDFSharp.Query
         {
             if (!ExecutionCache.ContainsKey(partitionKey))
                 ExecutionCache.Add(partitionKey, new HashSet<object>());
-            return ExecutionCache[partitionKey].Any(x => ((T)x).Equals(value));
+            return ExecutionCache[partitionKey].Contains(value);
         }
 
         /// <summary>
