@@ -38,46 +38,4 @@ namespace RDFSharp.Model
         /// </summary>
         internal abstract string ResolveNamespace(string prefixLabel);
     }
-
-    /// <summary>
-    /// RDFGraphTermResolver is the graph-backed implementation of RDFTermResolver used while deserializing
-    /// Turtle/TriG data into an RDFGraph. It reads from the wrapped graph LIVE (at call time): this is
-    /// required because Turtle "@base"/"@prefix" directives mutate the graph context and the global
-    /// namespace register WHILE the document is being parsed, and subsequent relative IRIs and prefixed
-    /// names must resolve against the most recent state.
-    /// </summary>
-    internal sealed class RDFGraphTermResolver : RDFTermResolver
-    {
-        #region Properties
-        /// <summary>
-        /// The graph being populated during deserialization, queried live for base/default-namespace.
-        /// </summary>
-        private readonly RDFGraph graph;
-        #endregion
-
-        #region Ctors
-        /// <summary>
-        /// Builds a graph-backed term resolver wrapping the given graph.
-        /// </summary>
-        internal RDFGraphTermResolver(RDFGraph graph)
-            => this.graph = graph;
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// The base IRI is the graph's current context.
-        /// </summary>
-        internal override string BaseUri
-            => graph.ToString();
-
-        /// <summary>
-        /// Resolves a prefix label: an empty prefix maps to the graph's default context, while a non-empty prefix
-        /// is looked up in the global namespace register (returning null when not registered).
-        /// </summary>
-        internal override string ResolveNamespace(string prefixLabel)
-            => string.IsNullOrEmpty(prefixLabel)
-                ? graph.Context.ToString()
-                : RDFNamespaceRegister.GetByPrefix(prefixLabel)?.ToString();
-        #endregion
-    }
 }
