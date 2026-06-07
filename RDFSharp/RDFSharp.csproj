@@ -54,4 +54,7 @@
         <PackageReference Include="NetTopologySuite" Version="2.6.0" />
         <PackageReference Include="ProjNet" Version="2.1.0" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Query\Mirella\Parsers\" />
+    </ItemGroup>
 </Project>
