@@ -2388,4 +2388,43 @@ public class RDFSelectQueryTest
         }
     }
     #endregion
+
+    #region FromString
+    [TestMethod]
+    public void ShouldCreateSelectQueryFromString()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?s WHERE { ?s ?p ?o }");
+
+        Assert.IsNotNull(query);
+        Assert.AreEqual(1, query.ProjectionVars.Count);
+        Assert.IsTrue(query.ProjectionVars.Keys.Any(v => v.VariableName == "?S"));
+        Assert.AreEqual(1, query.GetPatternGroups().Count());
+    }
+
+    [TestMethod]
+    public void ShouldCreateSelectQueryFromStringAndPreserveItThroughRoundTrip()
+    {
+        //Building a query, printing it, and parsing the print back must yield the very same printed form
+        RDFSelectQuery originalQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))))
+            .AddProjectionVariable(new RDFVariable("s"))
+            .AddModifier(new RDFDistinctModifier())
+            .AddModifier(new RDFLimitModifier(10));
+
+        RDFSelectQuery reparsedQuery = RDFSelectQuery.FromString(originalQuery.ToString());
+
+        Assert.AreEqual(
+            RDFTestUtilities.NormalizeEOL(originalQuery.ToString()),
+            RDFTestUtilities.NormalizeEOL(reparsedQuery.ToString()));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingSelectQueryFromNullOrEmptyString()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("   "));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingSelectQueryFromInvalidString()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT WHERE { ?s ?p ?o }"));
+    #endregion
 }

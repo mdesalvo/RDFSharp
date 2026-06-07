@@ -62,6 +62,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL string into an RDFSelectQuery.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid SELECT query.</exception>
+        public static RDFSelectQuery FromString(string selectQuery)
+        {
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(selectQuery);
+
+            //The factory dispatches on the query form: enforce that the parsed query is indeed a SELECT
+            if (parsedQuery is RDFSelectQuery parsedSelectQuery)
+                return parsedSelectQuery;
+
+            throw new RDFQueryException("Cannot parse SELECT query because the given command represents a different SPARQL query form (" + parsedQuery.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given pattern group to the query
         /// </summary>
         public RDFSelectQuery AddPatternGroup(RDFPatternGroup patternGroup)
