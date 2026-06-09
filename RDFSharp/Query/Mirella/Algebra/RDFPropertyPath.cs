@@ -138,6 +138,48 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Creates a Union operator combining this property path with the given pattern
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Union(RDFPattern other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this property path with the given property path
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Union(RDFPropertyPath other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this property path with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Union(RDFOperatorPatternGroupMember other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this property path with the given pattern
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Minus(RDFPattern other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this property path with the given property path
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Minus(RDFPropertyPath other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this property path with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Minus(RDFOperatorPatternGroupMember other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
         /// Adds the given alternative steps to the path. If only one is given, it is considered sequence.
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>

@@ -51,6 +51,12 @@ namespace RDFSharp.Query
             => AddPatternGroup<RDFInsertWhereOperation>(patternGroup);
 
         /// <summary>
+        /// Adds the given operator tree to the body of the operation
+        /// </summary>
+        public RDFInsertWhereOperation AddOperator(RDFOperatorQueryMember operatorMember)
+            => AddOperator<RDFInsertWhereOperation>(operatorMember);
+
+        /// <summary>
         /// Adds the given modifier to the operation
         /// </summary>
         public RDFInsertWhereOperation AddModifier(RDFDistinctModifier modifier)

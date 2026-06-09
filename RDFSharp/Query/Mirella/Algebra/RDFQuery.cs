@@ -111,6 +111,16 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given operator tree to the body of the query
+        /// </summary>
+        internal T AddOperator<T>(RDFOperatorQueryMember operatorMember) where T : RDFQuery
+        {
+            if (operatorMember != null)
+                QueryMembers.Add(operatorMember);
+            return (T)this;
+        }
+
+        /// <summary>
         /// Gets the query members of type: pattern group
         /// </summary>
         internal IEnumerable<RDFPatternGroup> GetPatternGroups()

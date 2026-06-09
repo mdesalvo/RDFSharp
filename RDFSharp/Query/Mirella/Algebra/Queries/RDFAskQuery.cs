@@ -48,6 +48,12 @@ namespace RDFSharp.Query
             => AddPatternGroup<RDFAskQuery>(patternGroup);
 
         /// <summary>
+        /// Adds the given operator tree to the query
+        /// </summary>
+        public RDFAskQuery AddOperator(RDFOperatorQueryMember operatorMember)
+            => AddOperator<RDFAskQuery>(operatorMember);
+
+        /// <summary>
         /// Adds the given prefix declaration to the query
         /// </summary>
         public RDFAskQuery AddPrefix(RDFNamespace prefix)

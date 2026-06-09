@@ -92,6 +92,12 @@ namespace RDFSharp.Query
             => AddPatternGroup<RDFDescribeQuery>(patternGroup);
 
         /// <summary>
+        /// Adds the given operator tree to the query
+        /// </summary>
+        public RDFDescribeQuery AddOperator(RDFOperatorQueryMember operatorMember)
+            => AddOperator<RDFDescribeQuery>(operatorMember);
+
+        /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
         public RDFDescribeQuery AddModifier(RDFDistinctModifier modifier)

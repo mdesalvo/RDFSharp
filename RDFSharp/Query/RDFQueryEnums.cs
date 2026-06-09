@@ -262,6 +262,21 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// RDFQueryOperatorType represents an enumeration for supported SPARQL algebra binary operators
+        /// </summary>
+        public enum RDFQueryOperatorType
+        {
+            /// <summary>
+            /// SPARQL UNION operator
+            /// </summary>
+            Union = 1,
+            /// <summary>
+            /// SPARQL MINUS operator
+            /// </summary>
+            Minus = 2
+        }
+
+        /// <summary>
         /// Represents an enumeration for the set of built-in Region-Connected-Calculus-8 spatial relations
         /// </summary>
         public enum RDFGeoRCC8Relations

@@ -57,6 +57,12 @@ namespace RDFSharp.Query
             => AddPatternGroup<RDFDeleteInsertWhereOperation>(patternGroup);
 
         /// <summary>
+        /// Adds the given operator tree to the body of the operation
+        /// </summary>
+        public RDFDeleteInsertWhereOperation AddOperator(RDFOperatorQueryMember operatorMember)
+            => AddOperator<RDFDeleteInsertWhereOperation>(operatorMember);
+
+        /// <summary>
         /// Adds the given modifier to the operation
         /// </summary>
         public RDFDeleteInsertWhereOperation AddModifier(RDFDistinctModifier modifier)

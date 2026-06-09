@@ -177,6 +177,48 @@ namespace RDFSharp.Query
             JoinAsMinus = true;
             return this;
         }
+
+        /// <summary>
+        /// Creates a Union operator combining this pattern with the given pattern
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Union(RDFPattern other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this pattern with the given property path
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Union(RDFPropertyPath other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this pattern with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Union(RDFOperatorPatternGroupMember other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this pattern with the given pattern
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Minus(RDFPattern other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this pattern with the given property path
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Minus(RDFPropertyPath other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this pattern with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorPatternGroupMember Minus(RDFOperatorPatternGroupMember other)
+            => new RDFOperatorPatternGroupMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
         #endregion
     }
 }

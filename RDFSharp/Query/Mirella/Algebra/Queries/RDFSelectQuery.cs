@@ -78,6 +78,12 @@ namespace RDFSharp.Query
             => AddPatternGroup<RDFSelectQuery>(patternGroup);
 
         /// <summary>
+        /// Adds the given operator tree to the query
+        /// </summary>
+        public RDFSelectQuery AddOperator(RDFOperatorQueryMember operatorMember)
+            => AddOperator<RDFSelectQuery>(operatorMember);
+
+        /// <summary>
         /// Adds the given variable to the results of the query (it may come from evaluation of an expression, if specified)
         /// </summary>
         public RDFSelectQuery AddProjectionVariable(RDFVariable projectionVariable, RDFExpression projectionExpression=null)
@@ -282,6 +288,48 @@ namespace RDFSharp.Query
             JoinAsMinus = true;
             return this;
         }
+
+        /// <summary>
+        /// Creates a Union operator combining this subquery with the given pattern group
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Union(RDFPatternGroup other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this subquery with the given subquery
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Union(RDFSelectQuery other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this subquery with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Union(RDFOperatorQueryMember other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this subquery with the given pattern group
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Minus(RDFPatternGroup other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this subquery with the given subquery
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Minus(RDFSelectQuery other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this subquery with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Minus(RDFOperatorQueryMember other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Sets the query as a subquery

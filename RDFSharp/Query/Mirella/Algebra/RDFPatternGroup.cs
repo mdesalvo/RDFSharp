@@ -226,6 +226,64 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Creates a Union operator combining this pattern group with the given query member
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Union(RDFPatternGroup other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this pattern group with the given subquery
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Union(RDFSelectQuery other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this pattern group with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Union(RDFOperatorQueryMember other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this pattern group with the given query member
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Minus(RDFPatternGroup other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this pattern group with the given subquery
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Minus(RDFSelectQuery other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this pattern group with the given operator tree
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFOperatorQueryMember Minus(RDFOperatorQueryMember other)
+            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Adds the given operator tree to the pattern group
+        /// </summary>
+        public RDFPatternGroup AddOperator(RDFOperatorPatternGroupMember operatorMember)
+        {
+            if (operatorMember != null)
+            {
+                GroupMembers.Add(operatorMember);
+
+                foreach (RDFVariable variable in operatorMember.GetVariables())
+                    if (!Variables.Any(v => v.Equals(variable)))
+                        Variables.Add(variable);
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Sets the pattern group to be evaluated according to SPARQL SERVICE
         /// </summary>
         public RDFPatternGroup AsService(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
