@@ -481,6 +481,12 @@ namespace RDFSharp.Query
                         }
                         break;
                     }
+                    case RDFOperatorQueryMember opQueryMember:
+                    {
+                        PrintOperatorQueryMemberTree(opQueryMember, sb, prefixes,
+                            subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+                        break;
+                    }
                 }
                 #endregion
             }
@@ -730,6 +736,11 @@ namespace RDFSharp.Query
                         printingMinus = false;
                         break;
                     }
+                    case RDFOperatorPatternGroupMember opPgMember:
+                    {
+                        PrintOperatorPatternGroupMemberTree(opPgMember, result, spaces, prefixes);
+                        break;
+                    }
                 }
                 #endregion
             }
@@ -950,6 +961,138 @@ namespace RDFSharp.Query
                     string tlDatatype = tlPatternMember.Datatype.URI.ToString();
                     (bool, string) abbreviatedPM = RDFQueryUtilities.AbbreviateRDFPatternMember(RDFQueryUtilities.ParseRDFPatternMember(tlDatatype), prefixes);
                     return abbreviatedPM.Item1 ? $"\"{tlPatternMember.Value}\"^^{abbreviatedPM.Item2}" : $"\"{tlPatternMember.Value}\"^^<{abbreviatedPM.Item2}>";
+                }
+            }
+        }
+        /// <summary>
+        /// Prints the string representation of an operator tree node at the query-member level (UNION/MINUS between pattern groups and subqueries)
+        /// </summary>
+        private static void PrintOperatorQueryMemberTree(RDFOperatorQueryMember operatorNode, StringBuilder sb,
+            List<RDFNamespace> prefixes, string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
+        {
+            string operatorKeyword = operatorNode.OperatorType == RDFQueryEnums.RDFQueryOperatorType.Union ? "UNION" : "MINUS";
+
+            //OPTIONAL wrapping: open bracket before the operator tree content
+            if (operatorNode.IsOptional)
+            {
+                sb.AppendLine(string.Concat(subqueryBodySpaces, "  OPTIONAL {"));
+                subqueryBodySpaces = $"{subqueryBodySpaces}  ";
+            }
+
+            //Open outer bracket for the operator tree
+            sb.AppendLine(string.Concat(subqueryBodySpaces, "  {"));
+
+            //Print left operand (pattern group, subquery, or nested operator tree)
+            PrintOperatorQueryMemberOperand(operatorNode.LeftOperand, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+
+            //Print operator keyword (UNION or MINUS)
+            sb.AppendLine($"{subqueryBodySpaces}    {operatorKeyword}");
+
+            //Print right operand (pattern group, subquery, or nested operator tree)
+            PrintOperatorQueryMemberOperand(operatorNode.RightOperand, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+
+            //Close outer bracket for the operator tree
+            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+
+            //OPTIONAL wrapping: close the outer OPTIONAL bracket
+            if (operatorNode.IsOptional)
+            {
+                if (subqueryBodySpaces.Length >= 2)
+                    subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+            }
+        }
+
+        /// <summary>
+        /// Prints a single operand of a query-level operator tree node, dispatching on the operand type
+        /// </summary>
+        private static void PrintOperatorQueryMemberOperand(RDFQueryMember operand, StringBuilder sb,
+            List<RDFNamespace> prefixes, string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
+        {
+            switch (operand)
+            {
+                //Leaf: pattern group (may have SERVICE wrapping)
+                case RDFPatternGroup patternGroup:
+                {
+                    if (patternGroup.EvaluateAsService.HasValue)
+                    {
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                        sb.Append(PrintPatternGroup(patternGroup, subqueryBodySpaces.Length + 4, true, prefixes));
+                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
+                    }
+                    else
+                    {
+                        sb.Append(PrintPatternGroup(patternGroup, subqueryBodySpaces.Length + 2, true, prefixes));
+                    }
+                    break;
+                }
+
+                //Leaf: subquery (mark as subquery and merge prefixes before printing)
+                case RDFSelectQuery selectQuery:
+                {
+                    prefixes.ForEach(pf => selectQuery.AddPrefix(pf));
+                    selectQuery.SubQuery();
+                    sb.Append(PrintSelectQuery(selectQuery, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), true));
+                    break;
+                }
+
+                //Subtree: nested operator node (recurse with increased indentation)
+                case RDFOperatorQueryMember innerOperator:
+                {
+                    PrintOperatorQueryMemberTree(innerOperator, sb, prefixes,
+                        $"{subqueryBodySpaces}  ", indentLevel, fromUnionOrMinus);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Prints the string representation of an operator tree node at the pattern-group-member level (UNION/MINUS between patterns and property paths)
+        /// </summary>
+        private static void PrintOperatorPatternGroupMemberTree(RDFOperatorPatternGroupMember operatorNode, StringBuilder result,
+            string spaces, List<RDFNamespace> prefixes)
+        {
+            string operatorKeyword = operatorNode.OperatorType == RDFQueryEnums.RDFQueryOperatorType.Union ? "UNION" : "MINUS";
+
+            //Print left operand (pattern, property path, or nested operator tree)
+            PrintOperatorPatternGroupMemberOperand(operatorNode.LeftOperand, result, spaces, prefixes);
+
+            //Print operator keyword (UNION or MINUS)
+            result.AppendLine($"{spaces}    {operatorKeyword}");
+
+            //Print right operand (pattern, property path, or nested operator tree)
+            PrintOperatorPatternGroupMemberOperand(operatorNode.RightOperand, result, spaces, prefixes);
+        }
+
+        /// <summary>
+        /// Prints a single operand of a pattern-group-level operator tree node, dispatching on the operand type
+        /// </summary>
+        private static void PrintOperatorPatternGroupMemberOperand(RDFPatternGroupMember operand, StringBuilder result,
+            string spaces, List<RDFNamespace> prefixes)
+        {
+            switch (operand)
+            {
+                //Leaf: pattern (printed as a bracketed triple)
+                case RDFPattern pattern:
+                {
+                    result.AppendLine(string.Concat(spaces, "    { ", PrintPattern(pattern, prefixes), " }"));
+                    break;
+                }
+
+                //Leaf: property path (printed as a bracketed path expression)
+                case RDFPropertyPath propertyPath:
+                {
+                    result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(propertyPath, prefixes), " }"));
+                    break;
+                }
+
+                //Subtree: nested operator node (print with bracket wrapping and increased indentation)
+                case RDFOperatorPatternGroupMember innerOperator:
+                {
+                    result.AppendLine(string.Concat(spaces, "    {"));
+                    PrintOperatorPatternGroupMemberTree(innerOperator, result, $"{spaces}  ", prefixes);
+                    result.AppendLine(string.Concat(spaces, "    }"));
+                    break;
                 }
             }
         }
