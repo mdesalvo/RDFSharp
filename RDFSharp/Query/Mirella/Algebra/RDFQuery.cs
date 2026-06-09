@@ -144,9 +144,44 @@ namespace RDFSharp.Query
         internal List<RDFNamespace> GetPrefixes()
         {
             List<RDFNamespace> result = new List<RDFNamespace>(Prefixes);
+
+            //Collect prefixes from subqueries directly attached as query members
             foreach (RDFQuery subQuery in GetSubQueries())
                 result.AddRange(subQuery.GetPrefixes());
+
+            //Collect prefixes from subqueries nested inside operator tree members (Union/Minus),
+            //otherwise the printed query would reference prefixes it never declares
+            foreach (RDFOperatorQueryMember operatorMember in QueryMembers.OfType<RDFOperatorQueryMember>())
+                CollectOperatorTreePrefixes(operatorMember, result);
+
             return result.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Collects the prefixes declared by the subqueries living inside an operator tree node,
+        /// recursing through both operands so that deeply nested subqueries are reached as well
+        /// </summary>
+        private static void CollectOperatorTreePrefixes(RDFOperatorQueryMember operatorMember, List<RDFNamespace> result)
+        {
+            CollectOperatorTreeOperandPrefixes(operatorMember.LeftOperand, result);
+            CollectOperatorTreeOperandPrefixes(operatorMember.RightOperand, result);
+        }
+
+        /// <summary>
+        /// Collects the prefixes from a single operator tree operand: a subquery contributes its own
+        /// prefixes, a nested operator node is traversed recursively, a pattern group has no prefixes
+        /// </summary>
+        private static void CollectOperatorTreeOperandPrefixes(RDFQueryMember operand, List<RDFNamespace> result)
+        {
+            switch (operand)
+            {
+                case RDFSelectQuery subQueryOperand:
+                    result.AddRange(subQueryOperand.GetPrefixes());
+                    break;
+                case RDFOperatorQueryMember operatorOperand:
+                    CollectOperatorTreePrefixes(operatorOperand, result);
+                    break;
+            }
         }
 
         /// <summary>

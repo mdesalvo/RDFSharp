@@ -237,9 +237,8 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S rdfs:label "label"@EN }
-          UNION
-          { VALUES ?S { rdfs:label } }
+          ?S rdfs:label "label"@EN .
+          VALUES ?S { rdfs:label } .
         }
       }
 
@@ -474,9 +473,8 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S rdfs:label "label"@EN }
-          MINUS
-          { VALUES ?S { rdfs:label } }
+          ?S rdfs:label "label"@EN .
+          VALUES ?S { rdfs:label } .
         }
       }
 
@@ -558,8 +556,7 @@ public class RDFQueryPrinterTest
           { ?S1 rdfs:label "label"@EN }
           MINUS
           { ?S2 rdfs:label "label"@EN-US }
-          MINUS
-          { VALUES ?V { <ex:val> } }
+          VALUES ?V { <ex:val> } .
         }
       }
 
@@ -613,9 +610,8 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S1 rdfs:label "label"@EN }
-          MINUS
-          { VALUES ?V { <ex:val> } }
+          ?S1 rdfs:label "label"@EN .
+          VALUES ?V { <ex:val> } .
           ?S2 rdfs:label "label"@EN-US .
         }
       }
@@ -2625,7 +2621,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )) //Will not be printed, since this is the last evaluable query member
+        ))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2637,11 +2633,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -2679,11 +2677,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -2726,15 +2726,19 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
-          }
-          UNION
-          {
-            <ex:subj> rdfs:label ?T .
+            {
+              {
+                ?S rdfs:label "label"@EN .
+              }
+              UNION
+              {
+                <ex:subj> <ex:pred> ?T .
+              }
+            }
+            UNION
+            {
+              <ex:subj> rdfs:label ?T .
+            }
           }
           UNION
           {
@@ -2773,11 +2777,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -2826,14 +2832,16 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-            OPTIONAL { ?S rdfs:comment "comment" } .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
-            OPTIONAL { <ex:subj> ?P _:12345 } .
-            OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            {
+              ?S rdfs:label "label"@EN .
+              OPTIONAL { ?S rdfs:comment "comment" } .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+              OPTIONAL { <ex:subj> ?P _:12345 } .
+              OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            }
           }
           UNION
           {
@@ -2858,12 +2866,12 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddOperator(new RDFPatternGroup()
-        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment"))))
         .Union(new RDFPatternGroup()
         .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )) //UnionWithNext will not be printed, since this is the last evaluable query member
+        ))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2875,17 +2883,21 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S rdfs:label "label"@EN }
+            {
+              { ?S rdfs:label "label"@EN }
+              UNION
+              { ?S rdfs:comment "comment" }
+            }
             UNION
-            { ?S rdfs:comment "comment" }
-          }
-          UNION
-          {
-            { <ex:subj> <ex:pred> ?T }
-            UNION
-            { <ex:subj> <ex:pred2> ?T }
-            UNION
-            { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            {
+              {
+                { <ex:subj> <ex:pred> ?T }
+                UNION
+                { <ex:subj> <ex:pred2> ?T }
+              }
+              UNION
+              { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            }
           }
           UNION
           {
@@ -2944,7 +2956,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )) //Will not be printed, since this is the last evaluable query member
+        ))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2956,11 +2968,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          MINUS
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            MINUS
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           MINUS
           {
@@ -2998,11 +3012,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          MINUS
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            MINUS
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           MINUS
           {
@@ -3045,15 +3061,19 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          MINUS
-          {
-            <ex:subj> <ex:pred> ?T .
-          }
-          MINUS
-          {
-            <ex:subj> rdfs:label ?T .
+            {
+              {
+                ?S rdfs:label "label"@EN .
+              }
+              MINUS
+              {
+                <ex:subj> <ex:pred> ?T .
+              }
+            }
+            MINUS
+            {
+              <ex:subj> rdfs:label ?T .
+            }
           }
           MINUS
           {
@@ -3092,11 +3112,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          MINUS
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            MINUS
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           MINUS
           {
@@ -3145,14 +3167,16 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-            OPTIONAL { ?S rdfs:comment "comment" } .
-          }
-          MINUS
-          {
-            <ex:subj> <ex:pred> ?T .
-            OPTIONAL { <ex:subj> ?P _:12345 } .
-            OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            {
+              ?S rdfs:label "label"@EN .
+              OPTIONAL { ?S rdfs:comment "comment" } .
+            }
+            MINUS
+            {
+              <ex:subj> <ex:pred> ?T .
+              OPTIONAL { <ex:subj> ?P _:12345 } .
+              OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            }
           }
           MINUS
           {
@@ -3177,12 +3201,12 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddOperator(new RDFPatternGroup()
-        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Minus(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //MinusWithNext will not be printed, since this is the last pattern group member
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Minus(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment"))))
         .Minus(new RDFPatternGroup()
         .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Minus(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Minus(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
         ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )) //MinusWithNext will not be printed, since this is the last evaluable query member
+        ))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -3194,17 +3218,21 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S rdfs:label "label"@EN }
+            {
+              { ?S rdfs:label "label"@EN }
+              MINUS
+              { ?S rdfs:comment "comment" }
+            }
             MINUS
-            { ?S rdfs:comment "comment" }
-          }
-          MINUS
-          {
-            { <ex:subj> <ex:pred> ?T }
-            MINUS
-            { <ex:subj> <ex:pred2> ?T }
-            MINUS
-            { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            {
+              {
+                { <ex:subj> <ex:pred> ?T }
+                MINUS
+                { <ex:subj> <ex:pred2> ?T }
+              }
+              MINUS
+              { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            }
           }
           MINUS
           {
@@ -3589,21 +3617,18 @@ public class RDFQueryPrinterTest
       SELECT ?Z ?T
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -3629,7 +3654,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
-         //This subquery will not be printed as union, since it is the last query member
+
         .AddProjectionVariable(new RDFVariable("?T")))
       .AddProjectionVariable(new RDFVariable("?Z"))
       .AddProjectionVariable(new RDFVariable("?T"));
@@ -3643,21 +3668,18 @@ public class RDFQueryPrinterTest
       SELECT ?Z ?T
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -3702,21 +3724,18 @@ public class RDFQueryPrinterTest
       SELECT ?Z ?T
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -3787,27 +3806,26 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                SELECT DISTINCT *
-                WHERE {
-                  {
-                    ?S rdfs:label _:12345 .
-                    FILTER ( (BOUND(?S)) ) 
-                  }
+          SELECT ?Z
+          WHERE {
+            {
+              SELECT DISTINCT *
+              WHERE {
+                {
+                  ?S rdfs:label _:12345 .
+                  FILTER ( (BOUND(?S)) ) 
                 }
-                ORDER BY ASC(?S)
-                LIMIT 5
-                OFFSET 1
               }
-              {
-                ?S rdfs:label _:12345 .
-              }
+              ORDER BY ASC(?S)
+              LIMIT 5
+              OFFSET 1
+            }
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
+        }
+        {
           {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {
@@ -3886,6 +3904,7 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
+          {
             SELECT DISTINCT *
             WHERE {
               {
@@ -3897,7 +3916,7 @@ public class RDFQueryPrinterTest
             LIMIT 5
             OFFSET 1
           }
-          MINUS
+            MINUS
           {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {
@@ -3907,6 +3926,7 @@ public class RDFQueryPrinterTest
             }
             GROUP BY ?S
             HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+          }
           }
           MINUS
           {
@@ -3962,6 +3982,7 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
+          {
             SELECT DISTINCT *
             WHERE {
               {
@@ -3973,25 +3994,24 @@ public class RDFQueryPrinterTest
             LIMIT 5
             OFFSET 1
           }
-          UNION
+            UNION
           {
-            {
-              SELECT ?S (AVG(?S) AS ?AVG_S)
-              WHERE {
-                {
-                  ?S rdfs:label "label"@EN .
-                }
+            SELECT ?S (AVG(?S) AS ?AVG_S)
+            WHERE {
+              {
+                ?S rdfs:label "label"@EN .
               }
-              GROUP BY ?S
-              HAVING ((AVG(?S) >= "11.44"^^xsd:float))
             }
-            MINUS
-            {
-              SELECT ?T
-              WHERE {
-                {
-                  ?S rdfs:label "eitchetta"@IT .
-                }
+            GROUP BY ?S
+            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+          }
+          }
+          MINUS
+          {
+            SELECT ?T
+            WHERE {
+              {
+                ?S rdfs:label "eitchetta"@IT .
               }
             }
           }
@@ -4037,34 +4057,31 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
+          ?S rdfs:label _:12345 .
+          FILTER ( (BOUND(?S)) ) 
+        }
+        {
           {
-            ?S rdfs:label _:12345 .
-            FILTER ( (BOUND(?S)) ) 
+            SELECT ?S (AVG(?S) AS ?AVG_S)
+            WHERE {
+              {
+                ?S rdfs:label "label"@EN .
+              }
+            }
+            GROUP BY ?S
+            HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
           }
-          UNION
+          MINUS
           {
-            {
-              SELECT ?S (AVG(?S) AS ?AVG_S)
-              WHERE {
-                {
-                  ?S rdfs:label "label"@EN .
-                }
+            SELECT DISTINCT ?T
+            WHERE {
+              {
+                ?S rdfs:label "eitchetta"@IT .
               }
-              GROUP BY ?S
-              HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
             }
-            MINUS
-            {
-              SELECT DISTINCT ?T
-              WHERE {
-                {
-                  ?S rdfs:label "eitchetta"@IT .
-                }
-              }
-              ORDER BY ASC(?S)
-              LIMIT 5
-              OFFSET 1
-            }
+            ORDER BY ASC(?S)
+            LIMIT 5
+            OFFSET 1
           }
         }
       }
@@ -4108,34 +4125,31 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
+          ?S rdfs:label _:12345 .
+          FILTER ( (BOUND(?S)) ) 
+        }
+        {
           {
-            ?S rdfs:label _:12345 .
-            FILTER ( (BOUND(?S)) ) 
+            SELECT ?S (AVG(?S) AS ?AVG_S)
+            WHERE {
+              {
+                ?S rdfs:label "label"@EN .
+              }
+            }
+            GROUP BY ?S
+            HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
           }
-          MINUS
+          UNION
           {
-            {
-              SELECT ?S (AVG(?S) AS ?AVG_S)
-              WHERE {
-                {
-                  ?S rdfs:label "label"@EN .
-                }
+            SELECT DISTINCT ?T
+            WHERE {
+              {
+                ?S rdfs:label "eitchetta"@IT .
               }
-              GROUP BY ?S
-              HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
             }
-            UNION
-            {
-              SELECT DISTINCT ?T
-              WHERE {
-                {
-                  ?S rdfs:label "eitchetta"@IT .
-                }
-              }
-              ORDER BY ASC(?S)
-              LIMIT 5
-              OFFSET 1
-            }
+            ORDER BY ASC(?S)
+            LIMIT 5
+            OFFSET 1
           }
         }
       }
@@ -4177,11 +4191,10 @@ public class RDFQueryPrinterTest
       SELECT DISTINCT ?T
       WHERE {
         {
-          {
-            ?S rdfs:label _:12345 .
-            FILTER ( (BOUND(?S)) ) 
-          }
-          MINUS
+          ?S rdfs:label _:12345 .
+          FILTER ( (BOUND(?S)) ) 
+        }
+        {
           {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {
@@ -4236,22 +4249,24 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label _:12345 .
-            FILTER ( (BOUND(?S)) ) 
-          }
-          MINUS
-          {
             {
-              ?S rdfs:label "label"@EN .
+              {
+                ?S rdfs:label _:12345 .
+                FILTER ( (BOUND(?S)) ) 
+              }
+              MINUS
+              {
+                ?S rdfs:label "label"@EN .
+              }
             }
             UNION
             {
               ?S rdfs:label "etiquette"@FR .
             }
-            MINUS
-            {
-              ?S rdfs:label "eitchetta"@IT .
-            }
+          }
+          MINUS
+          {
+            ?S rdfs:label "eitchetta"@IT .
           }
         }
       }
@@ -4306,6 +4321,7 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
+          {
             SELECT *
             WHERE {
               {
@@ -4329,22 +4345,21 @@ public class RDFQueryPrinterTest
             LIMIT 5
             OFFSET 1
           }
-          UNION
+            UNION
           {
-            {
-              SELECT ?S (AVG(?S) AS ?AVG_S)
-              WHERE {
-                {
-                  ?S rdfs:label "label"@EN .
-                }
+            SELECT ?S (AVG(?S) AS ?AVG_S)
+            WHERE {
+              {
+                ?S rdfs:label "label"@EN .
               }
-              GROUP BY ?S
-              HAVING ((AVG(?S) >= "11.44"^^xsd:float))
             }
-            MINUS
-            {
-              ?S1 rdfs:label "eitchetta"@IT .
-            }
+            GROUP BY ?S
+            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+          }
+          }
+          MINUS
+          {
+            ?S1 rdfs:label "eitchetta"@IT .
           }
         }
         {
@@ -4511,6 +4526,7 @@ public class RDFQueryPrinterTest
         }
         {
           {
+          {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {
               {
@@ -4520,15 +4536,14 @@ public class RDFQueryPrinterTest
             GROUP BY ?S
             HAVING ((AVG(?S) >= "11.44"^^xsd:float))
           }
-          MINUS
-          {
+            MINUS
             {
               ?S1 rdfs:label "eitchetta"@IT .
             }
-            UNION
-            {
-              ?S2 rdfs:label "eitchetta"@IT .
-            }
+          }
+          UNION
+          {
+            ?S2 rdfs:label "eitchetta"@IT .
           }
         }
       }
@@ -4664,11 +4679,10 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          {
-            ?S rdfs:label _:12345 .
-            FILTER ( (BOUND(?S)) ) 
-          }
-          MINUS
+          ?S rdfs:label _:12345 .
+          FILTER ( (BOUND(?S)) ) 
+        }
+        {
           {
             {
               ?S rdfs:label _:12345 .
@@ -4678,10 +4692,10 @@ public class RDFQueryPrinterTest
             {
               ?S1 rdfs:label "eitchetta"@IT .
             }
-            UNION
-            {
-              ?S2 rdfs:label "eitchetta"@IT .
-            }
+          }
+          UNION
+          {
+            ?S2 rdfs:label "eitchetta"@IT .
           }
         }
       }
@@ -4715,23 +4729,25 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label _:12345 .
-            FILTER ( (BOUND(?S)) ) 
-          }
-          MINUS
-          {
             {
               ?S rdfs:label _:12345 .
               FILTER ( (BOUND(?S)) ) 
             }
-            UNION
-            {
-              ?S1 rdfs:label "eitchetta"@IT .
-            }
             MINUS
             {
-              ?S2 rdfs:label "eitchetta"@IT .
+              {
+                ?S rdfs:label _:12345 .
+                FILTER ( (BOUND(?S)) ) 
+              }
+              UNION
+              {
+                ?S1 rdfs:label "eitchetta"@IT .
+              }
             }
+          }
+          MINUS
+          {
+            ?S2 rdfs:label "eitchetta"@IT .
           }
         }
       }
@@ -4770,23 +4786,25 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/rdfs:subClassOf ?E .
-            FILTER ( (BOUND(?S)) ) 
-          }
-          MINUS
-          {
             {
-              ?S (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>|rdfs:subClassOf) ?E .
-              VALUES ?S { "test" } .
-            }
-            UNION
-            {
-              ?S1 rdfs:label "eitchetta"@IT .
+              ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>/rdfs:subClassOf ?E .
+              FILTER ( (BOUND(?S)) ) 
             }
             MINUS
             {
-              ?S2 rdfs:label "eitchetta"@IT .
+              {
+                ?S (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>|rdfs:subClassOf) ?E .
+                VALUES ?S { "test" } .
+              }
+              UNION
+              {
+                ?S1 rdfs:label "eitchetta"@IT .
+              }
             }
+          }
+          MINUS
+          {
+            ?S2 rdfs:label "eitchetta"@IT .
           }
         }
       }
@@ -4814,14 +4832,13 @@ public class RDFQueryPrinterTest
           { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
           { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
           {
             { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
             UNION
             { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           }
+          UNION
+          { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
         }
       }
@@ -4849,14 +4866,13 @@ public class RDFQueryPrinterTest
           { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
           { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
           {
             { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
             UNION
             { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           }
+          UNION
+          { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
         }
       }
@@ -4885,12 +4901,9 @@ public class RDFQueryPrinterTest
           { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
           { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          {
-            { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
-          }
+          { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          UNION
+          { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
           ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
           OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
         }
@@ -4919,12 +4932,9 @@ public class RDFQueryPrinterTest
           { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
           { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          {
-            { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
-          }
+          { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          UNION
+          { OPTIONAL { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
           { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
           { OPTIONAL { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
@@ -4949,19 +4959,25 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          UNION
-          { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          UNION
-          { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
           {
+            {
+              {
+                { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                UNION
+                { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              }
+              UNION
+              {
+                { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                MINUS
+                { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              }
+            }
+            MINUS
             { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           }
+          UNION
+          { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
         }
       }
 
@@ -4985,20 +5001,19 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          UNION
-          { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          {
+            { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            UNION
+            { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          }
           UNION
           { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
-          {
-            { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
-            { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          }
+          { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          MINUS
+          { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
         }
       }
 
@@ -5020,25 +5035,29 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
           {
-            { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
             {
-              { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              {
+                {
+                  {
+                    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                  UNION
+                  { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                }
+                MINUS
+                { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              }
               UNION
               { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              MINUS
-              {
-                { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                UNION
-                { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              }
             }
+            MINUS
+            { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           }
+          UNION
+          { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
         }
       }
 
@@ -5061,21 +5080,24 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          UNION
-          { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          {
+            {
+              { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              UNION
+              {
+                { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                MINUS
+                { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              }
+            }
+            MINUS
+            { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          }
           MINUS
           { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          {
-            { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          }
+          { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          UNION
+          { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
         }
       }
 
@@ -5106,25 +5128,24 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          {
-            { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S5A <ex:step1>/<ex:step2> ?S6A }
-          }
+          ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          UNION
+          { ?S5A <ex:step1>/<ex:step2> ?S6A }
           { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
           { ?S5B <ex:step1>/<ex:step2> ?S6B }
-          { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
           {
-            { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S5C <ex:step1>/<ex:step2> ?S6C }
+            { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            MINUS
+            {
+              { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              UNION
+              { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            }
           }
+          UNION
+          { ?S5C <ex:step1>/<ex:step2> ?S6C }
           ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
         }
       }
@@ -5154,23 +5175,18 @@ public class RDFQueryPrinterTest
         {
           { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
-          {
-            { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { VALUES ?V { UNDEF } }
-          }
-          { ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-          MINUS
-          { VALUES ?V { UNDEF } }
+          { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+          VALUES ?V { UNDEF } .
+          ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+          VALUES ?V { UNDEF } .
           { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           MINUS
           {
             { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
             UNION
             { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { VALUES ?V { UNDEF } }
           }
+          VALUES ?V { UNDEF } .
           ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
         }
       }
@@ -5245,34 +5261,44 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            {
+              {
+                {
+                  {
+                    { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                  MINUS
+                  { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                }
+                MINUS
+                {
+                  { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                }
+              }
+              UNION
+              {
+                {
+                  {
+                    { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    {
+                      { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                      UNION
+                      { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    }
+                  }
+                  MINUS
+                  { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                }
+                MINUS
+                { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
+              }
+            }
             UNION
-            { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
-            { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
-            {
-              { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              UNION
-              { ?S5A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            }
-          }
-          UNION
-          {
-            { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
-            {
-              { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              UNION
-              { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              MINUS
-              { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              MINUS
-              { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
-            }
-          }
-          UNION
-          {
             {
               { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
               MINUS
@@ -5282,16 +5308,18 @@ public class RDFQueryPrinterTest
               { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
               OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
             }
-            MINUS
+          }
+          MINUS
+          {
+            ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+            OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
             {
-              ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
-              OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
               { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
               UNION
               { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              UNION
-              { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
             }
+            UNION
+            { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           }
         }
       }
@@ -5326,11 +5354,15 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
-            { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            {
+              {
+                { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                UNION
+                { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              }
+              MINUS
+              { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            }
             MINUS
             {
               { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
@@ -5340,39 +5372,44 @@ public class RDFQueryPrinterTest
           }
           MINUS
           {
-            { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
             {
-              { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              UNION
-              { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              {
+                { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                MINUS
+                {
+                  { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                }
+              }
               MINUS
               { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              MINUS
-              { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
             }
+            MINUS
+            { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
           }
-          MINUS
+        }
+        {
           {
-            {
-              { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              MINUS
-              { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              UNION
-              { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
-            }
+            { ?S1C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            MINUS
+            { ?S2C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            { ?S3C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
             UNION
+            { ?S4C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            OPTIONAL { ?S5C <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
+          }
+          UNION
+          {
+            ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
+            OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
             {
-              ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
-              OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
               { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
               UNION
               { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              UNION
-              { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
             }
+            UNION
+            { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           }
         }
       }
@@ -5407,11 +5444,15 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
-            { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            {
+              {
+                { ?S1A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                UNION
+                { ?S2A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              }
+              MINUS
+              { ?S3A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            }
             MINUS
             {
               { ?S4A <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
@@ -5421,17 +5462,21 @@ public class RDFQueryPrinterTest
           }
           MINUS
           {
-            { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            MINUS
             {
-              { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              UNION
-              { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              {
+                { ?S1B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                MINUS
+                {
+                  { ?S2B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  UNION
+                  { ?S3B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                }
+              }
               MINUS
               { ?S4B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-              MINUS
-              { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
             }
+            MINUS
+            { OPTIONAL { ?S5B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
           }
         }
         {
@@ -5448,9 +5493,11 @@ public class RDFQueryPrinterTest
           {
             ?S1D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
             OPTIONAL { ?S2D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } .
-            { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-            UNION
-            { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            {
+              { ?S3D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+              UNION
+              { ?S4D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+            }
             UNION
             { ?S5D <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
           }
@@ -5497,14 +5544,13 @@ public class RDFQueryPrinterTest
                 { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                 MINUS
                 { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                MINUS
                 {
                   { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                   UNION
                   { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                  UNION
-                  { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                 }
+                UNION
+                { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                 ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
               }
             }
@@ -5521,30 +5567,30 @@ public class RDFQueryPrinterTest
                     WHERE {
                       {
                         {
-                          { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                          MINUS
                           {
-                            { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                            UNION
-                            { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                            MINUS
-                            { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                            { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                             MINUS
                             {
-                              { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                              { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                               UNION
-                              { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                              { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                             }
                           }
+                          MINUS
+                          { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          UNION
+                          { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                         }
                         UNION
                         {
-                          { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                          UNION
-                          { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          {
+                            { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                            UNION
+                            { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          }
                           UNION
                           { ?S9B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                          UNION
                           { ?S10B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                           MINUS
                           { OPTIONAL { ?S11B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
@@ -5598,17 +5644,21 @@ public class RDFQueryPrinterTest
             SELECT *
             WHERE {
               {
-                { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                MINUS
-                { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                MINUS
                 {
-                  { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                  UNION
-                  { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                  UNION
-                  { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  {
+                    { ?S1 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    MINUS
+                    { ?S2 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
+                  MINUS
+                  {
+                    { ?S3 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                    UNION
+                    { ?S4 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                  }
                 }
+                UNION
+                { ?S5 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                 ?S6 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT .
               }
             }
@@ -5625,30 +5675,30 @@ public class RDFQueryPrinterTest
                     WHERE {
                       {
                         {
-                          { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                          MINUS
                           {
-                            { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                            {
+                              { ?S7 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                              MINUS
+                              { ?S8 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                            }
                             UNION
                             { ?S9 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                            MINUS
-                            { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                            MINUS
-                            {
-                              { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                              UNION
-                              { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                            }
                           }
+                          MINUS
+                          { ?S10 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          { ?S11 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          UNION
+                          { ?S12 <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                         }
                         MINUS
                         {
-                          { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                          UNION
-                          { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          {
+                            { ?S7B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                            UNION
+                            { ?S8B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
+                          }
                           UNION
                           { ?S9B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
-                          UNION
                           { ?S10B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT }
                           MINUS
                           { OPTIONAL { ?S11B <http://www.w3.org/2000/01/rdf-schema#label> "eitchetta"@IT } }
@@ -5727,29 +5777,28 @@ public class RDFQueryPrinterTest
       SELECT *
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                SELECT DISTINCT *
-                WHERE {
-                  {
-                    ?S rdfs:label _:12345 .
-                    BIND((ABS(?T)) AS ?ABST) .
-                    FILTER ( (BOUND(?S)) ) 
-                  }
+          SELECT ?Z
+          WHERE {
+            {
+              SELECT DISTINCT *
+              WHERE {
+                {
+                  ?S rdfs:label _:12345 .
+                  BIND((ABS(?T)) AS ?ABST) .
+                  FILTER ( (BOUND(?S)) ) 
                 }
-                ORDER BY ASC(?S)
-                LIMIT 5
-                OFFSET 1
               }
-              {
-                ?S rdfs:label _:12345 .
-                BIND((?T && ?Q) AS ?ANDTQ) .
-              }
+              ORDER BY ASC(?S)
+              LIMIT 5
+              OFFSET 1
+            }
+            {
+              ?S rdfs:label _:12345 .
+              BIND((?T && ?Q) AS ?ANDTQ) .
             }
           }
-          UNION
+        }
+        {
           {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {
@@ -5935,6 +5984,7 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
+          {
             SELECT *
             WHERE {
               {
@@ -5942,12 +5992,13 @@ public class RDFQueryPrinterTest
               }
             }
           }
-          UNION
-          {
-            { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN }
             UNION
-            { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN }
-            BIND(<ex:t3> AS ?T3) .
+            {
+              { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN }
+              UNION
+              { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN }
+              BIND(<ex:t3> AS ?T3) .
+            }
           }
           UNION
           {
@@ -5955,9 +6006,11 @@ public class RDFQueryPrinterTest
             UNION
             { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> "label5"@EN }
             BIND(<ex:t6> AS ?T6) .
-            { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> "label7"@EN }
-            UNION
-            { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> "label8"@EN }
+            {
+              { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> "label7"@EN }
+              UNION
+              { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> "label8"@EN }
+            }
             UNION
             { OPTIONAL { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> "label9"@EN } }
           }
@@ -6062,28 +6115,29 @@ public class RDFQueryPrinterTest
           }
           UNION
           {
-            {
-              { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN }
-              MINUS
-              { OPTIONAL { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN } }
-              BIND(<ex:t3> AS ?T3) .
-            }
+            { ?T1 <http://www.w3.org/2000/01/rdf-schema#label> "label1"@EN }
             MINUS
+            { OPTIONAL { ?T2 <http://www.w3.org/2000/01/rdf-schema#label> "label2"@EN } }
+            BIND(<ex:t3> AS ?T3) .
+          }
+        }
+        {
+          {
+            { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> "label4"@EN }
+            UNION
+            { OPTIONAL { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> "label5"@EN } }
+            BIND(<ex:t6> AS ?T6) .
             {
-              { ?T4 <http://www.w3.org/2000/01/rdf-schema#label> "label4"@EN }
-              UNION
-              { OPTIONAL { ?T5 <http://www.w3.org/2000/01/rdf-schema#label> "label5"@EN } }
-              BIND(<ex:t6> AS ?T6) .
               { ?T7 <http://www.w3.org/2000/01/rdf-schema#label> "label7"@EN }
               MINUS
               { ?T8 <http://www.w3.org/2000/01/rdf-schema#label> "label8"@EN }
-              MINUS
-              { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> "label9"@EN }
             }
-            UNION
-            {
-              BIND(<ex:t7> AS ?T7) .
-            }
+            MINUS
+            { ?T9 <http://www.w3.org/2000/01/rdf-schema#label> "label9"@EN }
+          }
+          UNION
+          {
+            BIND(<ex:t7> AS ?T7) .
           }
         }
       }
@@ -6489,7 +6543,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )); //Will not be printed, since this is the last evaluable query member
+        ));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6499,11 +6553,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -6538,11 +6594,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -6581,11 +6639,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -6631,14 +6691,16 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-            OPTIONAL { ?S rdfs:comment "comment" } .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
-            OPTIONAL { <ex:subj> ?P _:12345 } .
-            OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            {
+              ?S rdfs:label "label"@EN .
+              OPTIONAL { ?S rdfs:comment "comment" } .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+              OPTIONAL { <ex:subj> ?P _:12345 } .
+              OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            }
           }
           UNION
           {
@@ -6662,12 +6724,12 @@ public class RDFQueryPrinterTest
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddOperator(new RDFPatternGroup()
-        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment"))))
         .Union(new RDFPatternGroup()
         .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )); //UnionWithNext will not be printed, since this is the last evaluable query member
+        ));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6677,17 +6739,21 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S rdfs:label "label"@EN }
+            {
+              { ?S rdfs:label "label"@EN }
+              UNION
+              { ?S rdfs:comment "comment" }
+            }
             UNION
-            { ?S rdfs:comment "comment" }
-          }
-          UNION
-          {
-            { <ex:subj> <ex:pred> ?T }
-            UNION
-            { <ex:subj> <ex:pred2> ?T }
-            UNION
-            { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            {
+              {
+                { <ex:subj> <ex:pred> ?T }
+                UNION
+                { <ex:subj> <ex:pred2> ?T }
+              }
+              UNION
+              { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            }
           }
           UNION
           {
@@ -6972,21 +7038,18 @@ public class RDFQueryPrinterTest
       ASK
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -7028,21 +7091,18 @@ public class RDFQueryPrinterTest
       ASK
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -7112,27 +7172,26 @@ public class RDFQueryPrinterTest
       ASK
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                SELECT DISTINCT *
-                WHERE {
-                  {
-                    ?S rdfs:label _:12345 .
-                    FILTER ( (BOUND(?S)) ) 
-                  }
+          SELECT ?Z
+          WHERE {
+            {
+              SELECT DISTINCT *
+              WHERE {
+                {
+                  ?S rdfs:label _:12345 .
+                  FILTER ( (BOUND(?S)) ) 
                 }
-                ORDER BY ASC(?S)
-                LIMIT 5
-                OFFSET 1
               }
-              {
-                ?S rdfs:label _:12345 .
-              }
+              ORDER BY ASC(?S)
+              LIMIT 5
+              OFFSET 1
+            }
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
+        }
+        {
           {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {
@@ -7587,14 +7646,14 @@ public class RDFQueryPrinterTest
   {
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")).Optional()) //Optional will not be printed, since it is not supported by CONSTRUCT
+      .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")).Optional())
       .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )); //Will not be printed, since this is the last evaluable query member
+        ));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7606,11 +7665,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -7628,7 +7689,7 @@ public class RDFQueryPrinterTest
   {
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))) //UnionWithNext will not be printed, since it is not supported by CONSTRUCT
+      .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?Z")))
       .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
@@ -7650,11 +7711,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -7696,11 +7759,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -7749,14 +7814,16 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-            OPTIONAL { ?S rdfs:comment "comment" } .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
-            OPTIONAL { <ex:subj> ?P _:12345 } .
-            OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            {
+              ?S rdfs:label "label"@EN .
+              OPTIONAL { ?S rdfs:comment "comment" } .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+              OPTIONAL { <ex:subj> ?P _:12345 } .
+              OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            }
           }
           UNION
           {
@@ -7781,12 +7848,12 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
       .AddOperator(new RDFPatternGroup()
-        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment"))))
         .Union(new RDFPatternGroup()
         .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )); //UnionWithNext will not be printed, since this is the last evaluable query member
+        ));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7798,17 +7865,21 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S rdfs:label "label"@EN }
+            {
+              { ?S rdfs:label "label"@EN }
+              UNION
+              { ?S rdfs:comment "comment" }
+            }
             UNION
-            { ?S rdfs:comment "comment" }
-          }
-          UNION
-          {
-            { <ex:subj> <ex:pred> ?T }
-            UNION
-            { <ex:subj> <ex:pred2> ?T }
-            UNION
-            { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            {
+              {
+                { <ex:subj> <ex:pred> ?T }
+                UNION
+                { <ex:subj> <ex:pred2> ?T }
+              }
+              UNION
+              { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            }
           }
           UNION
           {
@@ -7976,7 +8047,7 @@ public class RDFQueryPrinterTest
   {
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddTemplate(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))) //Context will not be printed, since it is not supported by CONSTRUCT
+      .AddTemplate(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -8026,7 +8097,7 @@ public class RDFQueryPrinterTest
   {
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddTemplate(new RDFPattern(new RDFContext("ex:org"), new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")).Optional()) //Context will not be printed, since it is not supported by CONSTRUCT
+      .AddTemplate(new RDFPattern(new RDFContext("ex:org"), new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")).Optional())
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -8050,21 +8121,18 @@ public class RDFQueryPrinterTest
       }
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -8109,21 +8177,18 @@ public class RDFQueryPrinterTest
       }
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -8198,27 +8263,26 @@ public class RDFQueryPrinterTest
       }
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                SELECT DISTINCT *
-                WHERE {
-                  {
-                    ?S rdfs:label _:12345 .
-                    FILTER ( (BOUND(?S)) ) 
-                  }
+          SELECT ?Z
+          WHERE {
+            {
+              SELECT DISTINCT *
+              WHERE {
+                {
+                  ?S rdfs:label _:12345 .
+                  FILTER ( (BOUND(?S)) ) 
                 }
-                ORDER BY ASC(?S)
-                LIMIT 5
-                OFFSET 1
               }
-              {
-                ?S rdfs:label _:12345 .
-              }
+              ORDER BY ASC(?S)
+              LIMIT 5
+              OFFSET 1
+            }
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
+        }
+        {
           {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {
@@ -8666,7 +8730,7 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )); //Will not be printed, since this is the last evaluable query member
+        ));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8676,11 +8740,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -8716,11 +8782,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -8760,11 +8828,13 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
+            {
+              ?S rdfs:label "label"@EN .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+            }
           }
           UNION
           {
@@ -8811,14 +8881,16 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            ?S rdfs:label "label"@EN .
-            OPTIONAL { ?S rdfs:comment "comment" } .
-          }
-          UNION
-          {
-            <ex:subj> <ex:pred> ?T .
-            OPTIONAL { <ex:subj> ?P _:12345 } .
-            OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            {
+              ?S rdfs:label "label"@EN .
+              OPTIONAL { ?S rdfs:comment "comment" } .
+            }
+            UNION
+            {
+              <ex:subj> <ex:pred> ?T .
+              OPTIONAL { <ex:subj> ?P _:12345 } .
+              OPTIONAL { ?S ?P "25"^^xsd:integer } .
+            }
           }
           UNION
           {
@@ -8846,12 +8918,12 @@ public class RDFQueryPrinterTest
       .AddDescribeTerm(new RDFResource("bnode:12345"))
       .AddDescribeTerm(new RDFVariable("?S"))
       .AddOperator(new RDFPatternGroup()
-        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment"))))
         .Union(new RDFPatternGroup()
         .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
         ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        )); //UnionWithNext will not be printed, since this is the last evaluable query member
+        ));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8861,17 +8933,21 @@ public class RDFQueryPrinterTest
       WHERE {
         {
           {
-            { ?S rdfs:label "label"@EN }
+            {
+              { ?S rdfs:label "label"@EN }
+              UNION
+              { ?S rdfs:comment "comment" }
+            }
             UNION
-            { ?S rdfs:comment "comment" }
-          }
-          UNION
-          {
-            { <ex:subj> <ex:pred> ?T }
-            UNION
-            { <ex:subj> <ex:pred2> ?T }
-            UNION
-            { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            {
+              {
+                { <ex:subj> <ex:pred> ?T }
+                UNION
+                { <ex:subj> <ex:pred2> ?T }
+              }
+              UNION
+              { OPTIONAL { <ex:subj> <ex:pred3> ?T } }
+            }
           }
           UNION
           {
@@ -9101,21 +9177,18 @@ public class RDFQueryPrinterTest
       DESCRIBE <ex:org>
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -9158,21 +9231,18 @@ public class RDFQueryPrinterTest
       DESCRIBE ?T
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                ?S rdfs:label _:12345 .
-              }
+          SELECT ?Z
+          WHERE {
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
-          {
-            SELECT ?T
-            WHERE {
-              {
-                ?S rdfs:label "label"@EN .
-              }
+        }
+        {
+          SELECT ?T
+          WHERE {
+            {
+              ?S rdfs:label "label"@EN .
             }
           }
         }
@@ -9243,27 +9313,26 @@ public class RDFQueryPrinterTest
       DESCRIBE ?T
       WHERE {
         {
-          {
-            SELECT ?Z
-            WHERE {
-              {
-                SELECT DISTINCT *
-                WHERE {
-                  {
-                    ?S rdfs:label _:12345 .
-                    FILTER ( (BOUND(?S)) ) 
-                  }
+          SELECT ?Z
+          WHERE {
+            {
+              SELECT DISTINCT *
+              WHERE {
+                {
+                  ?S rdfs:label _:12345 .
+                  FILTER ( (BOUND(?S)) ) 
                 }
-                ORDER BY ASC(?S)
-                LIMIT 5
-                OFFSET 1
               }
-              {
-                ?S rdfs:label _:12345 .
-              }
+              ORDER BY ASC(?S)
+              LIMIT 5
+              OFFSET 1
+            }
+            {
+              ?S rdfs:label _:12345 .
             }
           }
-          UNION
+        }
+        {
           {
             SELECT ?S (AVG(?S) AS ?AVG_S)
             WHERE {

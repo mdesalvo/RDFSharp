@@ -1319,6 +1319,12 @@ namespace RDFSharp.Query
                     case RDFSelectQuery sqEvaluableQueryMember:
                         FetchDescribeVariablesFromQueryMembers(describeQuery, sqEvaluableQueryMember.GetEvaluableQueryMembers());
                         break;
+
+                    //OPERATOR TREE NODE (Union/Minus): recurse into both operands so that the
+                    //variables of the leaf pattern groups and subqueries are collected for "DESCRIBE *"
+                    case RDFOperatorQueryMember opEvaluableQueryMember:
+                        FetchDescribeVariablesFromQueryMembers(describeQuery, new RDFQueryMember[] { opEvaluableQueryMember.LeftOperand, opEvaluableQueryMember.RightOperand });
+                        break;
                 }
             }
         }
