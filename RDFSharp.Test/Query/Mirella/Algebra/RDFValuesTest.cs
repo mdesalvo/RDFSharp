@@ -90,7 +90,6 @@ public class RDFValuesTest
         Assert.IsNotNull(valuesTable);
         //Contains an UNDEF binding (?V3) => the values block behaves as optional
         Assert.IsTrue(valuesTable.IsOptional);
-        Assert.IsFalse(valuesTable.JoinAsUnion);
         Assert.AreEqual(3, valuesTable.Columns.Count);
         Assert.IsTrue(valuesTable.HasColumn("?V1"));
         Assert.IsTrue(valuesTable.HasColumn("?V2"));

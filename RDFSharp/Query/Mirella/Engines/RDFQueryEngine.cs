@@ -48,16 +48,6 @@ namespace RDFSharp.Query
         /// Attribute denoting an optional pattern/patternGroup/query
         /// </summary>
         internal const string IsOptional = nameof(IsOptional);
-
-        /// <summary>
-        /// Attribute denoting a pattern/patternGroup/query to be joined as union
-        /// </summary>
-        internal const string JoinAsUnion = nameof(JoinAsUnion);
-
-        /// <summary>
-        /// Attribute denoting a pattern/patternGroup/query to be joined as minus
-        /// </summary>
-        internal const string JoinAsMinus = nameof(JoinAsMinus);
         #endregion
 
         #region Ctors
@@ -83,8 +73,6 @@ namespace RDFSharp.Query
             //Expose the result of the query
             DataTable selectResults = finalTable.ToDataTable();
             selectResults.ExtendedProperties[IsOptional] = finalTable.IsOptional;
-            selectResults.ExtendedProperties[JoinAsUnion] = finalTable.JoinAsUnion;
-            selectResults.ExtendedProperties[JoinAsMinus] = finalTable.JoinAsMinus;
             return new RDFSelectQueryResult
             {
                 SelectResults = selectResults
@@ -220,12 +208,9 @@ namespace RDFSharp.Query
                         {
                             //In-memory subquery (graph/store/federation): evaluate straight to RDFTable on a
                             //dedicated engine, skipping the RDFTable -> DataTable -> RDFTable round-trip
-                            //which we would have if we used the public query   evaluation APIs
                             subQueryTable = new RDFQueryEngine().EvaluateSelectQueryToTable(subQuery, datasource);
                             subQueryTable.IsOptional = subQuery.IsOptional || subQueryTable.IsOptional;
                         }
-                        subQueryTable.JoinAsUnion = subQuery.JoinAsUnion;
-                        subQueryTable.JoinAsMinus = subQuery.JoinAsMinus;
 
                         //Save updates
                         QueryMemberResultTables[subQuery.QueryMemberID] = subQueryTable;
@@ -264,12 +249,8 @@ namespace RDFSharp.Query
             {
                 //Cleanup patternGroup in order to stringify into vanilla "SELECT *"
                 bool isOptional = patternGroup.IsOptional;
-                bool joinAsUnion = patternGroup.JoinAsUnion;
-                bool joinAsMinus = patternGroup.JoinAsMinus;
                 (RDFSPARQLEndpoint, RDFSPARQLEndpointQueryOptions)? asService = patternGroup.EvaluateAsService;
                 patternGroup.IsOptional = false;
-                patternGroup.JoinAsUnion = false;
-                patternGroup.JoinAsMinus = false;
                 patternGroup.EvaluateAsService = null;
 
                 //Send query to SPARQL endpoint
@@ -280,14 +261,10 @@ namespace RDFSharp.Query
 
                 //Restore patternGroup to its official state
                 patternGroup.IsOptional = isOptional;
-                patternGroup.JoinAsUnion = joinAsUnion;
-                patternGroup.JoinAsMinus = joinAsMinus;
                 patternGroup.EvaluateAsService = asService;
 
                 //Set metadata of the result table
                 serviceResultsTable.IsOptional = patternGroup.IsOptional;
-                serviceResultsTable.JoinAsUnion = patternGroup.JoinAsUnion;
-                serviceResultsTable.JoinAsMinus = patternGroup.JoinAsMinus;
 
                 //Save the result table
                 PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(serviceResultsTable);
@@ -304,8 +281,6 @@ namespace RDFSharp.Query
                             RDFTable patternResultsTable = ApplyPattern(pattern, dataSource);
                             //Set metadata of the result table
                             patternResultsTable.IsOptional = pattern.IsOptional;
-                            patternResultsTable.JoinAsUnion = pattern.JoinAsUnion;
-                            patternResultsTable.JoinAsMinus = pattern.JoinAsMinus;
                             //Save the result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
                             break;
@@ -315,8 +290,6 @@ namespace RDFSharp.Query
                             RDFTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
                             //Set metadata of the result table
                             pPathResultsTable.IsOptional = propertyPath.IsOptional;
-                            pPathResultsTable.JoinAsUnion = propertyPath.JoinAsUnion;
-                            pPathResultsTable.JoinAsMinus = propertyPath.JoinAsMinus;
                             //Save the result table
                             PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
                             break;
@@ -378,12 +351,6 @@ namespace RDFSharp.Query
                 //Populate its metadata (IsOptional)
                 patternGroupResultTable.IsOptional = patternGroup.IsOptional || patternGroupResultTable.IsOptional;
 
-                //Populate its metadata (JoinAsUnion)
-                patternGroupResultTable.JoinAsUnion = patternGroup.JoinAsUnion;
-
-                //Populate its metadata (JoinAsMinus)
-                patternGroupResultTable.JoinAsMinus = patternGroup.JoinAsMinus;
-
                 //Add it to the list of query member result tables
                 QueryMemberResultTables.Add(patternGroup.QueryMemberID, patternGroupResultTable);
             }
@@ -438,10 +405,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFTable ApplyModifiers(RDFQuery query, RDFTable table)
         {
-            //Save the incoming join flags so they can be carried onto the modified result
+            //Save the incoming Optional flag so it can be carried onto the modified result
             bool inOptional = table.IsOptional;
-            bool inUnion = table.JoinAsUnion;
-            bool inMinus = table.JoinAsMinus;
 
             #region GROUPBY/PROJECTION
             List<RDFModifier> modifiers = query.GetModifiers().ToList();
@@ -484,10 +449,8 @@ namespace RDFSharp.Query
                 table = limitModifier.ApplyModifier(table);
             #endregion
 
-            //Carry the incoming join flags through the modifiers onto the query result table
+            //Carry the incoming Optional flag through the modifiers onto the query result table
             table.IsOptional = inOptional;
-            table.JoinAsUnion = inUnion;
-            table.JoinAsMinus = inMinus;
             return table;
         }
 
@@ -834,27 +797,30 @@ namespace RDFSharp.Query
                 return RDFPathEngine.ApplyTransitivePropertyPath(propertyPath, dataSource);
 
             //Otherwise evaluate a standard "finite-set" property path
-            //Translate property path into equivalent list of patterns
-            List<RDFPattern> patternList = propertyPath.GetPatternList();
-            List<RDFTable> patternTables = new List<RDFTable>(patternList.Count);
+            //Translate property path into equivalent list of patterns (with merge flags for alternatives)
+            List<(RDFPattern Pattern, bool MergeWithNext)> patternEntries = propertyPath.GetPatternList();
 
-            //Evaluate produced list of patterns
-            foreach (RDFPattern pattern in patternList)
+            //Evaluate all patterns against the datasource
+            List<RDFTable> evaluatedTables = new List<RDFTable>(patternEntries.Count);
+            foreach ((RDFPattern Pattern, bool MergeWithNext) in patternEntries)
+                evaluatedTables.Add(ApplyPattern(Pattern, dataSource));
+
+            //Combine: merge consecutive MergeWithNext entries (alternative steps produce union),
+            //then collect the resulting groups for joining (sequence steps produce join)
+            List<RDFTable> combinedTables = new List<RDFTable>();
+            for (int idx = 0; idx < evaluatedTables.Count; idx++)
             {
-                //Apply pattern to graph
-                RDFTable patternTable = ApplyPattern(pattern, dataSource);
-
-                //Set join flags
-                patternTable.IsOptional = pattern.IsOptional;
-                patternTable.JoinAsUnion = pattern.JoinAsUnion;
-                patternTable.JoinAsMinus = pattern.JoinAsMinus;
-
-                //Add produced table
-                patternTables.Add(patternTable);
+                RDFTable currentGroup = evaluatedTables[idx];
+                while (idx < patternEntries.Count - 1 && patternEntries[idx].MergeWithNext)
+                {
+                    idx++;
+                    RDFTableEngine.MergeTable(currentGroup, evaluatedTables[idx]);
+                }
+                combinedTables.Add(currentGroup);
             }
 
-            //Merge produced list of tables
-            RDFTable resultTable = RDFTableEngine.CombineTables(patternTables);
+            //Join the combined groups
+            RDFTable resultTable = RDFTableEngine.CombineTables(combinedTables);
 
             //Remove property path variables
             foreach (string ppColumn in (from RDFTableColumn ppCol
@@ -1210,13 +1176,15 @@ namespace RDFSharp.Query
                 => describeResource.IsBlank
                    ? new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)))
+                          .AddOperator(
+                              new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT"))
+                                  .Union(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource))))
                    : new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                          .AddPattern(new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT")).UnionWithNext())
-                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")).UnionWithNext())
-                          .AddPattern(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource)));
+                          .AddOperator(
+                              new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT"))
+                                  .Union(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")))
+                                  .Union(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource))));
             #endregion
 
             RDFTable result = describeTemplate.Clone();

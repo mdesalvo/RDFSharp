@@ -91,12 +91,7 @@ namespace RDFSharp.Query
             //Only plain inner-join RDFPattern instances are reorderable
             if (!(patternGroupMembers[i] is RDFPattern pattern))
                 return false;
-            if (pattern.IsOptional || pattern.JoinAsUnion || pattern.JoinAsMinus)
-                return false;
-
-            //The element immediately after a UNION/MINUS leader is the second half of a tied pair: it cannot be moved
-            if (i > 0 && patternGroupMembers[i - 1] is RDFPattern prevPattern
-                      && (prevPattern.JoinAsUnion || prevPattern.JoinAsMinus))
+            if (pattern.IsOptional)
                 return false;
 
             return true;

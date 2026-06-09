@@ -513,7 +513,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Combines the given tables, applying dynamically detected Union / Minus / Optional operators
+        /// Combines the given tables by joining them (using outer-join when any table is Optional)
         /// </summary>
         internal static RDFTable CombineTables(List<RDFTable> dataTables)
         {
@@ -523,43 +523,9 @@ namespace RDFSharp.Query
                 case 1: return dataTables[0];
             }
 
-            //Step 1: process Union operators (merge previous into current, then logically delete previous)
-            bool hasDoneUnions = false;
-            for (int i = 1; i < dataTables.Count; i++)
-                if (dataTables[i - 1].JoinAsUnion)
-                {
-                    MergeTable(dataTables[i], dataTables[i - 1]);
-                    dataTables[i - 1] = null;
-                    hasDoneUnions = true;
-                }
-            if (hasDoneUnions)
-                dataTables.RemoveAll(dt => dt == null);
-
-            //Step 2: process Minus operators (diff previous against current, preserving current's flags)
-            bool hasDoneMinus = false;
-            for (int i = 1; i < dataTables.Count; i++)
-                if (dataTables[i - 1].JoinAsMinus)
-                {
-                    RDFTable diffTable = DiffJoinTables(dataTables[i - 1], dataTables[i]);
-                    diffTable.IsOptional = dataTables[i].IsOptional;
-                    diffTable.JoinAsUnion = dataTables[i].JoinAsUnion;
-                    diffTable.JoinAsMinus = dataTables[i].JoinAsMinus;
-                    dataTables[i] = diffTable;
-                    dataTables[i - 1] = null;
-                    hasDoneMinus = true;
-                }
-            if (hasDoneMinus)
-                dataTables.RemoveAll(dt => dt == null);
-
-            //Step 3: compute joins (switch to outer-join on Optional, or always when coming from Union)
             RDFTable finalTable = dataTables[0];
-            bool needsOuterJoin = hasDoneUnions;
             for (int i = 1; i < dataTables.Count; i++)
-            {
-                needsOuterJoin |= dataTables[i].IsOptional;
-                finalTable = needsOuterJoin ? OuterJoinTables(finalTable, dataTables[i])
-                                            : InnerJoinTables(finalTable, dataTables[i]);
-            }
+                finalTable = OuterJoinTables(finalTable, dataTables[i]);
             return finalTable;
         }
 

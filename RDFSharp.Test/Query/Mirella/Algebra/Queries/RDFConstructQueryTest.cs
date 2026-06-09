@@ -139,6 +139,23 @@ public class RDFConstructQueryTest
     [TestMethod]
     public void ShouldCreateConstructQueryWithUnionQueryMembers()
     {
+        RDFSelectQuery subQuery1 = new RDFSelectQuery()
+            .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
+            .AddPatternGroup(
+                new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
+            .AddProjectionVariable(new RDFVariable("?S"))
+            .AddProjectionVariable(new RDFVariable("?P"));
+        RDFSelectQuery subQuery2 = new RDFSelectQuery()
+            .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
+            .AddPatternGroup(
+                new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
+            .AddProjectionVariable(new RDFVariable("?S"))
+            .AddProjectionVariable(new RDFVariable("?P"));
+
         RDFConstructQuery query = new RDFConstructQuery();
         query.AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"));
         query.AddTemplate(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O")));
@@ -147,25 +164,7 @@ public class RDFConstructQueryTest
             new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                 .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S")))));
-        query.AddSubQuery(
-            new RDFSelectQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
-                .AddPatternGroup(
-                    new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
-                .AddProjectionVariable(new RDFVariable("?S"))
-                .AddProjectionVariable(new RDFVariable("?P"))
-                .UnionWithNext());
-        query.AddSubQuery(
-            new RDFSelectQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
-                .AddPatternGroup(
-                    new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
-                .AddProjectionVariable(new RDFVariable("?S"))
-                .AddProjectionVariable(new RDFVariable("?P")));
+        query.AddOperator(subQuery1.Union(subQuery2));
         query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
@@ -174,11 +173,9 @@ public class RDFConstructQueryTest
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.HasCount(2, query.Templates);
         Assert.HasCount(4, query.Variables);
-        Assert.AreEqual(3, query.GetEvaluableQueryMembers().Count());
+        Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
-        Assert.AreEqual(2, query.GetSubQueries().Count());
-        Assert.IsTrue(query.GetSubQueries().ElementAt(0) is RDFSelectQuery { JoinAsUnion: true });
-        Assert.IsFalse(query.GetSubQueries().ElementAt(1) is RDFSelectQuery { JoinAsUnion: true });
+        Assert.AreEqual(0, query.GetSubQueries().Count());
         Assert.AreEqual(3, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }

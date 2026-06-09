@@ -159,36 +159,35 @@ public class RDFQueryOptimizerTest
         Assert.AreSame(opt,   result[1]);
     }
 
-    // ── 7. UNION leader and its follower must not be reordered ───────────────
+    // ── 7. UNION operator tree must not be reordered ───────────────────────
     [TestMethod]
-    public void ShouldNotReorderUnionLeaderOrItsFollower()
+    public void ShouldNotReorderUnionOperatorTree()
     {
-        // [unionLeader(vars=3), unionFollower(vars=0), plain(vars=1)]
-        // unionLeader has JoinAsUnion=true → barrier
-        // unionFollower is immediately after the leader → barrier
+        // [unionOp, plain(vars=1)]
+        // unionOp is an RDFOperatorPatternGroupMember → barrier (not an RDFPattern)
         // plain is the only reorderable; block length=1 → no change
-        RDFPattern unionLeader   = MakePlainPattern(3, "a").UnionWithNext();
-        RDFPattern unionFollower = MakePlainPattern(0, "b");
+        RDFPattern unionLeft     = MakePlainPattern(3, "a");
+        RDFPattern unionRight    = MakePlainPattern(0, "b");
+        RDFOperatorPatternGroupMember unionOp = unionLeft.Union(unionRight);
         RDFPattern plain         = MakePlainPattern(1, "c");
-        List<RDFPatternGroupMember> members = [unionLeader, unionFollower, plain];
+        List<RDFPatternGroupMember> members = [unionOp, plain];
         List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
-        Assert.AreSame(unionLeader,   result[0]);
-        Assert.AreSame(unionFollower, result[1]);
-        Assert.AreSame(plain,         result[2]);
+        Assert.AreSame(unionOp, result[0]);
+        Assert.AreSame(plain,   result[1]);
     }
 
-    // ── 8. MINUS leader and its follower must not be reordered ───────────────
+    // ── 8. MINUS operator tree must not be reordered ────────────────────────
     [TestMethod]
-    public void ShouldNotReorderMinusLeaderOrItsFollower()
+    public void ShouldNotReorderMinusOperatorTree()
     {
-        RDFPattern minusLeader   = MakePlainPattern(3, "a").MinusWithNext();
-        RDFPattern minusFollower = MakePlainPattern(0, "b");
+        RDFPattern minusLeft     = MakePlainPattern(3, "a");
+        RDFPattern minusRight    = MakePlainPattern(0, "b");
+        RDFOperatorPatternGroupMember minusOp = minusLeft.Minus(minusRight);
         RDFPattern plain         = MakePlainPattern(1, "c");
-        List<RDFPatternGroupMember> members = [minusLeader, minusFollower, plain];
+        List<RDFPatternGroupMember> members = [minusOp, plain];
         List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
-        Assert.AreSame(minusLeader,   result[0]);
-        Assert.AreSame(minusFollower, result[1]);
-        Assert.AreSame(plain,         result[2]);
+        Assert.AreSame(minusOp, result[0]);
+        Assert.AreSame(plain,   result[1]);
     }
 
     // ── 9. BIND acts as barrier ──────────────────────────────────────────────
@@ -276,48 +275,48 @@ public class RDFQueryOptimizerTest
         Assert.AreSame(p2,     result[4]);
     }
 
-    // ── 14. UNION pair preserved while surrounding plain patterns are sorted ──
+    // ── 14. UNION operator tree preserved while surrounding plain patterns are sorted ──
     [TestMethod]
-    public void ShouldPreserveUnionPairAndSortSurroundingPatterns()
+    public void ShouldPreserveUnionOperatorAndSortSurroundingPatterns()
     {
-        // [p3, p1, union_leader, union_follower, p2, p0]
+        // [p3, p1, unionOp, p2, p0]
         // Block before union: [p3, p1] → sorted [p1, p3]
-        // Union pair: locked in place
+        // Union operator: locked in place (not an RDFPattern)
         // Block after union: [p2, p0] → sorted [p0, p2]
         RDFPattern p3           = MakePlainPattern(3, "a");
         RDFPattern p1           = MakePlainPattern(1, "b");
-        RDFPattern unionLeader  = MakePlainPattern(2, "c").UnionWithNext();
-        RDFPattern unionFollower = MakePlainPattern(0, "d");
+        RDFPattern unionLeft    = MakePlainPattern(2, "c");
+        RDFPattern unionRight   = MakePlainPattern(0, "d");
+        RDFOperatorPatternGroupMember unionOp = unionLeft.Union(unionRight);
         RDFPattern p2           = MakePlainPattern(2, "e");
         RDFPattern p0           = MakePlainPattern(0, "f");
-        List<RDFPatternGroupMember> members = [p3, p1, unionLeader, unionFollower, p2, p0];
+        List<RDFPatternGroupMember> members = [p3, p1, unionOp, p2, p0];
         List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
-        Assert.AreSame(p1,           result[0]);
-        Assert.AreSame(p3,           result[1]);
-        Assert.AreSame(unionLeader,  result[2]);
-        Assert.AreSame(unionFollower,result[3]);
-        Assert.AreSame(p0,           result[4]);
-        Assert.AreSame(p2,           result[5]);
+        Assert.AreSame(p1,      result[0]);
+        Assert.AreSame(p3,      result[1]);
+        Assert.AreSame(unionOp, result[2]);
+        Assert.AreSame(p0,      result[3]);
+        Assert.AreSame(p2,      result[4]);
     }
 
-    // ── 15. MINUS pair preserved while surrounding plain patterns are sorted ─
+    // ── 15. MINUS operator tree preserved while surrounding plain patterns are sorted ─
     [TestMethod]
-    public void ShouldPreserveMinusPairAndSortSurroundingPatterns()
+    public void ShouldPreserveMinusOperatorAndSortSurroundingPatterns()
     {
         RDFPattern p3           = MakePlainPattern(3, "a");
         RDFPattern p0           = MakePlainPattern(0, "b");
-        RDFPattern minusLeader  = MakePlainPattern(2, "c").MinusWithNext();
-        RDFPattern minusFollower = MakePlainPattern(1, "d");
+        RDFPattern minusLeft    = MakePlainPattern(2, "c");
+        RDFPattern minusRight   = MakePlainPattern(1, "d");
+        RDFOperatorPatternGroupMember minusOp = minusLeft.Minus(minusRight);
         RDFPattern p2           = MakePlainPattern(2, "e");
         RDFPattern p1           = MakePlainPattern(1, "f");
-        List<RDFPatternGroupMember> members = [p3, p0, minusLeader, minusFollower, p2, p1];
+        List<RDFPatternGroupMember> members = [p3, p0, minusOp, p2, p1];
         List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
-        Assert.AreSame(p0,            result[0]);
-        Assert.AreSame(p3,            result[1]);
-        Assert.AreSame(minusLeader,   result[2]);
-        Assert.AreSame(minusFollower, result[3]);
-        Assert.AreSame(p1,            result[4]);
-        Assert.AreSame(p2,            result[5]);
+        Assert.AreSame(p0,      result[0]);
+        Assert.AreSame(p3,      result[1]);
+        Assert.AreSame(minusOp, result[2]);
+        Assert.AreSame(p1,      result[3]);
+        Assert.AreSame(p2,      result[4]);
     }
 
     // ── 16. Complex scenario: VALUES → BIND → OPTIONAL → UNION → MINUS ──────
@@ -331,9 +330,9 @@ public class RDFQueryOptimizerTest
         //   bind                             ← barrier
         //   optional                         ← barrier (not reorderable)
         //   [p3c, p1c]                       ← sortable block 3
-        //   union_leader, union_follower     ← barrier pair
+        //   unionOp                          ← barrier (operator tree)
         //   [p2d, p0d]                       ← sortable block 4
-        //   minus_leader, minus_follower     ← barrier pair
+        //   minusOp                          ← barrier (operator tree)
         //   [p3e, p1e]                       ← sortable block 5
 
         RDFPattern p3a = MakePlainPattern(3, "3a");
@@ -345,12 +344,10 @@ public class RDFQueryOptimizerTest
         RDFPattern opt  = MakePlainPattern(0, "opt").Optional();
         RDFPattern p3c = MakePlainPattern(3, "3c");
         RDFPattern p1c = MakePlainPattern(1, "1c");
-        RDFPattern unionL = MakePlainPattern(2, "uL").UnionWithNext();
-        RDFPattern unionF = MakePlainPattern(0, "uF");
+        RDFOperatorPatternGroupMember unionOp = MakePlainPattern(2, "uL").Union(MakePlainPattern(0, "uF"));
         RDFPattern p2d = MakePlainPattern(2, "2d");
         RDFPattern p0d = MakePlainPattern(0, "0d");
-        RDFPattern minusL = MakePlainPattern(2, "mL").MinusWithNext();
-        RDFPattern minusF = MakePlainPattern(1, "mF");
+        RDFOperatorPatternGroupMember minusOp = MakePlainPattern(2, "mL").Minus(MakePlainPattern(1, "mF"));
         RDFPattern p3e = MakePlainPattern(3, "3e");
         RDFPattern p1e = MakePlainPattern(1, "1e");
 
@@ -362,41 +359,39 @@ public class RDFQueryOptimizerTest
             bind, // barrier
             opt, // barrier (optional)
             p3c, p1c, // block 3
-            unionL, unionF, // union pair (barriers)
+            unionOp, // union operator tree (barrier)
             p2d, p0d, // block 4
-            minusL, minusF, // minus pair (barriers)
+            minusOp, // minus operator tree (barrier)
             p3e, p1e
         ];
 
         List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
 
         // Block 1 sorted
-        Assert.AreSame(p1a,    result[0],  "Block1[0] must be p1a (card=1)");
-        Assert.AreSame(p3a,    result[1],  "Block1[1] must be p3a (card=3)");
+        Assert.AreSame(p1a,     result[0],  "Block1[0] must be p1a (card=1)");
+        Assert.AreSame(p3a,     result[1],  "Block1[1] must be p3a (card=3)");
         // VALUES barrier
-        Assert.AreSame(values, result[2],  "values must stay in place");
+        Assert.AreSame(values,  result[2],  "values must stay in place");
         // Block 2 sorted
-        Assert.AreSame(p0b,    result[3],  "Block2[0] must be p0b (card=0)");
-        Assert.AreSame(p2b,    result[4],  "Block2[1] must be p2b (card=2)");
+        Assert.AreSame(p0b,     result[3],  "Block2[0] must be p0b (card=0)");
+        Assert.AreSame(p2b,     result[4],  "Block2[1] must be p2b (card=2)");
         // BIND barrier
-        Assert.AreSame(bind,   result[5],  "bind must stay in place");
+        Assert.AreSame(bind,    result[5],  "bind must stay in place");
         // OPTIONAL barrier
-        Assert.AreSame(opt,    result[6],  "opt must stay in place");
+        Assert.AreSame(opt,     result[6],  "opt must stay in place");
         // Block 3 sorted
-        Assert.AreSame(p1c,    result[7],  "Block3[0] must be p1c (card=1)");
-        Assert.AreSame(p3c,    result[8],  "Block3[1] must be p3c (card=3)");
-        // UNION pair
-        Assert.AreSame(unionL, result[9],  "unionL must stay in place");
-        Assert.AreSame(unionF, result[10], "unionF must stay in place");
+        Assert.AreSame(p1c,     result[7],  "Block3[0] must be p1c (card=1)");
+        Assert.AreSame(p3c,     result[8],  "Block3[1] must be p3c (card=3)");
+        // UNION operator tree
+        Assert.AreSame(unionOp, result[9],  "unionOp must stay in place");
         // Block 4 sorted
-        Assert.AreSame(p0d,    result[11], "Block4[0] must be p0d (card=0)");
-        Assert.AreSame(p2d,    result[12], "Block4[1] must be p2d (card=2)");
-        // MINUS pair
-        Assert.AreSame(minusL, result[13], "minusL must stay in place");
-        Assert.AreSame(minusF, result[14], "minusF must stay in place");
+        Assert.AreSame(p0d,     result[10], "Block4[0] must be p0d (card=0)");
+        Assert.AreSame(p2d,     result[11], "Block4[1] must be p2d (card=2)");
+        // MINUS operator tree
+        Assert.AreSame(minusOp, result[12], "minusOp must stay in place");
         // Block 5 sorted
-        Assert.AreSame(p1e,    result[15], "Block5[0] must be p1e (card=1)");
-        Assert.AreSame(p3e,    result[16], "Block5[1] must be p3e (card=3)");
+        Assert.AreSame(p1e,     result[13], "Block5[0] must be p1e (card=1)");
+        Assert.AreSame(p3e,     result[14], "Block5[1] must be p3e (card=3)");
     }
 
     // ── 17. Cardinality estimation on a real RDFGraph ────────────────────────

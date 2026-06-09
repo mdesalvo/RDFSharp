@@ -209,11 +209,12 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
         ]);
 
+        RDFPattern patPluto = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patFido  = new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBalto = new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddOperator(patPluto.Union(patFido).Union(patBalto))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
@@ -242,11 +243,12 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
         ]);
 
+        RDFPattern patPluto = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patFido  = new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBalto = new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddOperator(patPluto.Union(patFido).Union(patBalto))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N"))))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
@@ -273,13 +275,13 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
         ]);
 
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
+        RDFPatternGroup pg1 = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .MinusWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:balto")), new RDFVariable("?Y"))))
+                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFPatternGroup pg2 = new RDFPatternGroup()
+                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:balto")), new RDFVariable("?Y")));
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pg1.Minus(pg2))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
@@ -325,10 +327,11 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
         ]);
 
+        RDFPattern patA = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patB = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:paperino"));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).MinusWithNext())
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFResource("ex:paperino"))));
+                .AddOperator(patA.Minus(patB)));
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
         Assert.IsNotNull(result);
@@ -867,16 +870,18 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
         ]);
 
+        RDFPattern patPluto1 = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patFido1 = new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBalto1 = new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBaubau1 = new RDFPattern(new RDFResource("ex:baubau"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
+        RDFPattern patSnoopie1 = new RDFPattern(new RDFResource("ex:snoopie"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddOperator(patPluto1.Union(patFido1).Union(patBalto1))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N"))))
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:baubau"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")).UnionWithNext())
-                    .AddPattern(new RDFPattern(new RDFResource("ex:snoopie"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")))
+                    .AddOperator(patBaubau1.Union(patSnoopie1))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))))
                 .Optional())
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC));
@@ -911,16 +916,18 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
         ]);
 
+        RDFPattern patPluto2 = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patFido2 = new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBalto2 = new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBaubau2 = new RDFPattern(new RDFResource("ex:baubau"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
+        RDFPattern patSnoopie2 = new RDFPattern(new RDFResource("ex:snoopie"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddOperator(patPluto2.Union(patFido2).Union(patBalto2))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N"))))
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:baubau"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")).UnionWithNext())
-                    .AddPattern(new RDFPattern(new RDFResource("ex:snoopie"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")))
+                    .AddOperator(patBaubau2.Union(patSnoopie2))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:hasColor"), new RDFVariable("?C")).Optional()))
                 .Optional())
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC));
@@ -963,16 +970,18 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
         ]);
 
+        RDFPattern patPluto3 = new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patFido3 = new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBalto3 = new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X"));
+        RDFPattern patBaubau3 = new RDFPattern(new RDFResource("ex:baubau"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
+        RDFPattern patSnoopie3 = new RDFPattern(new RDFResource("ex:snoopie"), new RDFResource("ex:dogOf"), new RDFVariable("?Y"));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFVariable("?X")).UnionWithNext())
-                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+                .AddOperator(patPluto3.Union(patFido3).Union(patBalto3))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:baubau"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")).UnionWithNext())
-                    .AddPattern(new RDFPattern(new RDFResource("ex:snoopie"), new RDFResource("ex:dogOf"), new RDFVariable("?Y")))
+                    .AddOperator(patBaubau3.Union(patSnoopie3))
                     .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:hasColor"), new RDFVariable("?C")).Optional()))
                 .Optional())
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC));
@@ -1023,19 +1032,18 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:snoopie"),new RDFResource("ex:dogOf"),new RDFResource("ex:linus"))
         ]);
 
-        RDFSelectQuery query = new RDFSelectQuery()
+        RDFPatternGroup pg4a = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sq4 = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .MinusWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                    .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))))
-                .UnionWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [ new RDFResource("ex:balto") ])
-                    .AddColumn(new RDFVariable("?X"), [ new RDFResource("ex:whoever") ])))
+                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
+        RDFPatternGroup pg4b = new RDFPatternGroup()
+            .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [ new RDFResource("ex:balto") ])
+                .AddColumn(new RDFVariable("?X"), [ new RDFResource("ex:whoever") ]));
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pg4a.Minus(sq4.Union(pg4b)))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?X"), RDFQueryEnums.RDFOrderByFlavors.ASC))
             .AddProjectionVariable(new RDFVariable("?Y"))
             .AddProjectionVariable(new RDFVariable("?X"))
@@ -2897,7 +2905,6 @@ public class RDFQueryEngineTest
         Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(2, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -2908,7 +2915,6 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.JoinAsUnion);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -2926,16 +2932,16 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
         ]);
 
-        RDFSelectQuery query = new RDFSelectQuery()
+        RDFPatternGroup pgOpUn = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+            .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N"))))
+            .Optional();
+        RDFSelectQuery sqOpUn = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N"))))
-                .Optional())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
-                .UnionWithNext())
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])));
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pgOpUn.Union(sqOpUn))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
         List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
 
@@ -2946,7 +2952,6 @@ public class RDFQueryEngineTest
         Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(2, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -2957,7 +2962,6 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.IsOptional);
-        Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.JoinAsUnion);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -2975,16 +2979,16 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
         ]);
 
-        RDFSelectQuery query = new RDFSelectQuery()
+        RDFPatternGroup pgUnOp = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
+            .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N"))));
+        RDFSelectQuery sqUnOp = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N"))))
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
-                .Optional())
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
+            .Optional();
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pgUnOp.Union(sqUnOp))
             .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC));
         List<RDFQueryMember> evaluableQueryMembers = [.. query.GetEvaluableQueryMembers()];
 
@@ -2995,7 +2999,6 @@ public class RDFQueryEngineTest
         Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(2, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3006,7 +3009,6 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value != null);
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.JoinAsUnion);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3042,12 +3044,10 @@ public class RDFQueryEngineTest
         Assert.HasCount(2, queryEngine.QueryMemberResultTables);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(0, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(1).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(1).Value.JoinAsUnion);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(1).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3077,7 +3077,6 @@ public class RDFQueryEngineTest
         //Optimizer places ex:hasName pattern first (cardinality 2 < cardinality 3 of ex:dogOf)
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0] != null);
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional);
-        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].JoinAsUnion);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
@@ -3086,7 +3085,6 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1] != null);
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].IsOptional);
-        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].JoinAsUnion);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Columns.Count);
         Assert.AreEqual(3, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3109,9 +3107,10 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
         ]);
 
+        RDFPattern patNoRes1 = new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X"));
+        RDFPattern patNoRes2 = new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasName"), new RDFVariable("?N"));
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")).UnionWithNext())
-            .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+            .AddOperator(patNoRes1.Union(patNoRes2.Optional()));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
@@ -3120,12 +3119,10 @@ public class RDFQueryEngineTest
         Assert.HasCount(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0] != null);
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional);
-        Assert.IsTrue((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].JoinAsUnion);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(0, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1] != null);
         Assert.IsTrue((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].IsOptional);
-        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].JoinAsUnion);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Columns.Count);
         Assert.AreEqual(0, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[1].Rows.Count);
     }
@@ -3154,7 +3151,6 @@ public class RDFQueryEngineTest
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0] != null);
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional);
-        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].JoinAsUnion);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3187,7 +3183,7 @@ public class RDFQueryEngineTest
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0] != null);
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional);
-        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].JoinAsUnion); Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
+        Assert.AreEqual(2, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(0, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
     }
 
@@ -3213,7 +3209,6 @@ public class RDFQueryEngineTest
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0] != null);
         Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional);
-        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].JoinAsUnion);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3242,7 +3237,6 @@ public class RDFQueryEngineTest
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0] != null);
         Assert.IsTrue((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional); //UNDEF => optional
-        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].JoinAsUnion);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"] ?? string.Empty, string.Empty, StringComparison.Ordinal));
@@ -3275,7 +3269,6 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(existsFilter.PatternResults);
         Assert.IsTrue(existsFilter.PatternResults != null);
         Assert.IsFalse((bool)existsFilter.PatternResults.IsOptional);
-        Assert.IsFalse((bool)existsFilter.PatternResults.JoinAsUnion);
         Assert.AreEqual(2, existsFilter.PatternResults.Columns.Count);
         Assert.AreEqual(3, existsFilter.PatternResults.Rows.Count);
         Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3312,7 +3305,6 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(existsFilter.PatternResults);
         Assert.IsTrue(existsFilter.PatternResults != null);
         Assert.IsFalse((bool)existsFilter.PatternResults.IsOptional);
-        Assert.IsFalse((bool)existsFilter.PatternResults.JoinAsUnion);
         Assert.AreEqual(2, existsFilter.PatternResults.Columns.Count);
         Assert.AreEqual(0, existsFilter.PatternResults.Rows.Count);
     }
@@ -3341,7 +3333,6 @@ public class RDFQueryEngineTest
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3380,46 +3371,6 @@ public class RDFQueryEngineTest
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
         Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
-        Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
-        Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?N"].ToString(), "Mickey Mouse@EN-US", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[1]["?N"].ToString(), "Donald Duck@EN-US", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[2]["?N"] ?? string.Empty, string.Empty, StringComparison.Ordinal));
-    }
-
-    [TestMethod]
-    public void ShouldFinalizePatternGroupWithUnionWithNext()
-    {
-        RDFGraph graph = new RDFGraph(
-        [
-            new RDFTriple(new RDFResource("ex:pluto"),new RDFResource("ex:dogOf"),new RDFResource("ex:topolino")),
-            new RDFTriple(new RDFResource("ex:topolino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Mickey Mouse", "en-US")),
-            new RDFTriple(new RDFResource("ex:fido"),new RDFResource("ex:dogOf"),new RDFResource("ex:paperino")),
-            new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US")),
-            new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:dogOf"),new RDFResource("ex:whoever"))
-        ]);
-
-        RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-            .UnionWithNext();
-        RDFQueryEngine queryEngine = new RDFQueryEngine();
-        queryEngine.EvaluatePatternGroup(patternGroup, graph); //Just to obtain real pattern tables (instead of mocking them)
-        queryEngine.FinalizePatternGroup(patternGroup);
-
-        Assert.IsNotNull(queryEngine.QueryMemberResultTables);
-        Assert.HasCount(1, queryEngine.QueryMemberResultTables);
-        Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
-        Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsTrue((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3462,7 +3413,6 @@ public class RDFQueryEngineTest
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ContainsKey(patternGroup.QueryMemberID));
         Assert.IsTrue(queryEngine.QueryMemberResultTables.ElementAt(0).Value != null);
         Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.IsOptional);
-        Assert.IsFalse((bool)queryEngine.QueryMemberResultTables.ElementAt(0).Value.JoinAsUnion);
         Assert.AreEqual(3, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Columns.Count);
         Assert.AreEqual(1, queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.QueryMemberResultTables.ElementAt(0).Value.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
@@ -3587,14 +3537,14 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
         ]);
 
-        RDFDescribeQuery query = new RDFDescribeQuery()
+        RDFPatternGroup pgDescStar = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescStar = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
+        RDFDescribeQuery query = new RDFDescribeQuery()
+            .AddOperator(pgDescStar.Union(sqDescStar));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3627,15 +3577,15 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
         ]);
 
+        RDFPatternGroup pgDescRes = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescRes = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFResource("ex:balto"))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescRes.Union(sqDescRes));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3683,17 +3633,17 @@ public class RDFQueryEngineTest
             .AddStore(store)
             .AddStore(store2);
 
+        RDFPatternGroup pgDescFed = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescFed = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFResource("ex:balto"))
             .AddDescribeTerm(new RDFResource("ex:snoopy"))
             .AddDescribeTerm(new RDFResource())
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescFed.Union(sqDescFed));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3727,15 +3677,15 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
         ]);
 
+        RDFPatternGroup pgDescUnex = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescUnex = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFResource("ex:balto2"))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescUnex.Union(sqDescUnex));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3768,15 +3718,15 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
         ]);
 
+        RDFPatternGroup pgDescVar = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescVar = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFVariable("?Y"))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescVar.Union(sqDescVar));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3813,16 +3763,16 @@ public class RDFQueryEngineTest
         ]);
         RDFFederation federation = new RDFFederation().AddGraph(graph).AddGraph(graph2);
 
+        RDFPatternGroup pgDescVarFed = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescVarFed = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFVariable("?Y"))
             .AddDescribeTerm(new RDFVariable("?N"))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescVarFed.Union(sqDescVarFed));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3855,15 +3805,15 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
         ]);
 
+        RDFPatternGroup pgDescUnexVar = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescUnexVar = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFVariable("?Z"))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescUnexVar.Union(sqDescUnexVar));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3896,15 +3846,15 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
         ]);
 
+        RDFPatternGroup pgDescLitGraph = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescLitGraph = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFVariable("?C"))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescLitGraph.Union(sqDescLitGraph));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");
@@ -3934,15 +3884,15 @@ public class RDFQueryEngineTest
             new RDFQuadruple(new RDFContext("ex:org"), new RDFResource("ex:balto"),new RDFResource("ex:hasColor"),new RDFPlainLiteral("green", "en"))
         ]);
 
+        RDFPatternGroup pgDescLitStore = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
+            .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional());
+        RDFSelectQuery sqDescLitStore = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C"))));
         RDFDescribeQuery query = new RDFDescribeQuery()
             .AddDescribeTerm(new RDFVariable("?C"))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
-                .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFResource("ex:balto"), new RDFResource("ex:hasColor"), new RDFVariable("?C")))));
+            .AddOperator(pgDescLitStore.Union(sqDescLitStore));
 
         RDFTable table = new RDFTable();
         table.AddColumn("?Y");

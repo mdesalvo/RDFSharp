@@ -38,8 +38,6 @@ public class RDFTableTest
         Assert.AreEqual(0, table.Columns.Count);
         Assert.AreEqual(0, table.Rows.Count);
         Assert.IsFalse(table.IsOptional);
-        Assert.IsFalse(table.JoinAsUnion);
-        Assert.IsFalse(table.JoinAsMinus);
     }
 
     [TestMethod]
@@ -406,8 +404,6 @@ public class RDFTableTest
         table.AddColumn("?B");
         table.AddRow(["a1", "b1"]);
         table.IsOptional = true;
-        table.JoinAsUnion = true;
-        table.JoinAsMinus = true;
 
         RDFTable clone = table.Clone();
 
@@ -417,8 +413,6 @@ public class RDFTableTest
         Assert.IsTrue(clone.HasColumn("?B"));
         Assert.AreEqual(0, clone.RowsCount);
         Assert.IsTrue(clone.IsOptional);
-        Assert.IsTrue(clone.JoinAsUnion);
-        Assert.IsTrue(clone.JoinAsMinus);
         Assert.AreEqual(1, table.RowsCount);
     }
     #endregion

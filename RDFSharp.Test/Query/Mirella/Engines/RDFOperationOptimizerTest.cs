@@ -185,8 +185,8 @@ public class RDFOperationOptimizerTest
         RDFInsertWhereOperation op = new RDFInsertWhereOperation();
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?x"), tagged, new RDFPlainLiteral("entity")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Person).UnionWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Dog)));
+            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+                .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
         Assert.AreEqual(2, result.InsertResultsCount, "alice (Person) and pluto (Dog) must be tagged");
@@ -209,8 +209,8 @@ public class RDFOperationOptimizerTest
         RDFInsertWhereOperation op = new RDFInsertWhereOperation();
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?person"), processed, new RDFPlainLiteral("yes")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), rdfType, Person).MinusWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))));
+            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+                .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
         Assert.AreEqual(1, result.InsertResultsCount, "Only bob (not retired) must be processed");
@@ -403,16 +403,16 @@ public class RDFOperationOptimizerTest
         // DELETE: remove all rdf:type triples for Persons OR Dogs
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?x"), rdfType, new RDFVariable("?t")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Person).UnionWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Dog)));
+            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+                .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog))));
         // We need ?t bound for the template — add a second pattern group that captures it
         // Simpler approach: use a typed template
         RDFDeleteWhereOperation op2 = new RDFDeleteWhereOperation();
         op2.AddDeleteTemplate(new RDFPattern(new RDFVariable("?x"), rdfType, Person));
         op2.AddDeleteTemplate(new RDFPattern(new RDFVariable("?x"), rdfType, Dog));
         op2.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Person).UnionWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Dog)));
+            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+                .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog))));
         RDFOperationResult result = op2.ApplyToGraph(graph);
 
         Assert.IsTrue(result.DeleteResultsCount >= 2, "Both alice (Person) and pluto (Dog) type triples must be deleted");
@@ -436,8 +436,8 @@ public class RDFOperationOptimizerTest
         RDFDeleteWhereOperation op = new RDFDeleteWhereOperation();
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?person"), rdfType, Person));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), rdfType, Person).MinusWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))));
+            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+                .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
         Assert.AreEqual(1, result.DeleteResultsCount, "Only bob must be deleted");
@@ -491,8 +491,8 @@ public class RDFOperationOptimizerTest
         RDFDeleteWhereOperation op = new RDFDeleteWhereOperation();
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?p2"), rdfType, Person));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), rdfType, Person).MinusWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))
+            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+                .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))))
             .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?person")), new RDFVariable("?p2"))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
@@ -640,8 +640,8 @@ public class RDFOperationOptimizerTest
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?person"), rdfType, Person));
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?person"), processed, new RDFPlainLiteral("active")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), rdfType, Person).MinusWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))));
+            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+                .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
         Assert.AreEqual(1, result.DeleteResultsCount);
@@ -836,8 +836,8 @@ public class RDFOperationOptimizerTest
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?entity"), rdfType, Person));
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?entity"), processed, new RDFPlainLiteral("entity")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Person).UnionWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?x"), rdfType, Dog))
+            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+                .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog)))
             .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?x")), new RDFVariable("?entity"))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
@@ -872,8 +872,8 @@ public class RDFOperationOptimizerTest
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?person"), processed, new RDFPlainLiteral("active")));
         op.AddPatternGroup(new RDFPatternGroup()
             .AddValues(values)
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), rdfType, Person).MinusWithNext())
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))));
+            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+                .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
         Assert.AreEqual(2, result.DeleteResultsCount, "bob and carol must be deleted");
@@ -890,8 +890,7 @@ public class RDFOperationOptimizerTest
     {
         // WHERE clause member sequence (showing optimizer barrier positions):
         //   VALUES { ?person { alice bob carol } }       ← barrier
-        //   ?person rdf:type Person . MinusWithNext()   ← barrier (MINUS leader)
-        //   ?person ex:retired "true"                    ← barrier (MINUS follower)
+        //   { ?person rdf:type Person } MINUS { ?person ex:retired "true" }  ← operator tree (barrier)
         //   ?person ex:knows ?friend                     ← plain (REORDERABLE)
         //   ?friend rdf:type Person                      ← plain (REORDERABLE, may be swapped)
         //   OPTIONAL { ?friend ex:city ?c }              ← barrier
@@ -929,8 +928,8 @@ public class RDFOperationOptimizerTest
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?p2"), processed, new RDFPlainLiteral("complex")));
         op.AddPatternGroup(new RDFPatternGroup()
             .AddValues(values)
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), rdfType, Person).MinusWithNext())   // MINUS leader
-            .AddPattern(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))   // MINUS follower
+            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+                .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))))
             .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend")))      // plain (reorderable)
             .AddPattern(new RDFPattern(new RDFVariable("?friend"), rdfType, Person))                        // plain (reorderable)
             .AddPattern(new RDFPattern(new RDFVariable("?friend"), city, new RDFVariable("?c")).Optional()) // barrier

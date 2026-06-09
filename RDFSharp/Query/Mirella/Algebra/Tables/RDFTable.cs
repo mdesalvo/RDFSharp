@@ -80,16 +80,6 @@ namespace RDFSharp.Query
         /// Marks this table as the result of an OPTIONAL pattern
         /// </summary>
         internal bool IsOptional;
-
-        /// <summary>
-        /// Marks this table as one to be joined as UNION
-        /// </summary>
-        internal bool JoinAsUnion;
-
-        /// <summary>
-        /// Marks this table as one to be joined as MINUS
-        /// </summary>
-        internal bool JoinAsMinus;
         #endregion
 
         #region Ctors
@@ -248,9 +238,7 @@ namespace RDFSharp.Query
         {
             RDFTable clone = new RDFTable
             {
-                IsOptional = IsOptional,
-                JoinAsUnion = JoinAsUnion,
-                JoinAsMinus = JoinAsMinus
+                IsOptional = IsOptional
             };
             foreach (RDFTableColumn column in _columns)
                 clone.AddColumn(column.Name);

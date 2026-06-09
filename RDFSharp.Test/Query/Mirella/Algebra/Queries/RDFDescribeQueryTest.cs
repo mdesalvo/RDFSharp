@@ -141,24 +141,23 @@ public class RDFDescribeQueryTest
     [TestMethod]
     public void ShouldCreateDescribeQueryWithUnionQueryMembers()
     {
+        RDFPatternGroup pg = new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
+            .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S"))));
+        RDFSelectQuery subQuery = new RDFSelectQuery()
+            .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
+            .AddPatternGroup(
+                new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
+            .AddProjectionVariable(new RDFVariable("?S"))
+            .AddProjectionVariable(new RDFVariable("?P"));
+
         RDFDescribeQuery query = new RDFDescribeQuery();
         query.AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"));
         query.AddDescribeTerm(new RDFVariable("?S"));
         query.AddDescribeTerm(new RDFResource("ex:flower"));
-        query.AddPatternGroup(
-            new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
-                .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S"))))
-                .UnionWithNext());
-        query.AddSubQuery(
-            new RDFSelectQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
-                .AddPatternGroup(
-                    new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
-                .AddProjectionVariable(new RDFVariable("?S"))
-                .AddProjectionVariable(new RDFVariable("?P")));
+        query.AddOperator(pg.Union(subQuery));
         query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
@@ -167,10 +166,9 @@ public class RDFDescribeQueryTest
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
         Assert.HasCount(2, query.DescribeTerms);
         Assert.HasCount(1, query.Variables);
-        Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
-        Assert.AreEqual(1, query.GetPatternGroups().Count());
-        Assert.IsTrue(query.GetPatternGroups().First().JoinAsUnion);
-        Assert.AreEqual(1, query.GetSubQueries().Count());
+        Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
+        Assert.AreEqual(0, query.GetPatternGroups().Count());
+        Assert.AreEqual(0, query.GetSubQueries().Count());
         Assert.AreEqual(3, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }

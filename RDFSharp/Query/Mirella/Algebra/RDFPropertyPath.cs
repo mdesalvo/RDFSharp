@@ -56,16 +56,6 @@ namespace RDFSharp.Query
         /// Flag indicating the property path as Optional
         /// </summary>
         internal bool IsOptional { get; set; }
-
-        /// <summary>
-        /// Flag indicating the property path to be joined as Union
-        /// </summary>
-        internal bool JoinAsUnion { get; set; }
-
-        /// <summary>
-        /// Flag indicating the property path to be joined as Minus
-        /// </summary>
-        internal bool JoinAsMinus { get; set; }
         #endregion
 
         #region Ctors
@@ -110,30 +100,6 @@ namespace RDFSharp.Query
         public RDFPropertyPath Optional()
         {
             IsOptional = true;
-            JoinAsUnion = false;
-            JoinAsMinus = false;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the property path to be joined as Union with the next member
-        /// </summary>
-        public RDFPropertyPath UnionWithNext()
-        {
-            IsOptional = false;
-            JoinAsUnion = true;
-            JoinAsMinus = false;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the property path to be joined as Minus with the next member
-        /// </summary>
-        public RDFPropertyPath MinusWithNext()
-        {
-            IsOptional = false;
-            JoinAsUnion = false;
-            JoinAsMinus = true;
             return this;
         }
 
@@ -243,20 +209,22 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Gets the list of patterns corresponding to the path
+        /// Gets the list of patterns corresponding to the path, together with a flag
+        /// indicating whether each pattern should be merged (unioned) with the next one
+        /// (alternative steps) rather than joined (sequence steps).
         /// </summary>
-        internal List<RDFPattern> GetPatternList()
+        internal List<(RDFPattern Pattern, bool MergeWithNext)> GetPatternList()
         {
-            List<RDFPattern> patterns = new List<RDFPattern>(Steps.Count);
+            List<(RDFPattern, bool)> patterns = new List<(RDFPattern, bool)>(Steps.Count);
 
             #region Single Property
             if (Steps.Count == 1)
             {
-                patterns.Add(Steps[0].IsInverseStep
+                patterns.Add((Steps[0].IsInverseStep
                     //InversePath (swap start/end)
                     ? new RDFPattern(End, Steps[0].StepProperty, Start)
                     //Path
-                    : new RDFPattern(Start, Steps[0].StepProperty, End));
+                    : new RDFPattern(Start, Steps[0].StepProperty, End), false));
             }
             #endregion
 
@@ -270,27 +238,27 @@ namespace RDFSharp.Query
                     #region Alternative
                     if (Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                     {
-                        //Translate to union (item is not the last alternative)
+                        //Alternative step that is not the last one: mark as MergeWithNext (union semantics)
                         if (i < Steps.Count - 1 && Steps[i + 1].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
                         {
                             //Adjust start/end
                             if (Steps.Skip(i + 1).All(p => p.StepFlavor != RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence))
                                 currEnd = End;
 
-                            patterns.Add(Steps[i].IsInverseStep
-                                //InversePath (swap start/end)
-                                ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart).UnionWithNext()
-                                //Path
-                                : new RDFPattern(currStart, Steps[i].StepProperty, currEnd).UnionWithNext());
-                        }
-                        //Translate to pattern (item is the last alternative)
-                        else
-                        {
-                            patterns.Add(Steps[i].IsInverseStep
+                            patterns.Add((Steps[i].IsInverseStep
                                 //InversePath (swap start/end)
                                 ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart)
                                 //Path
-                                : new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
+                                : new RDFPattern(currStart, Steps[i].StepProperty, currEnd), true));
+                        }
+                        //Last alternative step: no merge needed
+                        else
+                        {
+                            patterns.Add((Steps[i].IsInverseStep
+                                //InversePath (swap start/end)
+                                ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart)
+                                //Path
+                                : new RDFPattern(currStart, Steps[i].StepProperty, currEnd), false));
 
                             //Adjust start/end
                             if (i < Steps.Count - 1)
@@ -308,11 +276,11 @@ namespace RDFSharp.Query
                     #region Sequence
                     else
                     {
-                        patterns.Add(Steps[i].IsInverseStep
+                        patterns.Add((Steps[i].IsInverseStep
                             //InversePath (swap start/end)
                             ? new RDFPattern(currEnd, Steps[i].StepProperty, currStart)
                             //Path
-                            : new RDFPattern(currStart, Steps[i].StepProperty, currEnd));
+                            : new RDFPattern(currStart, Steps[i].StepProperty, currEnd), false));
 
                         //Adjust start/end
                         if (i < Steps.Count - 1)

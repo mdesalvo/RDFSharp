@@ -1392,21 +1392,6 @@ public class RDFTableEngineTest
     }
 
     [TestMethod]
-    public void ShouldCombineUnionMergingRows()
-    {
-        RDFTable a = BuildTable(["?X"], ["a"], ["b"]);
-        a.JoinAsUnion = true;
-        RDFTable b = BuildTable(["?X"], ["c"]);
-        //Union merges previous (a) into current (b): current rows first, then merged rows
-        Assert.AreEqual(
-            "?X\n" +
-            "c\n" +
-            "a\n" +
-            "b",
-            RenderTable(RDFTableEngine.CombineTables([a, b])));
-    }
-
-    [TestMethod]
     public void ShouldCombineDispatchingOuterJoinOnOptional()
     {
         RDFTable a = BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]);
@@ -1416,18 +1401,6 @@ public class RDFTableEngineTest
             "?S|?X|?O\n" +
             "s1|vA|o1\n" +
             "s2|vB|<U>",
-            RenderTable(RDFTableEngine.CombineTables([a, b])));
-    }
-
-    [TestMethod]
-    public void ShouldCombineDispatchingMinus()
-    {
-        RDFTable a = BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]);
-        a.JoinAsMinus = true;
-        RDFTable b = BuildTable(["?X", "?O"], ["vA", "o1"]);
-        Assert.AreEqual(
-            "?S|?X\n" +
-            "s2|vB",
             RenderTable(RDFTableEngine.CombineTables([a, b])));
     }
 

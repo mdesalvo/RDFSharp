@@ -54,8 +54,6 @@ public class RDFSelectQueryTest
         Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -80,60 +78,6 @@ public class RDFSelectQueryTest
         Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsTrue(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
-        Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
-        Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
-        Assert.AreEqual(0, query.GetPatternGroups().Count());
-        Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.IsEmpty(query.GetPrefixes());
-    }
-
-    [TestMethod]
-    public void ShouldCreateUnionSelectQuery()
-    {
-        RDFSelectQuery query = new RDFSelectQuery().UnionWithNext();
-
-        Assert.IsNotNull(query);
-        Assert.IsNotNull(query.QueryMembers);
-        Assert.IsEmpty(query.QueryMembers);
-        Assert.IsNotNull(query.Prefixes);
-        Assert.IsEmpty(query.Prefixes);
-        Assert.IsNotNull(query.ProjectionVars);
-        Assert.IsEmpty(query.ProjectionVars);
-        Assert.IsTrue(query.IsEvaluable);
-        Assert.IsFalse(query.IsOptional);
-        Assert.IsTrue(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
-        Assert.IsFalse(query.IsSubQuery);
-        Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
-        Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
-        Assert.AreEqual(0, query.GetPatternGroups().Count());
-        Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(0, query.GetModifiers().Count());
-        Assert.IsEmpty(query.GetPrefixes());
-    }
-
-    [TestMethod]
-    public void ShouldCreateMinusSelectQuery()
-    {
-        RDFSelectQuery query = new RDFSelectQuery().MinusWithNext();
-
-        Assert.IsNotNull(query);
-        Assert.IsNotNull(query.QueryMembers);
-        Assert.IsEmpty(query.QueryMembers);
-        Assert.IsNotNull(query.Prefixes);
-        Assert.IsEmpty(query.Prefixes);
-        Assert.IsNotNull(query.ProjectionVars);
-        Assert.IsEmpty(query.ProjectionVars);
-        Assert.IsTrue(query.IsEvaluable);
-        Assert.IsFalse(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsTrue(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals("SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -158,8 +102,6 @@ public class RDFSelectQueryTest
         Assert.IsEmpty(query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
         Assert.IsTrue(query.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals("{" + Environment.NewLine + "SELECT *" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -247,28 +189,26 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldCreateSelectQueryWithUnionQueryMembers()
     {
+        RDFSelectQuery subQuery1 = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
+                .AddPatternGroup(
+                    new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
+                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
+                .AddProjectionVariable(new RDFVariable("?S"));
+        RDFSelectQuery subQuery2 = new RDFSelectQuery()
+                .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
+                .AddPatternGroup(
+                    new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS)))
+                .AddProjectionVariable(new RDFVariable("?S"));
         RDFSelectQuery query = new RDFSelectQuery();
         query.AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"));
         query.AddPatternGroup(
             new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                 .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S")))));
-        query.AddSubQuery(
-            new RDFSelectQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
-                .AddPatternGroup(
-                    new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS))
-                        .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
-                .AddProjectionVariable(new RDFVariable("?S"))
-                .UnionWithNext());
-        query.AddSubQuery(
-            new RDFSelectQuery()
-                .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))
-                .AddPatternGroup(
-                    new RDFPatternGroup()
-                        .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.OWL.CLASS)))
-                .AddProjectionVariable(new RDFVariable("?S")));
+        query.AddOperator(subQuery1.Union(subQuery2));
         query.AddModifier(new RDFGroupByModifier([new RDFVariable("?S")]));
         query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
@@ -277,11 +217,9 @@ public class RDFSelectQueryTest
 
         Assert.IsTrue(query.ToString().Equals("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" + Environment.NewLine + "PREFIX owl: <http://www.w3.org/2002/07/owl#>" + Environment.NewLine + Environment.NewLine + "SELECT DISTINCT ?S " + Environment.NewLine + "WHERE {" + Environment.NewLine + "  {" + Environment.NewLine + "    ?S rdf:type <http://www.w3.org/2000/01/rdf-schema#Class> ." + Environment.NewLine + "    FILTER ( (ISURI(?S)) ) " + Environment.NewLine + "  }" + Environment.NewLine + "  {" + Environment.NewLine + "    {" + Environment.NewLine + "      SELECT ?S" + Environment.NewLine + "      WHERE {" + Environment.NewLine + "        {" + Environment.NewLine + "          ?S ?P owl:Class ." + Environment.NewLine + "          VALUES ?S { <http://www.w3.org/2000/01/rdf-schema#Class> } ." + Environment.NewLine + "        }" + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "    UNION" + Environment.NewLine + "    {" + Environment.NewLine + "      SELECT ?S" + Environment.NewLine + "      WHERE {" + Environment.NewLine + "        {" + Environment.NewLine + "          ?S ?P owl:Class ." + Environment.NewLine + "        }" + Environment.NewLine + "      }" + Environment.NewLine + "    }" + Environment.NewLine + "  }" + Environment.NewLine + "}" + Environment.NewLine + "GROUP BY ?S" + Environment.NewLine + "ORDER BY DESC(?S)" + Environment.NewLine + "LIMIT 100" + Environment.NewLine + "OFFSET 20" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
-        Assert.AreEqual(4, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
+        Assert.AreEqual(3, query.GetEvaluableQueryMembers().Count()); //SPARQL Values is managed by Mirella
         Assert.AreEqual(1, query.GetPatternGroups().Count());
-        Assert.AreEqual(2, query.GetSubQueries().Count());
-        Assert.IsTrue(query.GetSubQueries().ElementAt(0) is RDFSelectQuery { JoinAsUnion: true });
-        Assert.IsFalse(query.GetSubQueries().ElementAt(1) is RDFSelectQuery { JoinAsUnion: true });
+        Assert.AreEqual(0, query.GetSubQueries().Count());
         Assert.AreEqual(5, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
@@ -301,8 +239,6 @@ public class RDFSelectQueryTest
         Assert.HasCount(1, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -330,8 +266,6 @@ public class RDFSelectQueryTest
         Assert.HasCount(3, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ((?V + 2) AS ?SUM) ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -358,8 +292,6 @@ public class RDFSelectQueryTest
         Assert.HasCount(2, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals("SELECT ((?V + 2) AS ?SUM) (((?V1 + ?V2) * ?V3) AS ?MULTIPLY)" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -387,8 +319,6 @@ public class RDFSelectQueryTest
         Assert.HasCount(2, query.ProjectionVars);
         Assert.IsTrue(query.IsEvaluable);
         Assert.IsFalse(query.IsOptional);
-        Assert.IsFalse(query.JoinAsUnion);
-        Assert.IsFalse(query.JoinAsMinus);
         Assert.IsFalse(query.IsSubQuery);
         Assert.IsTrue(query.ToString().Equals("SELECT ?V1 ?V2" + Environment.NewLine + "WHERE {" + Environment.NewLine + "}" + Environment.NewLine, StringComparison.Ordinal));
         Assert.IsTrue(query.QueryMemberID.Equals(RDFModelUtilities.CreateHash(query.QueryMemberStringID)));
@@ -527,20 +457,19 @@ public class RDFSelectQueryTest
         graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        RDFPatternGroup pg1 = new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS));
+        RDFSelectQuery sq1 = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:fruit"), new RDFResource("ex:tree")]))
+                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS).Optional()));
+        RDFSelectQuery sq2 = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:grass"), new RDFResource("ex:lemon")])));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDFS.PREFIX))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
-                .MinusWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:fruit"), new RDFResource("ex:tree")]))
-                    .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS).Optional()))
-                .UnionWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:grass"), new RDFResource("ex:lemon")]))));
+            .AddOperator(pg1.Minus(sq1.Union(sq2)));
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -589,14 +518,14 @@ public class RDFSelectQueryTest
         graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         graph.AddTriple(new RDFTriple(new RDFResource("ex:tree"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
         graph.AddTriple(new RDFTriple(new RDFResource("ex:grass"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
+        RDFPatternGroup pg1 = new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS));
+        RDFSelectQuery sq1 = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")])));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
-                .MinusWithNext())
-            .AddSubQuery(new RDFSelectQuery()
-                .AddPatternGroup(new RDFPatternGroup()
-                    .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")]))))
+            .AddOperator(pg1.Minus(sq1))
             .AddProjectionVariable(new RDFVariable("?S"));
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
 
@@ -708,13 +637,13 @@ public class RDFSelectQueryTest
                     .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehavior/sparql"));
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
+        RDFPatternGroup pg1 = new RDFPatternGroup()
+                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")));
+        RDFPatternGroup pg2 = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException)));
+                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException));
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pg1.Union(pg2));
 
         try
         {
@@ -766,14 +695,14 @@ public class RDFSelectQueryTest
                     .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndThrowExceptionAccordingToTimingAndBehaviorViaPost/sparql"));
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
+        RDFPatternGroup pg1 = new RDFPatternGroup()
+                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")));
+        RDFPatternGroup pg2 = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100,
-                    RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
+                    RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post));
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pg1.Union(pg2));
 
         try
         {
@@ -826,13 +755,13 @@ public class RDFSelectQueryTest
                     .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehavior/sparql"));
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
+        RDFPatternGroup pg1 = new RDFPatternGroup()
+                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")));
+        RDFPatternGroup pg2 = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult)));
+                .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pg1.Union(pg2));
         RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
 
         Assert.IsNotNull(result);
@@ -883,14 +812,14 @@ public class RDFSelectQueryTest
                     .WithDelay(200));
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFSelectQueryTest/ShouldApplySelectQueryOnGraphWithServicePatternGroupAndGiveEmptyResultAccordingToTimingAndBehaviorViaPost/sparql"));
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")))
-                .UnionWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
+        RDFPatternGroup pg1 = new RDFPatternGroup()
+                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X")));
+        RDFPatternGroup pg2 = new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100,
-                    RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post)));
+                    RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post));
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pg1.Union(pg2));
         RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
 
         Assert.IsNotNull(result);

@@ -40,8 +40,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> <ex:pred> <ex:obj>", System.StringComparison.Ordinal));
@@ -63,8 +61,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> <ex:pred> \"lit\"", System.StringComparison.Ordinal));
@@ -86,8 +82,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("<ex:subj> <ex:pred> \"lit\"@EN-US"), System.StringComparison.Ordinal));
@@ -109,8 +103,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("<ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>"), System.StringComparison.Ordinal));
@@ -161,8 +153,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> <ex:obj>", System.StringComparison.Ordinal));
@@ -184,8 +174,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> \"lit\"", System.StringComparison.Ordinal));
@@ -207,8 +195,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> \"lit\"@EN-US", System.StringComparison.Ordinal));
@@ -230,8 +216,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>", System.StringComparison.Ordinal));
@@ -254,8 +238,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED <ex:obj>", System.StringComparison.Ordinal));
@@ -277,8 +259,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED \"lit\"", System.StringComparison.Ordinal));
@@ -300,8 +280,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED \"lit\"@EN-US", System.StringComparison.Ordinal));
@@ -323,8 +301,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>", System.StringComparison.Ordinal));
@@ -347,8 +323,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> <ex:pred> ?OBJ", System.StringComparison.Ordinal));
@@ -370,8 +344,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED <ex:obj>", System.StringComparison.Ordinal));
@@ -393,8 +365,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED \"lit\"", System.StringComparison.Ordinal));
@@ -416,8 +386,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED \"lit\"@EN-US", System.StringComparison.Ordinal));
@@ -439,8 +407,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer>", System.StringComparison.Ordinal));
@@ -463,8 +429,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("<ex:subj> ?PRED ?OBJ", System.StringComparison.Ordinal));
@@ -486,8 +450,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ <ex:pred> ?OBJ", System.StringComparison.Ordinal));
@@ -509,8 +471,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED ?OBJ", System.StringComparison.Ordinal));
@@ -532,8 +492,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> <ex:obj> }", System.StringComparison.Ordinal));
@@ -555,8 +513,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> \"lit\" }", System.StringComparison.Ordinal));
@@ -578,8 +534,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"lit\"@EN-US }"), System.StringComparison.Ordinal));
@@ -601,8 +555,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"), System.StringComparison.Ordinal));
@@ -625,8 +577,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> <ex:obj> }", System.StringComparison.Ordinal));
@@ -648,8 +598,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"lit\" }", System.StringComparison.Ordinal));
@@ -671,8 +619,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -694,8 +640,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -718,8 +662,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED <ex:obj> }", System.StringComparison.Ordinal));
@@ -741,8 +683,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"lit\" }", System.StringComparison.Ordinal));
@@ -764,8 +704,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -787,8 +725,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -811,8 +747,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> <ex:pred> ?OBJ }", System.StringComparison.Ordinal));
@@ -834,8 +768,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED <ex:obj> }", System.StringComparison.Ordinal));
@@ -857,8 +789,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"lit\" }", System.StringComparison.Ordinal));
@@ -880,8 +810,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -903,8 +831,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -927,8 +853,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { <ex:subj> ?PRED ?OBJ }", System.StringComparison.Ordinal));
@@ -950,8 +874,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ <ex:pred> ?OBJ }", System.StringComparison.Ordinal));
@@ -973,8 +895,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?PRED ?OBJ }", System.StringComparison.Ordinal));
@@ -996,57 +916,9 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { ?SUBJ ?SUBJ ?OBJ }", System.StringComparison.Ordinal));
-        Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
-    }
-
-    [TestMethod]
-    public void ShouldSetUnionWithNextPattern()
-    {
-        RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("pred"), new RDFVariable("obj")).UnionWithNext();
-
-        Assert.IsNotNull(pattern);
-        Assert.IsNull(pattern.Context);
-        Assert.IsNotNull(pattern.Subject);
-        Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
-        Assert.IsNotNull(pattern.Predicate);
-        Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("pred")));
-        Assert.IsNotNull(pattern.Object);
-        Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
-        Assert.IsTrue(pattern.IsEvaluable);
-        Assert.IsFalse(pattern.IsOptional);
-        Assert.IsTrue(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
-        Assert.IsNotNull(pattern.Variables);
-        Assert.HasCount(3, pattern.Variables);
-        Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?PRED ?OBJ", System.StringComparison.Ordinal));
-        Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
-    }
-
-    [TestMethod]
-    public void ShouldSetMinusWithNextPattern()
-    {
-        RDFPattern pattern = new RDFPattern(new RDFVariable("subj"), new RDFVariable("subj"), new RDFVariable("obj")).MinusWithNext();
-
-        Assert.IsNotNull(pattern);
-        Assert.IsNull(pattern.Context);
-        Assert.IsNotNull(pattern.Subject);
-        Assert.IsTrue(pattern.Subject.Equals(new RDFVariable("subj")));
-        Assert.IsNotNull(pattern.Predicate);
-        Assert.IsTrue(pattern.Predicate.Equals(new RDFVariable("subj"))); //test that variables will not be duplicated
-        Assert.IsNotNull(pattern.Object);
-        Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
-        Assert.IsTrue(pattern.IsEvaluable);
-        Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsTrue(pattern.JoinAsMinus);
-        Assert.IsNotNull(pattern.Variables);
-        Assert.HasCount(2, pattern.Variables);
-        Assert.IsTrue(pattern.ToString().Equals("?SUBJ ?SUBJ ?OBJ", System.StringComparison.Ordinal));
         Assert.IsTrue(pattern.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(pattern.PatternGroupMemberStringID)));
     }
 
@@ -1068,8 +940,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> <ex:pred> <ex:obj> }", System.StringComparison.Ordinal));
@@ -1092,8 +962,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\" }", System.StringComparison.Ordinal));
@@ -1116,8 +984,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\"@EN-US }"), System.StringComparison.Ordinal));
@@ -1140,8 +1006,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"), System.StringComparison.Ordinal));
@@ -1201,8 +1065,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> <ex:obj> }", System.StringComparison.Ordinal));
@@ -1225,8 +1087,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\" }", System.StringComparison.Ordinal));
@@ -1249,8 +1109,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -1273,8 +1131,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -1298,8 +1154,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED <ex:obj> }", System.StringComparison.Ordinal));
@@ -1322,8 +1176,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\" }", System.StringComparison.Ordinal));
@@ -1346,8 +1198,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -1370,8 +1220,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -1395,8 +1243,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> <ex:pred> ?OBJ }", System.StringComparison.Ordinal));
@@ -1419,8 +1265,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED <ex:obj> }", System.StringComparison.Ordinal));
@@ -1443,8 +1287,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\" }", System.StringComparison.Ordinal));
@@ -1467,8 +1309,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -1491,8 +1331,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -1516,8 +1354,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { <ex:subj> ?PRED ?OBJ }", System.StringComparison.Ordinal));
@@ -1540,8 +1376,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ <ex:pred> ?OBJ }", System.StringComparison.Ordinal));
@@ -1564,8 +1398,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH <ex:ctx> { ?SUBJ ?PRED ?OBJ }", System.StringComparison.Ordinal));
@@ -1588,8 +1420,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> <ex:obj> } }", System.StringComparison.Ordinal));
@@ -1612,8 +1442,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\" } }", System.StringComparison.Ordinal));
@@ -1636,8 +1464,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"lit\"@EN-US } }"), System.StringComparison.Ordinal));
@@ -1660,8 +1486,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.IsEmpty(pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"), System.StringComparison.Ordinal));
@@ -1685,8 +1509,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> <ex:obj> } }", System.StringComparison.Ordinal));
@@ -1709,8 +1531,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\" } }", System.StringComparison.Ordinal));
@@ -1733,8 +1553,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"lit\"@EN-US } }", System.StringComparison.Ordinal));
@@ -1757,8 +1575,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }", System.StringComparison.Ordinal));
@@ -1782,8 +1598,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED <ex:obj> } }", System.StringComparison.Ordinal));
@@ -1806,8 +1620,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\" } }", System.StringComparison.Ordinal));
@@ -1830,8 +1642,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED \"lit\"@EN-US } }", System.StringComparison.Ordinal));
@@ -1854,8 +1664,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }", System.StringComparison.Ordinal));
@@ -1879,8 +1687,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> <ex:pred> ?OBJ } }", System.StringComparison.Ordinal));
@@ -1903,8 +1709,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED <ex:obj> } }", System.StringComparison.Ordinal));
@@ -1927,8 +1731,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\" } }", System.StringComparison.Ordinal));
@@ -1951,8 +1753,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED \"lit\"@EN-US } }", System.StringComparison.Ordinal));
@@ -1975,8 +1775,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }", System.StringComparison.Ordinal));
@@ -2000,8 +1798,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { <ex:subj> ?PRED ?OBJ } }", System.StringComparison.Ordinal));
@@ -2024,8 +1820,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ <ex:pred> ?OBJ } }", System.StringComparison.Ordinal));
@@ -2048,8 +1842,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED ?OBJ } }", System.StringComparison.Ordinal));
@@ -2072,8 +1864,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH <ex:ctx> { ?SUBJ ?PRED ?OBJ } }", System.StringComparison.Ordinal));
@@ -2098,8 +1888,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> <ex:pred> <ex:obj> }", System.StringComparison.Ordinal));
@@ -2122,8 +1910,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\" }", System.StringComparison.Ordinal));
@@ -2146,8 +1932,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\"@EN-US }"), System.StringComparison.Ordinal));
@@ -2170,8 +1954,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("GRAPH ?CTX { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }"), System.StringComparison.Ordinal));
@@ -2195,8 +1977,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> <ex:obj> }", System.StringComparison.Ordinal));
@@ -2219,8 +1999,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\" }", System.StringComparison.Ordinal));
@@ -2243,8 +2021,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -2267,8 +2043,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -2292,8 +2066,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED <ex:obj> }", System.StringComparison.Ordinal));
@@ -2316,8 +2088,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED \"lit\" }", System.StringComparison.Ordinal));
@@ -2340,8 +2110,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -2364,8 +2132,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -2389,8 +2155,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> <ex:pred> ?OBJ }", System.StringComparison.Ordinal));
@@ -2413,8 +2177,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED <ex:obj> }", System.StringComparison.Ordinal));
@@ -2437,8 +2199,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED \"lit\" }", System.StringComparison.Ordinal));
@@ -2461,8 +2221,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED \"lit\"@EN-US }", System.StringComparison.Ordinal));
@@ -2485,8 +2243,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> }", System.StringComparison.Ordinal));
@@ -2510,8 +2266,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { <ex:subj> ?PRED ?OBJ }", System.StringComparison.Ordinal));
@@ -2534,8 +2288,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ <ex:pred> ?OBJ }", System.StringComparison.Ordinal));
@@ -2558,8 +2310,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsFalse(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(4, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("GRAPH ?CTX { ?SUBJ ?PRED ?OBJ }", System.StringComparison.Ordinal));
@@ -2582,8 +2332,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> <ex:obj> } }", System.StringComparison.Ordinal));
@@ -2606,8 +2354,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\" } }", System.StringComparison.Ordinal));
@@ -2630,8 +2376,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> \"lit\"@EN-US } }"), System.StringComparison.Ordinal));
@@ -2654,8 +2398,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(1, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals(string.Concat("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }"), System.StringComparison.Ordinal));
@@ -2679,8 +2421,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> <ex:obj> } }", System.StringComparison.Ordinal));
@@ -2703,8 +2443,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\" } }", System.StringComparison.Ordinal));
@@ -2727,8 +2465,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> \"lit\"@EN-US } }", System.StringComparison.Ordinal));
@@ -2751,8 +2487,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }", System.StringComparison.Ordinal));
@@ -2776,8 +2510,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED <ex:obj> } }", System.StringComparison.Ordinal));
@@ -2800,8 +2532,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED \"lit\" } }", System.StringComparison.Ordinal));
@@ -2824,8 +2554,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED \"lit\"@EN-US } }", System.StringComparison.Ordinal));
@@ -2848,8 +2576,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }", System.StringComparison.Ordinal));
@@ -2873,8 +2599,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(2, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> <ex:pred> ?OBJ } }", System.StringComparison.Ordinal));
@@ -2897,8 +2621,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFResource("ex:obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED <ex:obj> } }", System.StringComparison.Ordinal));
@@ -2921,8 +2643,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED \"lit\" } }", System.StringComparison.Ordinal));
@@ -2945,8 +2665,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFPlainLiteral("lit", "en-US")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED \"lit\"@EN-US } }", System.StringComparison.Ordinal));
@@ -2969,8 +2687,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED \"25\"^^<http://www.w3.org/2001/XMLSchema#integer> } }", System.StringComparison.Ordinal));
@@ -2994,8 +2710,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { <ex:subj> ?PRED ?OBJ } }", System.StringComparison.Ordinal));
@@ -3018,8 +2732,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(3, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ <ex:pred> ?OBJ } }", System.StringComparison.Ordinal));
@@ -3042,8 +2754,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(4, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED ?OBJ } }", System.StringComparison.Ordinal));
@@ -3066,8 +2776,6 @@ public class RDFPatternTest
         Assert.IsTrue(pattern.Object.Equals(new RDFVariable("obj")));
         Assert.IsTrue(pattern.IsEvaluable);
         Assert.IsTrue(pattern.IsOptional);
-        Assert.IsFalse(pattern.JoinAsUnion);
-        Assert.IsFalse(pattern.JoinAsMinus);
         Assert.IsNotNull(pattern.Variables);
         Assert.HasCount(4, pattern.Variables);
         Assert.IsTrue(pattern.ToString().Equals("OPTIONAL { GRAPH ?CTX { ?SUBJ ?PRED ?OBJ } }", System.StringComparison.Ordinal));

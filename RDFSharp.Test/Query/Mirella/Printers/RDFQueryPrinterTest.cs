@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -177,7 +177,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -201,8 +201,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Union(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL)))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -228,7 +227,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.LABEL])));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -255,7 +254,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?V"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -281,8 +280,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).UnionWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US"))))
         .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -310,9 +308,9 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).UnionWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -367,7 +365,7 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -391,8 +389,8 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-        .UnionWithNext());
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -416,7 +414,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -440,8 +438,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Minus(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E")).AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL)))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -467,7 +464,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.LABEL])));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -494,7 +491,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?EXP")), new RDFVariable("?V"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -520,8 +517,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).MinusWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US"))))
         .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -549,8 +545,7 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).MinusWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US"))))
         .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [ new RDFResource("ex:val") ])));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -579,9 +574,9 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AddBind(new RDFBind(new RDFConstantExpression(RDFVocabulary.RDFS.CLASS), new RDFVariable("?V")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).MinusWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -607,9 +602,9 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [ new RDFResource("ex:val") ]))
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US")).MinusWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en-US"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -637,7 +632,7 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .MinusWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -661,8 +656,8 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
-        .MinusWithNext());
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -802,7 +797,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")))
-        .UnionWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -830,7 +825,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
-        .UnionWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -855,13 +850,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -898,12 +892,11 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS)));
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -936,12 +929,11 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -974,20 +966,18 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS)))
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))))
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
-        .UnionWithNext());
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1043,14 +1033,13 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
-        .UnionWithNext());
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1100,11 +1089,10 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
@@ -1152,11 +1140,10 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4"))));
@@ -1202,12 +1189,11 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .Optional()
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("ex:org")))
-        .Optional()) //Should be discarded since running under UnionWithNext semantic from the previous
+        .Optional())) //Should be discarded since running under UnionWithNext semantic from the previous
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
@@ -1257,7 +1243,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")))
-        .MinusWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1285,7 +1271,7 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
-        .MinusWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1310,13 +1296,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1353,12 +1338,11 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS)));
+        .Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1391,12 +1375,11 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1429,20 +1412,18 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS)))
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))))
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
-        .MinusWithNext());
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1498,14 +1479,13 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
-        .MinusWithNext());
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1555,11 +1535,10 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+        .Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
@@ -1607,11 +1586,10 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
+        .Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4"))));
@@ -1657,12 +1635,11 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .Optional()
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("ex:org")))
-        .Optional()) //Should be discarded since running under MinusWithNext semantic from the previous
+        .Optional())) //Should be discarded since running under MinusWithNext semantic from the previous
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
@@ -1781,13 +1758,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))))
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
@@ -1835,13 +1811,12 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1886,13 +1861,12 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1934,13 +1908,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))))
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
@@ -2093,14 +2066,13 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
         .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .Optional()); //this Optional will be discarded, since we are under UnionWithNext from previous
+        .Optional())); //this Optional will be discarded, since we are under UnionWithNext from previous
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2148,14 +2120,13 @@ public class RDFQueryPrinterTest
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
         .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .Optional()); //this Optional will be discarded, since we are under MinusWithNext from previous
+        .Optional())); //this Optional will be discarded, since we are under MinusWithNext from previous
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2244,13 +2215,12 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2292,13 +2262,12 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
+        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2407,7 +2376,7 @@ public class RDFQueryPrinterTest
   public void ShouldPrintSelectQueryStarWithEmptySingleUnionPatternGroup()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
+      .AddPatternGroup(new RDFPatternGroup());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2426,7 +2395,7 @@ public class RDFQueryPrinterTest
   public void ShouldPrintSelectQueryStarWithEmptySingleMinusPatternGroup()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddPatternGroup(new RDFPatternGroup().MinusWithNext());
+      .AddPatternGroup(new RDFPatternGroup());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2616,11 +2585,10 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))))
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2651,15 +2619,13 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()) //Will not be printed, since this is the last evaluable query member
+        )) //Will not be printed, since this is the last evaluable query member
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2694,14 +2660,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
       .AddProjectionVariable(new RDFVariable("?S"))
@@ -2741,18 +2705,15 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?T")), new RDFVariable("?TV")))
-        .UnionWithNext())
+        ))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"))
       .AddProjectionVariable(new RDFVariable("?TVV"), new RDFVariableExpression(new RDFVariable("?TV")));
@@ -2792,14 +2753,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional())
@@ -2843,17 +2802,15 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
         .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional())
@@ -2900,18 +2857,13 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //UnionWithNext will not be printed, since this is the last pattern group member
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()) //UnionWithNext will not be printed, since this is the last evaluable query member
+        )) //UnionWithNext will not be printed, since this is the last evaluable query member
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2952,11 +2904,10 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))))
+        .Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -2987,15 +2938,13 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .MinusWithNext()) //Will not be printed, since this is the last evaluable query member
+        )) //Will not be printed, since this is the last evaluable query member
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -3030,14 +2979,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
       .AddProjectionVariable(new RDFVariable("?S"))
@@ -3077,18 +3024,15 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Minus(new RDFPatternGroup()
         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?T")), new RDFVariable("?TV")))
-        .MinusWithNext())
+        ))
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"))
       .AddProjectionVariable(new RDFVariable("?TVV"), new RDFVariableExpression(new RDFVariable("?TV")));
@@ -3128,14 +3072,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional())
@@ -3179,17 +3121,15 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
         .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional())
@@ -3236,18 +3176,13 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).MinusWithNext()) //MinusWithNext will not be printed, since this is the last pattern group member
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Minus(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //MinusWithNext will not be printed, since this is the last pattern group member
+        .Minus(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Minus(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Minus(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
+        ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .MinusWithNext()) //MinusWithNext will not be printed, since this is the last evaluable query member
+        )) //MinusWithNext will not be printed, since this is the last evaluable query member
       .AddProjectionVariable(new RDFVariable("?S"))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -3384,13 +3319,12 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddSubQuery(new RDFSelectQuery()
-        .AddPatternGroup(new RDFPatternGroup()
+        .AddOperator(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Optional())
           .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-          .UnionWithNext())
-        .AddPatternGroup(new RDFPatternGroup()
+          .Union(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, RDFVocabulary.RDFS.COMMENT).Optional())
-          .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))))
+          .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))))
         .AddProjectionVariable(new RDFVariable("?S")));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -3636,7 +3570,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -3689,13 +3623,13 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
-        .UnionWithNext() //This subquery will not be printed as union, since it is the last query member
+         //This subquery will not be printed as union, since it is the last query member
         .AddProjectionVariable(new RDFVariable("?T")))
       .AddProjectionVariable(new RDFVariable("?Z"))
       .AddProjectionVariable(new RDFVariable("?T"));
@@ -3743,7 +3677,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -3818,17 +3752,16 @@ public class RDFQueryPrinterTest
           .AddModifier(new RDFOffsetModifier(1)))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
@@ -3838,7 +3771,7 @@ public class RDFQueryPrinterTest
                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                 new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
               ])))
-          .AddProjectionVariable(new RDFVariable("?START"))))
+          .AddProjectionVariable(new RDFVariable("?START")))))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -3921,7 +3854,7 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
@@ -3930,20 +3863,18 @@ public class RDFQueryPrinterTest
         .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
         .AddModifier(new RDFLimitModifier(5))
         .AddModifier(new RDFOffsetModifier(1))
-        .MinusWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Minus(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .MinusWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        ).Minus(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta","it"))))
-        .AddProjectionVariable(new RDFVariable("?T")));
+        .AddProjectionVariable(new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -3999,7 +3930,7 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
@@ -4008,20 +3939,18 @@ public class RDFQueryPrinterTest
         .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
         .AddModifier(new RDFLimitModifier(5))
         .AddModifier(new RDFOffsetModifier(1))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .MinusWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        ).Minus(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta","it"))))
-        .AddProjectionVariable(new RDFVariable("?T")));
+        .AddProjectionVariable(new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -4082,16 +4011,15 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        )
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .MinusWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Minus(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
@@ -4099,7 +4027,7 @@ public class RDFQueryPrinterTest
         .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
         .AddModifier(new RDFLimitModifier(5))
         .AddModifier(new RDFOffsetModifier(1))
-        .AddProjectionVariable(new RDFVariable("?T")));
+        .AddProjectionVariable(new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -4154,16 +4082,15 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .MinusWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        )
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
@@ -4171,7 +4098,7 @@ public class RDFQueryPrinterTest
         .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
         .AddModifier(new RDFLimitModifier(5))
         .AddModifier(new RDFOffsetModifier(1))
-        .AddProjectionVariable(new RDFVariable("?T")));
+        .AddProjectionVariable(new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -4226,17 +4153,16 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .MinusWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        )
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
       .AddModifier(new RDFDistinctModifier())
       .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
       .AddModifier(new RDFLimitModifier(5))
@@ -4286,19 +4212,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("etiquette", "fr")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .UnionWithNext())
+        ))
       .AddModifier(new RDFDistinctModifier())
       .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))
       .AddModifier(new RDFLimitModifier(5))
@@ -4346,32 +4269,29 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
-        .AddPatternGroup(new RDFPatternGroup()
+        .AddOperator(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
           .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-          .MinusWithNext())
-        .AddSubQuery(new RDFSelectQuery()
+          .Minus(new RDFSelectQuery()
           .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
           .AddPatternGroup(new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
             .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S")))))
           .AddModifier(new RDFDistinctModifier())
-          .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC)))
+          .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC))))
         .AddModifier(new RDFLimitModifier(5))
         .AddModifier(new RDFOffsetModifier(1))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        ).Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
       .AddProjectionVariable(new RDFVariable("?T"));
@@ -4456,16 +4376,15 @@ public class RDFQueryPrinterTest
           .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC)))
         .AddModifier(new RDFLimitModifier(5))
         .AddModifier(new RDFOffsetModifier(1)))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .Optional())
@@ -4547,20 +4466,18 @@ public class RDFQueryPrinterTest
           .AddModifier(new RDFOrderByModifier(new RDFVariable("?S"), RDFQueryEnums.RDFOrderByFlavors.ASC)))
         .AddModifier(new RDFLimitModifier(5))
         .AddModifier(new RDFOffsetModifier(1)))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .Optional())
+        .Optional()))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -4676,13 +4593,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
-        .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S")))))
+        .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .Optional())
@@ -4732,16 +4648,14 @@ public class RDFQueryPrinterTest
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        )
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -4782,19 +4696,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
+        )).Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -4835,24 +4746,21 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
           .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))
           .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.SUB_CLASS_OF)))
         .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?S"))))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Minus(new RDFPatternGroup()
         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
           .AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
             new RDFPropertyPathStep(RDFVocabulary.RDFS.SUB_CLASS_OF) ]))
         .AddValues(new RDFValues()
           .AddColumn(new RDFVariable("?S"), [ new RDFPlainLiteral("test") ]))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
+        )).Minus(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -4893,11 +4801,8 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+        .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
         .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
       );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -4931,11 +4836,8 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+        .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
         .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
       );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -4969,10 +4871,8 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
+        .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
         .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
       );
@@ -5006,12 +4906,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
+        .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
+        .AddOperator(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
       );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -5044,12 +4941,7 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+        .AddOperator(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Minus(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
       );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -5083,13 +4975,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+        .AddOperator(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
       );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -5124,13 +5012,7 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+        .AddOperator(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
       );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -5170,13 +5052,8 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+        .AddOperator(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Minus(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
       );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -5212,21 +5089,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S5A"), new RDFVariable("?S6A"))
+        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+        .AddOperator(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPropertyPath(new RDFVariable("?S5A"), new RDFVariable("?S6A"))
           .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step1")))
-          .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2"))))
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S5B"), new RDFVariable("?S6B"))
+          .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2")))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPropertyPath(new RDFVariable("?S5B"), new RDFVariable("?S6B"))
           .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step1")))
-          .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2"))))
-        .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S5C"), new RDFVariable("?S6C"))
+          .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2")))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Union(new RDFPropertyPath(new RDFVariable("?S5C"), new RDFVariable("?S6C"))
           .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step1")))
-          .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2"))))
+          .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:step2")))))
         .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -5267,14 +5139,11 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
         .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [ null ]))
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [ null ]))
-        .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
         .AddValues(new RDFValues().AddColumn(new RDFVariable("?V"), [null]))
         .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -5316,14 +5185,11 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFPlainLiteral("val")), new RDFVariable("?V")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFPlainLiteral("val")), new RDFVariable("?V2")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFPlainLiteral("val")), new RDFVariable("?V3")))
         .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -5359,34 +5225,19 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatternsAndPatternGroups1()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S3C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S2A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S3A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S4A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S5A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S3B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Minus(new RDFPattern(new RDFVariable("?S4B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S5B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
+        ).Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S3C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
         .AddPattern(new RDFPattern(new RDFVariable("?S5C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .AddPattern(new RDFPattern(new RDFVariable("?S2D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .Optional());
+        .AddOperator(new RDFPattern(new RDFVariable("?S3D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S5D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .Optional()));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -5454,34 +5305,20 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatternsAndPatternGroups2()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S3C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S2A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S3A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S4A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S5A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
+        .Minus(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S3B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Minus(new RDFPattern(new RDFVariable("?S4B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S5B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
+        ))
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S3C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
         .AddPattern(new RDFPattern(new RDFVariable("?S5C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .AddPattern(new RDFPattern(new RDFVariable("?S2D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-      );
+        .AddOperator(new RDFPattern(new RDFVariable("?S3D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S5D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+      ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -5549,34 +5386,20 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingMixedUnionMinusInPatternsAndPatternGroups3()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S1C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S2C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .AddPattern(new RDFPattern(new RDFVariable("?S3C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S2A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S3A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S4A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S5A"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
+        .Minus(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S3B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Minus(new RDFPattern(new RDFVariable("?S4B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S5B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
+        .Optional()))
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S1C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?S3C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
         .AddPattern(new RDFPattern(new RDFVariable("?S5C"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         .AddPattern(new RDFPattern(new RDFVariable("?S2D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional())
-        .AddPattern(new RDFPattern(new RDFVariable("?S3D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S4D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S5D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-        .Optional());
+        .AddOperator(new RDFPattern(new RDFVariable("?S3D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S5D"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+        .Optional()));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -5643,36 +5466,24 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingSubQueryWithMixedUnionMinusInPatterns1()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
-          .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+          .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+          .AddOperator(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
           .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
-        .MinusWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Minus(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddSubQuery(new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-              .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S12"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-              .UnionWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
-              .AddPattern(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S8B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S9B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S10B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S11B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
-            .MinusWithNext()
+            .AddOperator(new RDFPatternGroup()
+              .AddOperator(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Minus(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+              .AddOperator(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S12"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+              .Union(new RDFPatternGroup()
+              .AddOperator(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S8B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S9B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+              .AddOperator(new RDFPattern(new RDFVariable("?S10B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S11B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))))
+            
             .AddPatternGroup(new RDFPatternGroup()
               .AddPattern(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))))
-      );
+      ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -5760,36 +5571,23 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingSubQueryWithMixedUnionMinusInPatterns2()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
-          .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-          .AddPattern(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
+          .AddOperator(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S3"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))).Union(new RDFPattern(new RDFVariable("?S5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
           .AddPattern(new RDFPattern(new RDFVariable("?S6"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddSubQuery(new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-              .AddPattern(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S12"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
-              .MinusWithNext())
-            .AddPatternGroup(new RDFPatternGroup()
-              .AddPattern(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S8B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S9B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).UnionWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S10B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).MinusWithNext())
-              .AddPattern(new RDFPattern(new RDFVariable("?S11B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))
-            .UnionWithNext()
+            .AddOperator(new RDFPatternGroup()
+              .AddOperator(new RDFPattern(new RDFVariable("?S7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Minus(new RDFPattern(new RDFVariable("?S10"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+              .AddOperator(new RDFPattern(new RDFVariable("?S11"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S12"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+              .Minus(new RDFPatternGroup()
+              .AddOperator(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Union(new RDFPattern(new RDFVariable("?S8B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))).Union(new RDFPattern(new RDFVariable("?S9B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))
+              .AddOperator(new RDFPattern(new RDFVariable("?S10B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Minus(new RDFPattern(new RDFVariable("?S11B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")).Optional()))))
+            
             .AddPatternGroup(new RDFPatternGroup()
               .AddPattern(new RDFPattern(new RDFVariable("?S7B"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it"))))))
-      );
+      ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -5892,17 +5690,16 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345")))
           .AddBind(new RDFBind(new RDFBooleanAndExpression(new RDFVariableExpression(new RDFVariable("?T")), new RDFVariableExpression(new RDFVariable("?Q"))), new RDFVariable("?ANDTQ"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
@@ -5914,7 +5711,7 @@ public class RDFQueryPrinterTest
               ]))
             .AddBind(new RDFBind(new RDFAbsExpression(new RDFVariable("?T")), new RDFVariable("?ABST"))))
           .AddProjectionVariable(new RDFVariable("?START"))
-          .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFStrLenExpression(new RDFVariable("?START")))))
+          .AddProjectionVariable(new RDFVariable("?STARTLEN"), new RDFStrLenExpression(new RDFVariable("?START"))))))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -5999,14 +5796,13 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingBinds2()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t")), new RDFVariable("?T")))
         .AddPattern(new RDFPattern(new RDFVariable("?T"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .UnionWithNext())
+        ))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -6039,14 +5835,13 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingBinds3()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t")), new RDFVariable("?T")))
-        .AddPattern(new RDFPattern(new RDFVariable("?T"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
-        .UnionWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?T"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
+        ))
       .AddProjectionVariable(new RDFVariable("?T"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -6079,15 +5874,14 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingBinds4()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).UnionWithNext())
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t")), new RDFVariable("?T3")))
-        .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).UnionWithNext())
-        .UnionWithNext())
+        .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")))
+        ))
       .AddProjectionVariable(new RDFVariable("?T3"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -6121,23 +5915,17 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingBinds5()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).UnionWithNext())
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).Union(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en"))))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t3")), new RDFVariable("?T3")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en")).UnionWithNext())
+        ).Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).Union(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en"))))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t6")), new RDFVariable("?T6")))
-        .AddPattern(new RDFPattern(new RDFVariable("?T7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label7", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en")).Optional())
-        .UnionWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?T7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label7", "en")).Union(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en"))).Union(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en")).Optional()))
+        ))
       .AddProjectionVariable(new RDFVariable("?T3"))
       .AddProjectionVariable(new RDFVariable("?T6"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -6185,23 +5973,19 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingBinds6()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).Optional())
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).Union(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).Optional()))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t3")), new RDFVariable("?T3")))
-        .Optional())
+        .Optional()))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en")).Optional())
+        .AddOperator(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).Union(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en")).Optional()))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t6")), new RDFVariable("?T6")))
         .AddPattern(new RDFPattern(new RDFVariable("?T7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label7", "en")).Optional())
-        .AddPattern(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en")).Optional())
-        .UnionWithNext())
+        .AddOperator(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en")).Union(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en")).Optional()))
+        )
       .AddProjectionVariable(new RDFVariable("?T3"))
       .AddProjectionVariable(new RDFVariable("?T6"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -6247,25 +6031,19 @@ public class RDFQueryPrinterTest
   public void ShouldPrintComplexSelectQueryHavingBindsAndMixedUnionMinus()
   {
     RDFSelectQuery query = new RDFSelectQuery()
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).Optional())
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?T1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label1", "en")).Minus(new RDFPattern(new RDFVariable("?T2"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label2", "en")).Optional()))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t3")), new RDFVariable("?T3")))
-        .MinusWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en")).Optional())
+        ))
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?T4"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label4", "en")).Union(new RDFPattern(new RDFVariable("?T5"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label5", "en")).Optional()))
         .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t6")), new RDFVariable("?T6")))
-        .AddPattern(new RDFPattern(new RDFVariable("?T7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label7", "en")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en")).MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t7")), new RDFVariable("?T7"))))
+        .AddOperator(new RDFPattern(new RDFVariable("?T7"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label7", "en")).Minus(new RDFPattern(new RDFVariable("?T8"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label8", "en"))).Minus(new RDFPattern(new RDFVariable("?T9"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label9", "en"))))
+        .Union(new RDFPatternGroup()
+        .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:t7")), new RDFVariable("?T7")))))
       .AddProjectionVariable(new RDFVariable("?T3"))
       .AddProjectionVariable(new RDFVariable("?T6"));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -6459,7 +6237,7 @@ public class RDFQueryPrinterTest
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6483,7 +6261,7 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6506,8 +6284,8 @@ public class RDFQueryPrinterTest
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-        .UnionWithNext());
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+        );
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6566,7 +6344,7 @@ public class RDFQueryPrinterTest
   public void ShouldPrintAskQueryWithEmptySingleUnionPatternGroup()
   {
     RDFAskQuery query = new RDFAskQuery()
-      .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
+      .AddPatternGroup(new RDFPatternGroup());
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6674,11 +6452,10 @@ public class RDFQueryPrinterTest
   {
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6706,15 +6483,13 @@ public class RDFQueryPrinterTest
   {
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
+        )); //Will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -6746,14 +6521,12 @@ public class RDFQueryPrinterTest
   {
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
@@ -6790,14 +6563,12 @@ public class RDFQueryPrinterTest
   {
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
@@ -6838,17 +6609,15 @@ public class RDFQueryPrinterTest
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
         .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
@@ -6892,18 +6661,13 @@ public class RDFQueryPrinterTest
   {
     RDFAskQuery query = new RDFAskQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //UnionWithNext will not be printed, since this is the last pattern group member
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
+        )); //UnionWithNext will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintAskQuery(query);
     const string expectedQueryString =
       """
@@ -7191,7 +6955,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -7241,7 +7005,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -7313,17 +7077,16 @@ public class RDFQueryPrinterTest
           .AddModifier(new RDFOffsetModifier(1)))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
@@ -7333,7 +7096,7 @@ public class RDFQueryPrinterTest
                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                 new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
               ])))
-          .AddProjectionVariable(new RDFVariable("?START"))))
+          .AddProjectionVariable(new RDFVariable("?START")))))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -7560,7 +7323,7 @@ public class RDFQueryPrinterTest
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7585,7 +7348,7 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7609,8 +7372,8 @@ public class RDFQueryPrinterTest
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-        .UnionWithNext());
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+        );
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7672,7 +7435,7 @@ public class RDFQueryPrinterTest
   public void ShouldPrintConstructQueryEmptyTemplatesWithEmptySingleUnionPatternGroup()
   {
     RDFConstructQuery query = new RDFConstructQuery()
-      .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
+      .AddPatternGroup(new RDFPatternGroup());
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7791,11 +7554,10 @@ public class RDFQueryPrinterTest
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7826,15 +7588,13 @@ public class RDFQueryPrinterTest
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")).Optional()) //Optional will not be printed, since it is not supported by CONSTRUCT
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
+        )); //Will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -7868,16 +7628,14 @@ public class RDFQueryPrinterTest
   {
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")).UnionWithNext()) //UnionWithNext will not be printed, since it is not supported by CONSTRUCT
+      .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))) //UnionWithNext will not be printed, since it is not supported by CONSTRUCT
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?Z")))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
@@ -7918,14 +7676,12 @@ public class RDFQueryPrinterTest
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
@@ -7969,17 +7725,15 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
         .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
@@ -8026,18 +7780,13 @@ public class RDFQueryPrinterTest
     RDFConstructQuery query = new RDFConstructQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddTemplate(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //UnionWithNext will not be printed, since this is the last pattern group member
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
+        )); //UnionWithNext will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintConstructQuery(query);
     const string expectedQueryString =
       """
@@ -8282,7 +8031,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -8335,7 +8084,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -8411,17 +8160,16 @@ public class RDFQueryPrinterTest
           .AddModifier(new RDFOffsetModifier(1)))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
@@ -8431,7 +8179,7 @@ public class RDFQueryPrinterTest
                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                 new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
               ])))
-          .AddProjectionVariable(new RDFVariable("?START"))))
+          .AddProjectionVariable(new RDFVariable("?START")))))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -8655,7 +8403,7 @@ public class RDFQueryPrinterTest
     RDFDescribeQuery query = new RDFDescribeQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext()));
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8679,7 +8427,7 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext());
+        );
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8702,8 +8450,8 @@ public class RDFQueryPrinterTest
     RDFDescribeQuery query = new RDFDescribeQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")).UnionWithNext())
-        .UnionWithNext());
+        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
+        );
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8762,7 +8510,7 @@ public class RDFQueryPrinterTest
   public void ShouldPrintDescribeQueryStarTermsWithEmptySingleUnionPatternGroup()
   {
     RDFDescribeQuery query = new RDFDescribeQuery()
-      .AddPatternGroup(new RDFPatternGroup().UnionWithNext());
+      .AddPatternGroup(new RDFPatternGroup());
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8880,11 +8628,10 @@ public class RDFQueryPrinterTest
       .AddDescribeTerm(new RDFResource("bnode:12345"))
       .AddDescribeTerm(new RDFResource("bnode:54321"))
       .AddDescribeTerm(new RDFVariable("?S"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T"))));
+        .Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8913,15 +8660,13 @@ public class RDFQueryPrinterTest
     RDFDescribeQuery query = new RDFDescribeQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddDescribeTerm(new RDFVariable("?S"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()); //Will not be printed, since this is the last evaluable query member
+        )); //Will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -8954,14 +8699,12 @@ public class RDFQueryPrinterTest
     RDFDescribeQuery query = new RDFDescribeQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddDescribeTerm(new RDFVariable("?S"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))));
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
@@ -8999,14 +8742,12 @@ public class RDFQueryPrinterTest
     RDFDescribeQuery query = new RDFDescribeQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddDescribeTerm(new RDFVariable("?S"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
@@ -9048,17 +8789,15 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
       .AddDescribeTerm(new RDFVariable("?S"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en")))
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+        .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")))
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFVariable("?P"), new RDFResource("bnode:12345")).Optional())
         .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T"))))
+        ).Union(new RDFPatternGroup()
+        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("bnode:12345"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
         .Optional());
@@ -9106,18 +8845,13 @@ public class RDFQueryPrinterTest
       .AddDescribeTerm(new RDFResource("ex:org"))
       .AddDescribeTerm(new RDFResource("bnode:12345"))
       .AddDescribeTerm(new RDFVariable("?S"))
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")).UnionWithNext()) //UnionWithNext will not be printed, since this is the last pattern group member
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T")).UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional())
-        .UnionWithNext())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddOperator(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("comment")))) //UnionWithNext will not be printed, since this is the last pattern group member
+        .Union(new RDFPatternGroup()
+        .AddOperator(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?T")).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred2"), new RDFVariable("?T"))).Union(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred3"), new RDFVariable("?T")).Optional()))
+        ).Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource("ex:subj"), RDFVocabulary.RDFS.LABEL, new RDFVariable("?T")))
-        .UnionWithNext()); //UnionWithNext will not be printed, since this is the last evaluable query member
+        )); //UnionWithNext will not be printed, since this is the last evaluable query member
     string queryString = RDFQueryPrinter.PrintDescribeQuery(query);
     const string expectedQueryString =
       """
@@ -9350,7 +9084,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -9401,7 +9135,7 @@ public class RDFQueryPrinterTest
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("xsd"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
@@ -9474,17 +9208,16 @@ public class RDFQueryPrinterTest
           .AddModifier(new RDFOffsetModifier(1)))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("bnode:12345"))))
-        .UnionWithNext()
+        
         .AddProjectionVariable(new RDFVariable("?Z")))
-      .AddSubQuery(new RDFSelectQuery()
+      .AddOperator(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
           .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
             .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
-        .UnionWithNext())
-      .AddSubQuery(new RDFSelectQuery()
+        .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
             .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:org")]))
@@ -9494,7 +9227,7 @@ public class RDFQueryPrinterTest
                 new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
                 new RDFPropertyPathStep(RDFVocabulary.OWL.CLASS).Inverse()
               ])))
-          .AddProjectionVariable(new RDFVariable("?START"))))
+          .AddProjectionVariable(new RDFVariable("?START")))))
       .AddSubQuery(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -9649,10 +9382,9 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+        .AddOperator(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
           .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
-          .UnionWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))));
+          .Union(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -9678,11 +9410,10 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+        .AddOperator(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
           .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
-          .UnionWithNext())
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E2"))
-          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
+          .Union(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E2"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL)))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -9708,10 +9439,9 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+        .AddOperator(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
           .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
-          .MinusWithNext())
-        .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))));
+          .Minus(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -9737,11 +9467,10 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
+        .AddOperator(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E"))
           .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))
-          .MinusWithNext())
-        .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E2"))
-          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL))));
+          .Minus(new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?E2"))
+          .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL)))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
