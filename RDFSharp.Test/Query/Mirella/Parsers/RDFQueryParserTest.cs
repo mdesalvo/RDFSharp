@@ -456,6 +456,275 @@ public class RDFQueryParserTest
     public void ShouldThrowOnLiteralInSubjectPosition()
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT * WHERE { \"lit\" ?p ?o }"));
     #endregion
+
+    #region GraphPatternAlgebra (F2a round-trips)
+    //Helper: PatternGroup with a single triple ?varS <predUri> ?varO
+    private static RDFPatternGroup MakePG(string varS, string predUri, string varO)
+        => new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable(varS), new RDFResource(predUri), new RDFVariable(varO)));
+
+    [TestMethod]
+    public void ShouldRoundTripUnion()
+    {
+        RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
+        RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pgA.Union(pgB));
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripUnionChain()
+    {
+        RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
+        RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
+        RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pgA.Union(pgB).Union(pgC));
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripMinus()
+    {
+        RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
+        RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pgA.Minus(pgB));
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripOptional()
+    {
+        RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
+        RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "name");
+        pgB.Optional();
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(pgA)
+            .AddPatternGroup(pgB);
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripUnionOfMinus()
+    {
+        //A ∪ (B ∖ C)
+        RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
+        RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
+        RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pgA.Union(pgB.Minus(pgC)));
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripMinusOfUnion()
+    {
+        //(A ∪ B) ∖ C
+        RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
+        RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
+        RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddOperator(pgA.Union(pgB).Minus(pgC));
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripOptionalOperator()
+    {
+        //OPTIONAL (A ∪ B)
+        RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
+        RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
+        RDFOperatorQueryMember op = pgA.Union(pgB);
+        op.Optional();
+        RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(pgC)
+            .AddOperator(op);
+        AssertSelectQueryRoundTrips(query);
+    }
+    #endregion
+
+    #region GraphPatternAlgebra (F2a spec syntax)
+    [TestMethod]
+    public void ShouldParseUnionFromSpecSyntax()
+    {
+        //SPARQL spec: GroupOrUnionGraphPattern ::= GroupGraphPattern ('UNION' GroupGraphPattern)*
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { { ?s <http://example.org/p1> ?o } UNION { ?s <http://example.org/p2> ?o } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.LeftOperand);
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldParseUnionChainFromSpecSyntax()
+    {
+        //Three-way UNION: left-associative Union(Union(A,B),C)
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { { ?s <http://example.org/p1> ?o } UNION { ?s <http://example.org/p2> ?o } UNION { ?s <http://example.org/p3> ?o } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        //Left operand is itself a Union(A,B)
+        Assert.IsInstanceOfType<RDFOperatorQueryMember>(op.LeftOperand);
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union,
+            ((RDFOperatorQueryMember)op.LeftOperand).OperatorType);
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldParseMinusFromSpecSyntax()
+    {
+        //SPARQL spec: MinusGraphPattern ::= 'MINUS' GroupGraphPattern
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { { ?s <http://example.org/p1> ?o } MINUS { ?s <http://example.org/p2> ?o } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.LeftOperand);
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldParseOptionalFromSpecSyntax()
+    {
+        //SPARQL spec: OptionalGraphPattern ::= 'OPTIONAL' GroupGraphPattern
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { { ?s <http://example.org/p1> ?o } OPTIONAL { ?s <http://example.org/name> ?name } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(2, evaluable.Count);
+        RDFPatternGroup main = (RDFPatternGroup)evaluable[0];
+        RDFPatternGroup optional = (RDFPatternGroup)evaluable[1];
+        Assert.IsFalse(main.IsOptional);
+        Assert.IsTrue(optional.IsOptional);
+    }
+
+    [TestMethod]
+    public void ShouldParseInlineTriplesWithOptional()
+    {
+        //Inline BGP followed by OPTIONAL — TriplesBlock must stop at the keyword
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s <http://example.org/p1> ?o OPTIONAL { ?s <http://example.org/name> ?name } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(2, evaluable.Count);
+        Assert.IsInstanceOfType<RDFPatternGroup>(evaluable[0]);
+        RDFPatternGroup optional = (RDFPatternGroup)evaluable[1];
+        Assert.IsTrue(optional.IsOptional);
+    }
+
+    [TestMethod]
+    public void ShouldParseInlineTriplesWithMinus()
+    {
+        //Inline BGP followed by MINUS — the BGP becomes the left operand of the tree node
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s <http://example.org/p1> ?o . MINUS { ?s <http://example.org/p2> ?o2 } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.LeftOperand);
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldParseMinusWithUnionRightOperand()
+    {
+        //A ∖ (B ∪ C) — right operand of MINUS is a union group per the spec
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { { ?s <http://example.org/p1> ?o } MINUS { { ?s <http://example.org/p2> ?o } UNION { ?s <http://example.org/p3> ?o } } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFOperatorQueryMember minus = (RDFOperatorQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, minus.OperatorType);
+        Assert.IsInstanceOfType<RDFPatternGroup>(minus.LeftOperand);
+        //Right operand is Union(B,C)
+        RDFOperatorQueryMember rightUnion = (RDFOperatorQueryMember)minus.RightOperand;
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, rightUnion.OperatorType);
+    }
+
+    [TestMethod]
+    public void ShouldParseUnionOfMinus()
+    {
+        //A ∪ (B ∖ C) — SPARQL-compliant: Union left-operand A, right-operand is a Minus group
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { { ?s <http://example.org/p1> ?o } UNION { { ?s <http://example.org/p2> ?o } MINUS { ?s <http://example.org/p3> ?o } } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFOperatorQueryMember union = (RDFOperatorQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, union.OperatorType);
+        Assert.IsInstanceOfType<RDFPatternGroup>(union.LeftOperand);
+        //Right operand is Minus(B,C)
+        RDFOperatorQueryMember rightMinus = (RDFOperatorQueryMember)union.RightOperand;
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, rightMinus.OperatorType);
+    }
+
+    [TestMethod]
+    public void ShouldParseMultiGroupMinusWrapsAccumulator()
+    {
+        //{ {A} {B} MINUS {C} } — MINUS binds the whole accumulated left side: Minus(subquery(A,B), C)
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { { ?s <http://example.org/p1> ?o } { ?s <http://example.org/p2> ?x } MINUS { ?s <http://example.org/p3> ?o } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        //Left operand must be a subquery wrapping A and B
+        Assert.IsInstanceOfType<RDFSelectQuery>(op.LeftOperand);
+        RDFSelectQuery leftSubQuery = (RDFSelectQuery)op.LeftOperand;
+        Assert.AreEqual(2, leftSubQuery.GetPatternGroups().Count());
+        Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldDropLeadingMinusResiliently()
+    {
+        //A leading MINUS with no left side: the right operand is kept as a plain element
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { MINUS { ?s <http://example.org/p> ?o } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        Assert.IsInstanceOfType<RDFPatternGroup>(evaluable[0]);
+    }
+
+    [TestMethod]
+    public void ShouldDropStrayUnionResiliently()
+    {
+        //A stray UNION at the top level (no left GroupGraphPattern): it is dropped and parsing continues
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { UNION { ?s <http://example.org/p> ?o } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        Assert.IsInstanceOfType<RDFPatternGroup>(evaluable[0]);
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnUnsupportedKeywordFilter()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { FILTER(?x > 0) }"));
+
+    [TestMethod]
+    public void ShouldThrowOnUnsupportedKeywordBind()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { BIND(1 AS ?x) }"));
+    #endregion
 }
 
 /// <summary>

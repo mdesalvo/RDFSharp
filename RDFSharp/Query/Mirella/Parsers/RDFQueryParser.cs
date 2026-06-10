@@ -24,45 +24,87 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFQueryParser is responsible for turning a SPARQL 1.1 query string into an RDFQuery object model instance
+    /// <para>
+    /// RDFQueryParser is responsible for turning a SPARQL 1.1 query string into the corresponding
+    /// RDFQuery/RDFOperation object-model instance. It is the single entry point of the text-to-model
+    /// pipeline: callers pass a raw SPARQL command string and receive a fully-built, engine-ready query.
+    /// </para>
+    /// <para>
+    /// The lexer reuses RDFTurtle's low-level term-parsing infrastructure (ParseURI, ParseValue, the
+    /// pushback reader …) through a thin adapter (<see cref="RDFQueryParserContext"/>), so that IRI,
+    /// literal and prefixed-name parsing are shared between the two parsers rather than duplicated.
+    /// </para>
     /// </summary>
     internal static class RDFQueryParser
     {
         #region Context
         /// <summary>
-        /// Holds the mutable state of a single SPARQL parse: the pull-style reader over the command text,
-        /// and the autonomous resolver that accumulates the prologue's BASE/PREFIX declarations.
+        /// <para>
+        /// RDFQueryParserContext bundles the mutable state that belongs to a single SPARQL parse run.
+        /// It is created fresh for every call to <see cref="RDFQueryParser.ParseQuery"/> and is never
+        /// shared across threads or across multiple parse invocations.
+        /// </para>
+        /// <para>
+        /// The context is sealed because it has no extension points: the only reason to pass it around
+        /// is to give every parser helper function access to the shared reader position and the resolver.
+        /// </para>
         /// </summary>
         internal sealed class RDFQueryParserContext
         {
             #region Properties
             /// <summary>
-            /// RDFTurtle parsing context: it carries the RDFPushbackReader and the term Resolver, so
-            /// that every RDFTurtle term-parser (ParseURI, ParseValue, ParseQNameOrBoolean, ...) can be invoked
-            /// verbatim against this very context.
+            /// <para>
+            /// The Turtle parsing context that the SPARQL parser borrows for all low-level term recognition.
+            /// It carries two resources:
+            /// <list type="bullet">
+            /// <item><b>Reader</b> — the <c>RDFPushbackReader</c> wrapping the SPARQL command text, which
+            ///   the lexer advances one code point at a time and can push characters back onto when needed.</item>
+            /// <item><b>Resolver</b> — the <c>RDFTermResolver</c> wired into <see cref="Resolver"/>, so that
+            ///   every Turtle term-parser (ParseURI, ParseValue, ParseQNameOrBoolean, …) automatically uses
+            ///   the SPARQL prologue's BASE and PREFIX declarations for IRI resolution.</item>
+            /// </list>
+            /// </para>
+            /// <para>
+            /// By reusing RDFTurtle's context struct, the SPARQL parser can call all Turtle term-parsers
+            /// verbatim without any adaptation — the only difference is that the resolver behind the context
+            /// is an <see cref="RDFSPARQLTermResolver"/> instead of a graph-backed one.
+            /// </para>
             /// </summary>
             internal RDFTurtle.RDFTurtleContext TermParsingContext { get; }
 
             /// <summary>
-            /// Autonomous resolver populated by this query's prologue. It is the Resolver wired into
-            /// <see cref="TermParsingContext"/>, exposed here so the parser can push BASE/PREFIX into it.
+            /// <para>
+            /// The autonomous resolver that accumulates the BASE and PREFIX declarations of this query's
+            /// prologue as they are parsed. It is the same resolver instance that is wired into
+            /// <see cref="TermParsingContext"/>, exposed directly here so that <see cref="ParsePrologue"/>
+            /// can push new bindings into it via <see cref="RDFSPARQLTermResolver.SetBaseIri"/> and
+            /// <see cref="RDFSPARQLTermResolver.RegisterPrefix"/>.
+            /// </para>
             /// </summary>
             internal RDFSPARQLTermResolver Resolver { get; }
             #endregion
 
             #region Ctors
             /// <summary>
-            /// Builds a parsing context over the given reader of SPARQL command text, wiring a fresh
-            /// autonomous resolver into a reused Turtle term-parsing context.
+            /// Initialises a new parsing context over the given reader of SPARQL command text.
+            /// A fresh <see cref="RDFSPARQLTermResolver"/> is created and wired into both the
+            /// <see cref="Resolver"/> property (so prologue parsers can populate it) and the
+            /// Turtle context's Resolver slot (so term-parsers resolve prefixed names through it).
             /// </summary>
             internal RDFQueryParserContext(TextReader sparqlCommandReader)
             {
+                //Create the autonomous resolver that will accumulate this query's BASE/PREFIX prologue
                 Resolver = new RDFSPARQLTermResolver();
+
                 TermParsingContext = new RDFTurtle.RDFTurtleContext
                 {
-                    //The term-parsers resolve base IRI and prefixes through the SPARQL resolver, NOT through a graph
+                    //Wire the SPARQL resolver into the Turtle context so that ParseURI / ParseValue /
+                    //ParseQNameOrBoolean resolve IRIs and prefixes through THIS query's prologue
                     Resolver = Resolver,
-                    //Pull code points on demand from the SPARQL command, exactly as the Turtle deserializer does
+
+                    //Wrap the SPARQL command text in a pushback reader: the lexer reads forward one
+                    //code point at a time and can push back the most recently read character when it
+                    //needs to "un-consume" a token (e.g. after peeking at a keyword)
                     Reader = new RDFTurtle.RDFPushbackReader(sparqlCommandReader)
                 };
             }
@@ -70,13 +112,36 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Creates a parsing context over the given SPARQL command text.
+        /// Factory helper: wraps <paramref name="sparqlCommandText"/> in a <see cref="StringReader"/> and
+        /// returns a fresh <see cref="RDFQueryParserContext"/> ready to parse. A null text is normalised to
+        /// the empty string so the reader starts at EOF rather than throwing a NullReferenceException.
         /// </summary>
         internal static RDFQueryParserContext CreateContext(string sparqlCommandText)
             => new RDFQueryParserContext(new StringReader(sparqlCommandText ?? string.Empty));
         #endregion
 
         #region Lexer
+        /// <summary>
+        /// The set of SPARQL keywords that can appear at the <c>GraphPatternNotTriples</c> dispatch point
+        /// (i.e. wherever a new non-triple element can begin inside a <c>GroupGraphPattern</c>).
+        /// <para>
+        /// This set serves two purposes:
+        /// <list type="number">
+        /// <item>It terminates an ongoing TriplesBlock scan — as soon as one of these keywords is spotted,
+        ///   the triple reader stops so the enclosing group-pattern dispatcher can handle the keyword.</item>
+        /// <item>It distinguishes a lone keyword (e.g. "UNION") from a prefixed-name local part that
+        ///   happens to start with the same letters (e.g. "union:foo") — the check in
+        ///   <see cref="PeekGraphPatternKeyword"/> uses this set to decide whether the letter run
+        ///   should be treated as a keyword or as the beginning of a QName token.</item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Comparison is case-insensitive (SPARQL keywords are case-insensitive per the spec).
+        /// </para>
+        /// </summary>
+        private static readonly HashSet<string> GraphPatternKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "OPTIONAL", "UNION", "MINUS", "FILTER", "GRAPH", "SERVICE", "BIND", "VALUES", "SELECT" };
+
         /// <summary>
         /// Skips any run of whitespace and #-style comments, leaving the reader positioned on the next
         /// significant character. Returns the code point of that character (without consuming it), or -1 at EOF.
@@ -210,6 +275,75 @@ namespace RDFSharp.Query
         /// </summary>
         private static string GetCoordinates(RDFQueryParserContext parserContext)
             => RDFTurtle.GetTurtleContextCoordinates(parserContext.TermParsingContext);
+
+        /// <summary>
+        /// <para>
+        /// Peeks at the upcoming letter run to determine whether it is a recognized graph-pattern keyword
+        /// (OPTIONAL, UNION, MINUS, FILTER, GRAPH, SERVICE, BIND, VALUES, SELECT) that stands alone as an
+        /// operator, rather than the beginning of a QName-like token such as <c>union:SomeClass</c>.
+        /// </para>
+        /// <para>
+        /// When a recognized keyword is found, the reader is restored to exactly the position it was at
+        /// before the call (i.e. the keyword is left unconsumed) and the keyword is returned in uppercase.
+        /// When the letter run is either not a recognized keyword, or IS a recognized keyword but is
+        /// immediately followed by a QName-continuer character (digit, '_', or '-'), the reader is equally
+        /// restored and the empty string is returned.
+        /// </para>
+        /// <para>
+        /// IMPORTANT: This method does NOT skip leading whitespace. Callers are responsible for having
+        /// positioned the reader on the first significant (non-whitespace) character BEFORE calling this
+        /// method — typically by calling <see cref="SkipWhitespace"/> first. If the reader is sitting on a
+        /// whitespace character, <see cref="ReadKeyword"/> will return the empty string immediately (since
+        /// whitespace is not an ASCII letter), and this method will therefore return the empty string too,
+        /// even if a keyword follows the whitespace.
+        /// </para>
+        /// </summary>
+        /// <returns>
+        /// The recognized keyword in uppercase (e.g. "UNION"), or the empty string if the next token is
+        /// not a standalone graph-pattern keyword.
+        /// </returns>
+        private static string PeekGraphPatternKeyword(RDFQueryParserContext parserContext)
+        {
+            //Read the maximal ASCII-letter run that starts at the current reader position.
+            //ReadKeyword leaves the first non-letter character on the reader (it "unreads" it), so after
+            //this call the reader is positioned on the character immediately after the letter run.
+            string candidateKeywordRun = ReadKeyword(parserContext);
+
+            if (GraphPatternKeywords.Contains(candidateKeywordRun))
+            {
+                //The letter run is one of the recognized keywords. Now check the very next character (the
+                //one that ended the letter run, still sitting on the reader) to decide whether this run is
+                //a standalone keyword or the beginning of a longer QName local part.
+                //Characters that can CONTINUE a QName local name (PN_CHARS family) after a keyword-matching
+                //prefix are: decimal digits (0-9), underscore ('_') and hyphen ('-').
+                //If the terminator is any of these, "OPTIONAL123" or "union_foo" would be misidentified as
+                //a keyword — we must treat the whole run as part of a longer token instead.
+                int terminatorCodePoint = PeekCodePoint(parserContext);
+                bool isQNameContinuation = (terminatorCodePoint >= '0' && terminatorCodePoint <= '9')
+                                           || terminatorCodePoint == '_'
+                                           || terminatorCodePoint == '-';
+                if (!isQNameContinuation)
+                {
+                    //Standalone keyword: push the letter run back so the caller can consume it explicitly,
+                    //and return the keyword in normalized uppercase so comparisons are case-insensitive.
+                    UnreadString(parserContext, candidateKeywordRun);
+                    return candidateKeywordRun.ToUpperInvariant();
+                }
+            }
+
+            //Either the letter run is not a recognized keyword, or it is a keyword but is followed by a
+            //QName-continuer: in both cases push it back and signal "no standalone keyword here".
+            UnreadString(parserContext, candidateKeywordRun);
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Consumes the current graph-pattern keyword token from the reader.
+        /// Callers MUST have confirmed via <see cref="PeekGraphPatternKeyword"/> that a keyword is present
+        /// before calling this: the method simply advances past the letter run with no additional checks.
+        /// </summary>
+        private static void ConsumeKeyword(RDFQueryParserContext parserContext)
+            => ReadKeyword(parserContext);
         #endregion
 
         #region Prologue
@@ -463,289 +597,827 @@ namespace RDFSharp.Query
 
         #region WhereClause
         /// <summary>
-        /// Parses the WHERE clause and attaches its pattern groups to the query. The 'WHERE' keyword is optional
-        /// (per the SPARQL grammar, <c>WhereClause ::= 'WHERE'? GroupGraphPattern</c>). The group graph pattern
-        /// is delimited by braces and, in this phase, may contain basic graph patterns (triples) either inline or
-        /// wrapped in nested <c>{ ... }</c> blocks — each block becomes one RDFPatternGroup, mirroring how the
-        /// printer emits a pattern group inside its own braces.
+        /// <para>
+        /// Parses the WHERE clause of a SELECT query and attaches the resulting algebra members to
+        /// <paramref name="selectQuery"/>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>WhereClause ::= 'WHERE'? GroupGraphPattern</c>.
+        /// The WHERE keyword is optional: a query that opens its body with a bare <c>{</c> is perfectly
+        /// valid, so this method first tries to consume WHERE and then unconditionally expects the
+        /// opening brace.
+        /// </para>
+        /// <para>
+        /// The body of the group graph pattern is parsed by <see cref="ParseGroupGraphPatternSub"/>,
+        /// which implements the full graph-pattern algebra (OPTIONAL, UNION, MINUS) and returns a flat
+        /// list of already-combined algebra nodes. Each node is then attached to the query via
+        /// <see cref="AddQueryMember"/> so that the engine's evaluator can walk them directly.
+        /// </para>
         /// </summary>
-        /// <exception cref="RDFQueryException">When the braces are unbalanced or a contained pattern is malformed.</exception>
+        /// <exception cref="RDFQueryException">When the braces are unbalanced or a member is malformed.</exception>
         private static void ParseWhereClause(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
         {
-            //The 'WHERE' keyword is optional: consume it if present, otherwise proceed straight to the '{'
+            //WHERE is optional per the SPARQL grammar: try to consume it but proceed either way
             TryConsumeKeyword(parserContext, "WHERE");
 
-            //Open the top-level group graph pattern
+            //The WHERE clause body is a single GroupGraphPattern: consume its opening brace …
             ExpectChar(parserContext, '{', "WHERE clause");
 
-            //Read group members until the matching '}'
+            //… parse the content of the group into a list of algebra members …
+            List<RDFQueryMember> whereClauseMembers = ParseGroupGraphPatternSub(parserContext);
+
+            //… and close the group
+            ExpectChar(parserContext, '}', "WHERE clause");
+
+            //Attach every algebra member produced by the body to the query
+            foreach (RDFQueryMember whereClauseMember in whereClauseMembers)
+                AddQueryMember(selectQuery, whereClauseMember);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses the content of a <c>GroupGraphPattern</c> body (i.e. everything between its braces) and
+        /// returns the ordered, flat list of algebra members it produces. The caller is responsible for
+        /// consuming the surrounding <c>{</c> and <c>}</c> characters — this method only sees what is inside.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar:
+        /// <code>
+        /// GroupGraphPatternSub ::= TriplesBlock?
+        ///     ( GraphPatternNotTriples '.'? TriplesBlock? )*
+        ///
+        /// GraphPatternNotTriples ::= GroupOrUnionGraphPattern
+        ///                          | OptionalGraphPattern
+        ///                          | MinusGraphPattern
+        ///                          | GraphGraphPattern         (future)
+        ///                          | ServiceGraphPattern       (future)
+        ///                          | Filter                    (future)
+        ///                          | Bind                      (future)
+        ///                          | InlineData                (future)
+        /// </code>
+        /// </para>
+        /// <para>
+        /// Algebra accumulation rules (implemented here in strict SPARQL compliance):
+        /// <list type="bullet">
+        /// <item>
+        ///   <b>BGP (bare triples)</b> — a triple run is read by <see cref="ParseBasicGraphPatternMember"/>
+        ///   into a new <see cref="RDFPatternGroup"/> and appended to the accumulator.
+        /// </item>
+        /// <item>
+        ///   <b>GroupOrUnionGraphPattern <c>{ … }</c></b> — delegated to
+        ///   <see cref="ParseGroupOrUnionGraphPattern"/>; a UNION chain inside the braces is folded into a
+        ///   single left-associative <see cref="RDFOperatorQueryMember"/> tree node before being appended.
+        /// </item>
+        /// <item>
+        ///   <b>OPTIONAL</b> — the following <c>GroupGraphPattern</c> operand is parsed, its
+        ///   <see cref="RDFQueryMember.IsOptional"/> flag is set to <c>true</c>, and it is appended to the
+        ///   accumulator as an independently optional element.
+        /// </item>
+        /// <item>
+        ///   <b>MINUS</b> — per the SPARQL spec, MINUS binds the ENTIRE left side accumulated so far
+        ///   (not just the immediately preceding element). The current accumulator is therefore collapsed to
+        ///   a single algebra unit — wrapping in a <c>SELECT *</c> subquery when it contains more than one
+        ///   joined member — and an <see cref="RDFOperatorQueryMember"/>(<c>Minus</c>, collapsedLeft, right)
+        ///   tree node replaces the entire accumulator. A leading MINUS with an empty accumulator is treated
+        ///   resiliently: the right operand is kept as a plain non-MINUS element.
+        /// </item>
+        /// <item>
+        ///   <b>Stray UNION</b> — UNION appearing at this level (rather than inside a
+        ///   <c>GroupOrUnionGraphPattern</c>) has no valid left operand. It is silently discarded and parsing
+        ///   continues, so that the parser is lenient toward malformed queries.
+        /// </item>
+        /// <item>
+        ///   <b>Deferred keywords</b> (FILTER, GRAPH, SERVICE, BIND, VALUES, SELECT) — a parse error is
+        ///   raised with an explicit "not supported yet" message until the corresponding phase lands.
+        /// </item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <returns>
+        /// A list of zero or more <see cref="RDFQueryMember"/> instances (pattern groups, subqueries, and
+        /// operator tree nodes) in left-to-right order, ready to be attached to the enclosing query.
+        /// </returns>
+        /// <exception cref="RDFQueryException">On unbalanced braces, malformed triples, or unsupported keywords.</exception>
+        private static List<RDFQueryMember> ParseGroupGraphPatternSub(RDFQueryParserContext parserContext)
+        {
+            //The accumulator holds the algebra members produced so far within this group body.
+            //Elements are appended left-to-right; a MINUS flushes and replaces the whole accumulator
+            //with a single Minus tree node, enforcing SPARQL's "MINUS binds the whole left side" rule.
+            List<RDFQueryMember> accumulatedMembers = new List<RDFQueryMember>();
+
             while (true)
             {
-                int nextCodePoint = SkipWhitespace(parserContext);
+                //Position the reader on the next significant character and examine it without consuming it
+                int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
-                //End of the group graph pattern
-                if (nextCodePoint == '}')
+                //A '}' ends this group body: return control to the caller which will consume the brace.
+                //EOF is treated the same way so the caller's ExpectChar('}') surfaces a clean error.
+                if (nextSignificantCodePoint == '}' || nextSignificantCodePoint == -1)
+                    return accumulatedMembers;
+
+                //A '.' is the optional separator that SPARQL allows between any two consecutive elements
+                //of a GroupGraphPatternSub (e.g. between a TriplesBlock and an OptionalGraphPattern).
+                //Consume it and continue scanning for the next element.
+                if (nextSignificantCodePoint == '.')
                 {
                     ReadCodePoint(parserContext);
-                    return;
+                    continue;
                 }
 
-                //Unexpected end of input before the closing brace
-                if (nextCodePoint == -1)
-                    throw new RDFQueryException("Cannot parse SPARQL WHERE clause: expected '}' to close the group but reached end of input " + GetCoordinates(parserContext));
+                //The reader is now positioned on the first non-whitespace, non-dot character. If it is an
+                //ASCII letter, it might be the start of a graph-pattern keyword. PeekGraphPatternKeyword
+                //reads the letter run, checks it against the recognized set, and unreads it regardless,
+                //so the reader position is unchanged after the call.
+                string upcomingKeyword = PeekGraphPatternKeyword(parserContext);
 
-                //A nested '{ ... }' block, or inline triples: either way the result is one pattern group
-                RDFPatternGroup patternGroup = nextCodePoint == '{'
-                    ? ParseBracedPatternGroup(parserContext)
-                    : ParseInlinePatternGroup(parserContext);
-                selectQuery.AddPatternGroup(patternGroup);
+                //OptionalGraphPattern ::= 'OPTIONAL' GroupGraphPattern
+                //The operand of OPTIONAL is a single GroupGraphPattern (which may itself contain UNION /
+                //MINUS / nested groups). Mark it optional and append it independently: unlike MINUS, OPTIONAL
+                //does NOT fold the previous accumulator into a combined left side.
+                if (upcomingKeyword == "OPTIONAL")
+                {
+                    ConsumeKeyword(parserContext);
+                    RDFQueryMember optionalOperand = ParseGroupGraphPattern(parserContext);
+                    SetIsOptional(optionalOperand);
+                    accumulatedMembers.Add(optionalOperand);
+                    continue;
+                }
+
+                //MinusGraphPattern ::= 'MINUS' GroupGraphPattern
+                //
+                //SPARQL algebra semantics: MINUS(left, right) = Diff(left, right).
+                //Crucially, the left side is the JOIN of ALL algebra members accumulated so far in this
+                //group body — not just the immediately preceding one. For example:
+                //    { ?a :p ?b . ?b :q ?c . MINUS { ?a :r ?d } }
+                //desugars to:
+                //    MINUS( JOIN(?a:p?b, ?b:q?c), ?a:r?d )
+                //
+                //We enforce this by collapsing the entire current accumulator to a single algebra unit before
+                //building the Minus tree node. When the accumulator holds multiple joined members, they are
+                //wrapped in a SELECT * subquery (WrapIntoSubQuery) so the engine evaluates them as one unit.
+                //The Minus node then replaces the entire accumulator, becoming the new sole element,
+                //ready to be combined with further elements that follow.
+                if (upcomingKeyword == "MINUS")
+                {
+                    ConsumeKeyword(parserContext);
+                    RDFQueryMember minusRightOperand = ParseGroupGraphPattern(parserContext);
+
+                    if (accumulatedMembers.Count == 0)
+                    {
+                        //Resilient handling of a leading MINUS that has no left side to bind (e.g. the group
+                        //opens with MINUS directly). The spec does not allow this, but rather than throwing we
+                        //treat the right operand as a plain non-differencing member so the rest of the group
+                        //can still be parsed and evaluated (the pattern group simply has no rows filtered out).
+                        accumulatedMembers.Add(minusRightOperand);
+                    }
+                    else
+                    {
+                        //Normal case: collapse everything accumulated so far into a single left operand, clear
+                        //the accumulator, and push the resulting Minus node as the only element in it.
+                        RDFQueryMember minusLeftOperand = CollapseToSingle(accumulatedMembers);
+                        accumulatedMembers.Clear();
+                        accumulatedMembers.Add(new RDFOperatorQueryMember(
+                            RDFQueryEnums.RDFQueryOperatorType.Minus, minusLeftOperand, minusRightOperand));
+                    }
+                    continue;
+                }
+
+                //A stray UNION at this level (i.e. NOT immediately following a GroupGraphPattern inside
+                //ParseGroupOrUnionGraphPattern) has no valid left operand to combine with.
+                //Per the SPARQL grammar, UNION only makes sense as part of GroupOrUnionGraphPattern:
+                //    GroupOrUnionGraphPattern ::= GroupGraphPattern ('UNION' GroupGraphPattern)*
+                //A UNION that appears here is therefore malformed. We drop it silently and continue so that
+                //the parser remains lenient and can still extract the right operand as a plain element.
+                if (upcomingKeyword == "UNION")
+                {
+                    ConsumeKeyword(parserContext);
+                    continue;
+                }
+
+                //Any other recognized graph-pattern keyword (FILTER, GRAPH, SERVICE, BIND, VALUES, SELECT)
+                //belongs to a parser phase that has not been implemented yet. Throw with a precise message
+                //naming the exact unsupported keyword, so the caller knows what is missing.
+                if (upcomingKeyword.Length > 0)
+                    throw new RDFQueryException("Cannot parse SPARQL query: '" + upcomingKeyword + "' is not supported yet " + GetCoordinates(parserContext));
+
+                //No keyword was recognised. Dispatch on the first character:
+                //  '{' → a nested GroupOrUnionGraphPattern (UNION chain or bare group)
+                //  anything else → a bare TriplesBlock (sequence of triple patterns)
+                RDFQueryMember parsedElement = nextSignificantCodePoint == '{'
+                    ? ParseGroupOrUnionGraphPattern(parserContext)
+                    : (RDFQueryMember)ParseBasicGraphPatternMember(parserContext);
+                accumulatedMembers.Add(parsedElement);
             }
         }
 
         /// <summary>
-        /// Parses a brace-delimited pattern group <c>{ triples }</c> into an RDFPatternGroup. This is the shape
-        /// the printer emits for every pattern group, so it is the common case during round-tripping.
+        /// <para>
+        /// Parses a single <c>GroupGraphPattern</c> — a <c>{ … }</c> delimited block — and collapses its
+        /// contents to a single algebra member. The surrounding braces are consumed by this method; the
+        /// body is parsed by <see cref="ParseGroupGraphPatternSub"/>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>GroupGraphPattern ::= '{' ( SubSelect | GroupGraphPatternSub ) '}'</c>.
+        /// Only <c>GroupGraphPatternSub</c> is implemented in the current phase; SubSelect (a nested
+        /// SELECT query) belongs to a later phase.
+        /// </para>
+        /// <para>
+        /// When the body expands to more than one joined member, they are automatically wrapped in a
+        /// <c>SELECT *</c> subquery via <see cref="CollapseToSingle"/> so that the caller always receives
+        /// a single algebra unit. This is necessary for correct MINUS semantics (the whole compound group
+        /// must act as one operand) and for correct UNION semantics (each branch must be a single member).
+        /// </para>
         /// </summary>
-        private static RDFPatternGroup ParseBracedPatternGroup(RDFQueryParserContext parserContext)
+        /// <returns>
+        /// A single <see cref="RDFQueryMember"/> representing the entire group: a bare
+        /// <see cref="RDFPatternGroup"/> for a single-element body, an <see cref="RDFSelectQuery"/> wrapping
+        /// multiple joined members, or an empty <see cref="RDFPatternGroup"/> for an empty body.
+        /// </returns>
+        /// <exception cref="RDFQueryException">When the opening brace is missing or the body is malformed.</exception>
+        private static RDFQueryMember ParseGroupGraphPattern(RDFQueryParserContext parserContext)
         {
-            ExpectChar(parserContext, '{', "pattern group");
-            RDFPatternGroup patternGroup = new RDFPatternGroup();
-            ParseTriplesBlock(parserContext, patternGroup);
-            ExpectChar(parserContext, '}', "pattern group");
-            return patternGroup;
+            //Consume the opening '{' that delimits this group
+            ExpectChar(parserContext, '{', "group graph pattern");
+
+            //Parse everything inside the braces into a flat list of algebra members
+            List<RDFQueryMember> groupBodyMembers = ParseGroupGraphPatternSub(parserContext);
+
+            //Consume the closing '}' that ends this group
+            ExpectChar(parserContext, '}', "group graph pattern");
+
+            //Reduce the list to a single algebra unit: a bare element if there is exactly one, or a
+            //SELECT * subquery wrapping multiple joined elements, or an empty PatternGroup if the body
+            //was empty (which is legal in SPARQL — '{}' is a valid, trivially-satisfied group).
+            return CollapseToSingle(groupBodyMembers);
         }
 
         /// <summary>
-        /// Parses a run of triples written directly inside the group graph pattern (no surrounding braces) into a
-        /// single RDFPatternGroup. Supports hand-written queries such as <c>WHERE { ?s ?p ?o }</c> that skip the
-        /// extra nesting the printer would otherwise add.
+        /// <para>
+        /// Parses a <c>GroupOrUnionGraphPattern</c> — the construct that starts with a <c>{</c> and may be
+        /// followed by one or more <c>UNION { … }</c> continuations — and returns a single algebra member.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>GroupOrUnionGraphPattern ::= GroupGraphPattern ( 'UNION' GroupGraphPattern )*</c>.
+        /// </para>
+        /// <para>
+        /// A bare group with no UNION continuation is returned as-is from <see cref="ParseGroupGraphPattern"/>.
+        /// A chain of two or more groups connected by UNION is folded left-to-right into a binary
+        /// <see cref="RDFOperatorQueryMember"/>(<c>Union</c>, left, right) tree, matching the spec's
+        /// left-associative union semantics:
+        /// <code>
+        ///   A UNION B UNION C  →  Union( Union(A, B), C )
+        /// </code>
+        /// </para>
+        /// <para>
+        /// WHITESPACE PROTOCOL: <see cref="PeekGraphPatternKeyword"/> never skips leading whitespace
+        /// (callers must ensure the reader is on a significant character before calling it). After each
+        /// <see cref="ParseGroupGraphPattern"/> call the reader lands on the character immediately following
+        /// the closing <c>}</c>, which is typically a space. Therefore <see cref="SkipWhitespace"/> MUST be
+        /// called before every UNION peek — once before the <c>while</c> loop and once at the end of each
+        /// iteration — to keep the reader positioned correctly for the keyword scan.
+        /// </para>
         /// </summary>
-        private static RDFPatternGroup ParseInlinePatternGroup(RDFQueryParserContext parserContext)
+        /// <returns>
+        /// A single <see cref="RDFQueryMember"/> representing either the bare group or the root of the
+        /// left-associative UNION algebra tree.
+        /// </returns>
+        /// <exception cref="RDFQueryException">When any operand group is malformed.</exception>
+        private static RDFQueryMember ParseGroupOrUnionGraphPattern(RDFQueryParserContext parserContext)
         {
-            RDFPatternGroup patternGroup = new RDFPatternGroup();
-            ParseTriplesBlock(parserContext, patternGroup);
-            return patternGroup;
+            //Parse the mandatory first (leftmost) GroupGraphPattern operand
+            RDFQueryMember unionAccumulatedLeft = ParseGroupGraphPattern(parserContext);
+
+            //After the closing '}' of the first group the reader may be sitting on whitespace, so skip it
+            //before peeking for a UNION keyword. This is required because PeekGraphPatternKeyword does not
+            //skip whitespace by itself — callers are contractually obligated to do so.
+            SkipWhitespace(parserContext);
+
+            //Consume as many 'UNION GroupGraphPattern' pairs as are present, folding them left-to-right
+            //into a binary algebra tree. Example for three-way union A ∪ B ∪ C:
+            //  iteration 1: left = Union(A, B)
+            //  iteration 2: left = Union(Union(A, B), C)   ← left-associative, matches SPARQL spec
+            while (PeekGraphPatternKeyword(parserContext) == "UNION")
+            {
+                //Consume the UNION keyword
+                ConsumeKeyword(parserContext);
+
+                //Parse the right-hand GroupGraphPattern operand for this UNION pair
+                RDFQueryMember unionRightOperand = ParseGroupGraphPattern(parserContext);
+
+                //Fold: the new left side is a Union tree node combining the running left with the new right
+                unionAccumulatedLeft = new RDFOperatorQueryMember(
+                    RDFQueryEnums.RDFQueryOperatorType.Union, unionAccumulatedLeft, unionRightOperand);
+
+                //After consuming the right group, the reader may again be on whitespace — skip it before
+                //the next iteration's UNION peek
+                SkipWhitespace(parserContext);
+            }
+
+            return unionAccumulatedLeft;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses a Basic Graph Pattern — an unbraced sequence of triple patterns — and packages it into
+        /// a fresh <see cref="RDFPatternGroup"/>. A BGP is the SPARQL analogue of a set of Turtle triples:
+        /// it uses the same predicate-object list (<c>;</c>) and object list (<c>,</c>) shorthands, and
+        /// the same <c>a</c> verb for <c>rdf:type</c>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>TriplesBlock ::= TriplesSameSubjectPath ('.' TriplesBlock?)?</c>.
+        /// </para>
+        /// <para>
+        /// The triple scan terminates at any of the group-body boundaries handled by
+        /// <see cref="ParseTriplesBlock"/>: a <c>}</c>, a nested <c>{</c>, a graph-pattern keyword,
+        /// or end of input. The resulting pattern group is returned ready to be appended to the accumulator
+        /// in <see cref="ParseGroupGraphPatternSub"/>.
+        /// </para>
+        /// </summary>
+        private static RDFPatternGroup ParseBasicGraphPatternMember(RDFQueryParserContext parserContext)
+        {
+            //Allocate a fresh pattern group to collect the triples produced by this BGP scan
+            RDFPatternGroup basicGraphPatternGroup = new RDFPatternGroup();
+
+            //Delegate all triple scanning to ParseTriplesBlock, which fills the group and stops at the
+            //first character that is not part of the triple sequence ('}', '{', keyword, or EOF)
+            ParseTriplesBlock(parserContext, basicGraphPatternGroup);
+
+            return basicGraphPatternGroup;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Collapses a list of algebra members into a single <see cref="RDFQueryMember"/>, applying the
+        /// minimum wrapping needed for the engine to evaluate them as one unit:
+        /// <list type="bullet">
+        /// <item><b>Empty list</b> — returns an empty <see cref="RDFPatternGroup"/> (trivially satisfied,
+        ///   zero rows filtered). This handles the legal SPARQL case of an empty group <c>{}</c>.</item>
+        /// <item><b>Single element</b> — returns the element unchanged. No wrapping overhead.</item>
+        /// <item><b>Multiple elements</b> — wraps them in a <c>SELECT *</c> subquery via
+        ///   <see cref="WrapIntoSubQuery"/> so the engine joins them sequentially as a single unit.
+        ///   This is essential when the multi-element list must serve as one operand of a binary algebra
+        ///   operator (e.g. the left side of a MINUS node): without the wrapping, the engine would not
+        ///   know which subset of the query members belongs to the operator's left scope.</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        private static RDFQueryMember CollapseToSingle(List<RDFQueryMember> membersToCollapse)
+        {
+            switch (membersToCollapse.Count)
+            {
+                //An empty group body is legal in SPARQL ('{}' matches every binding) — model it as an empty
+                //pattern group rather than null so the rest of the pipeline never needs null checks
+                case 0: return new RDFPatternGroup();
+
+                //A single member needs no structural wrapper: return it directly
+                case 1: return membersToCollapse[0];
+
+                //Two or more joined members must be wrapped so the engine can treat them as one combined unit
+                default: return WrapIntoSubQuery(membersToCollapse);
+            }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Wraps the given list of algebra members into a fresh, wildcard-projection <c>SELECT *</c>
+        /// subquery so that they are evaluated as a single joined unit by Mirella's query engine.
+        /// </para>
+        /// <para>
+        /// This wrapping is used exclusively when a group body holding multiple joined members must
+        /// serve as the single left or right operand of a binary algebra operator (e.g. the left side
+        /// of a MINUS node, or an operand of UNION). Without the subquery boundary, the engine's
+        /// <c>CombineTables</c> left-fold would join ALL query members of the outer query indiscriminately
+        /// rather than respecting the scoping that the braces implied in the original SPARQL text.
+        /// </para>
+        /// </summary>
+        private static RDFSelectQuery WrapIntoSubQuery(List<RDFQueryMember> membersToWrap)
+        {
+            //Create a wildcard SELECT * subquery: projecting all variables means the subquery acts as a
+            //transparent pass-through of every binding produced by its body members
+            RDFSelectQuery joiningSubQuery = new RDFSelectQuery();
+
+            //Attach each member to the subquery using the same type-dispatch as the outer query builder
+            foreach (RDFQueryMember memberToWrap in membersToWrap)
+                AddQueryMember(joiningSubQuery, memberToWrap);
+
+            return joiningSubQuery;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Sets the <c>IsOptional</c> flag to <c>true</c> on any type of algebra member, regardless of
+        /// its concrete run-time type. This is the single place where OPTIONAL semantics are applied to a
+        /// parsed operand so that Mirella's evaluation engine can distinguish optional from mandatory joins.
+        /// </para>
+        /// <para>
+        /// The method handles the three concrete member types that can appear as the operand of OPTIONAL:
+        /// <list type="bullet">
+        /// <item><see cref="RDFPatternGroup"/> — the common case: a plain group of triple patterns.</item>
+        /// <item><see cref="RDFSelectQuery"/> — an inline subquery (multi-element group collapsed to a
+        ///   single subquery by <see cref="CollapseToSingle"/>); its IsOptional property controls whether
+        ///   the engine left-joins or inner-joins it.</item>
+        /// <item><see cref="RDFOperatorQueryMember"/> — an OPTIONAL whose operand is itself a nested
+        ///   algebra tree (e.g. OPTIONAL { { A } UNION { B } }); the tree node's IsOptional property
+        ///   tells the engine to treat the whole tree as an optional branch.</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        private static void SetIsOptional(RDFQueryMember algebraMember)
+        {
+            if (algebraMember is RDFPatternGroup patternGroup)
+                patternGroup.IsOptional = true;
+            else if (algebraMember is RDFSelectQuery subQuery)
+                subQuery.IsOptional = true;
+            else if (algebraMember is RDFOperatorQueryMember operatorNode)
+                operatorNode.IsOptional = true;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Attaches a single algebra member to a <see cref="RDFSelectQuery"/>, routing it to the correct
+        /// <c>Add…</c> method based on the member's concrete run-time type.
+        /// </para>
+        /// <para>
+        /// The three member types that the parser can produce are:
+        /// <list type="bullet">
+        /// <item><see cref="RDFPatternGroup"/> — a set of triple patterns; added via
+        ///   <see cref="RDFSelectQuery.AddPatternGroup"/>.</item>
+        /// <item><see cref="RDFSelectQuery"/> — an inline subquery (e.g. a multi-member group body
+        ///   collapsed by <see cref="CollapseToSingle"/>, or a future explicit SubSelect); added via
+        ///   <see cref="RDFSelectQuery.AddSubQuery"/>.</item>
+        /// <item><see cref="RDFOperatorQueryMember"/> — a binary algebra tree node (Union / Minus /
+        ///   Optional-operator); added via <see cref="RDFSelectQuery.AddOperator"/>.</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        private static void AddQueryMember(RDFSelectQuery targetSelectQuery, RDFQueryMember memberToAdd)
+        {
+            if (memberToAdd is RDFPatternGroup patternGroup)
+                targetSelectQuery.AddPatternGroup(patternGroup);
+            else if (memberToAdd is RDFSelectQuery subQuery)
+                targetSelectQuery.AddSubQuery(subQuery);
+            else if (memberToAdd is RDFOperatorQueryMember operatorNode)
+                targetSelectQuery.AddOperator(operatorNode);
         }
         #endregion
 
         #region TriplesBlock
         /// <summary>
-        /// Parses a basic graph pattern (a Turtle-style block of triples) into the given pattern group. Triples are
-        /// separated by '.', and each triple may use predicate-object lists (';') and object lists (',') exactly as
-        /// in Turtle. Parsing stops at the block boundary: a '}' (end of the enclosing group), a '{' (a following
-        /// nested group), or end of input.
+        /// <para>
+        /// Parses a <c>TriplesBlock</c> — a sequence of triple patterns separated by <c>.</c> — and collects
+        /// the resulting <see cref="RDFPattern"/> instances into <paramref name="targetPatternGroup"/>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>TriplesBlock ::= TriplesSameSubjectPath ('.' TriplesBlock?)?</c>.
+        /// </para>
+        /// <para>
+        /// Each "triple" in SPARQL can in fact be a full predicate-object list (multiple predicate-object
+        /// pairs on the same subject, separated by <c>;</c>) and an object list (multiple objects on the
+        /// same subject+predicate, separated by <c>,</c>), exactly as in Turtle.
+        /// </para>
+        /// <para>
+        /// The scan terminates early (without consuming the terminating character) at any of these block
+        /// boundaries, leaving the character on the reader for the parent caller to process:
+        /// <list type="bullet">
+        /// <item><c>}</c> — the end of the enclosing <c>GroupGraphPattern</c>.</item>
+        /// <item><c>{</c> — the start of a nested <c>GroupGraphPattern</c>.</item>
+        /// <item>A recognized graph-pattern keyword (OPTIONAL, MINUS, UNION, …) — a
+        ///   <c>GraphPatternNotTriples</c> element follows; it is left on the reader for
+        ///   <see cref="ParseGroupGraphPatternSub"/> to dispatch on.</item>
+        /// <item>End of input (<c>-1</c>) — the underlying reader is exhausted.</item>
+        /// </list>
+        /// A <c>.</c> after the last triple before a block boundary is optional (per the SPARQL grammar)
+        /// and is consumed silently.
+        /// </para>
         /// </summary>
+        /// <param name="parserContext">The current parse state (reader + resolver).</param>
+        /// <param name="targetPatternGroup">The pattern group to which parsed triple patterns are added.</param>
         /// <exception cref="RDFQueryException">When a triple inside the block is malformed.</exception>
-        private static void ParseTriplesBlock(RDFQueryParserContext parserContext, RDFPatternGroup patternGroup)
+        private static void ParseTriplesBlock(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
         {
             while (true)
             {
-                int nextCodePoint = SkipWhitespace(parserContext);
+                int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
-                //Block boundary: a closing brace, a nested group, or end of input ends the basic graph pattern
-                if (nextCodePoint == '}' || nextCodePoint == '{' || nextCodePoint == -1)
+                //A '}' ends the enclosing GroupGraphPattern; a '{' opens a following nested group.
+                //EOF (-1) means the underlying reader is exhausted.
+                //All three cases terminate the triple scan: leave the character on the reader and return.
+                if (nextSignificantCodePoint == '}' || nextSignificantCodePoint == '{' || nextSignificantCodePoint == -1)
                     return;
 
-                //Subject, then its predicate-object list, produce one or more triples
-                RDFPatternMember subject = ParseVariableOrTerm(parserContext);
-                ParsePredicateObjectList(parserContext, patternGroup, subject);
+                //A graph-pattern keyword at this position (OPTIONAL, MINUS, UNION, FILTER, …) signals that
+                //a GraphPatternNotTriples element follows and the TriplesBlock is over. The keyword MUST be
+                //left on the reader so that ParseGroupGraphPatternSub can pick it up and dispatch on it.
+                if (PeekGraphPatternKeyword(parserContext).Length > 0)
+                    return;
 
-                //A '.' separates triples; it is optional before the block boundary (last triple may omit it)
+                //Parse the next triple: first the subject term, then its complete predicate-object list
+                //(which may produce multiple RDFPattern instances via ';' and ',' shorthands)
+                RDFPatternMember tripleSubject = ParseVariableOrTerm(parserContext);
+                ParsePredicateObjectList(parserContext, targetPatternGroup, tripleSubject);
+
+                //After the predicate-object list, a '.' may separate this triple from the next one.
+                //Consume it and continue scanning if present; otherwise the scan stops (we must be at one
+                //of the block boundaries, which the outer loop will detect on the next iteration).
                 if (SkipWhitespace(parserContext) == '.')
                 {
                     ReadCodePoint(parserContext);
                     continue;
                 }
 
-                //No '.': we must be at the block boundary, which the caller will validate
+                //No '.': the triple list has ended; return to the caller
                 return;
             }
         }
 
         /// <summary>
-        /// Parses a predicate-object list for the given subject: one or more <c>predicate objectList</c> groups
-        /// separated by ';'. A trailing ';' before the triple terminator is tolerated, as in Turtle.
+        /// <para>
+        /// Parses a predicate-object list for a known <paramref name="tripleSubject"/> and emits one
+        /// <see cref="RDFPattern"/> per object into <paramref name="targetPatternGroup"/>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar (simplified):
+        /// <code>
+        /// PredicateObjectList ::= Verb ObjectList ( ';' ( Verb ObjectList )? )*
+        /// </code>
+        /// A <c>;</c> introduces another predicate-object group sharing the same subject. A trailing
+        /// <c>;</c> immediately before a block boundary (<c>.</c>, <c>}</c>, keyword, EOF) is tolerated —
+        /// the same leniency as in the Turtle deserialiser.
+        /// </para>
         /// </summary>
-        private static void ParsePredicateObjectList(RDFQueryParserContext parserContext, RDFPatternGroup patternGroup, RDFPatternMember subject)
+        /// <param name="parserContext">The current parse state.</param>
+        /// <param name="targetPatternGroup">The pattern group to which emitted patterns are added.</param>
+        /// <param name="tripleSubject">The already-parsed subject that all emitted patterns share.</param>
+        private static void ParsePredicateObjectList(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup, RDFPatternMember tripleSubject)
         {
             while (true)
             {
-                //Predicate, then the comma-separated list of objects sharing this subject+predicate
-                RDFPatternMember predicate = ParsePredicate(parserContext);
-                ParseObjectList(parserContext, patternGroup, subject, predicate);
+                //Parse the next predicate (verb) for this subject, then the comma-separated list of objects
+                RDFPatternMember triplePredicate = ParsePredicate(parserContext);
+                ParseObjectList(parserContext, targetPatternGroup, tripleSubject, triplePredicate);
 
-                //A ';' introduces another predicate-object group on the same subject
+                //A ';' introduces a second (or further) predicate-object group on the same subject
                 if (SkipWhitespace(parserContext) == ';')
                 {
                     ReadCodePoint(parserContext);
 
-                    //Tolerate a trailing ';' immediately before the triple terminator or block boundary
-                    int afterSemicolon = SkipWhitespace(parserContext);
-                    if (afterSemicolon == '.' || afterSemicolon == '}' || afterSemicolon == '{' || afterSemicolon == -1)
+                    //After consuming the ';', check whether we are immediately at a block boundary or a keyword.
+                    //If so, this was a trailing ';' — legal in SPARQL/Turtle, so we stop the predicate-object
+                    //list without requiring another predicate to follow.
+                    int codePointAfterSemicolon = SkipWhitespace(parserContext);
+                    if (codePointAfterSemicolon == '.' || codePointAfterSemicolon == '}'
+                        || codePointAfterSemicolon == '{' || codePointAfterSemicolon == -1)
+                        return;
+                    if (PeekGraphPatternKeyword(parserContext).Length > 0)
                         return;
 
+                    //Another predicate-object group follows on the same subject: loop
                     continue;
                 }
 
+                //No ';': the predicate-object list for this subject is complete
                 return;
             }
         }
 
         /// <summary>
-        /// Parses an object list for the given subject+predicate: one or more objects separated by ',', emitting
-        /// one RDFPattern per object into the pattern group.
+        /// <para>
+        /// Parses an object list for a known subject+predicate pair and emits one <see cref="RDFPattern"/>
+        /// per object into <paramref name="targetPatternGroup"/>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>ObjectList ::= Object ( ',' Object )*</c>.
+        /// Objects sharing the same subject and predicate are separated by commas; each one produces a
+        /// separate triple pattern in the enclosing pattern group.
+        /// </para>
         /// </summary>
-        private static void ParseObjectList(RDFQueryParserContext parserContext, RDFPatternGroup patternGroup, RDFPatternMember subject, RDFPatternMember predicate)
+        /// <param name="parserContext">The current parse state.</param>
+        /// <param name="targetPatternGroup">The pattern group to which emitted patterns are added.</param>
+        /// <param name="tripleSubject">The already-parsed subject shared by all emitted patterns.</param>
+        /// <param name="triplePredicate">The already-parsed predicate shared by all emitted patterns.</param>
+        private static void ParseObjectList(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup, RDFPatternMember tripleSubject, RDFPatternMember triplePredicate)
         {
             while (true)
             {
-                RDFPatternMember objectMember = ParseVariableOrTerm(parserContext);
+                //Parse the object term (variable or RDF term)
+                RDFPatternMember tripleObject = ParseVariableOrTerm(parserContext);
 
-                //The RDFPattern constructor enforces SPARQL term-position rules (e.g. literal subjects are rejected),
-                //surfacing any violation as an RDFQueryException — exactly the parser's error contract
-                patternGroup.AddPattern(new RDFPattern(subject, predicate, objectMember));
+                //Emit the triple pattern. The RDFPattern constructor enforces all SPARQL term-position rules
+                //(e.g. a literal in subject position is invalid): violations surface as RDFQueryException
+                //through the parser's error contract.
+                targetPatternGroup.AddPattern(new RDFPattern(tripleSubject, triplePredicate, tripleObject));
 
-                //A ',' introduces another object sharing this subject+predicate
+                //A ',' introduces another object sharing this subject+predicate: consume and continue
                 if (SkipWhitespace(parserContext) == ',')
                 {
                     ReadCodePoint(parserContext);
                     continue;
                 }
 
+                //No ',': the object list is complete
                 return;
             }
         }
 
         /// <summary>
-        /// Parses a term in subject/object position: a variable (<c>?x</c>/<c>$x</c>) or any RDF term parsed by the
-        /// shared Turtle term-reader (IRI, prefixed name, blank node, literal, numeric/boolean literal).
+        /// <para>
+        /// Parses an RDF term in subject or object position: either a SPARQL variable (<c>?name</c> or
+        /// <c>$name</c>) or any concrete RDF term (IRI, prefixed name, blank node, literal, numeric or
+        /// boolean literal) recognised by the shared Turtle term-reader.
+        /// </para>
+        /// <para>
+        /// The caller must ensure that whitespace has been skipped before this method is invoked, or call
+        /// <see cref="ParseTerm"/> (which skips whitespace internally for the Turtle reader path).
+        /// </para>
         /// </summary>
         private static RDFPatternMember ParseVariableOrTerm(RDFQueryParserContext parserContext)
         {
-            int nextCodePoint = SkipWhitespace(parserContext);
-            if (nextCodePoint == '?' || nextCodePoint == '$')
+            int nextSignificantCodePoint = SkipWhitespace(parserContext);
+
+            //A '?' or '$' sigil is the unambiguous start of a SPARQL variable reference
+            if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
                 return ParseVariable(parserContext);
+
+            //Any other character starts a concrete RDF term: delegate to the shared Turtle term-reader
             return ParseTerm(parserContext);
         }
 
         /// <summary>
-        /// Parses a term in predicate position. In addition to variables and ordinary terms, it recognizes the
-        /// SPARQL/Turtle verb <c>a</c> as a shorthand for rdf:type. The 'a' shorthand is only accepted when it
-        /// stands alone (followed by whitespace or end of input); otherwise the leading 'a' is treated as the start
-        /// of a longer token (e.g. a prefixed name like <c>a:b</c>) and handed to the general term-reader.
+        /// <para>
+        /// Parses an RDF term in predicate (verb) position. In addition to variables and ordinary IRI terms,
+        /// SPARQL inherits from Turtle the <c>a</c> shorthand for <c>rdf:type</c>:
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>Verb ::= VarOrIri | 'a'</c>.
+        /// </para>
+        /// <para>
+        /// The <c>a</c> shorthand is recognized only when it stands alone — i.e. it is immediately followed
+        /// by whitespace or end of input. If the character after <c>a</c> is anything else (e.g. a colon in
+        /// <c>a:SomeClass</c>, or a letter in <c>abc:foo</c>), the <c>a</c> is pushed back and the whole
+        /// token is re-parsed by the general Turtle term-reader.
+        /// </para>
         /// </summary>
         private static RDFPatternMember ParsePredicate(RDFQueryParserContext parserContext)
         {
-            int nextCodePoint = SkipWhitespace(parserContext);
+            int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
-            //A variable predicate
-            if (nextCodePoint == '?' || nextCodePoint == '$')
+            //A '?' or '$' sigil starts a variable predicate
+            if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
                 return ParseVariable(parserContext);
 
-            //Possibly the 'a' verb (rdf:type)
-            if (nextCodePoint == 'a')
+            //The single letter 'a' might be the rdf:type shorthand — check the character immediately after it
+            if (nextSignificantCodePoint == 'a')
             {
-                //Consume the 'a' and look at what immediately follows it (without consuming that)
+                //Consume the 'a' and peek at the very next character (without consuming it)
                 ReadCodePoint(parserContext);
-                int afterA = PeekCodePoint(parserContext);
+                int codePointAfterA = PeekCodePoint(parserContext);
 
-                //'a' standing alone (delimited by whitespace or EOF) is the rdf:type shorthand
-                if (afterA == -1 || RDFTurtle.IsWhitespace(afterA))
+                //If 'a' is followed only by whitespace or EOF it is unambiguously the rdf:type shorthand:
+                //expand it to the full rdf:type IRI right here
+                if (codePointAfterA == -1 || RDFTurtle.IsWhitespace(codePointAfterA))
                     return new RDFResource(RDFVocabulary.RDF.TYPE.ToString());
 
-                //Not standalone: 'a' is the first character of a longer token; push it back and parse normally
+                //The character after 'a' is not a whitespace delimiter, so 'a' is the first character of a
+                //longer token (e.g. "a:SomeClass" or "abc:foo"). Push the 'a' back and fall through to the
+                //general term-reader so the full token is parsed correctly.
                 UnreadCodePoint(parserContext, 'a');
             }
 
-            //Any other predicate is an ordinary term (IRI or prefixed name); the RDFPattern constructor will
-            //reject terms that are invalid in predicate position (blank nodes, literals)
+            //General case: the predicate is a full IRI, prefixed name, or other term. The RDFPattern
+            //constructor will later reject any term that is invalid in predicate position (blank nodes,
+            //literals) surfacing the violation as RDFQueryException.
             return ParseTerm(parserContext);
         }
         #endregion
 
         #region SolutionModifiers
         /// <summary>
-        /// Parses the trailing solution modifiers of a query — ORDER BY, LIMIT and OFFSET — until a token that is
-        /// none of them is reached (which is left unconsumed for the caller). The modifiers are accepted in any
-        /// order for leniency; the object-model deduplicates repeats (e.g. a second LIMIT is ignored).
+        /// <para>
+        /// Parses the trailing solution-modifier section of a SELECT query and attaches the resulting
+        /// modifier objects to <paramref name="selectQuery"/>. Scanning stops as soon as a token that is
+        /// not a recognized modifier keyword is encountered; that token is pushed back so the caller can
+        /// process it (or simply ignore it at end of input).
+        /// </para>
+        /// <para>
+        /// SPARQL grammar:
+        /// <code>
+        /// SolutionModifier ::= GroupClause? HavingClause? OrderClause? LimitOffsetClauses?
+        /// LimitOffsetClauses ::= LimitClause OffsetClause? | OffsetClause LimitClause?
+        /// </code>
+        /// Only ORDER BY, LIMIT, and OFFSET are supported in the current phase. GROUP BY and HAVING
+        /// belong to a later phase. Modifiers are accepted in any order for leniency; if the same
+        /// modifier appears twice the object-model silently ignores the duplicate.
+        /// </para>
         /// </summary>
-        /// <exception cref="RDFQueryException">When a recognized modifier has a malformed body.</exception>
+        /// <exception cref="RDFQueryException">When a recognized modifier keyword is followed by a malformed body.</exception>
         private static void ParseSolutionModifiers(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
         {
             while (true)
             {
+                //Advance to the first significant character so ReadKeyword finds the keyword immediately
                 SkipWhitespace(parserContext);
-                string keyword = ReadKeyword(parserContext);
-                switch (keyword.ToUpperInvariant())
+
+                //Read the upcoming keyword (may be empty at EOF or when the next token is not a keyword)
+                string modifierKeyword = ReadKeyword(parserContext);
+
+                switch (modifierKeyword.ToUpperInvariant())
                 {
+                    //ORDER BY clause: consume 'BY' and the sequence of order conditions
                     case "ORDER":
                         ParseOrderByModifier(parserContext, selectQuery);
                         break;
 
+                    //LIMIT n: parse the non-negative integer and add a RDFLimitModifier
                     case "LIMIT":
                         selectQuery.AddModifier(new RDFLimitModifier(ParseInteger(parserContext, "LIMIT")));
                         break;
 
+                    //OFFSET n: parse the non-negative integer and add a RDFOffsetModifier
                     case "OFFSET":
                         selectQuery.AddModifier(new RDFOffsetModifier(ParseInteger(parserContext, "OFFSET")));
                         break;
 
                     default:
-                        //Not a modifier keyword: push it back untouched and hand control back to the caller
-                        UnreadString(parserContext, keyword);
+                        //The keyword run is not a recognized modifier (or is empty at EOF): push it back so
+                        //the reader position is restored, and stop scanning modifiers
+                        UnreadString(parserContext, modifierKeyword);
                         return;
                 }
             }
         }
 
         /// <summary>
-        /// Parses an ORDER BY clause (the 'ORDER' keyword has already been consumed): the mandatory 'BY' keyword
-        /// followed by one or more order conditions. Each condition is either a bare variable (ascending by default)
-        /// or an <c>ASC(?var)</c> / <c>DESC(?var)</c> directive. In this phase only variable conditions are
-        /// supported (expression conditions belong to a later phase, and the modifier itself only carries a variable).
+        /// <para>
+        /// Parses the body of an ORDER BY clause (the <c>ORDER</c> keyword has already been consumed by
+        /// <see cref="ParseSolutionModifiers"/>) and attaches the resulting ordering modifiers to
+        /// <paramref name="selectQuery"/>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar:
+        /// <code>
+        /// OrderClause ::= 'ORDER' 'BY' OrderCondition+
+        /// OrderCondition ::= ( ( 'ASC' | 'DESC' ) '(' Expression ')' )
+        ///                  | ( Constraint | Var )
+        /// </code>
+        /// In the current phase, only variable-based conditions are supported. Expression conditions
+        /// (e.g. <c>ORDER BY STRLEN(?label)</c>) belong to the expression-parser phase and are deferred.
+        /// ASC and DESC directives are accepted with a variable argument. A bare variable implies ASC.
+        /// At least one order condition is required after BY; anything that is not a recognised
+        /// condition (e.g. the LIMIT keyword) is pushed back so <see cref="ParseSolutionModifiers"/>
+        /// can process it.
+        /// </para>
         /// </summary>
-        /// <exception cref="RDFQueryException">When 'BY' is missing or no order condition is present.</exception>
+        /// <exception cref="RDFQueryException">When 'BY' is missing or no order condition is found.</exception>
         private static void ParseOrderByModifier(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
         {
+            //The 'BY' keyword is mandatory and must immediately follow 'ORDER'
             if (!TryConsumeKeyword(parserContext, "BY"))
                 throw new RDFQueryException("Cannot parse SPARQL ORDER BY clause: expected 'BY' after 'ORDER' " + GetCoordinates(parserContext));
 
             bool foundAtLeastOneOrderCondition = false;
+
             while (true)
             {
-                int nextCodePoint = SkipWhitespace(parserContext);
+                int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
-                //A bare variable orders ascending by default
-                if (nextCodePoint == '?' || nextCodePoint == '$')
+                //A '?' or '$' sigil starts a bare variable order condition: ascending by default
+                if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
                 {
-                    selectQuery.AddModifier(new RDFOrderByModifier(ParseVariable(parserContext), RDFQueryEnums.RDFOrderByFlavors.ASC));
+                    selectQuery.AddModifier(new RDFOrderByModifier(
+                        ParseVariable(parserContext), RDFQueryEnums.RDFOrderByFlavors.ASC));
                     foundAtLeastOneOrderCondition = true;
                     continue;
                 }
 
-                //Otherwise the only accepted conditions are the ASC(...) / DESC(...) directives
+                //Otherwise try to read an ASC(...) or DESC(...) directive
                 string directionKeyword = ReadKeyword(parserContext);
-                string upperDirectionKeyword = directionKeyword.ToUpperInvariant();
-                if (upperDirectionKeyword == "ASC" || upperDirectionKeyword == "DESC")
+                string normalizedDirectionKeyword = directionKeyword.ToUpperInvariant();
+
+                if (normalizedDirectionKeyword == "ASC" || normalizedDirectionKeyword == "DESC")
                 {
+                    //Both directives require a single variable argument wrapped in parentheses
                     ExpectChar(parserContext, '(', "ORDER BY condition");
-                    RDFVariable orderVariable = ParseVariable(parserContext);
+                    RDFVariable orderingVariable = ParseVariable(parserContext);
                     ExpectChar(parserContext, ')', "ORDER BY condition");
 
-                    RDFQueryEnums.RDFOrderByFlavors orderFlavor = upperDirectionKeyword == "ASC"
+                    //Map the direction keyword to the corresponding enum value
+                    RDFQueryEnums.RDFOrderByFlavors orderingDirection = normalizedDirectionKeyword == "ASC"
                         ? RDFQueryEnums.RDFOrderByFlavors.ASC
                         : RDFQueryEnums.RDFOrderByFlavors.DESC;
-                    selectQuery.AddModifier(new RDFOrderByModifier(orderVariable, orderFlavor));
+
+                    selectQuery.AddModifier(new RDFOrderByModifier(orderingVariable, orderingDirection));
                     foundAtLeastOneOrderCondition = true;
                     continue;
                 }
 
-                //Not an order condition: push back what we read (likely LIMIT/OFFSET) and stop
+                //The next token is not an order condition: push it back (it may be LIMIT/OFFSET or EOF)
+                //and stop scanning order conditions
                 if (directionKeyword.Length > 0)
                     UnreadString(parserContext, directionKeyword);
                 break;
             }
 
+            //At least one order condition is mandatory in a valid ORDER BY clause
             if (!foundAtLeastOneOrderCondition)
                 throw new RDFQueryException("Cannot parse SPARQL ORDER BY clause: expected at least one variable to order by " + GetCoordinates(parserContext));
         }
@@ -753,119 +1425,198 @@ namespace RDFSharp.Query
 
         #region Lexer.Helpers
         /// <summary>
-        /// Reads and returns the next code point from the underlying reader (or -1 at end of input).
-        /// Thin pass-through to RDFTurtle so the SPARQL parser shares the exact same pull-style reading.
+        /// Reads and returns the next Unicode code point from the underlying pushback reader, advancing the
+        /// reader position by one code point. Returns <c>-1</c> at end of input. Thin delegation to
+        /// <c>RDFTurtle.ReadCodePoint</c> so the SPARQL parser shares the identical pull-style I/O contract.
         /// </summary>
         private static int ReadCodePoint(RDFQueryParserContext parserContext)
             => RDFTurtle.ReadCodePoint(parserContext.TermParsingContext);
 
         /// <summary>
-        /// Peeks the next code point without consuming it (or -1 at end of input).
+        /// Returns the next Unicode code point from the reader WITHOUT advancing the reader position
+        /// (i.e. the same code point will be returned by the next <see cref="ReadCodePoint"/> call).
+        /// Returns <c>-1</c> at end of input. Used to look ahead by a single character without consuming it.
         /// </summary>
         private static int PeekCodePoint(RDFQueryParserContext parserContext)
             => RDFTurtle.PeekCodePoint(parserContext.TermParsingContext);
 
         /// <summary>
-        /// Pushes a single code point back onto the reader so a subsequent read returns it again.
+        /// Pushes a single Unicode code point back onto the reader so that the next
+        /// <see cref="ReadCodePoint"/> call returns it again. Used when a character has been consumed
+        /// (e.g. to recognise a token boundary) but should be processed by a subsequent parsing step.
         /// </summary>
         private static void UnreadCodePoint(RDFQueryParserContext parserContext, int codePoint)
             => RDFTurtle.UnreadCodePoint(parserContext.TermParsingContext, codePoint);
 
         /// <summary>
-        /// Skips whitespace/comments and verifies that the next significant character is the expected one,
-        /// consuming it. Used for the structural punctuation of the grammar ('{', '}', '(', ')').
+        /// <para>
+        /// Skips any leading whitespace and <c>#</c>-style comments, then verifies that the next
+        /// significant character is <paramref name="expectedCodePoint"/> and consumes it.
+        /// </para>
+        /// <para>
+        /// Used for the structural punctuation of the SPARQL grammar: opening/closing braces
+        /// (<c>{</c>, <c>}</c>), parentheses (<c>(</c>, <c>)</c>), and similar mandatory delimiters.
+        /// When the expected character is not found, a descriptive <see cref="RDFQueryException"/> is
+        /// thrown naming the grammar context (e.g. "WHERE clause") so the author knows which construct
+        /// is malformed.
+        /// </para>
         /// </summary>
-        /// <exception cref="RDFQueryException">When the expected character is not found.</exception>
+        /// <param name="parserContext">The current parse state.</param>
+        /// <param name="expectedCodePoint">The Unicode code point that must be present next.</param>
+        /// <param name="grammarContext">Human-readable label for the grammar construct (used in error messages).</param>
+        /// <exception cref="RDFQueryException">When the next significant character is not <paramref name="expectedCodePoint"/>.</exception>
         private static void ExpectChar(RDFQueryParserContext parserContext, int expectedCodePoint, string grammarContext)
         {
-            int nextCodePoint = SkipWhitespace(parserContext);
-            if (nextCodePoint != expectedCodePoint)
-                throw new RDFQueryException("Cannot parse SPARQL " + grammarContext + ": expected '" + (char)expectedCodePoint + "' but found " + DescribeCodePoint(nextCodePoint) + " " + GetCoordinates(parserContext));
+            //Skip whitespace/comments and examine the first significant character
+            int nextSignificantCodePoint = SkipWhitespace(parserContext);
+
+            //If the significant character is not what we expect, throw a descriptive parse error
+            if (nextSignificantCodePoint != expectedCodePoint)
+                throw new RDFQueryException(
+                    "Cannot parse SPARQL " + grammarContext + ": expected '"
+                    + (char)expectedCodePoint + "' but found "
+                    + DescribeCodePoint(nextSignificantCodePoint) + " "
+                    + GetCoordinates(parserContext));
+
+            //Consume the expected character
             ReadCodePoint(parserContext);
         }
 
         /// <summary>
-        /// Skips whitespace/comments and, if the next significant character is the given candidate, consumes it and
-        /// returns true; otherwise leaves the reader untouched and returns false. Used for optional punctuation.
+        /// <para>
+        /// Skips whitespace/comments and, if the next significant character equals
+        /// <paramref name="candidateCodePoint"/>, consumes it and returns <c>true</c>. Otherwise leaves the
+        /// reader positioned on that character (unchanged) and returns <c>false</c>.
+        /// </para>
+        /// <para>
+        /// Used for optional single-character tokens such as the <c>*</c> wildcard in SELECT projections.
+        /// </para>
         /// </summary>
         private static bool TryConsumeChar(RDFQueryParserContext parserContext, int candidateCodePoint)
         {
+            //Peek at the next significant character
             if (SkipWhitespace(parserContext) == candidateCodePoint)
             {
+                //Match: consume and signal success
                 ReadCodePoint(parserContext);
                 return true;
             }
+
+            //No match: the reader position is unchanged (SkipWhitespace leaves the char on the reader)
             return false;
         }
 
         /// <summary>
-        /// Skips whitespace/comments and, if the upcoming keyword run case-insensitively equals the expected keyword,
-        /// consumes it and returns true; otherwise pushes the run back and returns false. Used for optional keywords
-        /// (WHERE, DISTINCT, REDUCED, BY) and for case-insensitive keyword matching in general.
+        /// <para>
+        /// Skips whitespace/comments and, if the upcoming ASCII-letter run equals
+        /// <paramref name="expectedKeyword"/> (case-insensitively), consumes it and returns <c>true</c>.
+        /// Otherwise restores the reader to exactly the position it was at before the call and returns
+        /// <c>false</c>.
+        /// </para>
+        /// <para>
+        /// Used for keywords that are syntactically optional in the SPARQL grammar: <c>WHERE</c>,
+        /// <c>DISTINCT</c>, <c>REDUCED</c>, and <c>BY</c> (in ORDER BY).
+        /// </para>
         /// </summary>
         private static bool TryConsumeKeyword(RDFQueryParserContext parserContext, string expectedKeyword)
         {
+            //Position the reader on the first non-whitespace character before attempting to read a keyword
             SkipWhitespace(parserContext);
-            string keyword = ReadKeyword(parserContext);
-            if (keyword.Equals(expectedKeyword, StringComparison.OrdinalIgnoreCase))
+
+            //Read the maximal ASCII-letter run starting at the current position
+            string candidateKeyword = ReadKeyword(parserContext);
+
+            //Compare case-insensitively per SPARQL keyword rules
+            if (candidateKeyword.Equals(expectedKeyword, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            //Not the expected keyword: restore the reader to exactly where it was
-            UnreadString(parserContext, keyword);
+            //Not the expected keyword: push the run back so the reader is exactly where it started,
+            //and signal that the optional keyword was not present
+            UnreadString(parserContext, candidateKeyword);
             return false;
         }
 
         /// <summary>
-        /// Skips whitespace/comments and parses a non-negative decimal integer literal (used by LIMIT/OFFSET).
+        /// <para>
+        /// Skips whitespace/comments and parses a non-negative decimal integer literal, returning its
+        /// value as a 32-bit integer. Used for the LIMIT and OFFSET clause values.
+        /// </para>
         /// </summary>
-        /// <exception cref="RDFQueryException">When no digit is present at the cursor.</exception>
+        /// <param name="parserContext">The current parse state.</param>
+        /// <param name="grammarContext">Human-readable label for the containing grammar construct (used in error messages).</param>
+        /// <exception cref="RDFQueryException">When no decimal digit is present at the current reader position.</exception>
         private static int ParseInteger(RDFQueryParserContext parserContext, string grammarContext)
         {
             SkipWhitespace(parserContext);
 
-            StringBuilder digits = new StringBuilder();
+            //Accumulate consecutive decimal-digit characters into a string builder
+            StringBuilder digitRun = new StringBuilder();
             int codePoint = ReadCodePoint(parserContext);
             while (codePoint >= '0' && codePoint <= '9')
             {
-                RDFTurtle.AppendCodePoint(digits, codePoint);
+                RDFTurtle.AppendCodePoint(digitRun, codePoint);
                 codePoint = ReadCodePoint(parserContext);
             }
-            //The first non-digit code point does not belong to the number: push it back
+
+            //The first non-digit character terminates the number — push it back so the next reader call
+            //sees it (it may be a keyword like LIMIT/OFFSET or the end of the query)
             UnreadCodePoint(parserContext, codePoint);
 
-            if (digits.Length == 0)
-                throw new RDFQueryException("Cannot parse SPARQL " + grammarContext + ": expected a non-negative integer " + GetCoordinates(parserContext));
+            //An empty digit run means no integer was present where one was required
+            if (digitRun.Length == 0)
+                throw new RDFQueryException(
+                    "Cannot parse SPARQL " + grammarContext + ": expected a non-negative integer "
+                    + GetCoordinates(parserContext));
 
-            return int.Parse(digits.ToString(), CultureInfo.InvariantCulture);
+            //Parse using the invariant culture so '.' is never misinterpreted as a decimal separator
+            return int.Parse(digitRun.ToString(), CultureInfo.InvariantCulture);
         }
 
         /// <summary>
-        /// Renders a code point for diagnostics: either the quoted character or the words "end of input" at EOF.
+        /// Produces a human-readable description of a Unicode code point for use in parse-error messages:
+        /// returns the character enclosed in single quotes (e.g. <c>'{'</c>) or the phrase
+        /// <c>"end of input"</c> when the code point is <c>-1</c> (EOF sentinel).
         /// </summary>
         private static string DescribeCodePoint(int codePoint)
             => codePoint == -1 ? "end of input" : "'" + char.ConvertFromUtf32(codePoint) + "'";
 
         /// <summary>
-        /// Re-attaches the prologue's explicitly-declared prefixes to the given query so that the parsed query
-        /// re-serializes its prologue identically to the input. The default namespace (empty label) is skipped,
-        /// because RDFNamespace forbids an empty prefix and the printer cannot emit it. Any prefix that RDFNamespace
-        /// rejects (e.g. a reserved label) is silently skipped: it still resolves terms, it just is not re-declared.
+        /// <para>
+        /// Re-attaches the PREFIX declarations accumulated by this query's prologue to
+        /// <paramref name="selectQuery"/> as <see cref="RDFNamespace"/> objects, so that the parsed query
+        /// can re-serialise its prologue section identically to the original input text.
+        /// </para>
+        /// <para>
+        /// Two categories of declared prefixes are silently skipped rather than added:
+        /// <list type="bullet">
+        /// <item>The <b>default namespace</b> (empty label, declared as <c>PREFIX : &lt;...&gt;</c>):
+        ///   <see cref="RDFNamespace"/> forbids an empty prefix label, and the SPARQL printer has no
+        ///   mechanism to re-emit it, so it cannot survive the serialisation round-trip and is omitted.</item>
+        /// <item>Any prefix whose label or URI is rejected by <see cref="RDFNamespace"/> (e.g. a reserved
+        ///   or otherwise invalid label): the prefix still participates in term resolution during parsing
+        ///   (it lives in the resolver's internal dictionary) but it is not forwarded to the query object
+        ///   model, so it will not appear in the re-serialised prologue.</item>
+        /// </list>
+        /// </para>
         /// </summary>
         private static void ApplyDeclaredPrefixes(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
         {
-            foreach (KeyValuePair<string, string> declaredPrefix in parserContext.Resolver.DeclaredPrefixes)
+            foreach (KeyValuePair<string, string> prologuePrefixBinding in parserContext.Resolver.DeclaredPrefixes)
             {
-                //The default namespace cannot be modeled as an RDFNamespace (empty prefix is disallowed)
-                if (declaredPrefix.Key.Length == 0)
+                //Skip the default namespace: RDFNamespace forbids an empty prefix label
+                if (prologuePrefixBinding.Key.Length == 0)
                     continue;
 
                 try
                 {
-                    selectQuery.AddPrefix(new RDFNamespace(declaredPrefix.Key, declaredPrefix.Value));
+                    //Attempt to construct an RDFNamespace and add it as a prefix declaration to the query
+                    selectQuery.AddPrefix(new RDFNamespace(prologuePrefixBinding.Key, prologuePrefixBinding.Value));
                 }
                 catch (RDFModelException)
                 {
-                    //RDFNamespace rejected this label/uri (e.g. a reserved prefix): keep it for resolution only
+                    //RDFNamespace rejected this label or URI (e.g. a reserved prefix name): the binding is
+                    //already in the resolver's dictionary and will still be used for term resolution, but it
+                    //cannot be modelled as an RDFNamespace so we leave it out of the query's prologue list
                 }
             }
         }
@@ -873,29 +1624,44 @@ namespace RDFSharp.Query
 
         #region Char.Check
         /// <summary>
-        /// Checks whether the given code point is an ASCII letter (A-Z or a-z).
+        /// Returns <c>true</c> when <paramref name="codePoint"/> is an ASCII letter (A–Z or a–z).
+        /// Used by <see cref="ReadKeyword"/> to accumulate the maximal letter run that may be a keyword.
         /// </summary>
         private static bool IsAsciiLetter(int codePoint)
             => (codePoint >= 'A' && codePoint <= 'Z') || (codePoint >= 'a' && codePoint <= 'z');
 
         /// <summary>
-        /// Checks whether the given code point may START a SPARQL VARNAME.
-        /// Per the grammar: VARNAME ::= ( PN_CHARS_U | [0-9] ) ( ... )* — i.e. a letter, underscore or digit.
+        /// <para>
+        /// Returns <c>true</c> when <paramref name="codePoint"/> is a valid FIRST character of a SPARQL
+        /// variable name (VARNAME).
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>VARNAME ::= ( PN_CHARS_U | [0-9] ) ( PN_CHARS_U | [0-9] | … )*</c>.
+        /// The first character must be a PN_CHARS_U character (letter, underscore, or non-ASCII Unicode
+        /// letter/digit in the PN_CHARS_U set) or an ASCII decimal digit.
+        /// </para>
         /// </summary>
         private static bool IsVarNameStartChar(int codePoint)
             => RDFTurtle.IsPN_CHARS_U(codePoint) || RDFTurtle.IsNumber(codePoint);
 
         /// <summary>
-        /// Checks whether the given code point may CONTINUE a SPARQL VARNAME.
-        /// Per the grammar: the tail allows PN_CHARS_U, digits, and a handful of combining/connector ranges.
-        /// Note that '-' is intentionally excluded (unlike Turtle PN_CHARS), as SPARQL VARNAME forbids it.
+        /// <para>
+        /// Returns <c>true</c> when <paramref name="codePoint"/> is a valid CONTINUATION character inside
+        /// a SPARQL variable name (VARNAME) — i.e. any character valid at position 2 or later.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: the tail of a VARNAME may contain PN_CHARS_U, decimal digits, and additional
+        /// Unicode ranges: U+00B7 (middle dot), U+0300–U+036F (combining diacritics), and
+        /// U+203F–U+2040 (undertie / character tie). The hyphen <c>-</c> is intentionally excluded:
+        /// unlike Turtle's PN_CHARS, SPARQL VARNAME does not allow hyphens after the first character.
+        /// </para>
         /// </summary>
         private static bool IsVarNameChar(int codePoint)
             => RDFTurtle.IsPN_CHARS_U(codePoint)
-                || RDFTurtle.IsNumber(codePoint)
-                || codePoint == 0x00B7
-                || (codePoint >= 0x0300 && codePoint <= 0x036F)
-                || (codePoint >= 0x203F && codePoint <= 0x2040);
+               || RDFTurtle.IsNumber(codePoint)
+               || codePoint == 0x00B7                              // MIDDLE DOT
+               || (codePoint >= 0x0300 && codePoint <= 0x036F)    // Combining Diacritical Marks
+               || (codePoint >= 0x203F && codePoint <= 0x2040);   // UNDERTIE, CHARACTER TIE
         #endregion
     }
     
