@@ -15,6 +15,7 @@
 */
 
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
@@ -724,6 +725,101 @@ public class RDFQueryParserTest
     public void ShouldThrowOnUnsupportedKeywordBind()
         => Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString("SELECT * WHERE { BIND(1 AS ?x) }"));
+    #endregion
+
+    #region GraphPatternAlgebra (F2a end-to-end execution)
+    //These tests close the loop that the round-trip and structural tests leave open: they parse a SPARQL
+    //string, EXECUTE it against a real in-memory graph, and assert on the actual RESULT SET. This is what
+    //actually proves that the algebra TREE the parser builds is evaluated by the engine with SPARQL-compliant
+    //semantics — in particular that mixed nested operators bind as the spec requires (e.g. A ∪ (B ∖ C)) and
+    //not with the fixed-precedence flattening of the old model (which computed (A ∪ B) ∖ C).
+
+    //Membership dataset shared by the execution tests below.
+    //Three predicates mark membership in the synthetic sets A, B, C:
+    //  A = {x1,x2,x5}   (via <http://ex/inA>)
+    //  B = {x2,x3}      (via <http://ex/inB>)
+    //  C = {x3,x4,x5}   (via <http://ex/inC>)
+    //The subjects deliberately overlap so that union/minus interplay is observable in the result set.
+    private static RDFGraph BuildMembershipDataset()
+    {
+        RDFResource predicateInA = new RDFResource("http://ex/inA");
+        RDFResource predicateInB = new RDFResource("http://ex/inB");
+        RDFResource predicateInC = new RDFResource("http://ex/inC");
+        RDFResource membershipFlag = new RDFResource("http://ex/yes");
+
+        RDFGraph dataset = new RDFGraph();
+        foreach (string subjectLocalName in new[] { "x1", "x2", "x5" })
+            dataset.AddTriple(new RDFTriple(new RDFResource("http://ex/" + subjectLocalName), predicateInA, membershipFlag));
+        foreach (string subjectLocalName in new[] { "x2", "x3" })
+            dataset.AddTriple(new RDFTriple(new RDFResource("http://ex/" + subjectLocalName), predicateInB, membershipFlag));
+        foreach (string subjectLocalName in new[] { "x3", "x4", "x5" })
+            dataset.AddTriple(new RDFTriple(new RDFResource("http://ex/" + subjectLocalName), predicateInC, membershipFlag));
+        return dataset;
+    }
+
+    //Helper: run the query against the dataset and return the bound values of ?s, sorted, including duplicates
+    //(SPARQL bag semantics — we deliberately do NOT de-duplicate, so multiset cardinality is observable).
+    private static string[] ExecuteAndCollectSubjects(string sparqlQuery, RDFGraph dataset)
+    {
+        DataTable results = RDFSelectQuery.FromString(sparqlQuery).ApplyToGraph(dataset).SelectResults;
+        return results.AsEnumerable()
+                      .Select(row => row.Field<string>("?s"))
+                      .OrderBy(subjectValue => subjectValue, System.StringComparer.Ordinal)
+                      .ToArray();
+    }
+
+    [TestMethod]
+    public void ShouldExecuteUnionOfMinusWithSparqlCompliantBindingAndBagSemantics()
+    {
+        //Spec grouping: A ∪ (B ∖ C). With B ∖ C = {x2,x3} ∖ {x3,x4,x5} = {x2}, the bag union with
+        //A = {x1,x2,x5} yields {x1,x2,x2,x5} (x2 appears once from A and once from B∖C — bag union keeps both).
+        //Crucially x5 SURVIVES, which would be impossible under the old fixed-precedence (A ∪ B) ∖ C = {x1,x2}.
+        RDFGraph dataset = BuildMembershipDataset();
+        string[] subjects = ExecuteAndCollectSubjects(
+            "SELECT ?s WHERE { { ?s <http://ex/inA> ?f } UNION { { ?s <http://ex/inB> ?f } MINUS { ?s <http://ex/inC> ?f } } }",
+            dataset);
+
+        CollectionAssert.AreEqual(
+            new[] { "http://ex/x1", "http://ex/x2", "http://ex/x2", "http://ex/x5" }, subjects,
+            "Expected SPARQL-compliant A ∪ (B ∖ C) in bag semantics; actual: " + string.Join(",", subjects));
+    }
+
+    [TestMethod]
+    public void ShouldExecuteMinusOfUnionWithSparqlCompliantBinding()
+    {
+        //Spec grouping: (A ∪ B) ∖ C. With A ∪ B = {x1,x2,x2,x3,x5} and C = {x3,x4,x5},
+        //removing every left row whose ?s is in C drops x3 and x5, leaving {x1,x2,x2}.
+        //This is the DUAL of the previous test and must differ from it, proving the tree honors the braces.
+        RDFGraph dataset = BuildMembershipDataset();
+        string[] subjects = ExecuteAndCollectSubjects(
+            "SELECT ?s WHERE { { { ?s <http://ex/inA> ?f } UNION { ?s <http://ex/inB> ?f } } MINUS { ?s <http://ex/inC> ?f } }",
+            dataset);
+
+        CollectionAssert.AreEqual(
+            new[] { "http://ex/x1", "http://ex/x2", "http://ex/x2" }, subjects,
+            "Expected SPARQL-compliant (A ∪ B) ∖ C; actual: " + string.Join(",", subjects));
+    }
+
+    [TestMethod]
+    public void ShouldExecuteOptionalKeepingLeftRowsWhenRightIsAbsent()
+    {
+        //OPTIONAL must preserve every left (A) row even when the right (C) pattern does not match, leaving ?c
+        //unbound for those rows. A = {x1,x2,x5}; only x5 is also in C, so x1 and x2 keep ?c UNBOUND.
+        RDFGraph dataset = BuildMembershipDataset();
+        DataTable results = RDFSelectQuery.FromString(
+            "SELECT ?s ?c WHERE { ?s <http://ex/inA> ?f OPTIONAL { ?s <http://ex/inC> ?c } }")
+            .ApplyToGraph(dataset).SelectResults;
+
+        //All three A-subjects survive the left join
+        string[] subjects = results.AsEnumerable()
+            .Select(row => row.Field<string>("?s"))
+            .OrderBy(subjectValue => subjectValue, System.StringComparer.Ordinal).ToArray();
+        CollectionAssert.AreEqual(new[] { "http://ex/x1", "http://ex/x2", "http://ex/x5" }, subjects);
+
+        //x5 has ?c bound (it is in C); x1 and x2 have ?c UNBOUND (left-join padding)
+        int boundOptionalCount = results.AsEnumerable().Count(row => row.Field<string>("?c") != null);
+        Assert.AreEqual(1, boundOptionalCount, "Only x5 should carry a bound ?c value");
+    }
     #endregion
 }
 

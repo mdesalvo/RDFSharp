@@ -138,6 +138,14 @@ namespace RDFSharp.Query
         /// <para>
         /// Comparison is case-insensitive (SPARQL keywords are case-insensitive per the spec).
         /// </para>
+        /// <para>
+        /// Phase note: OPTIONAL / UNION / MINUS are handled in F2a; the remaining keywords (FILTER, GRAPH,
+        /// SERVICE, BIND, VALUES) are recognized here only so the TriplesBlock scan stops at them and the
+        /// dispatcher can raise a precise "not supported yet" error until their phase lands. SELECT is listed
+        /// because a SubSelect (<c>'{' SubSelect '}'</c>) can begin a group; today it is rejected as
+        /// unsupported, and when the SubSelect phase lands it must be REMOVED from the throw branch in
+        /// <see cref="ParseGroupGraphPatternSub"/> and routed to a dedicated SubSelect parser instead.
+        /// </para>
         /// </summary>
         private static readonly HashSet<string> GraphPatternKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             { "OPTIONAL", "UNION", "MINUS", "FILTER", "GRAPH", "SERVICE", "BIND", "VALUES", "SELECT" };
@@ -657,7 +665,10 @@ namespace RDFSharp.Query
         /// </code>
         /// </para>
         /// <para>
-        /// Algebra accumulation rules (implemented here in strict SPARQL compliance):
+        /// Algebra accumulation rules. The grouping/binding of well-formed input is strictly SPARQL-compliant
+        /// (e.g. MINUS binds the whole accumulated left side); on top of that the parser applies two RATIFIED
+        /// leniencies for malformed input — a stray UNION and a leading MINUS are recovered from rather than
+        /// rejected (see the corresponding items below):
         /// <list type="bullet">
         /// <item>
         ///   <b>BGP (bare triples)</b> — a triple run is read by <see cref="ParseBasicGraphPatternMember"/>
@@ -734,6 +745,17 @@ namespace RDFSharp.Query
                 //The operand of OPTIONAL is a single GroupGraphPattern (which may itself contain UNION /
                 //MINUS / nested groups). Mark it optional and append it independently: unlike MINUS, OPTIONAL
                 //does NOT fold the previous accumulator into a combined left side.
+                //
+                //ASYMMETRY NOTE (why OPTIONAL is a flat flag while MINUS/UNION are tree nodes):
+                //OPTIONAL stays a plain accumulator member carrying IsOptional=true, whereas MINUS and UNION
+                //become explicit RDFOperatorQueryMember binary tree nodes. This is deliberate and rests on how
+                //the engine evaluates the top-level member list: RDFTableEngine.CombineTables performs a LEFT-FOLD
+                //(OuterJoinTables), and when a member's table is optional it left-joins instead of inner-joins.
+                //That fold therefore ALREADY binds the whole accumulated left side as OPTIONAL's left operand, for
+                //free — so a flat flag is sufficient and exactly correct (e.g. {A B OPTIONAL C} folds to
+                //LeftJoin(Join(A,B), C)). MINUS/UNION cannot rely on the fold: the flat flags that used to encode
+                //them were removed in Mirella 2, and their operands must be made explicit so the engine can
+                //evaluate each binary node's left and right as isolated, correctly-scoped sub-results.
                 if (upcomingKeyword == "OPTIONAL")
                 {
                     ConsumeKeyword(parserContext);
