@@ -115,6 +115,43 @@ namespace RDFSharp.Query
             /// </para>
             /// </summary>
             internal (RDFPatternMember ActiveContext, bool WasUsed) CurrentGraphScope { get; set; }
+
+            /// <summary>
+            /// <para>
+            /// Monotonic counter feeding the names of the FRESH variables that the parser synthesises for every
+            /// ANONYMOUS blank node it desugars — the empty <c>[]</c>, each blank-node property list <c>[ … ]</c>,
+            /// and every internal list node of a collection <c>( … )</c>. Each call to
+            /// <see cref="NewAnonymousBlankNodeVariable"/> increments it, so two anonymous blank nodes in the same
+            /// query never collide.
+            /// </para>
+            /// <para>
+            /// DESIGN NOTE (decided 2026-06-11). In SPARQL a blank node inside a query is an EXISTENTIAL — it
+            /// behaves like a non-distinguished variable, matching any term in that position. RDFSharp's engine,
+            /// however, treats a blank-node <c>RDFResource</c> in a pattern as a CONSTANT (only a fixed-position
+            /// hole that <c>is RDFVariable</c> is a join hole). Desugaring blank nodes into fresh blank-node
+            /// resources would therefore never match real data. So the parser maps EVERY query blank node — the
+            /// anonymous ones here and the labelled <c>_:x</c> ones in <see cref="LabeledBlankNodeVariables"/> —
+            /// onto fresh <see cref="RDFVariable"/> instances, which the engine evaluates with the intended
+            /// existential semantics.
+            /// </para>
+            /// </summary>
+            internal int AnonymousBlankNodeCounter { get; set; }
+
+            /// <summary>
+            /// <para>
+            /// Maps each LABELLED blank node label (the <c>x</c> of a <c>_:x</c> token, without the <c>_:</c>
+            /// prefix) to the single <see cref="RDFVariable"/> that represents it throughout this query. Looking
+            /// the label up here guarantees that every occurrence of the same <c>_:x</c> resolves to the SAME
+            /// variable, exactly as SPARQL requires a repeated blank node label to denote the same node.
+            /// </para>
+            /// <para>
+            /// Comparison is ordinal because blank node labels are case-sensitive in the SPARQL grammar (even
+            /// though the resulting RDFVariable name is upper-cased by RDFVariable itself). See the design note on
+            /// <see cref="AnonymousBlankNodeCounter"/> for why labelled blank nodes become variables too.
+            /// </para>
+            /// </summary>
+            internal Dictionary<string, RDFVariable> LabeledBlankNodeVariables { get; }
+                = new Dictionary<string, RDFVariable>(StringComparer.Ordinal);
             #endregion
 
             #region Ctors
@@ -1309,10 +1346,28 @@ namespace RDFSharp.Query
                 if (PeekGraphPatternKeyword(parserContext).Length > 0)
                     return;
 
-                //Parse the next triple: first the subject term, then its complete predicate-object list
-                //(which may produce multiple RDFPattern instances via ';' and ',' shorthands)
-                RDFPatternMember tripleSubject = ParseVariableOrTerm(parserContext);
-                ParsePredicateObjectList(parserContext, targetPatternGroup, tripleSubject);
+                //A subject that begins with '[' or '(' is a TriplesNode (a blank-node property list or a
+                //collection). Per the SPARQL grammar these two productions differ in whether the trailing
+                //property list is mandatory:
+                //  TriplesSameSubject ::= VarOrTerm PropertyListNotEmpty   (plain subject → property list REQUIRED)
+                //                       | TriplesNode  PropertyList         (bnode/collection → property list OPTIONAL)
+                //A TriplesNode can already have emitted its own triples (the bnode's nested list, or the
+                //collection's rdf:first/rdf:rest chain), so it may legitimately stand alone with no outer verb.
+                bool subjectIsTriplesNode = nextSignificantCodePoint == '[' || nextSignificantCodePoint == '(';
+
+                //Parse the subject term. For a TriplesNode this also emits its internal triples into the group
+                //and returns the fresh variable standing for its (head) node.
+                RDFPatternMember tripleSubject = ParseVariableOrTerm(parserContext, targetPatternGroup);
+
+                //Decide whether an outer predicate-object list follows. It is mandatory after a plain subject,
+                //optional after a TriplesNode: if the TriplesNode is immediately followed by a block boundary
+                //(., }, {, keyword or EOF) we skip the property list and keep only the triples it already emitted.
+                int codePointAfterSubject = SkipWhitespace(parserContext);
+                bool atTripleBoundary = codePointAfterSubject == '.' || codePointAfterSubject == '}'
+                                        || codePointAfterSubject == '{' || codePointAfterSubject == -1
+                                        || PeekGraphPatternKeyword(parserContext).Length > 0;
+                if (!(subjectIsTriplesNode && atTripleBoundary))
+                    ParsePredicateObjectList(parserContext, targetPatternGroup, tripleSubject);
 
                 //After the predicate-object list, a '.' may separate this triple from the next one.
                 //Consume it and continue scanning if present; otherwise the scan stops (we must be at one
@@ -1361,10 +1416,12 @@ namespace RDFSharp.Query
 
                     //After consuming the ';', check whether we are immediately at a block boundary or a keyword.
                     //If so, this was a trailing ';' — legal in SPARQL/Turtle, so we stop the predicate-object
-                    //list without requiring another predicate to follow.
+                    //list without requiring another predicate to follow. The ']' boundary covers a trailing ';'
+                    //inside a blank-node property list, e.g. '[ :p :o ; ]'.
                     int codePointAfterSemicolon = SkipWhitespace(parserContext);
                     if (codePointAfterSemicolon == '.' || codePointAfterSemicolon == '}'
-                        || codePointAfterSemicolon == '{' || codePointAfterSemicolon == -1)
+                        || codePointAfterSemicolon == '{' || codePointAfterSemicolon == ']'
+                        || codePointAfterSemicolon == -1)
                         return;
                     if (PeekGraphPatternKeyword(parserContext).Length > 0)
                         return;
@@ -1397,29 +1454,13 @@ namespace RDFSharp.Query
         {
             while (true)
             {
-                //Parse the object term (variable or RDF term)
-                RDFPatternMember tripleObject = ParseVariableOrTerm(parserContext);
+                //Parse the object term: a variable, a concrete RDF term, or a TriplesNode ('[' blank-node
+                //property list / '(' collection) which emits its own internal triples and returns the fresh
+                //variable standing for its (head) node.
+                RDFPatternMember tripleObject = ParseVariableOrTerm(parserContext, targetPatternGroup);
 
-                //Emit the triple pattern. The RDFPattern constructor enforces all SPARQL term-position rules
-                //(e.g. a literal in subject position is invalid): violations surface as RDFQueryException
-                //through the parser's error contract.
-                //
-                //GRAPH contextualisation: when a GRAPH clause is in force, CurrentGraphScope.ActiveContext holds
-                //its graph specifier (an RDFContext fixed IRI or an RDFVariable). In that case we build the
-                //FOUR-argument pattern so the context decorates this very triple, and we flip the scope's WasUsed
-                //flag so the GRAPH dispatcher can tell its scope was non-empty. Because the scope is a value tuple,
-                //flipping WasUsed means re-assigning the whole slot (keeping the same ActiveContext). Outside any
-                //GRAPH clause ActiveContext is null and we build the ordinary THREE-argument pattern (default
-                //graph), exactly as before F3.
-                if (parserContext.CurrentGraphScope.ActiveContext == null)
-                {
-                    targetPatternGroup.AddPattern(new RDFPattern(tripleSubject, triplePredicate, tripleObject));
-                }
-                else
-                {
-                    targetPatternGroup.AddPattern(new RDFPattern(parserContext.CurrentGraphScope.ActiveContext, tripleSubject, triplePredicate, tripleObject));
-                    parserContext.CurrentGraphScope = (parserContext.CurrentGraphScope.ActiveContext, true);
-                }
+                //Emit the subject-predicate-object triple pattern into the group, with GRAPH context if active.
+                EmitPattern(parserContext, targetPatternGroup, tripleSubject, triplePredicate, tripleObject);
 
                 //A ',' introduces another object sharing this subject+predicate: consume and continue
                 if (SkipWhitespace(parserContext) == ',')
@@ -1435,16 +1476,58 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// <para>
-        /// Parses an RDF term in subject or object position: either a SPARQL variable (<c>?name</c> or
-        /// <c>$name</c>) or any concrete RDF term (IRI, prefixed name, blank node, literal, numeric or
-        /// boolean literal) recognised by the shared Turtle term-reader.
+        /// Emits a single triple pattern into <paramref name="targetPatternGroup"/>, applying the active GRAPH
+        /// context if one is in force. This is the ONE place where the per-pattern context decoration lives, so
+        /// both ordinary object-list triples and the triples synthesised by blank-node / collection desugaring
+        /// share identical contextualisation behaviour.
         /// </para>
         /// <para>
-        /// The caller must ensure that whitespace has been skipped before this method is invoked, or call
-        /// <see cref="ParseTerm"/> (which skips whitespace internally for the Turtle reader path).
+        /// GRAPH contextualisation: when <see cref="RDFQueryParserContext.CurrentGraphScope"/>.ActiveContext is
+        /// non-null (an RDFContext fixed IRI or an RDFVariable), the FOUR-argument <see cref="RDFPattern"/>
+        /// constructor is used so the context decorates the triple, and the scope's WasUsed flag is flipped so
+        /// the GRAPH dispatcher can tell its scope was non-empty (the scope is a value tuple, so flipping WasUsed
+        /// means re-assigning the slot while keeping the same ActiveContext). Outside any GRAPH clause the
+        /// THREE-argument constructor is used (default graph). The RDFPattern constructor also enforces SPARQL's
+        /// term-position rules (e.g. a literal in subject position is rejected), surfaced as RDFQueryException.
         /// </para>
         /// </summary>
-        private static RDFPatternMember ParseVariableOrTerm(RDFQueryParserContext parserContext)
+        private static void EmitPattern(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup,
+            RDFPatternMember tripleSubject, RDFPatternMember triplePredicate, RDFPatternMember tripleObject)
+        {
+            if (parserContext.CurrentGraphScope.ActiveContext == null)
+            {
+                targetPatternGroup.AddPattern(new RDFPattern(tripleSubject, triplePredicate, tripleObject));
+            }
+            else
+            {
+                targetPatternGroup.AddPattern(new RDFPattern(parserContext.CurrentGraphScope.ActiveContext, tripleSubject, triplePredicate, tripleObject));
+                parserContext.CurrentGraphScope = (parserContext.CurrentGraphScope.ActiveContext, true);
+            }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses an RDF term in subject or object position and returns the <see cref="RDFPatternMember"/> that
+        /// stands for it. The dispatch covers every form the SPARQL grammar allows in those positions:
+        /// </para>
+        /// <list type="bullet">
+        /// <item><b>Variable</b> (<c>?name</c> / <c>$name</c>) → an <see cref="RDFVariable"/>.</item>
+        /// <item><b>Labelled blank node</b> (<c>_:x</c>) → a fresh-but-stable <see cref="RDFVariable"/> shared by
+        ///   every occurrence of the same label (see <see cref="ParseLabeledBlankNodeVariable"/>).</item>
+        /// <item><b>Blank-node property list</b> (<c>[ … ]</c> / <c>[]</c>) → desugared by
+        ///   <see cref="ParseBlankNodePropertyList"/>, which emits the nested triples and returns the fresh
+        ///   variable for the blank node.</item>
+        /// <item><b>Collection</b> (<c>( … )</c> / <c>()</c>) → desugared by <see cref="ParseCollection"/> into an
+        ///   rdf:first/rdf:rest/rdf:nil chain; returns the head variable, or rdf:nil for the empty collection.</item>
+        /// <item><b>Concrete term</b> (IRI, prefixed name, literal, numeric/boolean) → delegated to the shared
+        ///   Turtle term-reader via <see cref="ParseTerm"/>.</item>
+        /// </list>
+        /// <para>
+        /// The three desugaring forms ('[', '(', '_:') need the enclosing <paramref name="targetPatternGroup"/>
+        /// because they emit extra triple patterns into it; the simple forms ignore it.
+        /// </para>
+        /// </summary>
+        private static RDFPatternMember ParseVariableOrTerm(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
         {
             int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
@@ -1452,8 +1535,169 @@ namespace RDFSharp.Query
             if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
                 return ParseVariable(parserContext);
 
+            //A '[' opens a blank-node property list (or the empty anonymous blank node '[]')
+            if (nextSignificantCodePoint == '[')
+                return ParseBlankNodePropertyList(parserContext, targetPatternGroup);
+
+            //A '(' opens an RDF collection
+            if (nextSignificantCodePoint == '(')
+                return ParseCollection(parserContext, targetPatternGroup);
+
+            //A '_' opens a labelled blank node '_:x' (the only token that can start with '_' here)
+            if (nextSignificantCodePoint == '_')
+                return ParseLabeledBlankNodeVariable(parserContext);
+
             //Any other character starts a concrete RDF term: delegate to the shared Turtle term-reader
             return ParseTerm(parserContext);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses a blank-node property list — <c>[ PredicateObjectList ]</c> — or the empty anonymous blank
+        /// node <c>[]</c>. A fresh <see cref="RDFVariable"/> is synthesised for the blank node; when the brackets
+        /// contain a predicate-object list, those triples are emitted into <paramref name="targetPatternGroup"/>
+        /// with that variable as their subject. The variable is returned so the caller can use the blank node as
+        /// the subject or object of an enclosing triple.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>BlankNodePropertyList ::= '[' PropertyListNotEmpty ']'</c>, plus the
+        /// <c>ANON ::= '[' WS* ']'</c> token for the empty form.
+        /// </para>
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the brackets are unbalanced or the inner list is malformed.</exception>
+        private static RDFVariable ParseBlankNodePropertyList(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
+        {
+            //Consume the opening '['
+            ExpectChar(parserContext, '[', "blank node property list");
+
+            //Synthesise the fresh variable that represents this anonymous blank node
+            RDFVariable blankNodeVariable = NewAnonymousBlankNodeVariable(parserContext);
+
+            //The empty form '[]' has no nested list: consume the ']' and return the bare variable
+            if (SkipWhitespace(parserContext) == ']')
+            {
+                ReadCodePoint(parserContext);
+                return blankNodeVariable;
+            }
+
+            //Non-empty form: the blank node is the subject of the bracketed predicate-object list
+            ParsePredicateObjectList(parserContext, targetPatternGroup, blankNodeVariable);
+
+            //Consume the closing ']'
+            ExpectChar(parserContext, ']', "blank node property list");
+
+            return blankNodeVariable;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses an RDF collection — <c>( item1 item2 … )</c> — and desugars it into the canonical
+        /// rdf:first/rdf:rest/rdf:nil linked-list triples (SPARQL §17.4 / Turtle collection translation). Each
+        /// list node is a fresh <see cref="RDFVariable"/>; the head variable is returned so the collection can be
+        /// used as the subject or object of an enclosing triple. The empty collection <c>()</c> desugars to no
+        /// triples at all and is represented directly by <c>rdf:nil</c>.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>Collection ::= '(' GraphNode+ ')'</c>; <c>GraphNode ::= VarOrTerm | TriplesNode</c>,
+        /// so an item may itself be a variable, a term, a nested collection or a blank-node property list.
+        /// </para>
+        /// <para>
+        /// SPEC FIDELITY: unlike RDFSharp's Turtle deserialiser, the desugaring deliberately does NOT emit any
+        /// <c>rdf:type rdf:List</c> typing triple — the SPARQL collection translation is purely
+        /// rdf:first/rdf:rest/rdf:nil. Adding the typing triple would over-constrain the pattern, making it match
+        /// only lists explicitly typed as rdf:List in the data.
+        /// </para>
+        /// </summary>
+        /// <returns>The fresh head variable of the list, or <c>rdf:nil</c> for the empty collection.</returns>
+        /// <exception cref="RDFQueryException">When the parentheses are unbalanced or an item is malformed.</exception>
+        private static RDFPatternMember ParseCollection(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
+        {
+            //Consume the opening '('
+            ExpectChar(parserContext, '(', "collection");
+
+            //The empty collection '()' is exactly rdf:nil and emits no triples
+            if (SkipWhitespace(parserContext) == ')')
+            {
+                ReadCodePoint(parserContext);
+                return new RDFResource(RDFVocabulary.RDF.NIL.ToString());
+            }
+
+            //The head variable that the caller will receive (subject of the first rdf:first/rdf:rest pair)
+            RDFVariable listHeadVariable = NewAnonymousBlankNodeVariable(parserContext);
+            RDFVariable currentListNode = listHeadVariable;
+
+            while (true)
+            {
+                //Parse one collection item (variable, term, nested collection or blank-node property list)
+                RDFPatternMember collectionItem = ParseVariableOrTerm(parserContext, targetPatternGroup);
+
+                //currentNode rdf:first item
+                EmitPattern(parserContext, targetPatternGroup, currentListNode,
+                    new RDFResource(RDFVocabulary.RDF.FIRST.ToString()), collectionItem);
+
+                //A ')' closes the collection: link the final node's rdf:rest to rdf:nil and stop
+                if (SkipWhitespace(parserContext) == ')')
+                {
+                    ReadCodePoint(parserContext);
+                    EmitPattern(parserContext, targetPatternGroup, currentListNode,
+                        new RDFResource(RDFVocabulary.RDF.REST.ToString()), new RDFResource(RDFVocabulary.RDF.NIL.ToString()));
+                    break;
+                }
+
+                //More items follow: link the current node's rdf:rest to a fresh node and advance to it
+                RDFVariable nextListNode = NewAnonymousBlankNodeVariable(parserContext);
+                EmitPattern(parserContext, targetPatternGroup, currentListNode,
+                    new RDFResource(RDFVocabulary.RDF.REST.ToString()), nextListNode);
+                currentListNode = nextListNode;
+            }
+
+            return listHeadVariable;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses a labelled blank node <c>_:x</c> and maps it onto the single <see cref="RDFVariable"/> that
+        /// represents that label throughout the query (the first occurrence creates it, later occurrences reuse
+        /// it). The underlying label is read by the shared Turtle node-id reader, then stripped of its
+        /// <c>bnode:</c> internal prefix to recover the original label.
+        /// </para>
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the <c>_:x</c> token is malformed.</exception>
+        private static RDFVariable ParseLabeledBlankNodeVariable(RDFQueryParserContext parserContext)
+        {
+            try
+            {
+                //Reuse the Turtle node-id reader: it returns an RDFResource whose URI is "bnode:<label>"
+                RDFResource blankNodeResource = RDFTurtle.ParseNodeID(parserContext.TermParsingContext);
+                string blankNodeLabel = blankNodeResource.ToString().Substring("bnode:".Length);
+
+                //Resolve (or create) the stable variable that this label denotes within the query
+                if (!parserContext.LabeledBlankNodeVariables.TryGetValue(blankNodeLabel, out RDFVariable labeledBlankNodeVariable))
+                {
+                    //Use a reserved-looking, valid VARNAME so it round-trips as a plain variable and is unlikely
+                    //to collide with author-written variables: "_BNODE_" + the original label.
+                    labeledBlankNodeVariable = new RDFVariable("_BNODE_" + blankNodeLabel);
+                    parserContext.LabeledBlankNodeVariables[blankNodeLabel] = labeledBlankNodeVariable;
+                }
+                return labeledBlankNodeVariable;
+            }
+            catch (RDFModelException blankNodeParsingException)
+            {
+                throw new RDFQueryException("Cannot parse SPARQL blank node " + GetCoordinates(parserContext) + ": " + blankNodeParsingException.Message, blankNodeParsingException);
+            }
+        }
+
+        /// <summary>
+        /// Synthesises a fresh <see cref="RDFVariable"/> for an anonymous blank node (the <c>[]</c> /
+        /// <c>[ … ]</c> node, or an internal collection list node). The name uses a reserved-looking, valid
+        /// VARNAME prefix and a monotonic counter so each anonymous node is distinct and round-trips as a plain
+        /// variable: <c>_BNODE0</c>, <c>_BNODE1</c>, …
+        /// </summary>
+        private static RDFVariable NewAnonymousBlankNodeVariable(RDFQueryParserContext parserContext)
+        {
+            RDFVariable anonymousBlankNodeVariable = new RDFVariable("_BNODE" + parserContext.AnonymousBlankNodeCounter);
+            parserContext.AnonymousBlankNodeCounter++;
+            return anonymousBlankNodeVariable;
         }
 
         /// <summary>
