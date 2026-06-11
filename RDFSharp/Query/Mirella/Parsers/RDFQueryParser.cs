@@ -20,6 +20,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using RDFSharp.Model;
+using RDFSharp.Store;
 
 namespace RDFSharp.Query
 {
@@ -82,6 +83,38 @@ namespace RDFSharp.Query
             /// </para>
             /// </summary>
             internal RDFSPARQLTermResolver Resolver { get; }
+
+            /// <summary>
+            /// <para>
+            /// The GRAPH scope currently in force while triple patterns are being built — a single value pairing
+            /// the two pieces of state that must always live and die together:
+            /// <list type="bullet">
+            /// <item><b>ActiveContext</b> — the graph specifier of the innermost enclosing <c>GRAPH</c> clause.
+            ///   It is <c>null</c> whenever no GRAPH clause is active (the default graph), in which case
+            ///   <see cref="ParseObjectList"/> builds plain three-argument patterns; when it is non-null, every
+            ///   triple pattern emitted by ParseObjectList is built with the four-argument <see cref="RDFPattern"/>
+            ///   constructor so the context decorates the pattern. The value is always one of the two types the
+            ///   model accepts as a pattern context: an <see cref="RDFContext"/> (a fixed graph IRI) or an
+            ///   <see cref="RDFVariable"/> (a dynamic graph variable the engine binds per-quadruple).</item>
+            /// <item><b>WasUsed</b> — whether at least one triple pattern was actually built under the
+            ///   ActiveContext currently in force. ParseObjectList raises it every time it emits a context-decorated
+            ///   pattern. It is the detection mechanism for the forbidden empty GRAPH (<c>GRAPH ?g {}</c> /
+            ///   <c>GRAPH &lt;iri&gt; {}</c>): if a GRAPH scope produces no contextualised pattern, WasUsed is still
+            ///   <c>false</c> on exit and the dispatcher rejects the clause.</item>
+            /// </list>
+            /// </para>
+            /// <para>
+            /// This single shared slot is written ONLY by the GRAPH dispatcher
+            /// (<see cref="ParseGraphGraphPattern"/>) with a strict save → set → recurse → restore discipline.
+            /// Bundling both fields into ONE value is what makes that discipline atomic: the dispatcher saves and
+            /// restores a single tuple rather than juggling two variables in lock-step. The discipline gives
+            /// SPARQL's innermost-shadowing semantics for free — a nested GRAPH overrides the slot for its own
+            /// sub-scope and restores the outer value on exit, so each triple pattern is contextualised by the
+            /// GRAPH that most tightly encloses it, and a nested GRAPH never falsely satisfies the emptiness check
+            /// of its enclosing GRAPH.
+            /// </para>
+            /// </summary>
+            internal (RDFPatternMember ActiveContext, bool WasUsed) CurrentGraphScope { get; set; }
             #endregion
 
             #region Ctors
@@ -139,9 +172,9 @@ namespace RDFSharp.Query
         /// Comparison is case-insensitive (SPARQL keywords are case-insensitive per the spec).
         /// </para>
         /// <para>
-        /// Phase note: OPTIONAL / UNION / MINUS are handled in F2a; the remaining keywords (FILTER, GRAPH,
-        /// SERVICE, BIND, VALUES) are recognized here only so the TriplesBlock scan stops at them and the
-        /// dispatcher can raise a precise "not supported yet" error until their phase lands. SELECT is listed
+        /// Phase note: OPTIONAL / UNION / MINUS (F2a) and GRAPH (F3) are handled; the remaining keywords
+        /// (FILTER, SERVICE, BIND, VALUES) are recognized here only so the TriplesBlock scan stops at them and
+        /// the dispatcher can raise a precise "not supported yet" error until their phase lands. SELECT is listed
         /// because a SubSelect (<c>'{' SubSelect '}'</c>) can begin a group; today it is rejected as
         /// unsupported, and when the SubSelect phase lands it must be REMOVED from the throw branch in
         /// <see cref="ParseGroupGraphPatternSub"/> and routed to a dedicated SubSelect parser instead.
@@ -681,7 +714,7 @@ namespace RDFSharp.Query
         /// </item>
         /// <item>
         ///   <b>OPTIONAL</b> — the following <c>GroupGraphPattern</c> operand is parsed, its
-        ///   <see cref="RDFQueryMember.IsOptional"/> flag is set to <c>true</c>, and it is appended to the
+        ///   <c>IsOptional</c> flag is set to <c>true</c>, and it is appended to the
         ///   accumulator as an independently optional element.
         /// </item>
         /// <item>
@@ -698,8 +731,13 @@ namespace RDFSharp.Query
         ///   continues, so that the parser is lenient toward malformed queries.
         /// </item>
         /// <item>
-        ///   <b>Deferred keywords</b> (FILTER, GRAPH, SERVICE, BIND, VALUES, SELECT) — a parse error is
-        ///   raised with an explicit "not supported yet" message until the corresponding phase lands.
+        ///   <b>GRAPH</b> — delegated to <see cref="ParseGraphGraphPattern"/>: the following group is parsed
+        ///   with the parsed graph specifier (a fixed <see cref="RDFContext"/> or an <see cref="RDFVariable"/>)
+        ///   fixed as the per-pattern context of every triple it contains, then appended like any other element.
+        /// </item>
+        /// <item>
+        ///   <b>Deferred keywords</b> (FILTER, SERVICE, BIND, VALUES, SELECT) — a parse error is raised with an
+        ///   explicit "not supported yet" message until the corresponding phase lands.
         /// </item>
         /// </list>
         /// </para>
@@ -816,7 +854,22 @@ namespace RDFSharp.Query
                     continue;
                 }
 
-                //Any other recognized graph-pattern keyword (FILTER, GRAPH, SERVICE, BIND, VALUES, SELECT)
+                //GraphGraphPattern ::= 'GRAPH' VarOrIri GroupGraphPattern
+                //GRAPH is NOT an algebra tree node: it is a per-pattern context DECORATION. The dispatcher
+                //(ParseGraphGraphPattern) parses the graph specifier (a fixed IRI → RDFContext, or a variable →
+                //RDFVariable), then parses the following GroupGraphPattern with that context in force so every
+                //triple pattern inside the braces is built with the four-argument RDFPattern constructor. The
+                //resulting member is appended to the accumulator just like any other element, which keeps GRAPH
+                //fully orthogonal to the UNION/MINUS/OPTIONAL algebra: the context is already fixed on the
+                //patterns BEFORE any subquery wrapping or tree-node combination happens.
+                if (upcomingKeyword == "GRAPH")
+                {
+                    ConsumeKeyword(parserContext);
+                    accumulatedMembers.Add(ParseGraphGraphPattern(parserContext));
+                    continue;
+                }
+
+                //Any other recognized graph-pattern keyword (FILTER, SERVICE, BIND, VALUES, SELECT)
                 //belongs to a parser phase that has not been implemented yet. Throw with a precise message
                 //naming the exact unsupported keyword, so the caller knows what is missing.
                 if (upcomingKeyword.Length > 0)
@@ -827,7 +880,7 @@ namespace RDFSharp.Query
                 //  anything else → a bare TriplesBlock (sequence of triple patterns)
                 RDFQueryMember parsedElement = nextSignificantCodePoint == '{'
                     ? ParseGroupOrUnionGraphPattern(parserContext)
-                    : (RDFQueryMember)ParseBasicGraphPatternMember(parserContext);
+                    : ParseBasicGraphPatternMember(parserContext);
                 accumulatedMembers.Add(parsedElement);
             }
         }
@@ -936,6 +989,129 @@ namespace RDFSharp.Query
             }
 
             return unionAccumulatedLeft;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses a <c>GraphGraphPattern</c> — the <c>GRAPH</c> keyword (already consumed by the caller),
+        /// followed by a graph specifier and a <c>GroupGraphPattern</c> — and returns the single algebra
+        /// member the braces collapse to. Every triple pattern produced inside the braces is decorated with
+        /// the parsed graph context.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>GraphGraphPattern ::= 'GRAPH' VarOrIri GroupGraphPattern</c>.
+        /// </para>
+        /// <para>
+        /// MODEL MAPPING. RDFSharp has no explicit <c>Graph(var, P)</c> algebra node: GRAPH is represented by
+        /// fixing the context on each individual <see cref="RDFPattern"/> (the four-argument constructor). This
+        /// is faithful to the spec because the SHARED context — same <see cref="RDFContext"/> object, or same
+        /// <see cref="RDFVariable"/> — is the join key: when the specifier is a variable, the engine binds it
+        /// per-quadruple for every contextualised pattern and joins on it, forcing all those patterns into the
+        /// same named graph (exactly <c>∪_g eval(P against graph g)</c>); when it is a fixed IRI, the engine
+        /// filters every contextualised pattern to that one graph. The runtime target of GRAPH is therefore an
+        /// <see cref="RDFStore"/> (the RDF dataset); against a single <see cref="RDFGraph"/> the engine ignores
+        /// the context, which is the correct SPARQL behaviour (a lone graph is just the default graph).
+        /// </para>
+        /// <para>
+        /// CONTEXT DISCIPLINE (save → set → recurse → restore). The graph context is pushed onto the shared
+        /// <see cref="RDFQueryParserContext.CurrentGraphScope"/> slot for the duration of the inner
+        /// <see cref="ParseGroupGraphPattern"/> call and then popped back. This single mutable slot, bracketed
+        /// per dispatch, yields SPARQL §18.4 innermost shadowing for free: a nested GRAPH overrides the slot
+        /// for its own sub-scope and restores the enclosing context on exit, so each triple pattern is bound to
+        /// the graph of the GRAPH clause that most tightly encloses it (e.g. in
+        /// <c>GRAPH ?g { ?s ?p ?o GRAPH ?h { ?a ?b ?c } }</c> the <c>?s ?p ?o</c> pattern is contextualised by
+        /// <c>?g</c> while <c>?a ?b ?c</c> is contextualised by <c>?h</c>).
+        /// </para>
+        /// <para>
+        /// EMPTY GRAPH REJECTION. An empty group (<c>GRAPH ?g {}</c> or <c>GRAPH &lt;iri&gt; {}</c>) is rejected
+        /// with an <see cref="RDFQueryException"/>. The per-pattern model cannot represent it: a SPARQL empty
+        /// group is the join identity (a single empty solution), so <c>GRAPH ?g {}</c> would ENUMERATE the named
+        /// graphs (one solution per graph, with <c>?g</c> bound to each graph IRI) — but with no pattern to carry
+        /// the context there is nothing to bind <c>?g</c> to. Rather than silently produce a wrong result we
+        /// reject. Detection is exact via the <see cref="RDFQueryParserContext.CurrentGraphScope"/> WasUsed flag, which
+        /// is true iff at least one pattern was actually built under THIS clause's context (a nested GRAPH does
+        /// not satisfy its parent's check, because the discipline brackets the flag too).
+        /// </para>
+        /// </summary>
+        /// <returns>The single algebra member the GRAPH's group graph pattern collapses to.</returns>
+        /// <exception cref="RDFQueryException">When the graph specifier is malformed or the group is empty.</exception>
+        private static RDFQueryMember ParseGraphGraphPattern(RDFQueryParserContext parserContext)
+        {
+            //Parse the VarOrIri graph specifier that names the active graph for the upcoming group
+            RDFPatternMember graphContext = ParseGraphContext(parserContext);
+
+            //SAVE the enclosing scope (context + usage flag) as a single value so we can restore it after this
+            //GRAPH's sub-scope. Saving the flag too is what makes the emptiness check immune to nesting: a nested
+            //GRAPH resets and consumes its own flag, then hands our scope back untouched.
+            (RDFPatternMember ActiveContext, bool WasUsed) enclosingGraphScope = parserContext.CurrentGraphScope;
+
+            //SET this clause's context as the one in force, with a fresh (unused) flag so it reflects ONLY the
+            //patterns produced directly by this clause's scope.
+            parserContext.CurrentGraphScope = (graphContext, false);
+
+            //RECURSE into the mandatory GroupGraphPattern operand. While this runs, every triple pattern emitted
+            //by ParseObjectList is built with graphContext as its context (unless an inner GRAPH shadows it).
+            RDFQueryMember graphScopeMember = ParseGroupGraphPattern(parserContext);
+
+            //Capture whether this clause's scope produced any contextualised pattern BEFORE restoring the scope
+            bool thisGraphScopeProducedAPattern = parserContext.CurrentGraphScope.WasUsed;
+
+            //RESTORE the enclosing scope for whatever follows this GRAPH clause
+            parserContext.CurrentGraphScope = enclosingGraphScope;
+
+            //Reject the non-representable empty GRAPH: no contextualised pattern means there was nothing for the
+            //graph specifier to attach to (see the EMPTY GRAPH REJECTION note above).
+            if (!thisGraphScopeProducedAPattern)
+                throw new RDFQueryException("Cannot parse SPARQL GRAPH clause: an empty group graph pattern ('GRAPH ... { }') is not supported, because the per-pattern model has no pattern to anchor the graph specifier to " + GetCoordinates(parserContext));
+
+            return graphScopeMember;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses the graph specifier of a <c>GRAPH</c> clause — the <c>VarOrIri</c> between the keyword and the
+        /// group's opening brace — into the <see cref="RDFPatternMember"/> that will decorate the scope's
+        /// patterns as their context.
+        /// </para>
+        /// <para>
+        /// SPARQL grammar: <c>VarOrIri ::= Var | iri</c>. A variable (<c>?g</c> / <c>$g</c>) becomes an
+        /// <see cref="RDFVariable"/> that the engine binds per-quadruple; an IRI (an <c>IRIREF</c> or a prefixed
+        /// name resolved through the prologue) becomes a fixed <see cref="RDFContext"/>. A literal or a blank
+        /// node in this position is invalid and is rejected with an <see cref="RDFQueryException"/>: the model's
+        /// pattern context accepts only an RDFContext or an RDFVariable.
+        /// </para>
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the specifier is missing, a literal, or a blank node.</exception>
+        private static RDFPatternMember ParseGraphContext(RDFQueryParserContext parserContext)
+        {
+            int nextSignificantCodePoint = SkipWhitespace(parserContext);
+
+            //A '?' or '$' sigil starts a variable graph specifier: dynamic, bound by the engine per-quadruple
+            if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
+                return ParseVariable(parserContext);
+
+            //Otherwise the specifier must be an IRI (IRIREF or prefixed name): parse it through the shared
+            //term-reader so prologue BASE/PREFIX resolution applies, then validate it is a usable graph IRI.
+            RDFPatternMember graphTerm = ParseTerm(parserContext);
+
+            //A literal can never name a graph
+            if (!(graphTerm is RDFResource graphResource))
+                throw new RDFQueryException("Cannot parse SPARQL GRAPH clause: the graph specifier must be a variable or an IRI, but a literal was found " + GetCoordinates(parserContext));
+
+            //A blank node can never name a graph either
+            if (graphResource.IsBlank)
+                throw new RDFQueryException("Cannot parse SPARQL GRAPH clause: the graph specifier must be a variable or an IRI, but a blank node was found " + GetCoordinates(parserContext));
+
+            try
+            {
+                //Promote the IRI resource to an RDFContext (the fixed-graph form of a pattern context)
+                return new RDFContext(graphResource.ToString());
+            }
+            catch (RDFStoreException graphContextException)
+            {
+                //RDFContext rejected the IRI (e.g. a reserved scheme): surface it as a query-level parse error
+                throw new RDFQueryException("Cannot parse SPARQL GRAPH clause: invalid graph IRI '" + graphResource + "' " + GetCoordinates(parserContext) + ": " + graphContextException.Message, graphContextException);
+            }
         }
 
         /// <summary>
@@ -1227,7 +1403,23 @@ namespace RDFSharp.Query
                 //Emit the triple pattern. The RDFPattern constructor enforces all SPARQL term-position rules
                 //(e.g. a literal in subject position is invalid): violations surface as RDFQueryException
                 //through the parser's error contract.
-                targetPatternGroup.AddPattern(new RDFPattern(tripleSubject, triplePredicate, tripleObject));
+                //
+                //GRAPH contextualisation: when a GRAPH clause is in force, CurrentGraphScope.ActiveContext holds
+                //its graph specifier (an RDFContext fixed IRI or an RDFVariable). In that case we build the
+                //FOUR-argument pattern so the context decorates this very triple, and we flip the scope's WasUsed
+                //flag so the GRAPH dispatcher can tell its scope was non-empty. Because the scope is a value tuple,
+                //flipping WasUsed means re-assigning the whole slot (keeping the same ActiveContext). Outside any
+                //GRAPH clause ActiveContext is null and we build the ordinary THREE-argument pattern (default
+                //graph), exactly as before F3.
+                if (parserContext.CurrentGraphScope.ActiveContext == null)
+                {
+                    targetPatternGroup.AddPattern(new RDFPattern(tripleSubject, triplePredicate, tripleObject));
+                }
+                else
+                {
+                    targetPatternGroup.AddPattern(new RDFPattern(parserContext.CurrentGraphScope.ActiveContext, tripleSubject, triplePredicate, tripleObject));
+                    parserContext.CurrentGraphScope = (parserContext.CurrentGraphScope.ActiveContext, true);
+                }
 
                 //A ',' introduces another object sharing this subject+predicate: consume and continue
                 if (SkipWhitespace(parserContext) == ',')

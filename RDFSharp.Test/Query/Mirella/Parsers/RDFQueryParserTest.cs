@@ -20,6 +20,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using RDFSharp.Store;
 
 namespace RDFSharp.Test.Query.Mirella.Parsers;
 
@@ -819,6 +820,192 @@ public class RDFQueryParserTest
         //x5 has ?c bound (it is in C); x1 and x2 have ?c UNBOUND (left-join padding)
         int boundOptionalCount = results.AsEnumerable().Count(row => row.Field<string>("?c") != null);
         Assert.AreEqual(1, boundOptionalCount, "Only x5 should carry a bound ?c value");
+    }
+    #endregion
+
+    #region GraphClause (F3 structural)
+    //Helper: returns the single pattern of the single pattern group of a query member that the parser
+    //produced for a GRAPH scope. Used to inspect the per-pattern Context the GRAPH clause fixes.
+    private static RDFPattern SinglePatternOf(RDFQueryMember member)
+    {
+        RDFPatternGroup patternGroup = (RDFPatternGroup)member;
+        return patternGroup.GetPatterns().Single();
+    }
+
+    [TestMethod]
+    public void ShouldParseGraphWithVariableContext()
+    {
+        //GRAPH ?g { ?s ?p ?o } — the graph specifier is a variable, so every pattern in the scope is
+        //decorated with that same RDFVariable as its context (the engine binds it per-quadruple).
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { GRAPH ?g { ?s <http://example.org/p> ?o } }");
+
+        List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
+        Assert.AreEqual(1, evaluable.Count);
+        RDFPattern pattern = SinglePatternOf(evaluable[0]);
+        Assert.IsInstanceOfType<RDFVariable>(pattern.Context);
+        Assert.AreEqual("?G", pattern.Context.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldParseGraphWithFixedIriContext()
+    {
+        //GRAPH <iri> { ... } — the graph specifier is a fixed IRI, so the pattern context is an RDFContext
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { GRAPH <http://example.org/g1> { ?s <http://example.org/p> ?o } }");
+
+        RDFPattern pattern = SinglePatternOf(query.GetEvaluableQueryMembers().Single());
+        Assert.IsInstanceOfType<RDFContext>(pattern.Context);
+        Assert.AreEqual("http://example.org/g1", pattern.Context.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldParseGraphWithPrefixedNameContext()
+    {
+        //The IRI graph specifier may be a prefixed name resolved through the prologue
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "PREFIX ex: <http://example.org/> SELECT * WHERE { GRAPH ex:g1 { ?s ex:p ?o } }");
+
+        RDFPattern pattern = SinglePatternOf(query.GetEvaluableQueryMembers().Single());
+        Assert.IsInstanceOfType<RDFContext>(pattern.Context);
+        Assert.AreEqual("http://example.org/g1", pattern.Context.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldParseGraphAroundInlineTriples()
+    {
+        //GRAPH applies to a TriplesBlock with several patterns: ALL of them carry the same context
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { GRAPH ?g { ?s <http://example.org/p1> ?o1 . ?s <http://example.org/p2> ?o2 } }");
+
+        RDFPatternGroup patternGroup = (RDFPatternGroup)query.GetEvaluableQueryMembers().Single();
+        List<RDFPattern> patterns = patternGroup.GetPatterns().ToList();
+        Assert.AreEqual(2, patterns.Count);
+        Assert.IsTrue(patterns.All(p => p.Context is RDFVariable && p.Context.ToString() == "?G"));
+    }
+
+    [TestMethod]
+    public void ShouldPropagateGraphContextThroughUnion()
+    {
+        //GRAPH ?g { {A} UNION {B} } — the context FULL-propagates through the UNION to every pattern
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { GRAPH ?g { { ?s <http://example.org/p1> ?o } UNION { ?s <http://example.org/p2> ?o } } }");
+
+        RDFOperatorQueryMember union = (RDFOperatorQueryMember)query.GetEvaluableQueryMembers().Single();
+        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, union.OperatorType);
+        RDFPattern leftPattern = ((RDFPatternGroup)union.LeftOperand).GetPatterns().Single();
+        RDFPattern rightPattern = ((RDFPatternGroup)union.RightOperand).GetPatterns().Single();
+        Assert.AreEqual("?G", leftPattern.Context.ToString());
+        Assert.AreEqual("?G", rightPattern.Context.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldShadowOuterGraphContextWithInnerGraph()
+    {
+        //SPARQL §18.4 innermost shadowing: the inner GRAPH ?h overrides ?g for its own sub-scope.
+        //GRAPH ?g { ?s ?p ?o GRAPH ?h { ?a ?b ?c } } → ?s?p?o contextualised by ?g, ?a?b?c by ?h.
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { GRAPH ?g { ?s <http://example.org/p> ?o GRAPH ?h { ?a <http://example.org/q> ?c } } }");
+
+        //The ?g scope holds two members (the outer BGP and the inner GRAPH), collapsed into a subquery
+        RDFSelectQuery graphScopeSubQuery = (RDFSelectQuery)query.GetEvaluableQueryMembers().Single();
+        List<RDFPatternGroup> patternGroups = graphScopeSubQuery.GetPatternGroups().ToList();
+        Assert.AreEqual(2, patternGroups.Count);
+
+        RDFPattern outerPattern = patternGroups[0].GetPatterns().Single();
+        RDFPattern innerPattern = patternGroups[1].GetPatterns().Single();
+        Assert.AreEqual("?G", outerPattern.Context.ToString());
+        Assert.AreEqual("?H", innerPattern.Context.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnEmptyGraphWithVariable()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { GRAPH ?g { } }"));
+
+    [TestMethod]
+    public void ShouldThrowOnEmptyGraphWithFixedIri()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { GRAPH <http://example.org/g1> { } }"));
+
+    [TestMethod]
+    public void ShouldThrowOnNestedGraphWithoutOwnPatterns()
+        //GRAPH ?g { GRAPH ?h { ... } } — ?g contextualises NO pattern of its own (all are shadowed by ?h):
+        //the per-pattern model cannot anchor ?g (it would enumerate named graphs), so the clause is rejected.
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { GRAPH ?g { GRAPH ?h { ?a <http://example.org/q> ?c } } }"));
+
+    [TestMethod]
+    public void ShouldThrowOnLiteralGraphSpecifier()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { GRAPH \"notagraph\" { ?s ?p ?o } }"));
+    #endregion
+
+    #region GraphClause (F3 end-to-end execution against a store)
+    //Named-graphs dataset for the GRAPH execution tests. Predicate <http://ex/p> links subjects to objects
+    //across two named graphs:
+    //  graph <http://ex/g1>: s1, s2
+    //  graph <http://ex/g2>: s3
+    private static RDFMemoryStore BuildNamedGraphsStore()
+    {
+        RDFContext graph1 = new RDFContext("http://ex/g1");
+        RDFContext graph2 = new RDFContext("http://ex/g2");
+        RDFResource predicate = new RDFResource("http://ex/p");
+        RDFResource objectFlag = new RDFResource("http://ex/o");
+
+        RDFMemoryStore store = new RDFMemoryStore();
+        store.AddQuadruple(new RDFQuadruple(graph1, new RDFResource("http://ex/s1"), predicate, objectFlag));
+        store.AddQuadruple(new RDFQuadruple(graph1, new RDFResource("http://ex/s2"), predicate, objectFlag));
+        store.AddQuadruple(new RDFQuadruple(graph2, new RDFResource("http://ex/s3"), predicate, objectFlag));
+        return store;
+    }
+
+    [TestMethod]
+    public void ShouldExecuteGraphWithFixedIriFilteringToThatGraph()
+    {
+        //GRAPH <http://ex/g1> { ... } restricts matching to graph g1: only s1 and s2 are returned
+        RDFMemoryStore store = BuildNamedGraphsStore();
+        DataTable results = RDFSelectQuery.FromString(
+            "SELECT ?s WHERE { GRAPH <http://ex/g1> { ?s <http://ex/p> ?o } }")
+            .ApplyToStore(store).SelectResults;
+
+        string[] subjects = results.AsEnumerable()
+            .Select(row => row.Field<string>("?s"))
+            .OrderBy(s => s, System.StringComparer.Ordinal).ToArray();
+        CollectionAssert.AreEqual(new[] { "http://ex/s1", "http://ex/s2" }, subjects);
+    }
+
+    [TestMethod]
+    public void ShouldExecuteGraphWithVariableBindingTheGraphName()
+    {
+        //GRAPH ?g { ... } binds ?g to the named graph each solution comes from: g1 (twice) and g2 (once)
+        RDFMemoryStore store = BuildNamedGraphsStore();
+        DataTable results = RDFSelectQuery.FromString(
+            "SELECT ?g ?s WHERE { GRAPH ?g { ?s <http://ex/p> ?o } }")
+            .ApplyToStore(store).SelectResults;
+
+        string[] graphs = results.AsEnumerable()
+            .Select(row => row.Field<string>("?G"))
+            .OrderBy(g => g, System.StringComparer.Ordinal).ToArray();
+        CollectionAssert.AreEqual(
+            new[] { "http://ex/g1", "http://ex/g1", "http://ex/g2" }, graphs,
+            "Expected ?g bound per-quadruple to the source named graph; actual: " + string.Join(",", graphs));
+    }
+
+    [TestMethod]
+    public void ShouldExecuteGraphVariableJoinForcingSameGraph()
+    {
+        //Two patterns sharing the same ?g context must come from the SAME named graph (the shared context
+        //is the join key). s1 and s2 are both in g1, s3 alone in g2: pairing ?s and ?s2 within one graph.
+        RDFMemoryStore store = BuildNamedGraphsStore();
+        DataTable results = RDFSelectQuery.FromString(
+            "SELECT ?g ?s ?s2 WHERE { GRAPH ?g { ?s <http://ex/p> ?o . ?s2 <http://ex/p> ?o } }")
+            .ApplyToStore(store).SelectResults;
+
+        //g1 contributes the 2x2 cross of {s1,s2}, g2 the 1x1 of {s3}: 5 rows total, all within a single graph
+        Assert.AreEqual(5, results.Rows.Count);
+        Assert.IsTrue(results.AsEnumerable().All(row =>
+            (row.Field<string>("?G") == "http://ex/g1") || (row.Field<string>("?G") == "http://ex/g2")));
     }
     #endregion
 }
