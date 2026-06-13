@@ -58,12 +58,11 @@ namespace RDFSharp.Query
         /// Comparison is case-insensitive (SPARQL keywords are case-insensitive per the spec).
         /// </para>
         /// <para>
-        /// Phase note: OPTIONAL / UNION / MINUS (F2a) and GRAPH (F3) are handled; the remaining keywords
-        /// (FILTER, SERVICE, BIND, VALUES) are recognized here only so the TriplesBlock scan stops at them and
-        /// the dispatcher can raise a precise "not supported yet" error until their phase lands. SELECT is listed
-        /// because a SubSelect (<c>'{' SubSelect '}'</c>) can begin a group; today it is rejected as
-        /// unsupported, and when the SubSelect phase lands it must be REMOVED from the throw branch in
-        /// <see cref="RDFQueryParser.ParseGroupGraphPatternSub"/> and routed to a dedicated SubSelect parser instead.
+        /// Every keyword in this set is dispatched to its own parser by
+        /// <see cref="RDFQueryParser.ParseGroupGraphPatternSub"/>: OPTIONAL / UNION / MINUS (algebra-tree nodes),
+        /// GRAPH and SERVICE (per-pattern / per-group decorations), FILTER / BIND / VALUES (pattern-group members),
+        /// and SELECT (which opens a SubSelect, <c>'{' SubSelect '}'</c>). The set therefore also marks every point
+        /// where a TriplesBlock scan must stop and hand control back to that dispatcher.
         /// </para>
         /// </summary>
         internal static readonly HashSet<string> GraphPatternKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)

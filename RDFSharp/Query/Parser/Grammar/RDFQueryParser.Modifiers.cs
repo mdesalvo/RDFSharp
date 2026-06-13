@@ -38,9 +38,9 @@ namespace RDFSharp.Query
         /// SolutionModifier ::= GroupClause? HavingClause? OrderClause? LimitOffsetClauses?
         /// LimitOffsetClauses ::= LimitClause OffsetClause? | OffsetClause LimitClause?
         /// </code>
-        /// Only ORDER BY, LIMIT, and OFFSET are supported in the current phase. GROUP BY and HAVING
-        /// belong to a later phase. Modifiers are accepted in any order for leniency; if the same
-        /// modifier appears twice the object-model silently ignores the duplicate.
+        /// All five clauses are handled: GROUP BY and HAVING (delegated to <see cref="ParseGroupByModifier"/> /
+        /// <see cref="ParseHavingClause"/>) plus ORDER BY, LIMIT and OFFSET. Modifiers are accepted in any order
+        /// for leniency; if the same modifier appears twice the object-model silently ignores the duplicate.
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When a recognized modifier keyword is followed by a malformed body.</exception>
@@ -107,9 +107,9 @@ namespace RDFSharp.Query
         /// OrderCondition ::= ( ( 'ASC' | 'DESC' ) '(' Expression ')' )
         ///                  | ( Constraint | Var )
         /// </code>
-        /// In the current phase, only variable-based conditions are supported. Expression conditions
-        /// (e.g. <c>ORDER BY STRLEN(?label)</c>) belong to the expression-parser phase and are deferred.
-        /// ASC and DESC directives are accepted with a variable argument. A bare variable implies ASC.
+        /// Only variable-based conditions are representable: an <see cref="RDFOrderByModifier"/> orders by a
+        /// single variable, so expression conditions (e.g. <c>ORDER BY STRLEN(?label)</c>) are a known limit
+        /// (not representable). ASC and DESC directives are accepted with a variable argument. A bare variable implies ASC.
         /// At least one order condition is required after BY; anything that is not a recognised
         /// condition (e.g. the LIMIT keyword) is pushed back so <see cref="ParseSolutionModifiers"/>
         /// can process it.

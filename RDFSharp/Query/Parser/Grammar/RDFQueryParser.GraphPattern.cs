@@ -80,11 +80,11 @@ namespace RDFSharp.Query
         /// GraphPatternNotTriples ::= GroupOrUnionGraphPattern
         ///                          | OptionalGraphPattern
         ///                          | MinusGraphPattern
-        ///                          | GraphGraphPattern         (future)
+        ///                          | GraphGraphPattern
         ///                          | ServiceGraphPattern
-        ///                          | Filter                    (future)
-        ///                          | Bind                      (future)
-        ///                          | InlineData                (future)
+        ///                          | Filter
+        ///                          | Bind
+        ///                          | InlineData
         /// </code>
         /// </para>
         /// <para>
@@ -296,8 +296,9 @@ namespace RDFSharp.Query
                     continue;
                 }
 
-                //Any other recognized graph-pattern keyword belongs to a parser phase that has not been
-                //implemented yet. Throw with a precise message naming the exact unsupported keyword.
+                //Defensive guard: every keyword in GraphPatternKeywords is dispatched by one of the branches
+                //above, so this is reached only if a keyword is ever added to that set without a matching branch.
+                //Fail loudly (naming the keyword) rather than silently dropping it.
                 if (upcomingKeyword.Length > 0)
                     throw new RDFQueryException("Cannot parse SPARQL query: '" + upcomingKeyword + "' is not supported yet " + GetCoordinates(parserContext));
 
@@ -319,8 +320,8 @@ namespace RDFSharp.Query
         /// </para>
         /// <para>
         /// SPARQL grammar: <c>GroupGraphPattern ::= '{' ( SubSelect | GroupGraphPatternSub ) '}'</c>.
-        /// Only <c>GroupGraphPatternSub</c> is implemented in the current phase; SubSelect (a nested
-        /// SELECT query) belongs to a later phase.
+        /// Both alternatives are handled: a leading SELECT opens a SubSelect (a nested SELECT query, parsed by
+        /// <see cref="ParseSubSelectQuery"/>), otherwise the body is a <c>GroupGraphPatternSub</c>.
         /// </para>
         /// <para>
         /// When the body expands to more than one joined member, they are automatically wrapped in a
@@ -708,7 +709,7 @@ namespace RDFSharp.Query
         /// <item><see cref="RDFPatternGroup"/> — a set of triple patterns; added via
         ///   <see cref="RDFSelectQuery.AddPatternGroup"/>.</item>
         /// <item><see cref="RDFSelectQuery"/> — an inline subquery (e.g. a multi-member group body
-        ///   collapsed by <see cref="CollapseToSingle"/>, or a future explicit SubSelect); added via
+        ///   collapsed by <see cref="CollapseToSingle"/>, or an explicit SubSelect); added via
         ///   <see cref="RDFSelectQuery.AddSubQuery"/>.</item>
         /// <item><see cref="RDFOperatorQueryMember"/> — a binary algebra tree node (Union / Minus /
         ///   Optional-operator); added via <see cref="RDFSelectQuery.AddOperator"/>.</item>
