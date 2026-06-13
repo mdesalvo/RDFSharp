@@ -259,18 +259,19 @@ namespace RDFSharp.Query
                     continue;
                 }
 
-                //FILTER is NOT an algebra tree node and NOT a sibling member: it is a RDFPatternGroupMember that
-                //belongs INSIDE a pattern group (RDFPatternGroup.AddFilter). A FILTER appearing here (i.e. the group
-                //body opens with FILTER, before any triple) still has to land in a pattern group, so we route it to
-                //ParseBasicGraphPatternMember — which builds a fresh pattern group and absorbs the FILTER (and any
-                //triples that follow it) into that single group, exactly as it does when a FILTER follows a triple run.
-                if (upcomingKeyword == "FILTER")
+                //FILTER, BIND and VALUES are NOT algebra tree nodes and NOT sibling members: they are
+                //RDFPatternGroupMembers that belong INSIDE a pattern group (RDFPatternGroup.AddFilter / AddBind /
+                //AddValues). When one of them opens the group body (before any triple), it still has to land in a
+                //pattern group, so we route it to ParseBasicGraphPatternMember — which builds a fresh pattern group
+                //and absorbs the member (and any triples around it) into that single group, exactly as it does when
+                //the member follows a triple run.
+                if (upcomingKeyword == "FILTER" || upcomingKeyword == "BIND" || upcomingKeyword == "VALUES")
                 {
                     accumulatedMembers.Add(ParseBasicGraphPatternMember(parserContext));
                     continue;
                 }
 
-                //Any other recognized graph-pattern keyword (SERVICE, BIND, VALUES, SELECT)
+                //Any other recognized graph-pattern keyword (SERVICE, SELECT)
                 //belongs to a parser phase that has not been implemented yet. Throw with a precise message
                 //naming the exact unsupported keyword, so the caller knows what is missing.
                 if (upcomingKeyword.Length > 0)
@@ -537,35 +538,50 @@ namespace RDFSharp.Query
             //Allocate a fresh pattern group to collect the triples (and filters) produced by this BGP scan
             RDFPatternGroup basicGraphPatternGroup = new RDFPatternGroup();
 
-            //A pattern-group member is a maximal run of triple blocks INTERLEAVED with FILTERs. ParseTriplesBlock
-            //reads the triples and stops at any graph-pattern keyword (including FILTER); when that keyword is FILTER
-            //we absorb the filter into THIS SAME group and resume reading more triples, so that
-            //   { ?s ?p ?o FILTER(?o > 1) ?a ?b ?c }
-            //collapses to one RDFPatternGroup carrying both triple runs and the filter. The loop ends as soon as the
-            //next keyword is a true algebra element (OPTIONAL/UNION/MINUS/GRAPH/…) or a block boundary ('}','{',EOF):
-            //those are left untouched on the reader for ParseGroupGraphPatternSub to dispatch as separate members.
+            //A pattern-group member is a maximal run of triple blocks INTERLEAVED with the inline pattern-group
+            //members FILTER / BIND / VALUES. ParseTriplesBlock reads the triples and stops at any graph-pattern
+            //keyword; when that keyword is one of those three inline members we absorb it into THIS SAME group and
+            //resume reading more triples, so that
+            //   { ?s ?p ?o FILTER(?o > 1) BIND(?o + 1 AS ?n) ?a ?b ?c }
+            //collapses to one RDFPatternGroup carrying both triple runs, the filter and the bind. The loop ends as
+            //soon as the next keyword is a true algebra element (OPTIONAL/UNION/MINUS/GRAPH/…) or a block boundary
+            //('}','{',EOF): those are left untouched on the reader for ParseGroupGraphPatternSub to dispatch as
+            //separate members.
             while (true)
             {
                 //A '.' is the optional separator the SPARQL grammar allows between a TriplesBlock and a following
-                //GraphPatternNotTriples (here a FILTER), and between two consecutive FILTERs. Consume it up-front so
-                //neither ParseTriplesBlock (which would choke on a leading dot) nor the FILTER peek below trips on it.
+                //GraphPatternNotTriples (here FILTER/BIND/VALUES), and between two consecutive such members. Consume
+                //it up-front so neither ParseTriplesBlock (which would choke on a leading dot) nor the peek below trips on it.
                 if (SkipWhitespace(parserContext) == '.')
                     ReadCodePoint(parserContext);
 
                 //Read the triples available at the current position into the group (may read zero, e.g. when the
-                //body opens directly with FILTER, or two FILTERs sit back-to-back)
+                //body opens directly with FILTER/BIND/VALUES, or two such members sit back-to-back)
                 ParseTriplesBlock(parserContext, basicGraphPatternGroup);
 
-                //If the next significant token is FILTER, consume the keyword and parse the constraint into THIS
-                //group, then loop to pick up any further triples/filters of the same pattern-group member
-                if (PeekGraphPatternKeyword(parserContext) == "FILTER")
+                //If the next significant token is an inline pattern-group member, consume the keyword and parse it into
+                //THIS group, then loop to pick up any further triples/members of the same pattern-group member
+                string upcomingKeyword = PeekGraphPatternKeyword(parserContext);
+                if (upcomingKeyword == "FILTER")
                 {
                     ConsumeKeyword(parserContext);
                     ParseFilter(parserContext, basicGraphPatternGroup);
                     continue;
                 }
+                if (upcomingKeyword == "BIND")
+                {
+                    ConsumeKeyword(parserContext);
+                    ParseBind(parserContext, basicGraphPatternGroup);
+                    continue;
+                }
+                if (upcomingKeyword == "VALUES")
+                {
+                    ConsumeKeyword(parserContext);
+                    ParseValues(parserContext, basicGraphPatternGroup);
+                    continue;
+                }
 
-                //Not a FILTER: this pattern-group member is complete
+                //Not an inline pattern-group member: this pattern-group member is complete
                 return basicGraphPatternGroup;
             }
         }

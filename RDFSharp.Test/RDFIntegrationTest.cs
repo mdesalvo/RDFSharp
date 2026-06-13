@@ -646,4 +646,82 @@ WHERE {
         Assert.AreEqual("Professor 1@EN", nameByPerson[$"{UniversityNamespace}prof1"]);
     }
     #endregion
+
+    #region Tests (parser end-to-end on the most recent phases F6/F7/F8.1)
+    //These three tests exercise an axis the Q01..Q13 suite never touches: instead of building the query through
+    //the fluent object model, they PARSE a raw SPARQL 1.1 string with the new RDFQueryParser and then EXECUTE it
+    //against the very same university graph, asserting on the result set. They therefore validate the newest
+    //design phases end-to-end — F6 (FILTER + built-in expressions), F7 (projection '(expr AS ?v)') and
+    //F8.1 (BIND + VALUES inline data) — through the string -> object-model -> engine pipeline, not just the model.
+
+    [TestMethod]
+    public void ShouldParseAndAnswerFilterWithRegexBuiltIn()
+    {
+        //F6 - FILTER carrying the REGEX + STR built-ins, parsed from text and evaluated by the engine.
+        //Course names are "Course 0".."Course 3"; the anchored class [13]$ keeps only those ending in 1 or 3.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?C WHERE {
+                ?C a uni:Course .
+                ?C uni:name ?N .
+                FILTER(REGEX(STR(?N), ""[13]$""))
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //Only course1 ("Course 1") and course3 ("Course 3") satisfy the regex
+        Assert.AreEqual(2, result.SelectResultsCount);
+        HashSet<string> matchedCourses = new HashSet<string>(StringComparer.Ordinal);
+        foreach (DataRow resultRow in result.SelectResults.Rows)
+            matchedCourses.Add(resultRow["?C"].ToString());
+        Assert.IsTrue(matchedCourses.Contains($"{UniversityNamespace}course1"));
+        Assert.IsTrue(matchedCourses.Contains($"{UniversityNamespace}course3"));
+    }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerProjectionExpression()
+    {
+        //F7 - a computed projection '(?CR * 2 AS ?DOUBLE)', parsed from text and evaluated by the engine.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?CR (?CR * 2 AS ?DOUBLE) WHERE {
+                ?C a uni:Course .
+                ?C uni:credits ?CR
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //One row per course (4); each carries the doubled credits in the computed column
+        Assert.AreEqual(4, result.SelectResultsCount);
+        foreach (DataRow resultRow in result.SelectResults.Rows)
+            Assert.AreEqual(GetNumericValue(resultRow["?CR"]) * 2, GetNumericValue(resultRow["?DOUBLE"]));
+    }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerValuesRestrictedBindOnAge()
+    {
+        //F8.1 - VALUES inline data restricting the subject to two named students, plus a BIND computing a
+        //derived column, both parsed from text and evaluated by the engine.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?S ?A ?BONUS WHERE {
+                VALUES ?S { uni:student0 uni:student2 }
+                ?S uni:age ?A .
+                BIND(?A * 2 AS ?BONUS)
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //VALUES keeps only student0 (age 20 => bonus 40) and student2 (age 30 => bonus 60)
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Dictionary<string, double> bonusByStudent = new Dictionary<string, double>(StringComparer.Ordinal);
+        foreach (DataRow resultRow in result.SelectResults.Rows)
+        {
+            Assert.AreEqual(GetNumericValue(resultRow["?A"]) * 2, GetNumericValue(resultRow["?BONUS"]));
+            bonusByStudent.Add(resultRow["?S"].ToString(), GetNumericValue(resultRow["?BONUS"]));
+        }
+        Assert.AreEqual(40, bonusByStudent[$"{UniversityNamespace}student0"]);
+        Assert.AreEqual(60, bonusByStudent[$"{UniversityNamespace}student2"]);
+    }
+    #endregion
 }

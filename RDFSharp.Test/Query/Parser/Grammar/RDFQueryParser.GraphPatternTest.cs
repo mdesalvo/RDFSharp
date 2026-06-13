@@ -298,11 +298,6 @@ public partial class RDFQueryParserTest
         Assert.AreEqual(0, group.GetPatterns().Count());
         Assert.AreEqual(1, group.GetFilters().Count());
     }
-
-    [TestMethod]
-    public void ShouldThrowOnUnsupportedKeywordBind()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { BIND(1 AS ?x) }"));
     #endregion
 
     #region GraphPatternAlgebra (F2a end-to-end execution)
