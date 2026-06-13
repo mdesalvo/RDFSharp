@@ -133,9 +133,15 @@ namespace RDFSharp.Query
         {
             while (true)
             {
-                //Parse the next predicate (verb) for this subject, then the comma-separated list of objects
-                RDFPatternMember triplePredicate = ParsePredicate(parserContext);
-                ParseObjectList(parserContext, targetPatternGroup, tripleSubject, triplePredicate);
+                //Parse the next verb for this subject. The verb is either a simple predicate (variable or IRI) —
+                //yielding plain triple patterns — or a full SPARQL property path — yielding RDFPropertyPath members.
+                ParsedVerb verb = ParseVerb(parserContext);
+                if (verb.IsVariable)
+                    ParseObjectList(parserContext, targetPatternGroup, tripleSubject, verb.Variable);
+                else if (verb.IsSimpleIri)
+                    ParseObjectList(parserContext, targetPatternGroup, tripleSubject, verb.SimpleIri);
+                else
+                    ParsePathObjectList(parserContext, targetPatternGroup, tripleSubject, verb.PathUnits);
 
                 //A ';' introduces a second (or further) predicate-object group on the same subject
                 if (SkipWhitespace(parserContext) == ';')
@@ -428,52 +434,6 @@ namespace RDFSharp.Query
             return anonymousBlankNodeVariable;
         }
 
-        /// <summary>
-        /// <para>
-        /// Parses an RDF term in predicate (verb) position. In addition to variables and ordinary IRI terms,
-        /// SPARQL inherits from Turtle the <c>a</c> shorthand for <c>rdf:type</c>:
-        /// </para>
-        /// <para>
-        /// SPARQL grammar: <c>Verb ::= VarOrIri | 'a'</c>.
-        /// </para>
-        /// <para>
-        /// The <c>a</c> shorthand is recognized only when it stands alone — i.e. it is immediately followed
-        /// by whitespace or end of input. If the character after <c>a</c> is anything else (e.g. a colon in
-        /// <c>a:SomeClass</c>, or a letter in <c>abc:foo</c>), the <c>a</c> is pushed back and the whole
-        /// token is re-parsed by the general Turtle term-reader.
-        /// </para>
-        /// </summary>
-        private static RDFPatternMember ParsePredicate(RDFQueryParserContext parserContext)
-        {
-            int nextSignificantCodePoint = SkipWhitespace(parserContext);
-
-            //A '?' or '$' sigil starts a variable predicate
-            if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
-                return ParseVariable(parserContext);
-
-            //The single letter 'a' might be the rdf:type shorthand — check the character immediately after it
-            if (nextSignificantCodePoint == 'a')
-            {
-                //Consume the 'a' and peek at the very next character (without consuming it)
-                ReadCodePoint(parserContext);
-                int codePointAfterA = PeekCodePoint(parserContext);
-
-                //If 'a' is followed only by whitespace or EOF it is unambiguously the rdf:type shorthand:
-                //expand it to the full rdf:type IRI right here
-                if (codePointAfterA == -1 || RDFTurtle.IsWhitespace(codePointAfterA))
-                    return new RDFResource(RDFVocabulary.RDF.TYPE.ToString());
-
-                //The character after 'a' is not a whitespace delimiter, so 'a' is the first character of a
-                //longer token (e.g. "a:SomeClass" or "abc:foo"). Push the 'a' back and fall through to the
-                //general term-reader so the full token is parsed correctly.
-                UnreadCodePoint(parserContext, 'a');
-            }
-
-            //General case: the predicate is a full IRI, prefixed name, or other term. The RDFPattern
-            //constructor will later reject any term that is invalid in predicate position (blank nodes,
-            //literals) surfacing the violation as RDFQueryException.
-            return ParseTerm(parserContext);
-        }
         #endregion
     }
 }
