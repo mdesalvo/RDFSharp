@@ -271,7 +271,19 @@ namespace RDFSharp.Query
                     continue;
                 }
 
-                //Any other recognized graph-pattern keyword (SERVICE, SELECT)
+                //SubSelect ::= a nested SELECT query that is the sole content of a group graph pattern
+                //(GroupGraphPattern ::= '{' ( SubSelect | GroupGraphPatternSub ) '}'). It becomes a subquery
+                //member (RDFSelectQuery): the engine evaluates it independently and joins its projected bindings
+                //with the sibling members, just like the SELECT * subqueries the parser synthesises via
+                //WrapIntoSubQuery — except here the projection/modifiers are author-specified. The dedicated
+                //ParseSubSelectQuery (RDFQueryParser.SubQuery.cs) consumes the keyword and parses the nested query.
+                if (upcomingKeyword == "SELECT")
+                {
+                    accumulatedMembers.Add(ParseSubSelectQuery(parserContext));
+                    continue;
+                }
+
+                //Any other recognized graph-pattern keyword (SERVICE)
                 //belongs to a parser phase that has not been implemented yet. Throw with a precise message
                 //naming the exact unsupported keyword, so the caller knows what is missing.
                 if (upcomingKeyword.Length > 0)
