@@ -65,8 +65,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Rejects a leading <c>DatasetClause</c> (FROM / FROM NAMED): the flat model has no dataset to attach it
-        /// to, so it is not representable. The keyword run is peeked and pushed back before throwing.
+        /// Rejects a leading <c>DatasetClause</c> (FROM / FROM NAMED) — the clause between the SELECT/ASK header
+        /// and the WHERE clause: the flat model has no dataset to attach it to, so it is not representable. Shared
+        /// by every query form (SELECT, ASK). The keyword run is peeked and pushed back before throwing.
         /// </summary>
         /// <exception cref="RDFQueryException">When the next token is the FROM keyword.</exception>
         private static void RejectDatasetClause(RDFQueryParserContext parserContext)
@@ -76,7 +77,7 @@ namespace RDFSharp.Query
             UnreadString(parserContext, upcomingKeyword);
 
             if (upcomingKeyword.Equals("FROM", StringComparison.OrdinalIgnoreCase))
-                throw new RDFQueryException("Cannot parse SPARQL ASK query: a dataset clause (FROM / FROM NAMED) is not representable by the flat model " + GetCoordinates(parserContext));
+                throw new RDFQueryException("Cannot parse SPARQL query: a dataset clause (FROM / FROM NAMED) is not representable by the flat model " + GetCoordinates(parserContext));
         }
 
         /// <summary>

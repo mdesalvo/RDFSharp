@@ -56,6 +56,10 @@ namespace RDFSharp.Query
             //Projection: either the '*' wildcard (empty ProjectionVars means "all variables") or a list of variables
             ParseSelectProjection(parserContext, selectQuery, pendingAggregators);
 
+            //DatasetClause* (FROM / FROM NAMED): spec-legal between projection and WHERE, but the flat model has
+            //no dataset to bind them to (same non-representable limit as ASK) → reject explicitly
+            RejectDatasetClause(parserContext);
+
             //WHERE clause (the keyword itself is optional in SPARQL)
             ParseWhereClause(parserContext, selectQuery);
 

@@ -279,5 +279,13 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldThrowOnLiteralInSubjectPosition()
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT * WHERE { \"lit\" ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnSelectWithDatasetClause()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT * FROM <http://example.org/g> WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnSelectWithNamedDatasetClause()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT * FROM NAMED <http://example.org/g> WHERE { ?s ?p ?o }"));
     #endregion
 }
