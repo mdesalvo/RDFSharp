@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System.Collections.Generic;
 using static RDFSharp.Query.RDFQueryLexer;
 
 namespace RDFSharp.Query
@@ -46,14 +47,25 @@ namespace RDFSharp.Query
             else
                 TryConsumeKeyword(parserContext, "REDUCED");
 
+            //Aggregates encountered in the projection are parked here: they cannot be attached to their
+            //RDFGroupByModifier yet (GROUP BY is parsed later, after WHERE), so a SELECT-scoped list carries
+            //them across to ParseSolutionModifiers. A SELECT-local list (NOT the shared parser context) keeps
+            //nested subqueries — which reuse the same context — from mixing each other's aggregates.
+            List<RDFAggregator> pendingAggregators = new List<RDFAggregator>();
+
             //Projection: either the '*' wildcard (empty ProjectionVars means "all variables") or a list of variables
-            ParseSelectProjection(parserContext, selectQuery);
+            ParseSelectProjection(parserContext, selectQuery, pendingAggregators);
 
             //WHERE clause (the keyword itself is optional in SPARQL)
             ParseWhereClause(parserContext, selectQuery);
 
-            //ORDER BY / LIMIT / OFFSET (any order, leniently)
-            ParseSolutionModifiers(parserContext, selectQuery);
+            //GROUP BY / HAVING / ORDER BY / LIMIT / OFFSET (any order, leniently); GROUP BY absorbs the pending aggregates
+            ParseSolutionModifiers(parserContext, selectQuery, pendingAggregators);
+
+            //Aggregates left unattached mean the projection used aggregates without a GROUP BY (implicit single
+            //group): the flat model requires a non-empty partitioning, so this case is not representable.
+            if (pendingAggregators.Count > 0)
+                throw new RDFQueryException("Cannot parse SPARQL SELECT query: aggregates in the projection require a GROUP BY clause (implicit grouping is not representable) " + GetCoordinates(parserContext));
 
             return selectQuery;
         }
@@ -65,7 +77,7 @@ namespace RDFSharp.Query
         /// <c>SelectClause ::= 'SELECT' ('DISTINCT'|'REDUCED')? ( ( Var | '(' Expression 'AS' Var ')' )+ | '*' )</c> allows.
         /// </summary>
         /// <exception cref="RDFQueryException">When the projection is empty, or an '(expr AS ?var)' item is malformed.</exception>
-        private static void ParseSelectProjection(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
+        private static void ParseSelectProjection(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery, List<RDFAggregator> pendingAggregators)
         {
             //The '*' wildcard projects every in-scope variable: it is modeled by leaving ProjectionVars empty
             if (TryConsumeChar(parserContext, '*'))
@@ -85,10 +97,11 @@ namespace RDFSharp.Query
                     continue;
                 }
 
-                //A '(' opens an '(expr AS ?var)' computed projection expression: parse and attach it
+                //A '(' opens either an aggregate '(AGG(?v) AS ?var)' or an ordinary '(expr AS ?var)' computed
+                //projection expression: parse and attach it (aggregates are parked, not added as projection vars)
                 if (nextCodePoint == '(')
                 {
-                    ParseProjectionExpression(parserContext, selectQuery);
+                    ParseProjectionExpression(parserContext, selectQuery, pendingAggregators);
                     foundAtLeastOneProjectionVariable = true;
                     continue;
                 }
@@ -109,15 +122,21 @@ namespace RDFSharp.Query
         /// arithmetic / built-ins / GeoSPARQL) is reused verbatim via <see cref="ParseExpression"/>.
         /// </summary>
         /// <exception cref="RDFQueryException">When the parentheses, the mandatory 'AS' keyword, or the result variable are missing/malformed.</exception>
-        private static void ParseProjectionExpression(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
+        private static void ParseProjectionExpression(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery, List<RDFAggregator> pendingAggregators)
         {
-            //Opening parenthesis of the projection expression
+            //Opening parenthesis of the projection item
             ExpectChar(parserContext, '(', "SELECT projection expression");
 
-            //The value-expression to compute: the same expression grammar used by FILTER and BIND
-            RDFExpression projectionExpression = ParseExpression(parserContext);
+            //Peek the first token: an aggregate function name routes to the aggregate path, anything else to the
+            //ordinary computed-projection (expression) path. The peek restores the reader either way.
+            RDFParsedAggregator parsedAggregator = TryPeekAggregatorKeyword(parserContext).Length > 0
+                ? ParseAggregator(parserContext)
+                : null;
 
-            //The mandatory 'AS' keyword separating the expression from the variable it binds
+            //The value-expression to compute (only on the non-aggregate path): the same expression grammar used by FILTER and BIND
+            RDFExpression projectionExpression = parsedAggregator == null ? ParseExpression(parserContext) : null;
+
+            //The mandatory 'AS' keyword separating the expression/aggregate from the variable it binds
             if (!TryConsumeKeyword(parserContext, "AS"))
                 throw new RDFQueryException("Cannot parse SPARQL SELECT projection: expected 'AS' inside '(expr AS ?var)' " + GetCoordinates(parserContext));
 
@@ -127,11 +146,16 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot parse SPARQL SELECT projection: expected a variable after 'AS' inside '(expr AS ?var)' " + GetCoordinates(parserContext));
             RDFVariable projectionVariable = ParseVariable(parserContext);
 
-            //Closing parenthesis of the projection expression
+            //Closing parenthesis of the projection item
             ExpectChar(parserContext, ')', "SELECT projection expression");
 
-            //Attach the computed projection: the variable carries its expression so the engine evaluates it per-solution
-            selectQuery.AddProjectionVariable(projectionVariable, projectionExpression);
+            if (parsedAggregator != null)
+                //Aggregate projection: park the built aggregator (projVar now known); GROUP BY will absorb it.
+                //It is NOT added as a projection variable — the GroupBy modifier owns the projected columns.
+                pendingAggregators.Add(BuildAggregator(parsedAggregator, projectionVariable));
+            else
+                //Computed projection: the variable carries its expression so the engine evaluates it per-solution
+                selectQuery.AddProjectionVariable(projectionVariable, projectionExpression);
         }
         #endregion
     }

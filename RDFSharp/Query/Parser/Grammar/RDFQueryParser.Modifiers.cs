@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System.Collections.Generic;
 using static RDFSharp.Query.RDFQueryLexer;
 
 namespace RDFSharp.Query
@@ -43,8 +44,12 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When a recognized modifier keyword is followed by a malformed body.</exception>
-        private static void ParseSolutionModifiers(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
+        private static void ParseSolutionModifiers(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery, List<RDFAggregator> pendingAggregators)
         {
+            //The single GROUP BY modifier, captured once parsed, so a later HAVING can hang its conditions off
+            //the very same aggregators (HAVING follows GROUP BY in the SPARQL grammar)
+            RDFGroupByModifier groupByModifier = null;
+
             while (true)
             {
                 //Advance to the first significant character so ReadKeyword finds the keyword immediately
@@ -55,6 +60,16 @@ namespace RDFSharp.Query
 
                 switch (modifierKeyword.ToUpperInvariant())
                 {
+                    //GROUP BY clause: build the grouping modifier and absorb the projection's parked aggregates
+                    case "GROUP":
+                        groupByModifier = ParseGroupByModifier(parserContext, selectQuery, pendingAggregators);
+                        break;
+
+                    //HAVING clause: attach its conditions, as having-clauses, to the grouping modifier's aggregators
+                    case "HAVING":
+                        ParseHavingClause(parserContext, groupByModifier);
+                        break;
+
                     //ORDER BY clause: consume 'BY' and the sequence of order conditions
                     case "ORDER":
                         ParseOrderByModifier(parserContext, selectQuery);
