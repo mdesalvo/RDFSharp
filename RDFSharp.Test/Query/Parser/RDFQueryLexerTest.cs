@@ -23,6 +23,7 @@ namespace RDFSharp.Test.Query;
 /// <summary>
 /// Unit tests for the lexing layer of RDFQueryParser: variable and term recognition.
 /// </summary>
+[TestClass]
 public class RDFQueryLexerTest
 {
     #region Variables

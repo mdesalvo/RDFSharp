@@ -225,8 +225,48 @@ public partial class RDFQueryParserTest
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT WHERE { ?s ?p ?o }"));
 
     [TestMethod]
-    public void ShouldThrowOnProjectionExpressionUntilSupported()
-        => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT (?s AS ?x) WHERE { ?s ?p ?o }"));
+    public void ShouldRoundTripSelectWithProjectionExpression()
+    {
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))))
+            .AddProjectionVariable(new RDFVariable("s"))
+            .AddProjectionVariable(new RDFVariable("sum"),
+                new RDFAddExpression(new RDFVariable("s"), new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldParseProjectionExpression()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (STRLEN(?name) AS ?len) WHERE { ?s ?p ?name }");
+
+        //The computed projection contributes one projection variable carrying its value-expression
+        Assert.AreEqual(1, query.ProjectionVars.Count);
+        KeyValuePair<RDFVariable, (int, RDFExpression)> projection = query.ProjectionVars.Single();
+        Assert.AreEqual("?LEN", projection.Key.VariableName);
+        Assert.IsNotNull(projection.Value.Item2);
+    }
+
+    [TestMethod]
+    public void ShouldParseProjectionExpressionInterleavedWithBareVariable()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?s (?s AS ?copy) WHERE { ?s ?p ?o }");
+
+        //A bare variable and a computed projection may be freely interleaved
+        Assert.AreEqual(2, query.ProjectionVars.Count);
+        Assert.IsTrue(query.ProjectionVars.Any(pv => pv.Key.VariableName == "?S" && pv.Value.Item2 == null));
+        Assert.IsTrue(query.ProjectionVars.Any(pv => pv.Key.VariableName == "?COPY" && pv.Value.Item2 != null));
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnProjectionExpressionWithoutAs()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT (?s ?x) WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnProjectionExpressionWithoutResultVariable()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT (?s AS x) WHERE { ?s ?p ?o }"));
 
     [TestMethod]
     public void ShouldThrowOnUnclosedWhereClause()
