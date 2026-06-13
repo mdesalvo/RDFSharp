@@ -156,7 +156,7 @@ namespace RDFSharp.Query
         /// </list>
         /// </para>
         /// </summary>
-        private static void ApplyDeclaredPrefixes(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
+        private static void ApplyDeclaredPrefixes<TQuery>(RDFQueryParserContext parserContext, TQuery targetQuery) where TQuery : RDFQuery
         {
             foreach (KeyValuePair<string, string> prologuePrefixBinding in parserContext.Resolver.DeclaredPrefixes)
             {
@@ -167,7 +167,7 @@ namespace RDFSharp.Query
                 try
                 {
                     //Attempt to construct an RDFNamespace and add it as a prefix declaration to the query
-                    selectQuery.AddPrefix(new RDFNamespace(prologuePrefixBinding.Key, prologuePrefixBinding.Value));
+                    targetQuery.AddPrefix<TQuery>(new RDFNamespace(prologuePrefixBinding.Key, prologuePrefixBinding.Value));
                 }
                 catch (RDFModelException)
                 {

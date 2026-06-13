@@ -46,7 +46,7 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the braces are unbalanced or a member is malformed.</exception>
-        private static void ParseWhereClause(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
+        private static void ParseWhereClause<TQuery>(RDFQueryParserContext parserContext, TQuery targetQuery) where TQuery : RDFQuery
         {
             //WHERE is optional per the SPARQL grammar: try to consume it but proceed either way
             TryConsumeKeyword(parserContext, "WHERE");
@@ -62,7 +62,7 @@ namespace RDFSharp.Query
 
             //Attach every algebra member produced by the body to the query
             foreach (RDFQueryMember whereClauseMember in whereClauseMembers)
-                AddQueryMember(selectQuery, whereClauseMember);
+                AddQueryMember(targetQuery, whereClauseMember);
         }
 
         /// <summary>
@@ -716,14 +716,14 @@ namespace RDFSharp.Query
         /// </list>
         /// </para>
         /// </summary>
-        private static void AddQueryMember(RDFSelectQuery targetSelectQuery, RDFQueryMember memberToAdd)
+        private static void AddQueryMember<TQuery>(TQuery targetQuery, RDFQueryMember memberToAdd) where TQuery : RDFQuery
         {
             if (memberToAdd is RDFPatternGroup patternGroup)
-                targetSelectQuery.AddPatternGroup(patternGroup);
+                targetQuery.AddPatternGroup<TQuery>(patternGroup);
             else if (memberToAdd is RDFSelectQuery subQuery)
-                targetSelectQuery.AddSubQuery(subQuery);
+                targetQuery.AddSubQuery<TQuery>(subQuery);
             else if (memberToAdd is RDFOperatorQueryMember operatorNode)
-                targetSelectQuery.AddOperator(operatorNode);
+                targetQuery.AddOperator<TQuery>(operatorNode);
         }
         #endregion
     }

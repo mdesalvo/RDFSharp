@@ -198,7 +198,7 @@ namespace RDFSharp.Query
         /// form keyword (SELECT/ASK/CONSTRUCT/DESCRIBE) to the matching form-parser.
         /// </para>
         /// <para>
-        /// Phase note: only SELECT is implemented so far; the other forms are recognized (so that the error
+        /// Phase note: SELECT and ASK are implemented; CONSTRUCT and DESCRIBE are recognized (so that the error
         /// message is precise) but rejected until their phase lands.
         /// </para>
         /// </summary>
@@ -229,15 +229,15 @@ namespace RDFSharp.Query
             string queryForm = ReadKeyword(parserContext);
             switch (queryForm.ToUpperInvariant())
             {
-                //SELECT is the only form implemented so far: hand the rest of the input to its dedicated body-parser,
-                //which returns the fully-built RDFSelectQuery (upcast to RDFQuery for the caller).
                 case "SELECT":
                     return ParseSelectQuery(parserContext);
 
-                //These are valid SPARQL forms that simply have not been wired up yet. We match them explicitly so the
-                //error names the exact form the author used ("'ASK' ... not supported yet") instead of the misleading
-                //"unexpected token" message of the default branch. Each gets its real parser in a later phase.
                 case "ASK":
+                    return ParseAskQuery(parserContext);
+
+                //These are valid SPARQL forms that simply have not been wired up yet. We match them explicitly so the
+                //error names the exact form the author used ("'CONSTRUCT' ... not supported yet") instead of the
+                //misleading "unexpected token" message of the default branch. Each gets its real parser in a later phase.
                 case "CONSTRUCT":
                 case "DESCRIBE":
                     throw new RDFQueryException("Cannot parse SPARQL query: '" + queryForm.ToUpperInvariant() + "' queries are not supported yet " + GetCoordinates(parserContext));
