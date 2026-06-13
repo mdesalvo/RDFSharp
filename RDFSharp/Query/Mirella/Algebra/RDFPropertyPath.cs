@@ -324,16 +324,6 @@ namespace RDFSharp.Query
         /// Cardinality constraint of the step
         /// </summary>
         public RDFQueryEnums.RDFPropertyPathStepCardinalities StepCardinality { get; internal set; }
-
-        /// <summary>
-        /// Minimum repetitions for BoundedRange cardinality
-        /// </summary>
-        public int MinCardinality { get; internal set; }
-
-        /// <summary>
-        /// Maximum repetitions for BoundedRange cardinality
-        /// </summary>
-        public int MaxCardinality { get; internal set; }
         #endregion
 
         #region Ctors
@@ -345,8 +335,6 @@ namespace RDFSharp.Query
         {
             StepProperty = stepProperty ?? throw new RDFQueryException("Cannot create RDFPropertyPathStep because given \"stepProperty\" parameter is null.");
             StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne;
-            MinCardinality = 1;
-            MaxCardinality = 1;
         }
         #endregion
 
@@ -375,8 +363,6 @@ namespace RDFSharp.Query
         public RDFPropertyPathStep ZeroOrOne()
         {
             StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne;
-            MinCardinality = 0;
-            MaxCardinality = 1;
             return this;
         }
 
@@ -386,8 +372,6 @@ namespace RDFSharp.Query
         public RDFPropertyPathStep OneOrMore()
         {
             StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore;
-            MinCardinality = 1;
-            MaxCardinality = -1;
             return this;
         }
 
@@ -397,27 +381,6 @@ namespace RDFSharp.Query
         public RDFPropertyPathStep ZeroOrMore()
         {
             StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore;
-            MinCardinality = 0;
-            MaxCardinality = -1;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the step cardinality to a bounded range (SPARQL {min,max})
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public RDFPropertyPathStep BoundedRange(int min, int max)
-        {
-            #region Guards
-            if (min < 0)
-                throw new RDFQueryException("Cannot set BoundedRange cardinality because \"min\" parameter must be >= 0.");
-            if (max < min)
-                throw new RDFQueryException("Cannot set BoundedRange cardinality because \"max\" parameter must be >= \"min\".");
-            #endregion
-
-            StepCardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange;
-            MinCardinality = min;
-            MaxCardinality = max;
             return this;
         }
         #endregion

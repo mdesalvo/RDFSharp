@@ -41,8 +41,7 @@ namespace RDFSharp.Query
     /// [96]  PathOneInPropertySet   ::= iri | 'a' | '^' ( iri | 'a' )
     /// </code>
     /// Note that the W3C grammar has NO <c>{n,m}</c> cardinality on paths — <c>PathMod</c> is exactly
-    /// <c>'?' | '*' | '+'</c>. RDFSharp's model/printer expose a non-standard BoundedRange extension, which
-    /// the parser deliberately does NOT accept (it is not valid SPARQL 1.1).
+    /// <c>'?' | '*' | '+'</c>, which is exactly what the parser and the RDFPropertyPath model support.
     /// </para>
     /// <para>
     /// MODEL MAPPING. <see cref="RDFPropertyPath"/> stores a FLAT list of <see cref="RDFPropertyPathStep"/>:

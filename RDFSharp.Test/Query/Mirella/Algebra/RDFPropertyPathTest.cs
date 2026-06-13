@@ -683,8 +683,6 @@ public class RDFPropertyPathTest
     {
         RDFPropertyPathStep step = new RDFPropertyPathStep(Knows);
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne, step.StepCardinality);
-        Assert.AreEqual(1, step.MinCardinality);
-        Assert.AreEqual(1, step.MaxCardinality);
     }
 
     [TestMethod]
@@ -692,8 +690,6 @@ public class RDFPropertyPathTest
     {
         RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).ZeroOrOne();
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne, step.StepCardinality);
-        Assert.AreEqual(0, step.MinCardinality);
-        Assert.AreEqual(1, step.MaxCardinality);
     }
 
     [TestMethod]
@@ -701,8 +697,6 @@ public class RDFPropertyPathTest
     {
         RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).OneOrMore();
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, step.StepCardinality);
-        Assert.AreEqual(1, step.MinCardinality);
-        Assert.AreEqual(-1, step.MaxCardinality);
     }
 
     [TestMethod]
@@ -710,26 +704,7 @@ public class RDFPropertyPathTest
     {
         RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).ZeroOrMore();
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore, step.StepCardinality);
-        Assert.AreEqual(0, step.MinCardinality);
-        Assert.AreEqual(-1, step.MaxCardinality);
     }
-
-    [TestMethod]
-    public void StepCardinality_BoundedRange_Fluent()
-    {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).BoundedRange(2, 4);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange, step.StepCardinality);
-        Assert.AreEqual(2, step.MinCardinality);
-        Assert.AreEqual(4, step.MaxCardinality);
-    }
-
-    [TestMethod]
-    public void StepCardinality_Repeat_NegativeMin_Throws()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).BoundedRange(-1, 2));
-
-    [TestMethod]
-    public void StepCardinality_Repeat_MaxLessThanMin_Throws()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).BoundedRange(3, 1));
 
     [TestMethod]
     public void StepCardinality_InverseCombines_WithCardinality()
@@ -1064,78 +1039,6 @@ public class RDFPropertyPathTest
 
     #endregion
 
-    #region Engine — BoundedRange (prop{n,m})
-
-    [TestMethod]
-    public void Engine_BoundedRange_Exact2()
-    {
-        RDFGraph graph = BuildTestGraph();
-        // alice knows{2} ?e  => carol (exactly 2 hops)
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.Contains(Carol.ToString(), ends);
-        Assert.DoesNotContain(Bob.ToString(), ends,  "1-hop not expected");
-        Assert.DoesNotContain(Dave.ToString(), ends, "3-hop not expected");
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_1To3()
-    {
-        RDFGraph graph = BuildTestGraph();
-        // alice knows{1,3} ?e  => bob, carol, dave
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 3));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.Contains(Bob.ToString(), ends);
-        Assert.Contains(Carol.ToString(), ends);
-        Assert.Contains(Dave.ToString(), ends);
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_ZeroMin_IncludesSelf()
-    {
-        RDFGraph graph = BuildTestGraph();
-        // alice knows{0,2} ?e  => alice, bob, carol
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(0, 2));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.Contains(Alice.ToString(), ends, "0 hops => self");
-        Assert.Contains(Bob.ToString(), ends);
-        Assert.Contains(Carol.ToString(), ends);
-        Assert.DoesNotContain(Dave.ToString(), ends, "3-hop exceeds max=2");
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_EmptyResult_TooFewEdges()
-    {
-        RDFGraph graph = BuildTestGraph(); // chain length = 3 hops max
-        // alice knows{5,7} ?e  => no results (chain too short)
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(5, 7));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.AreEqual(0, result.RowsCount);
-    }
-
-    #endregion
-
     #region Engine — Sequence path with mixed cardinality
 
     [TestMethod]
@@ -1326,38 +1229,6 @@ public class RDFPropertyPathTest
     }
 
     [TestMethod]
-    public void Engine_BoundedRange_Federation_NestedFederation_ExactHops()
-    {
-        // Bounded range {2,3}: only nodes reachable in 2 or 3 hops must appear.
-        // Data is nested inside a sub-federation to exercise the nested-federation code path.
-        // Chain: alice→bob(1)→carol(2)→dave(3)→eve(4)
-        RDFGraph innerGraph = new RDFGraph();
-        innerGraph.AddTriple(new RDFTriple(Alice, Knows, Bob));
-        innerGraph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
-
-        RDFGraph outerGraph = new RDFGraph();
-        outerGraph.AddTriple(new RDFTriple(Carol, Knows, Dave));
-        outerGraph.AddTriple(new RDFTriple(Dave,  Knows, Eve));
-
-        RDFFederation federation = new RDFFederation()
-            .AddFederation(new RDFFederation().AddGraph(innerGraph))
-            .AddGraph(outerGraph);
-
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 3));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, federation);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.DoesNotContain(Bob.ToString(), ends,  "bob — 1 hop, below range");
-        Assert.Contains(Carol.ToString(), ends, "carol — 2 hops, in range");
-        Assert.Contains(Dave.ToString(), ends,  "dave — 3 hops, in range");
-        Assert.DoesNotContain(Eve.ToString(), ends,  "eve — 4 hops, above range");
-    }
-
-    [TestMethod]
     public void Engine_OneOrMore_InverseStep_Federation_MultiSource()
     {
         // Inverse path (^knows+) navigates edges in reverse across two graph sources.
@@ -1416,24 +1287,6 @@ public class RDFPropertyPathTest
             .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
         string printed = path.ToString();
         Assert.IsTrue(printed.Contains("knows>*") || printed.Contains("knows*"), $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_BoundedRange()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 4));
-        string printed = path.ToString();
-        Assert.Contains("{2,4}", printed, $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_BoundedRange_ExactCount()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(3, 3));
-        string printed = path.ToString();
-        Assert.Contains("{3}", printed, $"Printed: {printed}");
     }
 
     [TestMethod]
@@ -1510,19 +1363,6 @@ public class RDFPropertyPathTest
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         // Self-pairs included + direct knows pairs
         Assert.IsGreaterThan(3, result.SelectResultsCount);
-    }
-
-    [TestMethod]
-    public void SelectQuery_BoundedRange_Exact()
-    {
-        RDFGraph graph = BuildTestGraph();
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
-
-        RDFSelectQueryResult result = query.ApplyToGraph(graph);
-        Assert.AreEqual(1, result.SelectResultsCount); // only carol
     }
 
     [TestMethod]
@@ -1668,42 +1508,6 @@ public class RDFPropertyPathTest
     }
 
     [TestMethod]
-    public void InsertWhere_BoundedRange_Exact2()
-    {
-        // WHERE { alice ex:knows{2,2} ?e } INSERT { alice ex:tag ?e }
-        RDFGraph graph = BuildTestGraph();
-        RDFInsertWhereOperation op = new RDFInsertWhereOperation()
-            .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Dave)));
-    }
-
-    [TestMethod]
-    public void InsertWhere_BoundedRange_1To2()
-    {
-        // WHERE { alice ex:knows{1,2} ?e } INSERT { alice ex:tag ?e }
-        RDFGraph graph = BuildTestGraph();
-        RDFInsertWhereOperation op = new RDFInsertWhereOperation()
-            .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Dave)));
-    }
-
-    [TestMethod]
     public void InsertWhere_OneOrMore_Inverse()
     {
         // WHERE { dave ^ex:knows+ ?e } INSERT { dave ex:ancestor ?e }
@@ -1806,27 +1610,6 @@ public class RDFPropertyPathTest
         Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Alice)));
         Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol))); // not matched (2 hops)
-    }
-
-    [TestMethod]
-    public void DeleteWhere_BoundedRange_Exact2()
-    {
-        RDFGraph graph = BuildTestGraph();
-        graph.AddTriple(new RDFTriple(Alice, Tag, Bob));
-        graph.AddTriple(new RDFTriple(Alice, Tag, Carol));
-        graph.AddTriple(new RDFTriple(Alice, Tag, Dave));
-
-        RDFDeleteWhereOperation op = new RDFDeleteWhereOperation()
-            .AddDeleteTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));   // 1-hop, not deleted
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));// 2-hop, deleted
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Dave)));  // 3-hop, not deleted
     }
 
     [TestMethod]
@@ -1954,32 +1737,6 @@ public class RDFPropertyPathTest
     }
 
     [TestMethod]
-    public void DeleteInsertWhere_BoundedRange_DeleteOnlyInRange()
-    {
-        RDFGraph graph = BuildTestGraph();
-        graph.AddTriple(new RDFTriple(Alice, Reached, Bob));
-        graph.AddTriple(new RDFTriple(Alice, Reached, Carol));
-        graph.AddTriple(new RDFTriple(Alice, Reached, Dave));
-
-        // DELETE { alice reached ?e } INSERT { alice tagged ?e } WHERE { alice knows{1,2} ?e }
-        RDFDeleteInsertWhereOperation op = new RDFDeleteInsertWhereOperation()
-            .AddDeleteTemplate(new RDFPattern(Alice, Reached, VarE))
-            .AddInsertTemplate(new RDFPattern(Alice, Tagged, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Reached, Bob)));   // in {1,2} → deleted
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Reached, Carol))); // in {1,2} → deleted
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Reached, Dave)));   // out of {1,2} → kept
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tagged, Bob)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tagged, Carol)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tagged, Dave)));
-    }
-
-    [TestMethod]
     public void DeleteInsertWhere_OneOrMore_OnStore()
     {
         RDFMemoryStore store = new RDFMemoryStore();
@@ -2074,23 +1831,6 @@ public class RDFPropertyPathTest
 
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Reached, Bob)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Reached, Dave)));
-    }
-
-    [TestMethod]
-    public void InsertWhere_BoundedRange_ZeroMin_IncludesSelf()
-    {
-        RDFGraph graph = BuildTestGraph();
-        RDFInsertWhereOperation op = new RDFInsertWhereOperation()
-            .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(0, 1))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Alice)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));
     }
 
     [TestMethod]
@@ -2303,48 +2043,6 @@ public class RDFPropertyPathTest
 
     // ── Test 2 ───────────────────────────────────────────────────────────────
     // Bounded range: only the 6 classes sitting at hops 5–10 from Person.
-    [TestMethod]
-    public void Subsumption_BoundedRange_TypeSubClassOf_5to10_MidHierarchy()
-    {
-        // alice rdf:type/rdfs:subClassOf{5,10} ?class
-        // type lands on Person (L0); subClassOf{5,10} then selects exactly
-        // hops 5 (Primate) … 10 (Organism), skipping both the shallow top
-        // of the human clade and the deep metazoan root.
-        RDFGraph graph = BuildSubsumptionGraph();
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Type))
-            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).BoundedRange(5, 10));
-
-        HashSet<string> classes = new RDFQueryEngine()
-            .ApplyPropertyPath(path, graph)
-            .Rows
-            .Select(r => r["?E"].ToString())
-            .ToHashSet();
-
-        // Inside window [5,10]
-        Assert.Contains("ex:Primate", classes,     "L5  Primate  — hop 5 (lower bound)");
-        Assert.Contains("ex:Mammal", classes,      "L6  Mammal   — hop 6");
-        Assert.Contains("ex:Vertebrate", classes,  "L7  Vertebrate — hop 7");
-        Assert.Contains("ex:Chordate", classes,    "L8  Chordate — hop 8");
-        Assert.Contains("ex:Animal", classes,      "L9  Animal   — hop 9");
-        Assert.Contains("ex:Organism", classes,    "L10 Organism — hop 10 (upper bound)");
-
-        // Too shallow (hops 0–4)
-        Assert.DoesNotContain("ex:Person", classes,         "L0 hop 0 — below range");
-        Assert.DoesNotContain("ex:CognitiveAgent", classes, "L1 hop 1 — below range");
-        Assert.DoesNotContain("ex:ModernHuman", classes,    "L2 hop 2 — below range");
-        Assert.DoesNotContain("ex:HomoSapiens", classes,    "L3 hop 3 — below range");
-        Assert.DoesNotContain("ex:Hominid", classes,        "L4 hop 4 — below range");
-
-        // Too deep (hops 11–15)
-        Assert.DoesNotContain("ex:LivingThing", classes,    "L11 hop 11 — above range");
-        Assert.DoesNotContain("ex:PhysicalObject", classes, "L12 hop 12 — above range");
-        Assert.DoesNotContain("ex:Object", classes,         "L13 hop 13 — above range");
-        Assert.DoesNotContain("ex:Entity", classes,         "L14 hop 14 — above range");
-        Assert.DoesNotContain("ex:Thing", classes,          "L15 hop 15 — above range");
-
-        Assert.HasCount(6, classes, "Exactly 6 classes in window [5,10]");
-    }
 
     // ── Test 3 ───────────────────────────────────────────────────────────────
     // Inverse step: ^subClassOf* navigates DOWN the hierarchy from Mammal.

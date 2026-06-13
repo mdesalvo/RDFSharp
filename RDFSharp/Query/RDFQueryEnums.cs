@@ -117,11 +117,7 @@ namespace RDFSharp.Query
             /// <summary>
             /// The path step is traversed zero or more times — reflexive-transitive closure (SPARQL *)
             /// </summary>
-            ZeroOrMore = 4,
-            /// <summary>
-            /// The path step is traversed between MinCardinality and MaxCardinality times (SPARQL {n,m})
-            /// </summary>
-            BoundedRange = 5
+            ZeroOrMore = 4
         }
 
         /// <summary>

@@ -428,10 +428,6 @@ namespace RDFSharp.Query
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:  return "?";
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:  return "+";
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore: return "*";
-                case RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange:
-                    return step.MinCardinality == step.MaxCardinality
-                        ? "{" + step.MinCardinality + "}"
-                        : "{" + step.MinCardinality + "," + step.MaxCardinality + "}";
                 default: return string.Empty;
             }
         }

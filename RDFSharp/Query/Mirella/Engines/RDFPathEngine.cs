@@ -138,8 +138,7 @@ namespace RDFSharp.Query
             if (propertyPath.Steps.Count == 1)
             {
                 RDFPropertyPathStep step = propertyPath.Steps[0];
-                bool requiresHop = step.StepCardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore
-                                    || (step.StepCardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange && step.MinCardinality >= 1);
+                bool requiresHop = step.StepCardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore;
                 if (requiresHop)
                     return transitivePathCache.GetSources(step.StepProperty, step.IsInverseStep);
             }
@@ -194,8 +193,7 @@ namespace RDFSharp.Query
         /// - ExactlyOne   → one direct hop via the step property<br/>
         /// - ZeroOrOne    → node itself plus at most one direct hop (? operator)<br/>
         /// - OneOrMore    → the memoized transitive closure, one hop or more (+ operator)<br/>
-        /// - ZeroOrMore   → node itself plus the memoized transitive closure (* operator)<br/>
-        /// - BoundedRange → BFS keeping only nodes at depth [min, max], including node itself when min is 0
+        /// - ZeroOrMore   → node itself plus the memoized transitive closure (* operator)
         /// </summary>
         private static IEnumerable<RDFResource> EvaluateSingleStepFromNode(RDFResource node, RDFPropertyPathStep step, RDFTransitivePathCache transitivePathCache)
         {
@@ -219,17 +217,6 @@ namespace RDFSharp.Query
                     //Include the node itself (zero hops) and all closure-reachable nodes
                     Dictionary<long, RDFResource> result = new Dictionary<long, RDFResource> { [node.PatternMemberID] = node };
                     foreach (RDFResource r in transitivePathCache.GetTransitiveClosureindex(step.StepProperty, step.IsInverseStep).EnumerateReachableNodes(node))
-                        result[r.PatternMemberID] = r;
-                    return result.Values;
-                }
-
-                case RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange:
-                {
-                    Dictionary<long, RDFResource> result = new Dictionary<long, RDFResource>();
-                    //When min is 0 the start node is a valid result (zero hops)
-                    if (step.MinCardinality == 0)
-                        result[node.PatternMemberID] = node;
-                    foreach (RDFResource r in BFSReachable(node, step.StepProperty, step.IsInverseStep, transitivePathCache, step.MinCardinality, step.MaxCardinality))
                         result[r.PatternMemberID] = r;
                     return result.Values;
                 }
@@ -300,53 +287,6 @@ namespace RDFSharp.Query
                     break;
             }
             return nodes;
-        }
-
-        /// <summary>
-        /// Returns all resource nodes reachable from <paramref name="startNode"/> by traversing
-        /// <paramref name="property"/> repeatedly via BFS over the pre-materialized adjacency map, collecting
-        /// only nodes whose depth falls within [<paramref name="minHops"/>, <paramref name="maxHops"/>].
-        /// Pass <paramref name="maxHops"/> = -1 for an unbounded search.
-        /// Cycles are handled by the <c>enqueued</c> set, which prevents re-enqueuing already-seen nodes.
-        /// </summary>
-        private static List<RDFResource> BFSReachable(RDFResource startNode, RDFResource property, bool inverse, RDFTransitivePathCache cache, int minHops, int maxHops)
-        {
-            List<RDFResource> result = new List<RDFResource>();
-
-            //Initialize data structures for beginning of BFS visit
-            HashSet<long> collected = new HashSet<long>();
-            HashSet<long> enqueued = new HashSet<long> { startNode.PatternMemberID };
-            Queue<(RDFResource node, int depth)> queue = new Queue<(RDFResource, int)>();
-            queue.Enqueue((startNode, 0));
-
-            while (queue.Count > 0)
-            {
-                //Dequeue the node to be visited
-                (RDFResource current, int depth) = queue.Dequeue();
-
-                //Do not expand beyond the maximum depth (avoids unnecessary work when bounded)
-                if (maxHops >= 0 && depth >= maxHops)
-                    continue;
-
-                foreach (RDFResource neighbor in GetDirectSuccessors(current, property, inverse, cache))
-                {
-                    int newDepth = depth + 1;
-
-                    //Collect this neighbor if it satisfies the minimum hop constraint and it has not
-                    //been collected yet. Note: startNode itself can be a valid result when a cycle
-                    //closes back to it (e.g. alice->bob->carol->alice with OneOrMore), so we do NOT
-                    //pre-seed collected with startNode — only enqueued is pre-seeded to stop re-expansion.
-                    if (newDepth >= minHops && collected.Add(neighbor.PatternMemberID))
-                        result.Add(neighbor);
-
-                    //Enqueue neighbors for further expansion only if not yet enqueued
-                    //(prevents infinite loops and redundant work in cyclic graphs)
-                    if (enqueued.Add(neighbor.PatternMemberID) && (maxHops < 0 || newDepth < maxHops))
-                        queue.Enqueue((neighbor, newDepth));
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
