@@ -18,12 +18,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query.Mirella.Parsers;
+namespace RDFSharp.Test.Query;
 
 /// <summary>
 /// Unit tests for the lexing layer of RDFQueryParser: variable and term recognition.
 /// </summary>
-public partial class RDFQueryParserTest
+public class RDFQueryLexerTest
 {
     #region Variables
     [TestMethod]
