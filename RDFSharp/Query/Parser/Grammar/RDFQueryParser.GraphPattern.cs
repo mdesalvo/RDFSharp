@@ -81,7 +81,7 @@ namespace RDFSharp.Query
         ///                          | OptionalGraphPattern
         ///                          | MinusGraphPattern
         ///                          | GraphGraphPattern         (future)
-        ///                          | ServiceGraphPattern       (future)
+        ///                          | ServiceGraphPattern
         ///                          | Filter                    (future)
         ///                          | Bind                      (future)
         ///                          | InlineData                (future)
@@ -126,8 +126,9 @@ namespace RDFSharp.Query
         ///   fixed as the per-pattern context of every triple it contains, then appended like any other element.
         /// </item>
         /// <item>
-        ///   <b>Deferred keywords</b> (FILTER, SERVICE, BIND, VALUES, SELECT) — a parse error is raised with an
-        ///   explicit "not supported yet" message until the corresponding phase lands.
+        ///   <b>Other graph-pattern keywords</b> (FILTER, BIND, VALUES, SELECT sub-select, SERVICE) — each is
+        ///   delegated to its dedicated parser and appended as the appropriate member; any keyword whose phase
+        ///   has not landed yet still raises an explicit "not supported yet" parse error.
         /// </item>
         /// </list>
         /// </para>
@@ -283,9 +284,20 @@ namespace RDFSharp.Query
                     continue;
                 }
 
-                //Any other recognized graph-pattern keyword (SERVICE)
-                //belongs to a parser phase that has not been implemented yet. Throw with a precise message
-                //naming the exact unsupported keyword, so the caller knows what is missing.
+                //ServiceGraphPattern ::= 'SERVICE' 'SILENT'? VarOrIri GroupGraphPattern
+                //SERVICE is NOT an algebra tree node: like GRAPH it decorates a group (here, flagging it for
+                //remote evaluation via RDFPatternGroup.AsService). The dispatcher delegates to the dedicated
+                //ParseServiceGraphPattern (RDFQueryParser.Service.cs), which parses the optional SILENT, the
+                //endpoint IRI and the inner group, and appends the SERVICE-flagged pattern group as a member.
+                if (upcomingKeyword == "SERVICE")
+                {
+                    ConsumeKeyword(parserContext);
+                    accumulatedMembers.Add(ParseServiceGraphPattern(parserContext));
+                    continue;
+                }
+
+                //Any other recognized graph-pattern keyword belongs to a parser phase that has not been
+                //implemented yet. Throw with a precise message naming the exact unsupported keyword.
                 if (upcomingKeyword.Length > 0)
                     throw new RDFQueryException("Cannot parse SPARQL query: '" + upcomingKeyword + "' is not supported yet " + GetCoordinates(parserContext));
 
