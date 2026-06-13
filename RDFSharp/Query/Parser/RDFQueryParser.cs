@@ -328,7 +328,25 @@ namespace RDFSharp.Query
         #endregion
 
     }
-    
+
+    /// <summary>
+    /// RDFQueryParserFactory is the public entry point for turning a SPARQL 1.1 query string into the matching
+    /// RDFQuery object-model instance. It reads the query's prologue and form keyword and returns the concrete
+    /// query type (RDFSelectQuery, RDFAskQuery, RDFConstructQuery, RDFDescribeQuery) as an RDFQuery. The strongly
+    /// typed <c>FromString</c> helpers on the concrete query classes delegate here and then validate the form.
+    /// </summary>
+    public static class RDFQueryParserFactory
+    {
+        #region Methods
+        /// <summary>
+        /// Parses the given SPARQL 1.1 query string into its RDFQuery object-model representation.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the query string is null/empty or syntactically invalid.</exception>
+        public static RDFQuery ParseQuery(string queryString)
+            => RDFQueryParser.ParseQuery(queryString);
+        #endregion
+    }
+
     /// <summary>
     /// <para>
     /// RDFSPARQLTermResolver supplies base-IRI and prefix-to-namespace resolution to the Turtle

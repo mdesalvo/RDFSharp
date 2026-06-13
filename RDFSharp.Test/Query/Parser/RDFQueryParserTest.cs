@@ -21,7 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query.Mirella.Parsers;
+namespace RDFSharp.Test.Query;
 
 /// <summary>
 /// Unit tests for the SELECT-shape and FILTER/expression halves of RDFQueryParser (projection, solution
@@ -239,6 +239,52 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldThrowOnLiteralInSubjectPosition()
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT * WHERE { \"lit\" ?p ?o }"));
+    #endregion
+}
+
+/// <summary>
+/// Unit tests for RDFQueryParserFactory, the public entry point that turns a SPARQL query string into the
+/// matching concrete RDFQuery instance. These tests pin down the factory's dispatch surface: routing a valid
+/// form to its concrete type, and the error contract for unknown or not-yet-supported query forms.
+/// </summary>
+[TestClass]
+public class RDFQueryParserFactoryTest
+{
+    #region Dispatch
+    [TestMethod]
+    public void ShouldParseSelectQueryAsRDFSelectQuery()
+    {
+        RDFQuery query = RDFQueryParserFactory.ParseQuery("SELECT * WHERE { ?s ?p ?o }");
+
+        //The factory returns the concrete query type upcast to RDFQuery
+        Assert.IsInstanceOfType<RDFSelectQuery>(query);
+    }
+    #endregion
+
+    #region Errors
+    [TestMethod]
+    public void ShouldThrowOnNullOrEmptyQuery()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("   "));
+
+    [TestMethod]
+    public void ShouldThrowOnUnknownQueryForm()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("FOOBAR * WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnMissingQueryForm()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("PREFIX ex: <http://example.org/>"));
+
+    [TestMethod]
+    public void ShouldThrowOnNotYetSupportedAskForm()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("ASK { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnNotYetSupportedConstructForm()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnNotYetSupportedDescribeForm()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("DESCRIBE ?s WHERE { ?s ?p ?o }"));
     #endregion
 }
 

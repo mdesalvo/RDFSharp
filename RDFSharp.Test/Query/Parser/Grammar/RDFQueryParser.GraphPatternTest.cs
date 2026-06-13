@@ -22,7 +22,7 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
 
-namespace RDFSharp.Test.Query.Mirella.Parsers;
+namespace RDFSharp.Test.Query;
 
 /// <summary>
 /// Unit tests for the graph-pattern half of RDFQueryParser: the OPTIONAL/UNION/MINUS algebra and the GRAPH clause (structure, round-trips and end-to-end execution).

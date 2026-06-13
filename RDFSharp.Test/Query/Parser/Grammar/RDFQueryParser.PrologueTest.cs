@@ -17,7 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query.Mirella.Parsers;
+namespace RDFSharp.Test.Query;
 
 /// <summary>
 /// Unit tests for the prologue half of RDFQueryParser: the BASE/PREFIX declarations parsing.

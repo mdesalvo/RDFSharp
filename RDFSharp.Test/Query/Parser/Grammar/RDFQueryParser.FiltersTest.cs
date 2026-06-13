@@ -21,7 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
 
-namespace RDFSharp.Test.Query.Mirella.Parsers;
+namespace RDFSharp.Test.Query;
 
 /// <summary>
 /// Unit tests for the FILTER half of RDFQueryParser: the boolean filter skeleton, the expression-precedence grammar and EXISTS/NOT EXISTS (structure and end-to-end execution).
