@@ -60,6 +60,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL string into an RDFDescribeQuery.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid DESCRIBE query.</exception>
+        public static RDFDescribeQuery FromString(string describeQuery)
+        {
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(describeQuery);
+
+            //The factory dispatches on the query form: enforce that the parsed query is indeed a DESCRIBE
+            if (parsedQuery is RDFDescribeQuery parsedDescribeQuery)
+                return parsedDescribeQuery;
+
+            throw new RDFQueryException("Cannot parse DESCRIBE query because the given command represents a different SPARQL query form (" + parsedQuery.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given resource to the describe terms of the query
         /// </summary>
         public RDFDescribeQuery AddDescribeTerm(RDFResource describeTerm)

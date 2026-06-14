@@ -217,10 +217,6 @@ namespace RDFSharp.Query
         /// consumes the (possibly empty) prologue of BASE/PREFIX declarations, then dispatches on the query
         /// form keyword (SELECT/ASK/CONSTRUCT/DESCRIBE) to the matching form-parser.
         /// </para>
-        /// <para>
-        /// Phase note: SELECT, ASK and CONSTRUCT are implemented; DESCRIBE is recognized (so that the error
-        /// message is precise) but rejected until its phase lands.
-        /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the text is empty, the form keyword is missing/unknown, or the body is malformed.</exception>
         internal static RDFQuery ParseQuery(string sparqlQueryText)
@@ -258,11 +254,8 @@ namespace RDFSharp.Query
                 case "CONSTRUCT":
                     return ParseConstructQuery(parserContext);
 
-                //This is a valid SPARQL form that simply has not been wired up yet. We match it explicitly so the
-                //error names the exact form the author used ("'DESCRIBE' ... not supported yet") instead of the
-                //misleading "unexpected token" message of the default branch. It gets its real parser in a later phase.
                 case "DESCRIBE":
-                    throw new RDFQueryException("Cannot parse SPARQL query: '" + queryForm.ToUpperInvariant() + "' queries are not supported yet " + GetCoordinates(parserContext));
+                    return ParseDescribeQuery(parserContext);
 
                 //Empty keyword: the input ended (or hit non-letter punctuation) right after the prologue, so no form
                 //keyword was present at all. Typically a prologue-only string, or a query that opens with a stray brace.

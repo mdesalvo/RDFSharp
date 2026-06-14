@@ -83,8 +83,8 @@ namespace RDFSharp.Query
             }
 
             //SolutionModifier: only LIMIT/OFFSET are representable on a CONSTRUCT query (ORDER BY / GROUP BY /
-            //HAVING are rejected as non-representable)
-            ParseConstructSolutionModifiers(parserContext, constructQuery);
+            //HAVING are rejected as non-representable). Shared with DESCRIBE via ParseLimitOffsetOnlyModifiers.
+            ParseLimitOffsetOnlyModifiers(parserContext, constructQuery, "CONSTRUCT");
 
             return constructQuery;
         }
@@ -196,51 +196,6 @@ namespace RDFSharp.Query
             {
                 //Remove the sink so the subsequent WHERE clause is parsed normally (into pattern groups)
                 parserContext.ConstructTemplateSink = null;
-            }
-        }
-
-        /// <summary>
-        /// Parses the trailing solution-modifier section of a CONSTRUCT query, restricted to the modifiers the
-        /// flat model can carry: LIMIT and OFFSET. ORDER BY / GROUP BY / HAVING are spec-legal here but have no
-        /// slot on <see cref="RDFConstructQuery"/>, so they are rejected as non-representable rather than dropped.
-        /// Scanning stops (pushing the token back) at the first non-modifier keyword or at end of input.
-        /// </summary>
-        /// <exception cref="RDFQueryException">When a non-representable modifier appears, or a LIMIT/OFFSET body is malformed.</exception>
-        private static void ParseConstructSolutionModifiers(RDFQueryParserContext parserContext, RDFConstructQuery constructQuery)
-        {
-            while (true)
-            {
-                //Advance to the first significant character so ReadKeyword finds the keyword immediately
-                SkipWhitespace(parserContext);
-
-                //Read the upcoming keyword (may be empty at EOF or when the next token is not a keyword)
-                string modifierKeyword = ReadKeyword(parserContext);
-
-                switch (modifierKeyword.ToUpperInvariant())
-                {
-                    //LIMIT n: parse the non-negative integer and add a RDFLimitModifier
-                    case "LIMIT":
-                        constructQuery.AddModifier(new RDFLimitModifier(ParseInteger(parserContext, "LIMIT")));
-                        break;
-
-                    //OFFSET n: parse the non-negative integer and add a RDFOffsetModifier
-                    case "OFFSET":
-                        constructQuery.AddModifier(new RDFOffsetModifier(ParseInteger(parserContext, "OFFSET")));
-                        break;
-
-                    //ORDER BY / GROUP BY / HAVING are valid SPARQL on a CONSTRUCT, but RDFConstructQuery has no
-                    //slot for them: reject explicitly (non-representable) instead of silently dropping them
-                    case "ORDER":
-                    case "GROUP":
-                    case "HAVING":
-                        throw new RDFQueryException("Cannot parse SPARQL CONSTRUCT query: the '" + modifierKeyword.ToUpperInvariant() + "' solution modifier is not representable on a CONSTRUCT query (only LIMIT and OFFSET are) " + GetCoordinates(parserContext));
-
-                    default:
-                        //The keyword run is not a recognized modifier (or is empty at EOF): push it back so the
-                        //reader position is restored, and stop scanning modifiers
-                        UnreadString(parserContext, modifierKeyword);
-                        return;
-                }
             }
         }
         #endregion
