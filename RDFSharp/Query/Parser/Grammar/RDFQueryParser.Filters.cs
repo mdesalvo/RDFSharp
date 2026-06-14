@@ -433,7 +433,9 @@ namespace RDFSharp.Query
             //prefix label of a prefixed-name term/function (e.g. 'geof:distance(...)' or 'ex:thing').
             if (IsAsciiLetter(nextSignificantCodePoint))
             {
-                string letterRun = ReadKeyword(parserContext);
+                //Read the run as a built-in function NAME (letters + digits + underscore), so names like MD5,
+                //SHA256 and ENCODE_FOR_URI tokenise whole rather than being cut at the first digit/underscore.
+                string letterRun = ReadFunctionName(parserContext);
 
                 //If the next significant character is ':' the run is a prefix label, not a keyword: rewind and let
                 //the general term path resolve the prefixed name (and detect a following '(' for a function call).

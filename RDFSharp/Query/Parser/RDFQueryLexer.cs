@@ -117,6 +117,40 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// <para>
+        /// Reads the maximal run of characters that may form a SPARQL BUILT-IN FUNCTION name and returns it
+        /// verbatim. Unlike <see cref="ReadKeyword"/> — which accumulates ASCII letters only — this also accepts
+        /// ASCII digits and the underscore, so function names that contain them are tokenised as a single run:
+        /// <c>MD5</c>, <c>SHA1</c>, <c>SHA256</c>, <c>SHA384</c>, <c>SHA512</c>, <c>ENCODE_FOR_URI</c>.
+        /// </para>
+        /// <para>
+        /// Callers position the reader on a leading ASCII LETTER first (a SPARQL built-in name never starts with a
+        /// digit or underscore), then use this to read the rest of the name; the terminating non-name character is
+        /// pushed back, exactly as <see cref="ReadKeyword"/> does. A prefixed name's label (which may also contain
+        /// digits/underscores) is read identically and then rewound on the following <c>:</c>, so the general term
+        /// reader can re-read the whole <c>prefix:local</c> token.
+        /// </para>
+        /// </summary>
+        internal static string ReadFunctionName(RDFQueryParserContext parserContext)
+        {
+            RDFTurtle.RDFTurtleContext termContext = parserContext.TermParsingContext;
+            StringBuilder functionNameRun = new StringBuilder();
+
+            //Accumulate consecutive name characters: ASCII letters, ASCII digits, and the underscore
+            int codePoint = RDFTurtle.ReadCodePoint(termContext);
+            while (IsAsciiLetter(codePoint) || (codePoint >= '0' && codePoint <= '9') || codePoint == '_')
+            {
+                RDFTurtle.AppendCodePoint(functionNameRun, codePoint);
+                codePoint = RDFTurtle.ReadCodePoint(termContext);
+            }
+
+            //The terminating character does not belong to the name: push it back so the caller resumes exactly there
+            RDFTurtle.UnreadCodePoint(termContext, codePoint);
+
+            return functionNameRun.ToString();
+        }
+
+        /// <summary>
         /// Pushes the characters of the given string back onto the reader, preserving their original order,
         /// so a subsequent read returns them again. Used to "un-peek" a keyword run that turned out not to be
         /// the one we were looking for.
