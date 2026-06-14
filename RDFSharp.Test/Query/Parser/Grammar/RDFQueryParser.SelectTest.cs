@@ -38,11 +38,7 @@ public partial class RDFQueryParserTest
     /// same text: the round-trip oracle that proves the parser reconstructs the object-model faithfully.
     /// </summary>
     private static void AssertSelectQueryRoundTrips(RDFSelectQuery originalQuery)
-    {
-        string printedQuery = originalQuery.ToString();
-        RDFSelectQuery reparsedQuery = RDFSelectQuery.FromString(printedQuery);
-        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(printedQuery), RDFTestUtilities.NormalizeEOL(reparsedQuery.ToString()));
-    }
+        => RDFTestUtilities.AssertIso(originalQuery);
 
     [TestMethod]
     public void ShouldRoundTripSelectStarWithSingleAllVariablePattern()

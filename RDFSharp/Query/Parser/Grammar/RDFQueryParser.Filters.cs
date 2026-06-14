@@ -240,6 +240,11 @@ namespace RDFSharp.Query
                 case RDFLangMatchesExpression langMatchesExpr:     return new RDFExpressionFilter(langMatchesExpr);
                 case RDFRegexExpression regexExpression:           return new RDFExpressionFilter(regexExpression);
                 case RDFSameTermExpression sameTermExpression:     return new RDFExpressionFilter(sameTermExpression);
+                case RDFContainsExpression containsExpression:     return new RDFExpressionFilter(containsExpression);
+                case RDFStrStartsExpression strStartsExpression:   return new RDFExpressionFilter(strStartsExpression);
+                case RDFStrEndsExpression strEndsExpression:       return new RDFExpressionFilter(strEndsExpression);
+                case RDFHasLangExpression hasLangExpression:       return new RDFExpressionFilter(hasLangExpression);
+                case RDFHasLangDirExpression hasLangDirExpression: return new RDFExpressionFilter(hasLangDirExpression);
 
                 //A bare GeoSPARQL relation (geof:sfWithin(?a,?b), geof:rcc8eq(?a,?b), …) yields a boolean-typed
                 //literal but has no RDFExpressionFilter constructor of its own. The engine's idiom is to test it for

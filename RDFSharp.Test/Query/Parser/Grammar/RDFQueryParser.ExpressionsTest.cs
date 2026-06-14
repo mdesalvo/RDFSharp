@@ -152,24 +152,26 @@ public partial class RDFQueryParserTest
     }
 
     /// <summary>
-    /// The boolean-returning string built-ins CONTAINS / STRSTARTS / STRENDS / HASLANG / HASLANGDIR parse as value
-    /// expressions, but the flat model's <c>RDFExpressionFilter</c> exposes no constructor for them, so they are
-    /// NOT representable as a bare FILTER constraint (a known model limit; the idiomatic workaround is to compare
-    /// them, e.g. <c>FILTER(CONTAINS(?o,"x") = true)</c>, which the parser accepts). This pins that boundary.
+    /// A bare FILTER constraint must evaluate to a boolean. A built-in whose value-expression is NON-boolean
+    /// (e.g. the integer-returning STRLEN, the string-returning UCASE/SUBSTR, a bare arithmetic expression) has
+    /// no place as a standalone constraint and cannot be wrapped in an <c>RDFExpressionFilter</c>: the parser
+    /// rejects it via the <c>WrapExpressionInFilter</c> default branch. This pins that boundary.
     /// </summary>
     [TestMethod]
-    [DataRow("CONTAINS(?o, \"x\")")]
-    [DataRow("STRSTARTS(?o, \"x\")")]
-    [DataRow("STRENDS(?o, \"x\")")]
-    [DataRow("HASLANG(?o)")]
-    [DataRow("HASLANGDIR(?o)")]
+    [DataRow("STRLEN(?o)")]
+    [DataRow("UCASE(?o)")]
+    [DataRow("SUBSTR(?o, 1, 2)")]
+    [DataRow("?o + 1")]
     public void ShouldThrowOnNonRepresentableBareFilterBuiltIn(string builtInCall)
         => Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?o FILTER({builtInCall}) }}"));
 
     /// <summary>
     /// The boolean built-ins that DO have an <c>RDFExpressionFilter</c> constructor are accepted as bare FILTER
-    /// constraints (covering the WrapExpressionInFilter dispatch for each representable type).
+    /// constraints (covering the WrapExpressionInFilter dispatch for each representable type). The boolean-returning
+    /// string built-ins CONTAINS / STRSTARTS / STRENDS and the language-tag tests HASLANG / HASLANGDIR were closed
+    /// in "SPARQL 100%" phase IP0 (Parser finding #1: dedicated <c>RDFExpressionFilter</c> constructors added), so
+    /// they too are now representable as a bare constraint.
     /// </summary>
     [TestMethod]
     [DataRow("BOUND(?o)")]
@@ -181,10 +183,55 @@ public partial class RDFQueryParserTest
     [DataRow("SAMETERM(?s, ?o)")]
     [DataRow("LANGMATCHES(LANG(?o), \"en\")")]
     [DataRow("REGEX(?o, \"^a\")")]
+    [DataRow("CONTAINS(?o, \"x\")")]
+    [DataRow("STRSTARTS(?o, \"x\")")]
+    [DataRow("STRENDS(?o, \"x\")")]
+    [DataRow("HASLANG(?o)")]
+    [DataRow("HASLANGDIR(?o)")]
     public void ShouldParseRepresentableBareFilterBuiltIn(string builtInCall)
     {
         RDFSelectQuery parsedQuery = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?o FILTER({builtInCall}) }}");
         Assert.IsInstanceOfType<RDFExpressionFilter>(SingleFilterOf(parsedQuery));
+    }
+
+    /// <summary>
+    /// "SPARQL 100%" IP0 iso-functionality gate for Parser finding #1: each boolean string/lang built-in newly
+    /// representable as a bare FILTER constraint is exercised BOTH ways — built through the fluent API (the new
+    /// <c>RDFExpressionFilter</c> constructors) and obtained by parsing the printed SPARQL — and the two must be
+    /// interchangeable on printing round-trip AND on evaluation against a sample graph (see
+    /// <see cref="RDFTestUtilities.AssertIso(RDFSelectQuery, RDFGraph)"/>).
+    /// </summary>
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateBareFilterBuiltInsIso()
+    {
+        //Sample graph mixing plain, language-tagged and language+direction literals so each built-in has both
+        //matching and non-matching rows to select on
+        RDFResource predicate = new RDFResource("http://example.org/p");
+        RDFGraph sampleGraph = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s1"), predicate, new RDFPlainLiteral("hello")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s2"), predicate, new RDFPlainLiteral("world")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s3"), predicate, new RDFPlainLiteral("ciao", "it")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s4"), predicate, new RDFPlainLiteral("salut", "fr--ltr")));
+
+        RDFVariable objectVariable = new RDFVariable("?o");
+        RDFFilter[] bareFilters =
+        {
+            new RDFExpressionFilter(new RDFContainsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("ell")))),
+            new RDFExpressionFilter(new RDFStrStartsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("wor")))),
+            new RDFExpressionFilter(new RDFStrEndsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("lo")))),
+            new RDFExpressionFilter(new RDFHasLangExpression(objectVariable)),
+            new RDFExpressionFilter(new RDFHasLangDirExpression(objectVariable))
+        };
+
+        foreach (RDFFilter bareFilter in bareFilters)
+        {
+            RDFSelectQuery apiQuery = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?s"), predicate, objectVariable))
+                    .AddFilter(bareFilter));
+
+            RDFTestUtilities.AssertIso(apiQuery, sampleGraph);
+        }
     }
 
     [TestMethod]

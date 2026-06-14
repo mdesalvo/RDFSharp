@@ -14,6 +14,13 @@
    limitations under the License.
 */
 
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RDFSharp.Model;
+using RDFSharp.Query;
+
 namespace RDFSharp.Test;
 
 /// <summary>
@@ -30,4 +37,72 @@ internal static class RDFTestUtilities
     /// </summary>
     internal static string NormalizeEOL(string value)
         => value?.Replace("\r\n", "\n");
+
+    #region SPARQL iso-functionality harness
+    /// <summary>
+    /// Bidirectional isomorphism gate (the "SPARQL 100%" spine): asserts that a query built through the fluent
+    /// API and the same query obtained by parsing its printed SPARQL are interchangeable, on BOTH facets that
+    /// matter — printing round-trip and evaluation result. Every "SPARQL 100%" phase reuses this to prove that
+    /// a newly representable form is reachable indistinctly via code or via SPARQL string.
+    /// <para>
+    /// <b>Gate A — printing round-trip</b>: <c>parse(api.ToString()).ToString() == api.ToString()</c>, so the
+    /// parser reconstructs an object-model that prints back identically (EOL-normalized for cross-platform).
+    /// </para>
+    /// <para>
+    /// <b>Gate B — evaluation equivalence</b>: evaluating the API query and the reparsed query against the same
+    /// sample graph yields the very same SELECT result table (same columns, same set of rows).
+    /// </para>
+    /// </summary>
+    internal static void AssertIso(RDFSelectQuery apiQuery, RDFGraph sampleGraph)
+    {
+        //Gate A — printing round-trip
+        RDFSelectQuery reparsedQuery = AssertIso(apiQuery);
+
+        //Gate B — evaluation equivalence on the sample graph
+        DataTable apiResults = apiQuery.ApplyToGraph(sampleGraph).SelectResults;
+        DataTable reparsedResults = reparsedQuery.ApplyToGraph(sampleGraph).SelectResults;
+        AssertSameSelectResults(apiResults, reparsedResults);
+    }
+
+    /// <summary>
+    /// Gate A only (no sample graph): asserts the printing round-trip of the given query and returns the query
+    /// obtained by reparsing its printed form (so callers needing it for further checks avoid reparsing twice).
+    /// </summary>
+    internal static RDFSelectQuery AssertIso(RDFSelectQuery apiQuery)
+    {
+        string printedQuery = apiQuery.ToString();
+        RDFSelectQuery reparsedQuery = RDFSelectQuery.FromString(printedQuery);
+        Assert.AreEqual(NormalizeEOL(printedQuery), NormalizeEOL(reparsedQuery.ToString()));
+        return reparsedQuery;
+    }
+
+    /// <summary>
+    /// Asserts that two SELECT result tables carry the same columns and the same multiset of rows. The row
+    /// comparison is order-independent (a bag, not a sequence) so it stays valid for queries without ORDER BY;
+    /// queries WITH ORDER BY still pass because an equal ordering produces an equal bag.
+    /// </summary>
+    private static void AssertSameSelectResults(DataTable expectedResults, DataTable actualResults)
+    {
+        //Same set of projected columns (order-independent)
+        List<string> expectedColumns = expectedResults.Columns.Cast<DataColumn>().Select(c => c.ColumnName).OrderBy(n => n).ToList();
+        List<string> actualColumns = actualResults.Columns.Cast<DataColumn>().Select(c => c.ColumnName).OrderBy(n => n).ToList();
+        CollectionAssert.AreEqual(expectedColumns, actualColumns, "SELECT result columns differ between API and reparsed query");
+
+        //Same multiset of rows: render each row as a stable string keyed on the (sorted) column names
+        List<string> expectedRows = RenderRows(expectedResults, expectedColumns);
+        List<string> actualRows = RenderRows(actualResults, actualColumns);
+        CollectionAssert.AreEqual(expectedRows, actualRows, "SELECT result rows differ between API and reparsed query");
+    }
+
+    /// <summary>
+    /// Renders the rows of a result table as a sorted list of strings (one per row), so two tables can be
+    /// compared as bags regardless of row order. Cells are joined in sorted-column order with a separator that
+    /// cannot collide with cell content.
+    /// </summary>
+    private static List<string> RenderRows(DataTable resultsTable, List<string> sortedColumns)
+        => resultsTable.Rows.Cast<DataRow>()
+            .Select(row => string.Join("", sortedColumns.Select(col => row[col]?.ToString() ?? string.Empty)))
+            .OrderBy(rendered => rendered)
+            .ToList();
+    #endregion
 }

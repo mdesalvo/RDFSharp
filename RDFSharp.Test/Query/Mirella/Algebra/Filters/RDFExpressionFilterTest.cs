@@ -220,6 +220,91 @@ public class RDFExpressionFilterTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFSameTermExpression));
 
     [TestMethod]
+    public void ShouldCreateExpressionFilterWithContainsExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFContainsExpression(new RDFVariable("?V1"), new RDFConstantExpression(new RDFPlainLiteral("hello"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (CONTAINS(?V1, \"hello\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (CONTAINS(?V1, \"hello\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullContainsExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFContainsExpression));
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithStrStartsExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFStrStartsExpression(new RDFVariable("?V1"), new RDFConstantExpression(new RDFPlainLiteral("he"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (STRSTARTS(?V1, \"he\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (STRSTARTS(?V1, \"he\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullStrStartsExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFStrStartsExpression));
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithStrEndsExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFStrEndsExpression(new RDFVariable("?V1"), new RDFConstantExpression(new RDFPlainLiteral("lo"))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (STRENDS(?V1, \"lo\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (STRENDS(?V1, \"lo\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullStrEndsExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFStrEndsExpression));
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithHasLangExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFHasLangExpression(new RDFVariable("?V1")));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (HASLANG(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (HASLANG(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullHasLangExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFHasLangExpression));
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterWithHasLangDirExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(
+            new RDFHasLangDirExpression(new RDFVariable("?V1")));
+
+        Assert.IsNotNull(filter);
+        Assert.IsNotNull(filter.Expression);
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (HASLANGDIR(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (HASLANGDIR(?V1)) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullHasLangDirExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFHasLangDirExpression));
+
+    [TestMethod]
     public void ShouldCreateExpressionFilterAndKeepRow()
     {
         RDFTable table = new RDFTable();
