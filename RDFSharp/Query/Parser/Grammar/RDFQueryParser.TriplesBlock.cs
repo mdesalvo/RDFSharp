@@ -228,6 +228,16 @@ namespace RDFSharp.Query
         private static void EmitPattern(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup,
             RDFPatternMember tripleSubject, RDFPatternMember triplePredicate, RDFPatternMember tripleObject)
         {
+            //CONSTRUCT TEMPLATE diversion: while a template is being parsed every emitted triple is a TEMPLATE
+            //pattern, not a graph-pattern member. It is collected directly into the sink with the THREE-argument
+            //constructor (templates are never inside a GRAPH clause) and WITHOUT the pattern-group's
+            //variable-presence guard, so fully-ground template triples (e.g. '{ <a> <b> <c> }') are preserved.
+            if (parserContext.ConstructTemplateSink != null)
+            {
+                parserContext.ConstructTemplateSink.Add(new RDFPattern(tripleSubject, triplePredicate, tripleObject));
+                return;
+            }
+
             if (parserContext.CurrentGraphScope.ActiveContext == null)
             {
                 targetPatternGroup.AddPattern(new RDFPattern(tripleSubject, triplePredicate, tripleObject));

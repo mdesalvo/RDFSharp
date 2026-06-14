@@ -61,6 +61,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL string into an RDFConstructQuery.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid CONSTRUCT query.</exception>
+        public static RDFConstructQuery FromString(string constructQuery)
+        {
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(constructQuery);
+
+            //The factory dispatches on the query form: enforce that the parsed query is indeed a CONSTRUCT
+            if (parsedQuery is RDFConstructQuery parsedConstructQuery)
+                return parsedConstructQuery;
+
+            throw new RDFQueryException("Cannot parse CONSTRUCT query because the given command represents a different SPARQL query form (" + parsedQuery.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given pattern to the templates of the query
         /// </summary>
         public RDFConstructQuery AddTemplate(RDFPattern template)

@@ -53,10 +53,6 @@ public class RDFQueryParserFactoryTest
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("PREFIX ex: <http://example.org/>"));
 
     [TestMethod]
-    public void ShouldThrowOnNotYetSupportedConstructForm()
-        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"));
-
-    [TestMethod]
     public void ShouldThrowOnNotYetSupportedDescribeForm()
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery("DESCRIBE ?s WHERE { ?s ?p ?o }"));
     #endregion

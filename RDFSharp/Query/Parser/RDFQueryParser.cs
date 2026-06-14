@@ -151,6 +151,26 @@ namespace RDFSharp.Query
             /// </summary>
             internal Dictionary<string, RDFVariable> LabeledBlankNodeVariables { get; }
                 = new Dictionary<string, RDFVariable>(StringComparer.Ordinal);
+
+            /// <summary>
+            /// <para>
+            /// Diversion target for the triple patterns produced while a CONSTRUCT TEMPLATE is being parsed.
+            /// It is <c>null</c> during the normal (WHERE-clause) flow; the CONSTRUCT template parser sets it
+            /// to a fresh list for the duration of the <c>{ … }</c> template block and resets it to <c>null</c>
+            /// immediately after.
+            /// </para>
+            /// <para>
+            /// WHY A SEPARATE SINK. A CONSTRUCT template is a set of <see cref="RDFPattern"/> instances attached
+            /// via <see cref="RDFConstructQuery.AddTemplate"/>, NOT a pattern group. Crucially it must preserve
+            /// fully-GROUND triples (e.g. <c>CONSTRUCT { &lt;a&gt; &lt;b&gt; &lt;c&gt; }</c>) that
+            /// <see cref="RDFPatternGroup.AddPattern"/> would silently drop (its guard keeps only patterns that
+            /// carry at least one variable). Routing the template through this sink lets the whole triple machine
+            /// (predicate-object/object lists, the <c>a</c> verb, blank nodes and collections) be reused verbatim
+            /// while the single emission chokepoint <see cref="EmitPattern"/> diverts every pattern here instead
+            /// of into a pattern group — bypassing that guard so ground template triples survive.
+            /// </para>
+            /// </summary>
+            internal List<RDFPattern> ConstructTemplateSink { get; set; }
             #endregion
 
             #region Ctors
@@ -198,8 +218,8 @@ namespace RDFSharp.Query
         /// form keyword (SELECT/ASK/CONSTRUCT/DESCRIBE) to the matching form-parser.
         /// </para>
         /// <para>
-        /// Phase note: SELECT and ASK are implemented; CONSTRUCT and DESCRIBE are recognized (so that the error
-        /// message is precise) but rejected until their phase lands.
+        /// Phase note: SELECT, ASK and CONSTRUCT are implemented; DESCRIBE is recognized (so that the error
+        /// message is precise) but rejected until its phase lands.
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the text is empty, the form keyword is missing/unknown, or the body is malformed.</exception>
@@ -235,10 +255,12 @@ namespace RDFSharp.Query
                 case "ASK":
                     return ParseAskQuery(parserContext);
 
-                //These are valid SPARQL forms that simply have not been wired up yet. We match them explicitly so the
-                //error names the exact form the author used ("'CONSTRUCT' ... not supported yet") instead of the
-                //misleading "unexpected token" message of the default branch. Each gets its real parser in a later phase.
                 case "CONSTRUCT":
+                    return ParseConstructQuery(parserContext);
+
+                //This is a valid SPARQL form that simply has not been wired up yet. We match it explicitly so the
+                //error names the exact form the author used ("'DESCRIBE' ... not supported yet") instead of the
+                //misleading "unexpected token" message of the default branch. It gets its real parser in a later phase.
                 case "DESCRIBE":
                     throw new RDFQueryException("Cannot parse SPARQL query: '" + queryForm.ToUpperInvariant() + "' queries are not supported yet " + GetCoordinates(parserContext));
 
