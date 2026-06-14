@@ -251,5 +251,62 @@ public partial class RDFQueryParserTest
             .OrderBy(s => s, System.StringComparer.Ordinal).ToArray();
         CollectionAssert.AreEqual(new[] { "http://ex/bob", "http://ex/carol" }, subjects);
     }
+
+    /// <summary>
+    /// Covers EACH relational comparison operator in a FILTER (the two-character operators must win over their
+    /// one-character prefixes), checking the parsed flavor. Some operands are prefixed IRIs / typed literals.
+    /// </summary>
+    [TestMethod]
+    [DataRow("?a < 10", RDFQueryEnums.RDFComparisonFlavors.LessThan)]
+    [DataRow("?a <= 10", RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan)]
+    [DataRow("?a > 10", RDFQueryEnums.RDFComparisonFlavors.GreaterThan)]
+    [DataRow("?a >= 10", RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan)]
+    [DataRow("?o = foaf:Person", RDFQueryEnums.RDFComparisonFlavors.EqualTo)]
+    [DataRow("?o != foaf:Person", RDFQueryEnums.RDFComparisonFlavors.NotEqualTo)]
+    [DataRow("?a >= \"5\"^^xsd:integer", RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan)]
+    public void ShouldParseRelationalComparisonOperator(string constraint, RDFQueryEnums.RDFComparisonFlavors expectedFlavor)
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?a . ?s ?q ?o FILTER({constraint}) }}");
+
+        RDFComparisonExpression comparison = (RDFComparisonExpression)((RDFExpressionFilter)SingleFilterOf(query)).Expression;
+        Assert.AreEqual(expectedFlavor, comparison.ComparisonFlavor);
+    }
+
+    /// <summary>
+    /// Covers EACH arithmetic operator (additive +/-, multiplicative *//, and unary minus) used inside a FILTER
+    /// comparison, checking the parsed left-hand arithmetic expression type.
+    /// </summary>
+    [TestMethod]
+    [DataRow("?a + 1 = 2", typeof(RDFAddExpression))]
+    [DataRow("?a - 1 = 0", typeof(RDFSubtractExpression))]
+    [DataRow("?a * 2 = 4", typeof(RDFMultiplyExpression))]
+    [DataRow("?a / 2 = 1", typeof(RDFDivideExpression))]
+    [DataRow("- ?a = 0", typeof(RDFSubtractExpression))]
+    public void ShouldParseArithmeticOperatorInComparison(string constraint, System.Type expectedLeftType)
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?a FILTER({constraint}) }}");
+
+        RDFComparisonExpression comparison = (RDFComparisonExpression)((RDFExpressionFilter)SingleFilterOf(query)).Expression;
+        Assert.IsInstanceOfType(comparison.LeftArgument, expectedLeftType);
+    }
+
+    [TestMethod]
+    public void ShouldParseInExpressionWithPrefixedIris()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s ?p ?o FILTER(?o IN (foaf:Person, foaf:Agent, foaf:Group)) }");
+
+        Assert.IsInstanceOfType(((RDFExpressionFilter)SingleFilterOf(query)).Expression, typeof(RDFInExpression));
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnNotInExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(?a NOT IN (1, 2)) }"));
+
+    [TestMethod]
+    public void ShouldThrowOnDanglingNotInExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a . ?s ?q ?b FILTER(?a NOT ?b) }"));
     #endregion
 }

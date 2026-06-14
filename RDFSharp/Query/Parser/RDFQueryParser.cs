@@ -382,12 +382,19 @@ namespace RDFSharp.Query
             if (prefixLabelToNamespaceUri.TryGetValue(normalizedPrefixLabel, out string declaredNamespaceUri))
                 return declaredNamespaceUri;
 
-            //2) Leniency for well-known, never-declared prefixes (rdf/rdfs/xsd/owl/...): the default
+            //2) RDFSharp blank-node convention: 'bnode:' is the internal scheme of every RDFSharp blank node
+            //   (RDFTurtle emits '_:x' as 'bnode:x'), so it is accepted WITHOUT a PREFIX declaration — a query may
+            //   reference a blank node by its 'bnode:label' IRI. This is the ONLY undeclared, non-registered prefix
+            //   that resolves; every other unresolved prefix returns null and the caller raises a parse error.
+            if (string.Equals(normalizedPrefixLabel, "bnode", StringComparison.Ordinal))
+                return "bnode:";
+
+            //3) Leniency for well-known, never-declared prefixes (rdf/rdfs/xsd/owl/...): the default
             //   namespace (empty label) is deliberately NOT auto-resolved, only genuinely named prefixes are
             if (normalizedPrefixLabel.Length > 0)
                 return RDFNamespaceRegister.GetByPrefix(normalizedPrefixLabel)?.ToString();
 
-            //3) Undeclared default namespace: unresolved
+            //4) Undeclared default namespace: unresolved
             return null;
         }
         #endregion

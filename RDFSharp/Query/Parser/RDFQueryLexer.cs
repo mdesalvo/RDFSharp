@@ -222,9 +222,12 @@ namespace RDFSharp.Query
                         throw new RDFQueryException("Cannot parse SPARQL term: unexpected value '" + parsedValue + "' " + GetCoordinates(parserContext));
                 }
             }
-            catch (RDFModelException termParsingException)
+            catch (Exception termParsingException) when (termParsingException is RDFModelException || termParsingException is UriFormatException)
             {
-                //Surface term-level lexing failures as query-level parse errors (the parser speaks RDFQueryException)
+                //Surface term-level lexing failures as query-level parse errors (the parser speaks RDFQueryException).
+                //This includes the UriFormatException raised when a prefixed name uses an UNDECLARED, UNRESOLVABLE
+                //prefix: the Turtle term-reader concatenates a null namespace with the local name and the resulting
+                //relative string fails 'new Uri(...)', which must read as a clean parse error rather than leak.
                 throw new RDFQueryException("Cannot parse SPARQL term " + GetCoordinates(parserContext) + ": " + termParsingException.Message, termParsingException);
             }
         }

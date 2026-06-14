@@ -117,5 +117,70 @@ public partial class RDFQueryParserTest
         Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(geof:sfWithin(?a)) }"));
     }
+
+    /// <summary>
+    /// Sweeps EVERY GeoSPARQL function in the unary, binary, Egenhofer and RCC8 dispatch tables, invoking each by
+    /// its full IRI inside a bare FILTER (where any RDFGeoExpression is wrapped as 'expr = true'), and asserting
+    /// the parser builds the expected RDFGeoExpression subtype. This covers every dispatch-table entry — including
+    /// the geometry-returning set functions and the eight Egenhofer / eight RCC8 relations — that the focused
+    /// tests above did not individually exercise. The function IRIs are taken from RDFVocabulary so the test stays
+    /// correct if a vocabulary IRI ever changes.
+    /// </summary>
+    [TestMethod]
+    public void ShouldParseEveryGeoDispatchTableFunction()
+    {
+        (RDFResource Iri, int Arity, System.Type Expected)[] geoFunctions =
+        {
+            //Unary (geometry → geometry/scalar)
+            (RDFVocabulary.GEOSPARQL.GEOF.BOUNDARY, 1, typeof(RDFGeoBoundaryExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.CONVEX_HULL, 1, typeof(RDFGeoConvexHullExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.ENVELOPE, 1, typeof(RDFGeoEnvelopeExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.GET_SRID, 1, typeof(RDFGeoGetSRIDExpression)),
+            (RDFVocabulary.GEOSPARQL.DIMENSION, 1, typeof(RDFGeoDimensionExpression)),
+            (RDFVocabulary.GEOSPARQL.IS_EMPTY, 1, typeof(RDFGeoIsEmptyExpression)),
+            (RDFVocabulary.GEOSPARQL.IS_SIMPLE, 1, typeof(RDFGeoIsSimpleExpression)),
+            //Binary topological (geometry × geometry → boolean)
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_CONTAINS, 2, typeof(RDFGeoContainsExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_CROSSES, 2, typeof(RDFGeoCrossesExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_DISJOINT, 2, typeof(RDFGeoDisjointExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_EQUALS, 2, typeof(RDFGeoEqualsExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_INTERSECTS, 2, typeof(RDFGeoIntersectsExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_OVERLAPS, 2, typeof(RDFGeoOverlapsExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_TOUCHES, 2, typeof(RDFGeoTouchesExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_WITHIN, 2, typeof(RDFGeoWithinExpression)),
+            //Binary set (geometry × geometry → geometry)
+            (RDFVocabulary.GEOSPARQL.GEOF.DIFFERENCE, 2, typeof(RDFGeoDifferenceExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.INTERSECTION, 2, typeof(RDFGeoIntersectionExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SYM_DIFFERENCE, 2, typeof(RDFGeoSymDifferenceExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.SF_UNION, 2, typeof(RDFGeoUnionExpression)),
+            //Egenhofer relations (all share RDFGeoEgenhoferExpression)
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_EQUALS, 2, typeof(RDFGeoEgenhoferExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_DISJOINT, 2, typeof(RDFGeoEgenhoferExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_MEET, 2, typeof(RDFGeoEgenhoferExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_OVERLAP, 2, typeof(RDFGeoEgenhoferExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_COVERS, 2, typeof(RDFGeoEgenhoferExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_COVERED_BY, 2, typeof(RDFGeoEgenhoferExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_INSIDE, 2, typeof(RDFGeoEgenhoferExpression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.EH_CONTAINS, 2, typeof(RDFGeoEgenhoferExpression)),
+            //RCC8 relations (all share RDFGeoRCC8Expression)
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8DC, 2, typeof(RDFGeoRCC8Expression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8EC, 2, typeof(RDFGeoRCC8Expression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8PO, 2, typeof(RDFGeoRCC8Expression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8TPPI, 2, typeof(RDFGeoRCC8Expression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8TPP, 2, typeof(RDFGeoRCC8Expression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPP, 2, typeof(RDFGeoRCC8Expression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPPI, 2, typeof(RDFGeoRCC8Expression)),
+            (RDFVocabulary.GEOSPARQL.GEOF.RCC8EQ, 2, typeof(RDFGeoRCC8Expression))
+        };
+
+        foreach ((RDFResource Iri, int Arity, System.Type Expected) geoFunction in geoFunctions)
+        {
+            string arguments = geoFunction.Arity == 1 ? "?a" : "?a, ?b";
+            RDFSelectQuery query = RDFSelectQuery.FromString(
+                $"SELECT * WHERE {{ ?s ?p ?a . ?s ?q ?b FILTER(<{geoFunction.Iri}>({arguments})) }}");
+
+            Assert.IsInstanceOfType(GeoExpressionOf(query), geoFunction.Expected, geoFunction.Iri.ToString());
+        }
+    }
     #endregion
 }

@@ -268,6 +268,26 @@ public partial class RDFQueryParserTest
 
         AssertSelectQueryRoundTrips(query);
     }
+
+    /// <summary>
+    /// Covers the path-LOWERING composition branches: an alternative used as a sequence member, a (group-wrapped)
+    /// sequence spliced into a sequence, a nested alternative flattened into its parent alternative, and a
+    /// single-step group unwrapped inside an alternative branch. All are representable and re-serialize stably.
+    /// </summary>
+    [TestMethod]
+    [DataRow("foaf:knows/(foaf:name|foaf:account)")] // alternative as a sequence member
+    [DataRow("foaf:knows/(foaf:name/foaf:account)")] // group-wrapped sequence spliced into the sequence
+    [DataRow("foaf:knows|(foaf:name|foaf:account)")] // nested alternative flattened into the parent
+    [DataRow("foaf:knows|(foaf:name)")]              // single-step group unwrapped inside an alternative branch
+    public void ShouldParseAndReserializeComposedPropertyPath(string path)
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s {path} ?o }}");
+        Assert.IsNotNull(query);
+
+        string firstPrint = query.ToString();
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(firstPrint),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(firstPrint).ToString()));
+    }
     #endregion
 
     #endregion
