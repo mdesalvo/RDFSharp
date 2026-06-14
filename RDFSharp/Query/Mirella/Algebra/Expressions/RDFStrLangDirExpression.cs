@@ -80,7 +80,7 @@ namespace RDFSharp.Query
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
             sb.Append(", ");
-            sb.Append(Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "ltr" : "rtl");
+            sb.Append(Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "\"ltr\"" : "\"rtl\"");
             sb.Append("))");
 
             return sb.ToString();

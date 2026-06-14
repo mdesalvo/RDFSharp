@@ -186,5 +186,20 @@ public partial class RDFQueryParserTest
         RDFSelectQuery parsedQuery = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?o FILTER({builtInCall}) }}");
         Assert.IsInstanceOfType<RDFExpressionFilter>(SingleFilterOf(parsedQuery));
     }
+
+    [TestMethod]
+    [DataRow("ltr")]
+    [DataRow("rtl")]
+    public void ShouldRoundTripStrLangDir(string direction)
+    {
+        //STRLANGDIR prints its direction as a quoted string literal, so the printed form parses back IDENTICALLY
+        //(this pins the printer fix: a bare 'ltr'/'rtl' would be read as a prefixed name and break the round-trip)
+        string printed = RDFSelectQuery.FromString(
+            $"SELECT (STRLANGDIR(?o, \"en\", \"{direction}\") AS ?v) WHERE {{ ?s ?p ?o }}").ToString();
+
+        Assert.IsTrue(printed.Contains($"\"{direction}\""));
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(printed),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(printed).ToString()));
+    }
     #endregion
 }
