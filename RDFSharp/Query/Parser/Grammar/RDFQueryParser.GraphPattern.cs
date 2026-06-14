@@ -46,7 +46,7 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the braces are unbalanced or a member is malformed.</exception>
-        private static void ParseWhereClause<TQuery>(RDFQueryParserContext parserContext, TQuery targetQuery) where TQuery : RDFQuery
+        internal static void ParseWhereClause<TQuery>(RDFQueryParserContext parserContext, TQuery targetQuery) where TQuery : RDFQuery
         {
             //WHERE is optional per the SPARQL grammar: try to consume it but proceed either way
             TryConsumeKeyword(parserContext, "WHERE");

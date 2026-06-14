@@ -61,14 +61,34 @@ public partial class RDFOperationParserTest
             RDFOperationParserFactory.ParseOperation("DELETE DATA { <http://example.org/s> <http://example.org/p> <http://example.org/o> }"));
 
     [TestMethod]
-    public void ShouldThrowOnNotYetSupportedInsertWhereForm()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
+    public void ShouldDispatchInsertWhereOperation()
+        => Assert.IsInstanceOfType<RDFInsertWhereOperation>(
             RDFOperationParserFactory.ParseOperation("INSERT { ?s ?p ?o } WHERE { ?s ?p ?o }"));
 
     [TestMethod]
-    public void ShouldThrowOnNotYetSupportedDeleteWhereForm()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
+    public void ShouldDispatchDeleteWhereShortFormOperation()
+        => Assert.IsInstanceOfType<RDFDeleteWhereOperation>(
             RDFOperationParserFactory.ParseOperation("DELETE WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldDispatchDeleteWhereLongFormOperation()
+        => Assert.IsInstanceOfType<RDFDeleteWhereOperation>(
+            RDFOperationParserFactory.ParseOperation("DELETE { ?s ?p ?o } WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldDispatchDeleteInsertWhereOperation()
+        => Assert.IsInstanceOfType<RDFDeleteInsertWhereOperation>(
+            RDFOperationParserFactory.ParseOperation("DELETE { ?s ?p ?o } INSERT { ?s ?p ?o2 } WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnNonRepresentableWithClause()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFOperationParserFactory.ParseOperation("WITH <http://example.org/g> DELETE { ?s ?p ?o } WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnNonRepresentableUsingClause()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFOperationParserFactory.ParseOperation("DELETE { ?s ?p ?o } USING <http://example.org/g> WHERE { ?s ?p ?o }"));
 
     [TestMethod]
     public void ShouldThrowOnNonRepresentableCreateOperation()
