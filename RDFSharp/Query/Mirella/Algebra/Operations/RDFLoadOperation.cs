@@ -59,6 +59,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL UPDATE string into an RDFLoadOperation.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid LOAD operation.</exception>
+        public static RDFLoadOperation FromString(string loadOperation)
+        {
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(loadOperation);
+
+            //The factory dispatches on the operation form: enforce that the parsed operation is indeed a LOAD
+            if (parsedOperation is RDFLoadOperation parsedLoadOperation)
+                return parsedLoadOperation;
+
+            throw new RDFQueryException("Cannot parse LOAD operation because the given command represents a different SPARQL UPDATE operation (" + parsedOperation.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Sets the context of the graph into which RDF data will be inserted
         /// </summary>
         public RDFLoadOperation SetContext(Uri toContext)

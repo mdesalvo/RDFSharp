@@ -66,6 +66,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL UPDATE string into an RDFClearOperation.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid CLEAR operation.</exception>
+        public static RDFClearOperation FromString(string clearOperation)
+        {
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(clearOperation);
+
+            //The factory dispatches on the operation form: enforce that the parsed operation is indeed a CLEAR
+            if (parsedOperation is RDFClearOperation parsedClearOperation)
+                return parsedClearOperation;
+
+            throw new RDFQueryException("Cannot parse CLEAR operation because the given command represents a different SPARQL UPDATE operation (" + parsedOperation.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Sets the operation as silent, so that errors will not be delivered to the application
         /// </summary>
         public RDFClearOperation Silent()
