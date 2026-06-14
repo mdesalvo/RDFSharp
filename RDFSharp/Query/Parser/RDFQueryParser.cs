@@ -154,23 +154,29 @@ namespace RDFSharp.Query
 
             /// <summary>
             /// <para>
-            /// Diversion target for the triple patterns produced while a CONSTRUCT TEMPLATE is being parsed.
-            /// It is <c>null</c> during the normal (WHERE-clause) flow; the CONSTRUCT template parser sets it
-            /// to a fresh list for the duration of the <c>{ … }</c> template block and resets it to <c>null</c>
-            /// immediately after.
+            /// Diversion target for the triple patterns produced while a TEMPLATE is being parsed — a CONSTRUCT
+            /// graph template or a SPARQL UPDATE QuadData/QuadPattern. It is <c>null</c> during the normal
+            /// (WHERE-clause) flow; the relevant template parser sets it to a fresh list for the duration of the
+            /// <c>{ … }</c> template block and resets it to <c>null</c> immediately after.
             /// </para>
             /// <para>
-            /// WHY A SEPARATE SINK. A CONSTRUCT template is a set of <see cref="RDFPattern"/> instances attached
-            /// via <see cref="RDFConstructQuery.AddTemplate"/>, NOT a pattern group. Crucially it must preserve
-            /// fully-GROUND triples (e.g. <c>CONSTRUCT { &lt;a&gt; &lt;b&gt; &lt;c&gt; }</c>) that
-            /// <see cref="RDFPatternGroup.AddPattern"/> would silently drop (its guard keeps only patterns that
-            /// carry at least one variable). Routing the template through this sink lets the whole triple machine
-            /// (predicate-object/object lists, the <c>a</c> verb, blank nodes and collections) be reused verbatim
-            /// while the single emission chokepoint <see cref="EmitPattern"/> diverts every pattern here instead
-            /// of into a pattern group — bypassing that guard so ground template triples survive.
+            /// WHY A SEPARATE SINK. A template is a set of <see cref="RDFPattern"/> instances attached via
+            /// <see cref="RDFConstructQuery.AddTemplate"/> (CONSTRUCT) or <c>AddInsert/DeleteTemplate</c>
+            /// (UPDATE), NOT a pattern group. Crucially it must preserve fully-GROUND triples (e.g.
+            /// <c>CONSTRUCT { &lt;a&gt; &lt;b&gt; &lt;c&gt; }</c> or <c>INSERT DATA { &lt;a&gt; &lt;b&gt; &lt;c&gt; }</c>)
+            /// that <see cref="RDFPatternGroup.AddPattern"/> would silently drop (its guard keeps only patterns
+            /// that carry at least one variable). Routing the template through this sink lets the whole triple
+            /// machine (predicate-object/object lists, the <c>a</c> verb, blank nodes and collections) be reused
+            /// verbatim while the single emission chokepoint <see cref="EmitPattern"/> diverts every pattern here
+            /// instead of into a pattern group — bypassing that guard so ground template triples survive.
+            /// </para>
+            /// <para>
+            /// CONTEXT-AWARE. When a GRAPH scope is active (UPDATE QuadData <c>GRAPH iri { … }</c> blocks),
+            /// <see cref="EmitPattern"/> diverts a four-argument (quad) pattern carrying that context; CONSTRUCT
+            /// templates never open a GRAPH scope, so they always collect plain three-argument triples.
             /// </para>
             /// </summary>
-            internal List<RDFPattern> ConstructTemplateSink { get; set; }
+            internal List<RDFPattern> TemplatePatternSink { get; set; }
             #endregion
 
             #region Ctors

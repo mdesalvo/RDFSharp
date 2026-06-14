@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         /// <param name="parserContext">The current parse state (reader + resolver).</param>
         /// <param name="targetPatternGroup">The pattern group to which parsed triple patterns are added.</param>
         /// <exception cref="RDFQueryException">When a triple inside the block is malformed.</exception>
-        private static void ParseTriplesBlock(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
+        internal static void ParseTriplesBlock(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
         {
             while (true)
             {
@@ -228,13 +228,16 @@ namespace RDFSharp.Query
         private static void EmitPattern(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup,
             RDFPatternMember tripleSubject, RDFPatternMember triplePredicate, RDFPatternMember tripleObject)
         {
-            //CONSTRUCT TEMPLATE diversion: while a template is being parsed every emitted triple is a TEMPLATE
-            //pattern, not a graph-pattern member. It is collected directly into the sink with the THREE-argument
-            //constructor (templates are never inside a GRAPH clause) and WITHOUT the pattern-group's
-            //variable-presence guard, so fully-ground template triples (e.g. '{ <a> <b> <c> }') are preserved.
-            if (parserContext.ConstructTemplateSink != null)
+            //TEMPLATE diversion: while a template is being parsed (CONSTRUCT graph template, or UPDATE
+            //QuadData/QuadPattern) every emitted triple is a TEMPLATE pattern, not a graph-pattern member. It is
+            //collected directly into the sink WITHOUT the pattern-group's variable-presence guard, so fully-ground
+            //template triples (e.g. '{ <a> <b> <c> }') are preserved. An active GRAPH scope (UPDATE quad blocks)
+            //makes it a FOUR-argument quad; CONSTRUCT templates never open a GRAPH scope, so they stay three-argument.
+            if (parserContext.TemplatePatternSink != null)
             {
-                parserContext.ConstructTemplateSink.Add(new RDFPattern(tripleSubject, triplePredicate, tripleObject));
+                parserContext.TemplatePatternSink.Add(parserContext.CurrentGraphScope.ActiveContext == null
+                    ? new RDFPattern(tripleSubject, triplePredicate, tripleObject)
+                    : new RDFPattern(parserContext.CurrentGraphScope.ActiveContext, tripleSubject, triplePredicate, tripleObject));
                 return;
             }
 

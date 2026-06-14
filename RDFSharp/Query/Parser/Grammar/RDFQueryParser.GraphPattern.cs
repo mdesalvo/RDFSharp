@@ -509,7 +509,7 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the specifier is missing, a literal, or a blank node.</exception>
-        private static RDFPatternMember ParseGraphContext(RDFQueryParserContext parserContext)
+        internal static RDFPatternMember ParseGraphContext(RDFQueryParserContext parserContext)
         {
             int nextSignificantCodePoint = SkipWhitespace(parserContext);
 

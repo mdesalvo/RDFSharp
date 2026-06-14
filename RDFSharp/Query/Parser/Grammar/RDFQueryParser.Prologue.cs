@@ -156,7 +156,7 @@ namespace RDFSharp.Query
         /// </list>
         /// </para>
         /// </summary>
-        private static void ApplyDeclaredPrefixes<TQuery>(RDFQueryParserContext parserContext, TQuery targetQuery) where TQuery : RDFQuery
+        internal static void ApplyDeclaredPrefixes<TQuery>(RDFQueryParserContext parserContext, TQuery targetQuery) where TQuery : RDFQuery
         {
             foreach (KeyValuePair<string, string> prologuePrefixBinding in parserContext.Resolver.DeclaredPrefixes)
             {

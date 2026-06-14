@@ -51,12 +51,22 @@ public partial class RDFOperationParserTest
             RDFOperationParserFactory.ParseOperation("LOAD <http://example.org/data> ;"));
 
     [TestMethod]
-    public void ShouldThrowOnNotYetSupportedInsertForm()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
+    public void ShouldDispatchInsertDataOperation()
+        => Assert.IsInstanceOfType<RDFInsertDataOperation>(
             RDFOperationParserFactory.ParseOperation("INSERT DATA { <http://example.org/s> <http://example.org/p> <http://example.org/o> }"));
 
     [TestMethod]
-    public void ShouldThrowOnNotYetSupportedDeleteForm()
+    public void ShouldDispatchDeleteDataOperation()
+        => Assert.IsInstanceOfType<RDFDeleteDataOperation>(
+            RDFOperationParserFactory.ParseOperation("DELETE DATA { <http://example.org/s> <http://example.org/p> <http://example.org/o> }"));
+
+    [TestMethod]
+    public void ShouldThrowOnNotYetSupportedInsertWhereForm()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFOperationParserFactory.ParseOperation("INSERT { ?s ?p ?o } WHERE { ?s ?p ?o }"));
+
+    [TestMethod]
+    public void ShouldThrowOnNotYetSupportedDeleteWhereForm()
         => Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFOperationParserFactory.ParseOperation("DELETE WHERE { ?s ?p ?o }"));
 

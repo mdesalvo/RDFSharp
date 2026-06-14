@@ -46,9 +46,10 @@ namespace RDFSharp.Query
         /// consumes the (possibly empty) BASE/PREFIX prologue, then dispatches on the operation keyword.
         /// </para>
         /// <para>
-        /// Phase note: LOAD and CLEAR are implemented; INSERT/DELETE forms are recognized (so the error message is
-        /// precise) but rejected until their phase lands; CREATE/DROP/COPY/MOVE/ADD are valid SPARQL but have no
-        /// representation in the flat model and are rejected as non-representable.
+        /// Phase note: CLEAR, LOAD, INSERT DATA and DELETE DATA are implemented; the WHERE-based INSERT/DELETE
+        /// forms are recognized (so the error message is precise) but rejected until their phase lands;
+        /// CREATE/DROP/COPY/MOVE/ADD are valid SPARQL but have no representation in the flat model and are
+        /// rejected as non-representable.
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the text is empty, the operation keyword is missing/unknown/non-representable, or the body is malformed.</exception>
@@ -79,11 +80,23 @@ namespace RDFSharp.Query
                     parsedOperation = ParseClearOperation(parserContext);
                     break;
 
-                //Valid UPDATE forms whose parser has not landed yet (INSERT DATA / DELETE DATA in F12.2,
-                //INSERT/DELETE … WHERE in F12.3): name the exact keyword so the error is precise
+                //INSERT DATA (this phase) vs INSERT { … } WHERE (the Modify form, F12.3): the 'DATA' second
+                //keyword tells them apart. Anything else after INSERT is the WHERE-based form, not yet landed.
                 case "INSERT":
+                    if (TryConsumeKeyword(parserContext, "DATA"))
+                        parsedOperation = ParseInsertDataOperation(parserContext);
+                    else
+                        throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: 'INSERT … WHERE' operations are not supported yet " + GetCoordinates(parserContext));
+                    break;
+
+                //DELETE DATA (this phase) vs DELETE WHERE / DELETE { … } [INSERT { … }] WHERE (F12.3): the 'DATA'
+                //second keyword tells DELETE DATA apart; anything else is a WHERE-based form, not yet landed.
                 case "DELETE":
-                    throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: '" + operationKeyword.ToUpperInvariant() + "' operations are not supported yet " + GetCoordinates(parserContext));
+                    if (TryConsumeKeyword(parserContext, "DATA"))
+                        parsedOperation = ParseDeleteDataOperation(parserContext);
+                    else
+                        throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: 'DELETE … WHERE' operations are not supported yet " + GetCoordinates(parserContext));
+                    break;
 
                 //Valid SPARQL graph-management operations that the flat model cannot represent (no matching class):
                 //reject them explicitly as non-representable rather than as a generic unexpected token

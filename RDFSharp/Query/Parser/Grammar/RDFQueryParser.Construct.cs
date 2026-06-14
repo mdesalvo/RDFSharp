@@ -95,7 +95,7 @@ namespace RDFSharp.Query
         /// <para>
         /// The whole triple machinery (predicate-object/object lists, the <c>a</c> verb, blank nodes and
         /// collections) is reused verbatim via <see cref="ParseTriplesBlock"/>; emission is diverted into the
-        /// context's <see cref="RDFQueryParserContext.ConstructTemplateSink"/> so ground triples survive (see the
+        /// context's <see cref="RDFQueryParserContext.TemplatePatternSink"/> so ground triples survive (see the
         /// sink's documentation). Property paths and non-triple elements are not allowed by the template grammar
         /// and are rejected.
         /// </para>
@@ -174,7 +174,7 @@ namespace RDFSharp.Query
             //RDFPropertyPath members (which never go through EmitPattern) so we can reject them.
             List<RDFPattern> templatePatterns = new List<RDFPattern>();
             RDFPatternGroup scratchGroupForPaths = new RDFPatternGroup();
-            parserContext.ConstructTemplateSink = templatePatterns;
+            parserContext.TemplatePatternSink = templatePatterns;
             try
             {
                 //Reuse the full triple machinery: it fills the sink with patterns and the scratch group with paths
@@ -195,7 +195,7 @@ namespace RDFSharp.Query
             finally
             {
                 //Remove the sink so the subsequent WHERE clause is parsed normally (into pattern groups)
-                parserContext.ConstructTemplateSink = null;
+                parserContext.TemplatePatternSink = null;
             }
         }
         #endregion
