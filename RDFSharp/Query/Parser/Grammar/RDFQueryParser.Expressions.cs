@@ -55,7 +55,7 @@ namespace RDFSharp.Query
                 case "RAND":    RequireArgumentCount(parserContext, arguments, 0, builtInName); return new RDFRandExpression();
                 case "UUID":    RequireArgumentCount(parserContext, arguments, 0, builtInName); return new RDFUUIDExpression();
                 case "STRUUID": RequireArgumentCount(parserContext, arguments, 0, builtInName); return new RDFStrUUIDExpression();
-                case "BNODE":   RequireArgumentCount(parserContext, arguments, 0, builtInName); return new RDFBNodeExpression();
+                case "BNODE":   return BuildBNodeExpression(parserContext, arguments);
                 #endregion
 
                 #region Unary
@@ -71,6 +71,9 @@ namespace RDFSharp.Query
                 case "UCASE":          return new RDFUpperCaseExpression(RequireSingleArgument(parserContext, arguments, builtInName));
                 case "LCASE":          return new RDFLowerCaseExpression(RequireSingleArgument(parserContext, arguments, builtInName));
                 case "ENCODE_FOR_URI": return new RDFEncodeForURIExpression(RequireSingleArgument(parserContext, arguments, builtInName));
+                case "IRI":
+                case "URI":            return new RDFIriExpression(RequireSingleArgument(parserContext, arguments, builtInName));
+                case "TZ":             return new RDFTzExpression(RequireSingleArgument(parserContext, arguments, builtInName));
                 case "ISIRI":
                 case "ISURI":          return new RDFIsUriExpression(RequireSingleArgument(parserContext, arguments, builtInName));
                 case "ISBLANK":        return new RDFIsBlankExpression(RequireSingleArgument(parserContext, arguments, builtInName));
@@ -96,6 +99,8 @@ namespace RDFSharp.Query
                 case "CONTAINS":  RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFContainsExpression(arguments[0], arguments[1]);
                 case "STRSTARTS": RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFStrStartsExpression(arguments[0], arguments[1]);
                 case "STRENDS":   RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFStrEndsExpression(arguments[0], arguments[1]);
+                case "STRBEFORE": RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFStrBeforeExpression(arguments[0], arguments[1]);
+                case "STRAFTER":  RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFStrAfterExpression(arguments[0], arguments[1]);
                 case "STRDT":     RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFStrDtExpression(arguments[0], arguments[1]);
                 case "STRLANG":   RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFStrLangExpression(arguments[0], arguments[1]);
                 case "SAMETERM":  RequireArgumentCount(parserContext, arguments, 2, builtInName); return new RDFSameTermExpression(arguments[0], arguments[1]);
@@ -116,17 +121,26 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Unsupported standard built-ins (no expression class in the engine)
-                case "IRI":
-                case "URI":
-                case "STRBEFORE":
-                case "STRAFTER":
                 case "TIMEZONE":
-                case "TZ":
                     throw new RDFQueryException("Cannot parse SPARQL built-in '" + builtInName + "': it has no corresponding expression in the engine and is not supported yet " + GetCoordinates(parserContext));
                 #endregion
 
                 default:
                     throw new RDFQueryException("Cannot parse SPARQL expression: unknown built-in function '" + builtInName + "' " + GetCoordinates(parserContext));
+            }
+        }
+
+        /// <summary>
+        /// Builds a <see cref="RDFBNodeExpression"/> from <c>BNODE()</c> (fresh blank node) or <c>BNODE(arg)</c>
+        /// (blank node deterministically derived from the argument). Any other arity is rejected.
+        /// </summary>
+        private static RDFExpression BuildBNodeExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
+        {
+            switch (arguments.Count)
+            {
+                case 0:  return new RDFBNodeExpression();
+                case 1:  return new RDFBNodeExpression(arguments[0]);
+                default: throw new RDFQueryException("Cannot parse SPARQL built-in 'BNODE': expected 0 or 1 argument(s) but found " + arguments.Count + " " + GetCoordinates(parserContext));
             }
         }
 

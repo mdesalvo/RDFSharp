@@ -14,50 +14,48 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFBNodeExpression represents a blank node generator function to be applied on a query results table.
+    /// RDFTzExpression represents a datetime timezone function to be applied on a query results table.
+    /// <para>
+    /// RDFSharp normalizes EVERY temporal typed literal to UTC at storage time, so the timezone of any bound
+    /// datetime is always UTC: this function therefore yields the simple literal "Z" for a temporal argument,
+    /// and an unbound result for anything non-temporal.
+    /// </para>
     /// </summary>
-    public sealed class RDFBNodeExpression : RDFExpression
+    public sealed class RDFTzExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Builds a blank node generator function (fresh blank node on each evaluation)
+        /// Builds a datetime timezone function with given argument
         /// </summary>
-        public RDFBNodeExpression() { }
+        public RDFTzExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Builds a blank node generator function deterministically derived from the given argument
+        /// Builds a datetime timezone function with given argument
         /// </summary>
-        public RDFBNodeExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
-
-        /// <summary>
-        /// Builds a blank node generator function deterministically derived from the given argument
-        /// </summary>
-        public RDFBNodeExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFTzExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the blank node generator function
+        /// Gives the string representation of the datetime timezone function
         /// </summary>
         public override string ToString()
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            //(BNODE()) when no argument was given
-            if (LeftArgument == null)
-                return "(BNODE())";
-
             StringBuilder sb = new StringBuilder();
 
-            //(BNODE(L))
-            sb.Append("(BNODE(");
+            //(TZ(L))
+            sb.Append("(TZ(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -70,13 +68,11 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the blank node generator expression on the given datarow
+        /// Applies the datetime timezone function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
-            //No argument => a fresh blank node on each evaluation
-            if (LeftArgument == null)
-                return new RDFResource();
+            RDFPlainLiteral expressionResult = null;
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
@@ -92,18 +88,19 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
-
-                if (leftArgumentPMember == null)
-                    return null;
                 #endregion
 
                 #region Calculate Result
-                return new RDFResource($"bnode:{RDFModelUtilities.CreateHash(leftArgumentPMember.ToString())}");
+                //Only a temporal typed literal has a timezone: since RDFSharp stores it in UTC, the timezone is "Z"
+                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
+                     && leftArgumentTypedLiteral.HasDatetimeDatatype()
+                     && DateTime.TryParse(leftArgumentTypedLiteral.Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out _))
+                    expressionResult = new RDFPlainLiteral("Z");
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
-            return null;
+            return expressionResult;
         }
         #endregion
     }

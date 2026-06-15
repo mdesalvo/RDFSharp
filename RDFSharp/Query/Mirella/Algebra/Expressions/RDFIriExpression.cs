@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
@@ -21,43 +22,40 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFBNodeExpression represents a blank node generator function to be applied on a query results table.
+    /// RDFIriExpression represents an IRI-building function to be applied on a query results table
+    /// (it also backs the SPARQL <c>URI</c> alias).
+    /// <para>
+    /// MODEL LIMITATION. RDFSharp has no query-level BASE in its model, so relative IRIs cannot be resolved:
+    /// this function returns a resource argument unchanged and turns a string literal into a resource only when
+    /// the string is an ABSOLUTE IRI; any relative/invalid input yields an unbound result.
+    /// </para>
     /// </summary>
-    public sealed class RDFBNodeExpression : RDFExpression
+    public sealed class RDFIriExpression : RDFExpression
     {
         #region Ctors
         /// <summary>
-        /// Builds a blank node generator function (fresh blank node on each evaluation)
+        /// Builds an IRI-building function with given argument
         /// </summary>
-        public RDFBNodeExpression() { }
+        public RDFIriExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
 
         /// <summary>
-        /// Builds a blank node generator function deterministically derived from the given argument
+        /// Builds an IRI-building function with given argument
         /// </summary>
-        public RDFBNodeExpression(RDFExpression leftArgument) : base(leftArgument, null as RDFExpression) { }
-
-        /// <summary>
-        /// Builds a blank node generator function deterministically derived from the given argument
-        /// </summary>
-        public RDFBNodeExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
+        public RDFIriExpression(RDFVariable leftArgument) : base(leftArgument, null as RDFExpression) { }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the blank node generator function
+        /// Gives the string representation of the IRI-building function
         /// </summary>
         public override string ToString()
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
-            //(BNODE()) when no argument was given
-            if (LeftArgument == null)
-                return "(BNODE())";
-
             StringBuilder sb = new StringBuilder();
 
-            //(BNODE(L))
-            sb.Append("(BNODE(");
+            //(IRI(L)) - the canonical print also covers the URI alias (idempotent print->parse->print)
+            sb.Append("(IRI(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
@@ -70,13 +68,11 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Applies the blank node generator expression on the given datarow
+        /// Applies the IRI-building function on the given datarow
         /// </summary>
         internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
-            //No argument => a fresh blank node on each evaluation
-            if (LeftArgument == null)
-                return new RDFResource();
+            RDFPatternMember expressionResult = null;
 
             #region Guards
             if (LeftArgument is RDFVariable && !row.HasColumn(LeftArgument.ToString()))
@@ -92,18 +88,25 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
-
-                if (leftArgumentPMember == null)
-                    return null;
                 #endregion
 
                 #region Calculate Result
-                return new RDFResource($"bnode:{RDFModelUtilities.CreateHash(leftArgumentPMember.ToString())}");
+                switch (leftArgumentPMember)
+                {
+                    //A resource is already an IRI: IRI(iri) yields it unchanged
+                    case RDFResource resourceArgument:
+                        expressionResult = resourceArgument;
+                        break;
+                    //A literal builds a resource only if its value is an ABSOLUTE IRI (no BASE to resolve against)
+                    case RDFLiteral literalArgument when Uri.TryCreate(literalArgument.Value, UriKind.Absolute, out _):
+                        expressionResult = new RDFResource(literalArgument.Value);
+                        break;
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
-            return null;
+            return expressionResult;
         }
         #endregion
     }

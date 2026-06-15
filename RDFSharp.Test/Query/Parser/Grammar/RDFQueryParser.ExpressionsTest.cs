@@ -71,9 +71,10 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldThrowOnUnsupportedStandardBuiltIn()
     {
-        //IRI() is a standard SPARQL built-in but has no expression class in the engine
+        //TIMEZONE() is a standard SPARQL built-in but has no expression class in the engine (it would return
+        //xsd:dayTimeDuration, a datatype the flat model does not carry) and is the only one still rejected
         Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(IRI(?o) = ?s) }"));
+            RDFSelectQuery.FromString("SELECT (TIMEZONE(?o) AS ?v) WHERE { ?s ?p ?o }"));
     }
 
     /// <summary>
@@ -122,10 +123,16 @@ public partial class RDFQueryParserTest
     [DataRow("ISNUMERIC(?o)")]
     [DataRow("HASLANG(?o)")]
     [DataRow("HASLANGDIR(?o)")]
+    [DataRow("IRI(?o)")]
+    [DataRow("URI(?o)")]
+    [DataRow("TZ(?o)")]
+    [DataRow("BNODE(?o)")]
     // Binary
     [DataRow("CONTAINS(?o, \"x\")")]
     [DataRow("STRSTARTS(?o, \"x\")")]
     [DataRow("STRENDS(?o, \"x\")")]
+    [DataRow("STRBEFORE(?o, \"x\")")]
+    [DataRow("STRAFTER(?o, \"x\")")]
     [DataRow("STRDT(\"123\", <http://www.w3.org/2001/XMLSchema#integer>)")]
     [DataRow("STRLANG(\"hello\", \"en\")")]
     [DataRow("SAMETERM(?s, ?o)")]
@@ -152,6 +159,43 @@ public partial class RDFQueryParserTest
     }
 
     /// <summary>
+    /// "SPARQL 100%" iso-functionality gate: each newly representable library expression (STRBEFORE, STRAFTER,
+    /// TZ, IRI, BNODE(arg)) is built VIA API in a computed projection and must be interchangeable with the query
+    /// obtained by parsing its printed SPARQL — both on printing round-trip and on evaluation against a sample graph
+    /// (see <see cref="RDFTestUtilities.AssertIso(RDFSelectQuery, RDFGraph)"/>). BNODE(arg) is deterministic
+    /// (hash-derived) so the two sides yield the very same blank nodes.
+    /// </summary>
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateNewExpressionsIso()
+    {
+        RDFResource predicate = new RDFResource("http://example.org/p");
+        RDFGraph sampleGraph = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s1"), predicate, new RDFPlainLiteral("hello")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s2"), predicate, new RDFPlainLiteral("http://example.org/abs")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s3"), predicate, new RDFTypedLiteral("2020-01-01T00:00:00Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME)));
+
+        RDFVariable objectVariable = new RDFVariable("?o");
+        RDFExpression[] newExpressions =
+        {
+            new RDFStrBeforeExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("l"))),
+            new RDFStrAfterExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("l"))),
+            new RDFTzExpression(objectVariable),
+            new RDFIriExpression(objectVariable),
+            new RDFBNodeExpression(objectVariable)
+        };
+
+        foreach (RDFExpression newExpression in newExpressions)
+        {
+            RDFSelectQuery apiQuery = new RDFSelectQuery()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?s"), predicate, objectVariable)))
+                .AddProjectionVariable(new RDFVariable("?v"), newExpression);
+
+            RDFTestUtilities.AssertIso(apiQuery, sampleGraph);
+        }
+    }
+
+    /// <summary>
     /// A bare FILTER constraint must evaluate to a boolean. A built-in whose value-expression is NON-boolean
     /// (e.g. the integer-returning STRLEN, the string-returning UCASE/SUBSTR, a bare arithmetic expression) has
     /// no place as a standalone constraint and cannot be wrapped in an <c>RDFExpressionFilter</c>: the parser
@@ -168,10 +212,7 @@ public partial class RDFQueryParserTest
 
     /// <summary>
     /// The boolean built-ins that DO have an <c>RDFExpressionFilter</c> constructor are accepted as bare FILTER
-    /// constraints (covering the WrapExpressionInFilter dispatch for each representable type). The boolean-returning
-    /// string built-ins CONTAINS / STRSTARTS / STRENDS and the language-tag tests HASLANG / HASLANGDIR were closed
-    /// in "SPARQL 100%" phase IP0 (Parser finding #1: dedicated <c>RDFExpressionFilter</c> constructors added), so
-    /// they too are now representable as a bare constraint.
+    /// constraints (covering the WrapExpressionInFilter dispatch for each representable type).
     /// </summary>
     [TestMethod]
     [DataRow("BOUND(?o)")]
@@ -195,7 +236,7 @@ public partial class RDFQueryParserTest
     }
 
     /// <summary>
-    /// "SPARQL 100%" IP0 iso-functionality gate for Parser finding #1: each boolean string/lang built-in newly
+    /// "SPARQL 100%" iso-functionality gate for Parser finding #1: each boolean string/lang built-in newly
     /// representable as a bare FILTER constraint is exercised BOTH ways — built through the fluent API (the new
     /// <c>RDFExpressionFilter</c> constructors) and obtained by parsing the printed SPARQL — and the two must be
     /// interchangeable on printing round-trip AND on evaluation against a sample graph (see
