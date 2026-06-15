@@ -36,12 +36,11 @@ namespace RDFSharp.Query
         /// Parses a SPARQL <c>BuiltInCall</c> whose (upper-cased) name is <paramref name="builtInName"/> and whose
         /// argument list begins at the current reader position. Returns the corresponding <see cref="RDFExpression"/>.
         /// <para>
-        /// A handful of standard built-ins have no expression class in the engine (IRI/URI, STRBEFORE/STRAFTER,
-        /// TIMEZONE/TZ) and are rejected with a precise "not supported yet" message. EXISTS/NOT EXISTS are NOT handled
-        /// here: they are FILTER-level filters parsed by the skeleton, never value-expressions.
+        /// Every standard SPARQL 1.1 built-in has a corresponding expression in the engine. EXISTS/NOT EXISTS are
+        /// NOT handled here: they are FILTER-level filters parsed by the skeleton, never value-expressions.
         /// </para>
         /// </summary>
-        /// <exception cref="RDFQueryException">When the built-in is unknown/unsupported or its arguments are malformed.</exception>
+        /// <exception cref="RDFQueryException">When the built-in is unknown or its arguments are malformed.</exception>
         private static RDFExpression ParseBuiltInCall(RDFQueryParserContext parserContext, string builtInName)
         {
             //Parse the full parenthesised argument list once, as expressions; the few built-ins that need literal
@@ -74,6 +73,7 @@ namespace RDFSharp.Query
                 case "IRI":
                 case "URI":            return new RDFIriExpression(RequireSingleArgument(parserContext, arguments, builtInName));
                 case "TZ":             return new RDFTzExpression(RequireSingleArgument(parserContext, arguments, builtInName));
+                case "TIMEZONE":       return new RDFTimezoneExpression(RequireSingleArgument(parserContext, arguments, builtInName));
                 case "ISIRI":
                 case "ISURI":          return new RDFIsUriExpression(RequireSingleArgument(parserContext, arguments, builtInName));
                 case "ISBLANK":        return new RDFIsBlankExpression(RequireSingleArgument(parserContext, arguments, builtInName));
@@ -118,11 +118,6 @@ namespace RDFSharp.Query
                 case "REGEX":      return BuildRegexExpression(parserContext, arguments);
                 case "REPLACE":    return BuildReplaceExpression(parserContext, arguments);
                 case "SUBSTR":     return BuildSubstringExpression(parserContext, arguments);
-                #endregion
-
-                #region Unsupported standard built-ins (no expression class in the engine)
-                case "TIMEZONE":
-                    throw new RDFQueryException("Cannot parse SPARQL built-in '" + builtInName + "': it has no corresponding expression in the engine and is not supported yet " + GetCoordinates(parserContext));
                 #endregion
 
                 default:

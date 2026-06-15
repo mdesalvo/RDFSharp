@@ -811,6 +811,16 @@ namespace RDFSharp.Model
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
+
+                case RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION:
+                    if (!RDFShims.DayTimeDurationRegex.Value.IsMatch(literalValue))
+                        return (false, literalValue);
+                    try
+                    {
+                        _ = XmlConvert.ToTimeSpan(literalValue);
+                        return (true, literalValue);
+                    }
+                    catch { return (false, literalValue); }
                 #endregion
 
                 #region NUMERIC CATEGORY

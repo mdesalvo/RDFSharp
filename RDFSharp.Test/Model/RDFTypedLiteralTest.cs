@@ -326,6 +326,12 @@ public class RDFTypedLiteralTest
     [DataRow("P1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("P1Y", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("PT4H", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+    [DataRow("PT0S", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("PT4H", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P3DT4H30M", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("-PT8H", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P2DT167M776S", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("-P2DT167M776S", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
     public void ShouldCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
     {
         RDFTypedLiteral tl = new RDFTypedLiteral(value, datatype);
@@ -655,6 +661,16 @@ public class RDFTypedLiteralTest
     [DataRow(null, RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
     [DataRow("P1YM", RDFModelEnums.RDFDatatypes.XSD_DURATION)]
+    [DataRow("value", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P2Y", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P1M", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P1Y2M3DT4H5M6S", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P2D167M776S", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P1DT", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("PT", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("P", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
+    [DataRow("T", RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION)]
     public void ShouldNotCreateTypedLiteralOfTimeSpanCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
 

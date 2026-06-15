@@ -4591,6 +4591,11 @@ namespace RDFSharp.Model
             public static readonly RDFResource DURATION = new RDFResource($"{BASE_URI}duration");
 
             /// <summary>
+            /// xsd:dayTimeDuration
+            /// </summary>
+            public static readonly RDFResource DAY_TIME_DURATION = new RDFResource($"{BASE_URI}dayTimeDuration");
+
+            /// <summary>
             /// xsd:dateTime
             /// </summary>
             public static readonly RDFResource DATETIME = new RDFResource($"{BASE_URI}dateTime");

@@ -115,7 +115,8 @@ namespace RDFSharp.Model
         /// Checks if the datatype of this typed literal is compatible with timespan
         /// </summary>
         public bool HasTimespanDatatype()
-            => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DURATION;
+            => Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DURATION
+                || Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION;
 
         /// <summary>
         /// Checks if the datatype of this typed literal is compatible with string

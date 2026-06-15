@@ -68,15 +68,6 @@ public partial class RDFQueryParserTest
             RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(FOOBAR(?o)) }"));
     }
 
-    [TestMethod]
-    public void ShouldThrowOnUnsupportedStandardBuiltIn()
-    {
-        //TIMEZONE() is a standard SPARQL built-in but has no expression class in the engine (it would return
-        //xsd:dayTimeDuration, a datatype the flat model does not carry) and is the only one still rejected
-        Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT (TIMEZONE(?o) AS ?v) WHERE { ?s ?p ?o }"));
-    }
-
     /// <summary>
     /// Exercises EVERY representable SPARQL 1.1 built-in dispatched by ParseBuiltInCall, each inside a computed
     /// projection — the one context that accepts every built-in regardless of its return type — so the whole
@@ -126,6 +117,7 @@ public partial class RDFQueryParserTest
     [DataRow("IRI(?o)")]
     [DataRow("URI(?o)")]
     [DataRow("TZ(?o)")]
+    [DataRow("TIMEZONE(?o)")]
     [DataRow("BNODE(?o)")]
     // Binary
     [DataRow("CONTAINS(?o, \"x\")")]
@@ -180,6 +172,7 @@ public partial class RDFQueryParserTest
             new RDFStrBeforeExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("l"))),
             new RDFStrAfterExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("l"))),
             new RDFTzExpression(objectVariable),
+            new RDFTimezoneExpression(objectVariable),
             new RDFIriExpression(objectVariable),
             new RDFBNodeExpression(objectVariable)
         };
