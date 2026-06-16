@@ -160,7 +160,16 @@ namespace RDFSharp.Query
                         }
                         case RDFGeoBufferExpression geoBufferExpression:
                         {
-                            Geometry bufferGeometryLAZ = leftGeometryLAZ.Buffer(geoBufferExpression.BufferMeters);
+                            //Resolve the buffer meters (fixed value, or evaluated per-row expression)
+                            double bufferMeters = geoBufferExpression.BufferMeters;
+                            if (geoBufferExpression.BufferMetersExpression != null)
+                            {
+                                if (!(geoBufferExpression.BufferMetersExpression.ApplyExpression(row) is RDFTypedLiteral bufferMetersLiteral
+                                       && bufferMetersLiteral.HasDecimalDatatype()
+                                       && double.TryParse(bufferMetersLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out bufferMeters)))
+                                    return null;
+                            }
+                            Geometry bufferGeometryLAZ = leftGeometryLAZ.Buffer(bufferMeters);
                             Geometry bufferGeometryWGS84 = RDFGeoConverter.GetWGS84GeometryFromLambertAzimuthal(bufferGeometryLAZ);
                             expressionResult = new RDFTypedLiteral(WKTWriter.Write(bufferGeometryWGS84), RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
                             break;

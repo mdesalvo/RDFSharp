@@ -94,6 +94,12 @@ namespace RDFSharp.Query
         public RDFExpressionFilter(RDFInExpression expression) : this(expression, true) { }
 
         /// <summary>
+        /// Builds a filter on the given logical negation (NOT) expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFNotExpression expression) : this(expression, true) { }
+
+        /// <summary>
         /// Builds a filter on the given IsBlank expression
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>

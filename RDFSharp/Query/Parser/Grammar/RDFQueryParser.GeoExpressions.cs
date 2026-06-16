@@ -167,14 +167,19 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a <see cref="RDFGeoBufferExpression"/> from <c>geof:buffer(g, radius, unit)</c>. The engine stores a
-        /// fixed metre radius, so the second argument must be a constant numeric literal and the third (unit) is
-        /// validated to be present.
+        /// Builds a <see cref="RDFGeoBufferExpression"/> from <c>geof:buffer(g, radius [, unit])</c>. The engine always
+        /// computes the buffer in metres, so the (optional) unit argument is accepted but discarded. When the radius is
+        /// a constant numeric literal it is stored as a fixed value; otherwise it is kept as a per-row expression.
         /// </summary>
         private static RDFExpression BuildGeoBufferExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
         {
-            RequireGeoArgumentCount(parserContext, arguments, 3, RDFVocabulary.GEOSPARQL.GEOF.BUFFER);
-            return new RDFGeoBufferExpression(arguments[0], RequireDoubleLiteral(parserContext, arguments[1], "geof:buffer radius"));
+            if (arguments.Count < 2 || arguments.Count > 3)
+                throw new RDFQueryException("Cannot parse SPARQL function '" + RDFVocabulary.GEOSPARQL.GEOF.BUFFER + "': expected 2 or 3 argument(s) but found " + arguments.Count + " " + GetCoordinates(parserContext));
+
+            //Fixed radius: store as a double; dynamic radius: keep as a per-row expression
+            return TryGetDoubleLiteral(arguments[1], out double radius)
+                ? new RDFGeoBufferExpression(arguments[0], radius)
+                : new RDFGeoBufferExpression(arguments[0], arguments[1]);
         }
 
         /// <summary>
@@ -197,16 +202,17 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Extracts the double value of a constant numeric-literal argument (used for the geo buffer radius), rejecting
-        /// any argument that is not a constant numeric literal.
+        /// Reports whether the argument is a constant numeric literal and, if so, yields its value. Used to decide
+        /// between the build-time (constant) and per-row (dynamic) shapes of the geo buffer radius.
         /// </summary>
-        private static double RequireDoubleLiteral(RDFQueryParserContext parserContext, RDFExpression argument, string argumentLabel)
+        private static bool TryGetDoubleLiteral(RDFExpression argument, out double doubleValue)
         {
             if (argument is RDFConstantExpression constantExpression
                  && constantExpression.LeftArgument is RDFTypedLiteral typedLiteral
-                 && double.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double doubleValue))
-                return doubleValue;
-            throw new RDFQueryException("Cannot parse SPARQL " + argumentLabel + ": expected a constant numeric literal " + GetCoordinates(parserContext));
+                 && double.TryParse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out doubleValue))
+                return true;
+            doubleValue = 0;
+            return false;
         }
         #endregion
     }

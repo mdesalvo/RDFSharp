@@ -193,8 +193,8 @@ public class RDFExpressionFilterTest
 
         Assert.IsNotNull(filter);
         Assert.IsNotNull(filter.Expression);
-        Assert.IsTrue(filter.ToString().Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )", System.StringComparison.Ordinal));
-        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (REGEX(STR(?V1), \"^hello$\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString().Equals("FILTER ( (REGEX(?V1, \"^hello$\")) )", System.StringComparison.Ordinal));
+        Assert.IsTrue(filter.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("FILTER ( (REGEX(?V1, \"^hello$\")) )", System.StringComparison.Ordinal));
         Assert.IsTrue(filter.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(filter.PatternGroupMemberStringID)));
     }
 

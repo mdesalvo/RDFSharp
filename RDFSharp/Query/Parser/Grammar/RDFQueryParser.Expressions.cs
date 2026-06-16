@@ -157,69 +157,92 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a <see cref="RDFStrLangDirExpression"/> from <c>STRLANGDIR(str, lang, dir)</c>, mapping the third
-        /// argument (the language-direction string literal <c>"ltr"</c> / <c>"rtl"</c>) to its enum value.
+        /// Builds a <see cref="RDFStrLangDirExpression"/> from <c>STRLANGDIR(str, lang, dir)</c>. When the direction is
+        /// a constant <c>"ltr"</c> / <c>"rtl"</c> literal it maps to the enum value; otherwise the direction is kept as
+        /// a per-row expression evaluated at runtime.
         /// </summary>
         private static RDFExpression BuildStrLangDirExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
         {
             RequireArgumentCount(parserContext, arguments, 3, "STRLANGDIR");
 
-            string directionText = RequireLiteralString(parserContext, arguments[2], "STRLANGDIR direction");
-            RDFQueryEnums.RDFLanguageDirections direction;
+            //Dynamic direction: keep it as a per-row expression
+            if (!TryGetLiteralString(arguments[2], out string directionText))
+                return new RDFStrLangDirExpression(arguments[0], arguments[1], arguments[2]);
+
+            //Constant direction: map onto the enum
             switch (directionText.ToLowerInvariant())
             {
-                case "ltr": direction = RDFQueryEnums.RDFLanguageDirections.LTR; break;
-                case "rtl": direction = RDFQueryEnums.RDFLanguageDirections.RTL; break;
+                case "ltr": return new RDFStrLangDirExpression(arguments[0], arguments[1], RDFQueryEnums.RDFLanguageDirections.LTR);
+                case "rtl": return new RDFStrLangDirExpression(arguments[0], arguments[1], RDFQueryEnums.RDFLanguageDirections.RTL);
                 default:
                     throw new RDFQueryException("Cannot parse SPARQL 'STRLANGDIR': the direction must be \"ltr\" or \"rtl\" " + GetCoordinates(parserContext));
             }
-
-            return new RDFStrLangDirExpression(arguments[0], arguments[1], direction);
         }
 
         /// <summary>
-        /// Builds a <see cref="RDFRegexExpression"/> from <c>REGEX(text, pattern [, flags])</c>. The engine compiles
-        /// the regular expression at build time, so <c>pattern</c> and <c>flags</c> must be constant string literals.
+        /// Builds a <see cref="RDFRegexExpression"/> from <c>REGEX(text, pattern [, flags])</c>. When <c>pattern</c>
+        /// (and <c>flags</c>, if present) are constant string literals the regex is compiled at build time; otherwise
+        /// the pattern/flags are kept as per-row expressions compiled at runtime.
         /// </summary>
         private static RDFExpression BuildRegexExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
         {
             if (arguments.Count < 2 || arguments.Count > 3)
                 throw new RDFQueryException("Cannot parse SPARQL 'REGEX': expected 2 or 3 arguments " + GetCoordinates(parserContext));
 
-            string pattern = RequireLiteralString(parserContext, arguments[1], "REGEX pattern");
-            string flags = arguments.Count == 3 ? RequireLiteralString(parserContext, arguments[2], "REGEX flags") : string.Empty;
+            //Fixed pattern (and flags): compile at build time
+            if (TryGetLiteralString(arguments[1], out string pattern)
+                 && (arguments.Count == 2 || TryGetLiteralString(arguments[2], out _)))
+            {
+                string flags = arguments.Count == 3 ? RequireLiteralString(parserContext, arguments[2], "REGEX flags") : string.Empty;
+                return new RDFRegexExpression(arguments[0], BuildRegex(parserContext, pattern, flags));
+            }
 
-            return new RDFRegexExpression(arguments[0], BuildRegex(parserContext, pattern, flags));
+            //Dynamic pattern/flags: keep as per-row expressions
+            return new RDFRegexExpression(arguments[0], arguments[1], arguments.Count == 3 ? arguments[2] : null);
         }
 
         /// <summary>
-        /// Builds a <see cref="RDFReplaceExpression"/> from <c>REPLACE(text, pattern, replacement [, flags])</c>.
-        /// As with REGEX, <c>pattern</c> and <c>flags</c> must be constant string literals.
+        /// Builds a <see cref="RDFReplaceExpression"/> from <c>REPLACE(text, pattern, replacement [, flags])</c>. When
+        /// <c>pattern</c> (and <c>flags</c>, if present) are constant string literals the regex is compiled at build
+        /// time; otherwise the pattern/flags are kept as per-row expressions compiled at runtime.
         /// </summary>
         private static RDFExpression BuildReplaceExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
         {
             if (arguments.Count < 3 || arguments.Count > 4)
                 throw new RDFQueryException("Cannot parse SPARQL 'REPLACE': expected 3 or 4 arguments " + GetCoordinates(parserContext));
 
-            string pattern = RequireLiteralString(parserContext, arguments[1], "REPLACE pattern");
-            string flags = arguments.Count == 4 ? RequireLiteralString(parserContext, arguments[3], "REPLACE flags") : string.Empty;
+            //Fixed pattern (and flags): compile at build time
+            if (TryGetLiteralString(arguments[1], out string pattern)
+                 && (arguments.Count == 3 || TryGetLiteralString(arguments[3], out _)))
+            {
+                string flags = arguments.Count == 4 ? RequireLiteralString(parserContext, arguments[3], "REPLACE flags") : string.Empty;
+                return new RDFReplaceExpression(arguments[0], arguments[2], BuildRegex(parserContext, pattern, flags));
+            }
 
-            return new RDFReplaceExpression(arguments[0], arguments[2], BuildRegex(parserContext, pattern, flags));
+            //Dynamic pattern/flags: keep as per-row expressions
+            return new RDFReplaceExpression(arguments[0], arguments[2], arguments[1], arguments.Count == 4 ? arguments[3] : null);
         }
 
         /// <summary>
-        /// Builds a <see cref="RDFSubstringExpression"/> from <c>SUBSTR(text, start [, length])</c>. The engine stores
-        /// <c>start</c>/<c>length</c> as fixed integers, so both must be constant integer literals.
+        /// Builds a <see cref="RDFSubstringExpression"/> from <c>SUBSTR(text, start [, length])</c>. When
+        /// <c>start</c>/<c>length</c> are constant integer literals they are stored as fixed integers; otherwise they
+        /// are kept as per-row expressions evaluated at runtime.
         /// </summary>
         private static RDFExpression BuildSubstringExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
         {
             if (arguments.Count < 2 || arguments.Count > 3)
                 throw new RDFQueryException("Cannot parse SPARQL 'SUBSTR': expected 2 or 3 arguments " + GetCoordinates(parserContext));
 
-            int start = RequireIntegerLiteral(parserContext, arguments[1], "SUBSTR start");
-            int? length = arguments.Count == 3 ? RequireIntegerLiteral(parserContext, arguments[2], "SUBSTR length") : (int?)null;
+            //Fixed start (and length): store as integers
+            if (TryGetIntegerLiteral(arguments[1], out int start)
+                 && (arguments.Count == 2 || TryGetIntegerLiteral(arguments[2], out _)))
+            {
+                int? length = arguments.Count == 3 ? RequireIntegerLiteral(parserContext, arguments[2], "SUBSTR length") : (int?)null;
+                return new RDFSubstringExpression(arguments[0], start, length);
+            }
 
-            return new RDFSubstringExpression(arguments[0], start, length);
+            //Dynamic start/length: keep as per-row expressions
+            return new RDFSubstringExpression(arguments[0], arguments[1], arguments.Count == 3 ? arguments[2] : null);
         }
 
         /// <summary>
@@ -308,9 +331,38 @@ namespace RDFSharp.Query
         /// </summary>
         private static string RequireLiteralString(RDFQueryParserContext parserContext, RDFExpression argument, string argumentLabel)
         {
-            if (argument is RDFConstantExpression constantExpression && constantExpression.LeftArgument is RDFLiteral literal)
-                return literal.Value;
+            if (TryGetLiteralString(argument, out string literalValue))
+                return literalValue;
             throw new RDFQueryException("Cannot parse SPARQL " + argumentLabel + ": expected a constant string literal " + GetCoordinates(parserContext));
+        }
+
+        /// <summary>
+        /// Reports whether the argument is a constant literal and, if so, yields its lexical value. Used to decide
+        /// between the build-time (constant) and per-row (dynamic) shapes of REGEX/REPLACE/STRLANGDIR arguments.
+        /// </summary>
+        private static bool TryGetLiteralString(RDFExpression argument, out string literalValue)
+        {
+            if (argument is RDFConstantExpression constantExpression && constantExpression.LeftArgument is RDFLiteral literal)
+            {
+                literalValue = literal.Value;
+                return true;
+            }
+            literalValue = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Reports whether the argument is a constant integer literal and, if so, yields its value. Used to decide
+        /// between the build-time (constant) and per-row (dynamic) shapes of SUBSTR start/length arguments.
+        /// </summary>
+        private static bool TryGetIntegerLiteral(RDFExpression argument, out int integerValue)
+        {
+            if (argument is RDFConstantExpression constantExpression
+                 && constantExpression.LeftArgument is RDFTypedLiteral typedLiteral
+                 && int.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out integerValue))
+                return true;
+            integerValue = 0;
+            return false;
         }
 
         /// <summary>
@@ -319,9 +371,7 @@ namespace RDFSharp.Query
         /// </summary>
         private static int RequireIntegerLiteral(RDFQueryParserContext parserContext, RDFExpression argument, string argumentLabel)
         {
-            if (argument is RDFConstantExpression constantExpression
-                 && constantExpression.LeftArgument is RDFTypedLiteral typedLiteral
-                 && int.TryParse(typedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int integerValue))
+            if (TryGetIntegerLiteral(argument, out int integerValue))
                 return integerValue;
             throw new RDFQueryException("Cannot parse SPARQL " + argumentLabel + ": expected a constant integer literal " + GetCoordinates(parserContext));
         }

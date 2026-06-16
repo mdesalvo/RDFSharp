@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Xml;
 using NetTopologySuite.Geometries;
 using RDFSharp.Model;
@@ -259,6 +260,39 @@ namespace RDFSharp.Query
             }
             return (hasAbbreviation, pmemberString);
             #endregion
+        }
+
+        /// <summary>
+        /// Compiles a SPARQL regular expression from its pattern and flag string, returning null when the pattern is
+        /// null/invalid or a flag is unknown. Used by the dynamic (per-row) REGEX/REPLACE expressions, where a binding
+        /// error must degrade to an unbound result rather than throwing (the parser-side BuildRegex throws instead).
+        /// </summary>
+        internal static Regex CompileRegexOrNull(string pattern, string flags)
+        {
+            if (pattern == null)
+                return null;
+
+            RegexOptions regexOptions = RegexOptions.None;
+            foreach (char flagCharacter in flags ?? string.Empty)
+            {
+                switch (flagCharacter)
+                {
+                    case 'i': regexOptions |= RegexOptions.IgnoreCase;              break;
+                    case 's': regexOptions |= RegexOptions.Singleline;              break;
+                    case 'm': regexOptions |= RegexOptions.Multiline;               break;
+                    case 'x': regexOptions |= RegexOptions.IgnorePatternWhitespace; break;
+                    default:  return null; //unknown flag => binding error
+                }
+            }
+
+            try
+            {
+                return new Regex(pattern, regexOptions);
+            }
+            catch (ArgumentException)
+            {
+                return null; //invalid pattern => binding error
+            }
         }
 
         /// <summary>

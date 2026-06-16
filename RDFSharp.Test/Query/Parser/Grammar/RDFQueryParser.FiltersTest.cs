@@ -155,11 +155,16 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldThrowOnNegationInsideValueExpression()
+    public void ShouldParseNegationInsideValueExpression()
     {
-        //'!' has no expression form: it is only valid at FILTER skeleton level, not inside a comparison operand
-        Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(?o = !BOUND(?s)) }"));
+        //'!' now has an expression form (RDFNotExpression): it can be nested inside a value-expression operand
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(?o = !BOUND(?s)) }");
+
+        List<RDFFilter> filters = FiltersOf(query);
+        Assert.AreEqual(1, filters.Count);
+        Assert.IsInstanceOfType(filters[0], typeof(RDFExpressionFilter));
+        RDFComparisonExpression comparison = (RDFComparisonExpression)((RDFExpressionFilter)filters[0]).Expression;
+        Assert.IsInstanceOfType(comparison.RightArgument, typeof(RDFNotExpression));
     }
 
     [TestMethod]
@@ -300,9 +305,15 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldThrowOnNotInExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(?a NOT IN (1, 2)) }"));
+    public void ShouldParseNotInExpression()
+    {
+        //'NOT IN' is now modelled as '!( … IN … )' via the logical-negation expression
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(?a NOT IN (1, 2)) }");
+
+        RDFExpression expression = ((RDFExpressionFilter)SingleFilterOf(query)).Expression;
+        Assert.IsInstanceOfType(expression, typeof(RDFNotExpression));
+        Assert.IsInstanceOfType(((RDFNotExpression)expression).LeftArgument, typeof(RDFInExpression));
+    }
 
     [TestMethod]
     public void ShouldThrowOnDanglingNotInExpression()

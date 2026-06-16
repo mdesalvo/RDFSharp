@@ -27,35 +27,64 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Indicates the direction used for the plainlitera's language tags emitted by this expression
+        /// Indicates the direction used for the plainlitera's language tags emitted by this expression, when given as a fixed value
         /// </summary>
         public RDFQueryEnums.RDFLanguageDirections Direction { get; }
+
+        /// <summary>
+        /// Indicates the direction used for the plainlitera's language tags emitted by this expression, when given as a per-row expression (overrides Direction)
+        /// </summary>
+        public RDFExpression DirectionExpression { get; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given (fixed) direction
         /// </summary>
         public RDFStrLangDirExpression(RDFExpression leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Builds a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given (fixed) direction
         /// </summary>
         public RDFStrLangDirExpression(RDFExpression leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Builds a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given (fixed) direction
         /// </summary>
         public RDFStrLangDirExpression(RDFVariable leftArgument, RDFExpression rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;
 
         /// <summary>
-        /// Builds a language+direction plainliteral creator function with given arguments
+        /// Builds a language+direction plainliteral creator function with given (fixed) direction
         /// </summary>
         public RDFStrLangDirExpression(RDFVariable leftArgument, RDFVariable rightArgument, RDFQueryEnums.RDFLanguageDirections direction)
             : base(leftArgument, rightArgument) => Direction = direction;
+
+        /// <summary>
+        /// Builds a language+direction plainliteral creator function with given (per-row) direction expression
+        /// </summary>
+        public RDFStrLangDirExpression(RDFExpression leftArgument, RDFExpression rightArgument, RDFExpression directionExpression)
+            : base(leftArgument, rightArgument) => DirectionExpression = directionExpression ?? throw new RDFQueryException("Cannot create RDFStrLangDirExpression because given \"directionExpression\" parameter is null.");
+
+        /// <summary>
+        /// Builds a language+direction plainliteral creator function with given (per-row) direction expression
+        /// </summary>
+        public RDFStrLangDirExpression(RDFExpression leftArgument, RDFVariable rightArgument, RDFExpression directionExpression)
+            : base(leftArgument, rightArgument) => DirectionExpression = directionExpression ?? throw new RDFQueryException("Cannot create RDFStrLangDirExpression because given \"directionExpression\" parameter is null.");
+
+        /// <summary>
+        /// Builds a language+direction plainliteral creator function with given (per-row) direction expression
+        /// </summary>
+        public RDFStrLangDirExpression(RDFVariable leftArgument, RDFExpression rightArgument, RDFExpression directionExpression)
+            : base(leftArgument, rightArgument) => DirectionExpression = directionExpression ?? throw new RDFQueryException("Cannot create RDFStrLangDirExpression because given \"directionExpression\" parameter is null.");
+
+        /// <summary>
+        /// Builds a language+direction plainliteral creator function with given (per-row) direction expression
+        /// </summary>
+        public RDFStrLangDirExpression(RDFVariable leftArgument, RDFVariable rightArgument, RDFExpression directionExpression)
+            : base(leftArgument, rightArgument) => DirectionExpression = directionExpression ?? throw new RDFQueryException("Cannot create RDFStrLangDirExpression because given \"directionExpression\" parameter is null.");
         #endregion
 
         #region Interfaces
@@ -80,7 +109,9 @@ namespace RDFSharp.Query
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
             sb.Append(", ");
-            sb.Append(Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "\"ltr\"" : "\"rtl\"");
+            sb.Append(DirectionExpression != null
+                        ? DirectionExpression.ToString(prefixes)
+                        : Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "\"ltr\"" : "\"rtl\"");
             sb.Append("))");
 
             return sb.ToString();
@@ -120,20 +151,24 @@ namespace RDFSharp.Query
                     rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[RightArgument.ToString()] ?? string.Empty));
                 #endregion
 
+                //Resolve the effective direction suffix (fixed enum, or evaluated per-row expression)
+                string directionSuffix = ResolveDirectionSuffix(row);
+
                 #region Calculate Result
-                //We can only proceed if we have been given a well-formed language tag (without direction)
-                if (rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
+                //We can only proceed if we have been given a well-formed language tag (without direction) and a direction
+                if (directionSuffix != null
+                     && rightArgumentPMember is RDFPlainLiteral rightArgumentPMemberLiteral
                      && RDFShims.LangTagNoDirRegex.Value.IsMatch(rightArgumentPMemberLiteral.Value))
                 {
                     switch (leftArgumentPMember)
                     {
                         //And a plain literal without language
                         case RDFPlainLiteral leftArgumentPMemberPLit when !leftArgumentPMemberPLit.HasLanguage():
-                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
+                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberPLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, directionSuffix));
                             break;
                         //Or a string-based typed literal
                         case RDFTypedLiteral leftArgumentPMemberTLit when leftArgumentPMemberTLit.HasStringDatatype():
-                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl"));
+                            expressionResult = new RDFPlainLiteral(leftArgumentPMemberTLit.Value, string.Concat(rightArgumentPMemberLiteral.Value, directionSuffix));
                             break;
                     }
                 }
@@ -142,6 +177,23 @@ namespace RDFSharp.Query
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
             return expressionResult;
+        }
+
+        /// <summary>
+        /// Resolves the language-direction suffix ("--ltr"/"--rtl"): from the fixed enum, or from the per-row direction
+        /// expression (which must evaluate to a plain literal "ltr"/"rtl"). Returns null on a per-row binding error.
+        /// </summary>
+        private string ResolveDirectionSuffix(RDFTableRow row)
+        {
+            if (DirectionExpression == null)
+                return Direction == RDFQueryEnums.RDFLanguageDirections.LTR ? "--ltr" : "--rtl";
+
+            switch ((DirectionExpression.ApplyExpression(row) as RDFLiteral)?.Value?.ToLowerInvariant())
+            {
+                case "ltr": return "--ltr";
+                case "rtl": return "--rtl";
+                default:    return null;
+            }
         }
         #endregion
     }

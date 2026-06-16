@@ -30,23 +30,40 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Indicates the meters of the buffer polygon to be computed
+        /// Indicates the meters of the buffer polygon to be computed, when given as a fixed value
         /// </summary>
         public double BufferMeters { get; internal set; }
+
+        /// <summary>
+        /// Indicates the meters of the buffer polygon to be computed, when given as a per-row expression (overrides BufferMeters)
+        /// </summary>
+        public RDFExpression BufferMetersExpression { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds a geof:buffer function with given arguments
+        /// Builds a geof:buffer function with given (fixed) meters argument
         /// </summary>
         public RDFGeoBufferExpression(RDFExpression leftArgument, double bufferMeters) : base(leftArgument, null)
             => BufferMeters = bufferMeters;
 
         /// <summary>
-        /// Builds a geof:buffer function with given arguments
+        /// Builds a geof:buffer function with given (fixed) meters argument
         /// </summary>
         public RDFGeoBufferExpression(RDFVariable leftArgument, double bufferMeters) : base(leftArgument, null)
             => BufferMeters = bufferMeters;
+
+        /// <summary>
+        /// Builds a geof:buffer function with given (per-row) meters expression
+        /// </summary>
+        public RDFGeoBufferExpression(RDFExpression leftArgument, RDFExpression bufferMetersExpression) : base(leftArgument, null)
+            => BufferMetersExpression = bufferMetersExpression ?? throw new RDFQueryException("Cannot create RDFGeoBufferExpression because given \"bufferMetersExpression\" parameter is null.");
+
+        /// <summary>
+        /// Builds a geof:buffer function with given (per-row) meters expression
+        /// </summary>
+        public RDFGeoBufferExpression(RDFVariable leftArgument, RDFExpression bufferMetersExpression) : base(leftArgument, null)
+            => BufferMetersExpression = bufferMetersExpression ?? throw new RDFQueryException("Cannot create RDFGeoBufferExpression because given \"bufferMetersExpression\" parameter is null.");
         #endregion
 
         #region Interfaces
@@ -65,7 +82,9 @@ namespace RDFSharp.Query
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append($", {Convert.ToString(BufferMeters, CultureInfo.InvariantCulture)}");
+            sb.Append(BufferMetersExpression != null
+                        ? $", {BufferMetersExpression.ToString(prefixes)}"
+                        : $", {Convert.ToString(BufferMeters, CultureInfo.InvariantCulture)}");
             sb.Append("))");
 
             return sb.ToString();

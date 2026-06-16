@@ -34,8 +34,8 @@ public class RDFSubstringExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -47,8 +47,8 @@ public class RDFSubstringExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5, 2))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTRING(?V, 5, 2))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, 5, 2))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTR(?V, 5, 2))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -60,8 +60,8 @@ public class RDFSubstringExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -73,8 +73,8 @@ public class RDFSubstringExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -86,8 +86,8 @@ public class RDFSubstringExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5, 2))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTRING(?V, 5, 2))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, 5, 2))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTR(?V, 5, 2))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -99,8 +99,8 @@ public class RDFSubstringExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTRING(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(SUBSTR(?V, 5))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1796,6 +1796,95 @@ public class RDFSubstringExpressionTest
 
         Assert.IsNotNull(expressionResult);
         Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello")));
+    }
+
+    // dynamic (per-row) start/length
+
+    [TestMethod]
+    public void ShouldCreateSubstringExpressionWithDynamicStart()
+    {
+        RDFSubstringExpression expression = new RDFSubstringExpression(
+            new RDFVariableExpression(new RDFVariable("?V")), new RDFVariableExpression(new RDFVariable("?S")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, ?S))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldCreateSubstringExpressionWithDynamicStartAndLength()
+    {
+        RDFSubstringExpression expression = new RDFSubstringExpression(
+            new RDFVariable("?V"), new RDFVariableExpression(new RDFVariable("?S")), new RDFVariableExpression(new RDFVariable("?L")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsTrue(expression.ToString().Equals("(SUBSTR(?V, ?S, ?L))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingSubstringExpressionBecauseNullStartExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFSubstringExpression(new RDFVariable("?V"), null as RDFExpression));
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithDynamicStart()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?S");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?S", new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
+        });
+
+        RDFSubstringExpression expression = new RDFSubstringExpression(
+            new RDFVariableExpression(new RDFVariable("?A")), new RDFVariableExpression(new RDFVariable("?S")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("ello")));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithDynamicStartAndLength()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?S");
+        table.AddColumn("?L");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?S", new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?L", new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
+        });
+
+        RDFSubstringExpression expression = new RDFSubstringExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?S")),
+            new RDFVariableExpression(new RDFVariable("?L")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("ell")));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithDynamicStartAndNotCalculateResultBecauseStartNotInteger()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?S");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?S", new RDFPlainLiteral("notAnInt").ToString() }
+        });
+
+        RDFSubstringExpression expression = new RDFSubstringExpression(
+            new RDFVariableExpression(new RDFVariable("?A")), new RDFVariableExpression(new RDFVariable("?S")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNull(expressionResult);
     }
     #endregion
 }

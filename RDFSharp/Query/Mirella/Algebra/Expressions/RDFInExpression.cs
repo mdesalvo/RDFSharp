@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,32 +28,61 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// List of RDF terms into which the LeftArgument must be searched
+        /// List of expressions into which the LeftArgument must be searched. Constant terms and variables given to the
+        /// pattern-member constructors are wrapped into RDFConstantExpression/RDFVariableExpression, so the membership
+        /// test is uniformly an OR-chain of equality comparisons against fully-fledged (possibly dynamic) expressions.
         /// </summary>
-        internal List<RDFPatternMember> InTerms { get; set; }
+        internal List<RDFExpression> InTerms { get; set; }
         #endregion
 
         #region Ctors
-
         /// <summary>
-        /// Builds a lookup function with given arguments
+        /// Builds a lookup function searching the given (constant or variable) terms
         /// </summary>
         public RDFInExpression(RDFExpression leftArgument, List<RDFPatternMember> inTerms) : base(leftArgument, null as RDFExpression)
+            => InTerms = WrapPatternMembers(inTerms);
+
+        /// <summary>
+        /// Builds a lookup function searching the given (constant or variable) terms
+        /// </summary>
+        public RDFInExpression(RDFVariable leftArgument, List<RDFPatternMember> inTerms) : base(leftArgument, null as RDFExpression)
+            => InTerms = WrapPatternMembers(inTerms);
+
+        /// <summary>
+        /// Builds a lookup function searching the given expressions
+        /// </summary>
+        public RDFInExpression(RDFExpression leftArgument, List<RDFExpression> inTerms) : base(leftArgument, null as RDFExpression)
+            => InTerms = CleanExpressions(inTerms);
+
+        /// <summary>
+        /// Builds a lookup function searching the given expressions
+        /// </summary>
+        public RDFInExpression(RDFVariable leftArgument, List<RDFExpression> inTerms) : base(leftArgument, null as RDFExpression)
+            => InTerms = CleanExpressions(inTerms);
+
+        /// <summary>
+        /// Wraps the given pattern members into constant/variable expressions (discarding nulls and unsupported terms)
+        /// </summary>
+        private static List<RDFExpression> WrapPatternMembers(List<RDFPatternMember> inTerms)
         {
-            InTerms = inTerms ?? Enumerable.Empty<RDFPatternMember>().ToList();
-            //Do not accept null values in input list
-            InTerms.RemoveAll(t => t == null);
+            List<RDFExpression> wrappedTerms = new List<RDFExpression>();
+            foreach (RDFPatternMember inTerm in inTerms ?? Enumerable.Empty<RDFPatternMember>())
+            {
+                switch (inTerm)
+                {
+                    case RDFResource inTermResource: wrappedTerms.Add(new RDFConstantExpression(inTermResource)); break;
+                    case RDFLiteral inTermLiteral:   wrappedTerms.Add(new RDFConstantExpression(inTermLiteral));  break;
+                    case RDFVariable inTermVariable: wrappedTerms.Add(new RDFVariableExpression(inTermVariable)); break;
+                }
+            }
+            return wrappedTerms;
         }
 
         /// <summary>
-        /// Builds a lookup function with given arguments
+        /// Returns the given expressions without null values
         /// </summary>
-        public RDFInExpression(RDFVariable leftArgument, List<RDFPatternMember> inTerms) : base(leftArgument, null as RDFExpression)
-        {
-            InTerms = inTerms ?? Enumerable.Empty<RDFPatternMember>().ToList();
-            //Do not accept null values in input list
-            InTerms.RemoveAll(t => t == null);
-        }
+        private static List<RDFExpression> CleanExpressions(List<RDFExpression> inTerms)
+            => (inTerms ?? Enumerable.Empty<RDFExpression>()).Where(t => t != null).ToList();
         #endregion
 
         #region Interfaces
@@ -73,10 +102,24 @@ namespace RDFSharp.Query
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
             sb.Append(" IN (");
-            sb.Append(string.Join(", ", InTerms.Select(t => RDFQueryPrinter.PrintPatternMember(t, prefixes))));
+            sb.Append(string.Join(", ", InTerms.Select(t => PrintInTerm(t, prefixes))));
             sb.Append("))");
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints a single IN term: a wrapped constant/variable is printed as the bare term it carries (preserving the
+        /// round-trip of the legacy constant form), while any other expression is printed in full expression form.
+        /// </summary>
+        private static string PrintInTerm(RDFExpression inTerm, List<RDFNamespace> prefixes)
+        {
+            switch (inTerm)
+            {
+                case RDFConstantExpression constantExpression: return RDFQueryPrinter.PrintPatternMember((RDFPatternMember)constantExpression.LeftArgument, prefixes);
+                case RDFVariableExpression variableExpression: return RDFQueryPrinter.PrintPatternMember((RDFPatternMember)variableExpression.LeftArgument, prefixes);
+                default:                                       return inTerm.ToString(prefixes);
+            }
         }
         #endregion
 
@@ -96,34 +139,14 @@ namespace RDFSharp.Query
             {
                 #region Calculate Result
                 //This expression is equivalent to an OR-chain of equality comparison expressions
-                List<RDFPatternMember>.Enumerator inTermsEnumerator = InTerms.GetEnumerator();
+                List<RDFExpression>.Enumerator inTermsEnumerator = InTerms.GetEnumerator();
                 while (!keepRow && inTermsEnumerator.MoveNext())
                 {
-                    RDFComparisonExpression compExpression = null;
-                    switch (LeftArgument)
-                    {
-                        case RDFExpression leftArgExpr:
-                            compExpression = new RDFComparisonExpression(
-                                RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-                                leftArgExpr,
-                                inTermsEnumerator.Current is RDFResource inTermResE ? new RDFConstantExpression(inTermResE)
-                                 : inTermsEnumerator.Current is RDFLiteral inTermLitE ?  new RDFConstantExpression(inTermLitE)
-                                 : inTermsEnumerator.Current is RDFVariable inTermVarE ? new RDFVariableExpression(inTermVarE)
-                                 : null as RDFExpression);
-                            break;
+                    RDFComparisonExpression compExpression = LeftArgument is RDFExpression leftArgExpr
+                        ? new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, leftArgExpr, inTermsEnumerator.Current)
+                        : new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, (RDFVariable)LeftArgument, inTermsEnumerator.Current);
 
-                        case RDFVariable leftArgVar:
-                            compExpression = new RDFComparisonExpression(
-                                RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-                                leftArgVar,
-                                inTermsEnumerator.Current is RDFResource inTermResV ? new RDFConstantExpression(inTermResV)
-                                 : inTermsEnumerator.Current is RDFLiteral inTermLitV ?  new RDFConstantExpression(inTermLitV)
-                                 : inTermsEnumerator.Current is RDFVariable inTermVarV ? new RDFVariableExpression(inTermVarV)
-                                 : null as RDFExpression);
-                            break;
-                    }
-
-                    RDFPatternMember searchResult = compExpression?.ApplyExpression(row);
+                    RDFPatternMember searchResult = compExpression.ApplyExpression(row);
                     if (searchResult?.Equals(RDFTypedLiteral.True) ?? false)
                         keepRow = true;
                 }

@@ -35,8 +35,8 @@ public class RDFRegexExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(REGEX(STR((?V1 + ?V2)), \"^hello$\"))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REGEX(STR((?V1 + ?V2)), \"^hello$\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REGEX((?V1 + ?V2), \"^hello$\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REGEX((?V1 + ?V2), \"^hello$\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -48,8 +48,8 @@ public class RDFRegexExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(REGEX(STR(?V1), \"^hello$\", \"ismx\"))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REGEX(STR(?V1), \"^hello$\", \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REGEX(?V1, \"^hello$\", \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REGEX(?V1, \"^hello$\", \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -277,6 +277,97 @@ public class RDFRegexExpressionTest
 
         RDFRegexExpression expression = new RDFRegexExpression(
             new RDFVariable("?Q"), new Regex("^ex:"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNull(expressionResult);
+    }
+
+    // dynamic (per-row) pattern/flags
+
+    [TestMethod]
+    public void ShouldCreateRegexExpressionWithDynamicPattern()
+    {
+        RDFRegexExpression expression = new RDFRegexExpression(
+            new RDFVariableExpression(new RDFVariable("?V")), new RDFVariableExpression(new RDFVariable("?P")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsNull(expression.RegEx);
+        Assert.IsNotNull(expression.PatternExpression);
+        Assert.IsTrue(expression.ToString().Equals("(REGEX(?V, ?P))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldCreateRegexExpressionWithDynamicPatternAndFlags()
+    {
+        RDFRegexExpression expression = new RDFRegexExpression(
+            new RDFVariable("?V"), new RDFVariableExpression(new RDFVariable("?P")), new RDFVariableExpression(new RDFVariable("?F")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsTrue(expression.ToString().Equals("(REGEX(?V, ?P, ?F))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingRegexExpressionBecauseNullPatternExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFRegexExpression(new RDFVariable("?V"), null as RDFExpression));
+
+    [TestMethod]
+    public void ShouldApplyRegexExpressionWithDynamicPatternAndMatch()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?P");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?P", new RDFPlainLiteral("^he").ToString() }
+        });
+
+        RDFRegexExpression expression = new RDFRegexExpression(
+            new RDFVariableExpression(new RDFVariable("?A")), new RDFVariableExpression(new RDFVariable("?P")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+    }
+
+    [TestMethod]
+    public void ShouldApplyRegexExpressionWithDynamicPatternAndFlagsAndMatch()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?P");
+        table.AddColumn("?F");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("HELLO").ToString() },
+            { "?P", new RDFPlainLiteral("^he").ToString() },
+            { "?F", new RDFPlainLiteral("i").ToString() }
+        });
+
+        RDFRegexExpression expression = new RDFRegexExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?P")),
+            new RDFVariableExpression(new RDFVariable("?F")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+    }
+
+    [TestMethod]
+    public void ShouldApplyRegexExpressionWithDynamicPatternAndNotCalculateResultBecauseInvalidPattern()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?P");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?P", new RDFPlainLiteral("(unclosed").ToString() }
+        });
+
+        RDFRegexExpression expression = new RDFRegexExpression(
+            new RDFVariableExpression(new RDFVariable("?A")), new RDFVariableExpression(new RDFVariable("?P")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);

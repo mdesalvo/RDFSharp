@@ -233,6 +233,7 @@ namespace RDFSharp.Query
                 case RDFComparisonExpression comparisonExpression: return new RDFExpressionFilter(comparisonExpression);
                 case RDFBoundExpression boundExpression:           return new RDFExpressionFilter(boundExpression);
                 case RDFInExpression inExpression:                 return new RDFExpressionFilter(inExpression);
+                case RDFNotExpression notExpression:               return new RDFExpressionFilter(notExpression);
                 case RDFIsBlankExpression isBlankExpression:       return new RDFExpressionFilter(isBlankExpression);
                 case RDFIsLiteralExpression isLiteralExpression:   return new RDFExpressionFilter(isLiteralExpression);
                 case RDFIsNumericExpression isNumericExpression:   return new RDFExpressionFilter(isNumericExpression);
@@ -313,17 +314,18 @@ namespace RDFSharp.Query
             if (TryConsumeOperator(parserContext, ">"))
                 return new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, leftExpression, ParseAdditiveExpression(parserContext));
 
-            //'IN ( t1, t2, … )' membership test (the negated 'NOT IN' has no expression form and is not supported)
+            //'IN ( t1, t2, … )' membership test (terms may be constants, variables or full expressions)
             if (PeekFilterKeyword(parserContext) == "IN")
             {
                 ConsumeKeyword(parserContext);
                 return new RDFInExpression(leftExpression, ParseExpressionTermList(parserContext));
             }
+            //'NOT IN ( … )' negated membership test, modelled as '!( … IN … )' via the logical-negation expression
             if (PeekFilterKeyword(parserContext) == "NOT")
             {
                 ConsumeKeyword(parserContext);
                 if (TryConsumeKeyword(parserContext, "IN"))
-                    throw new RDFQueryException("Cannot parse SPARQL expression: 'NOT IN' is not supported (the engine has no negated-membership expression; use '!( … IN … )' at FILTER level) " + GetCoordinates(parserContext));
+                    return new RDFNotExpression(new RDFInExpression(leftExpression, ParseExpressionTermList(parserContext)));
                 throw new RDFQueryException("Cannot parse SPARQL expression: unexpected 'NOT' " + GetCoordinates(parserContext));
             }
 
@@ -392,9 +394,13 @@ namespace RDFSharp.Query
         {
             int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
-            //'!' is the boolean-NOT connective and only exists at the FILTER skeleton level
+            //'!' is the logical-negation unary operator: consume it and negate the following unary operand. At this
+            //position (the left operand has already been parsed at the relational level) it is never the '!=' operator.
             if (nextSignificantCodePoint == '!')
-                throw new RDFQueryException("Cannot parse SPARQL expression: '!' (logical negation) is only supported at FILTER level, not inside a value-expression " + GetCoordinates(parserContext));
+            {
+                ReadCodePoint(parserContext);
+                return new RDFNotExpression(ParseUnaryExpression(parserContext));
+            }
 
             //'+' / '-' that directly precede a numeric literal belong to that literal (a signed number), so let the
             //primary term-reader consume the whole token rather than treating the sign as a unary operator here.
@@ -523,15 +529,15 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Parses the parenthesised, comma-separated term list that follows an <c>IN</c> operator into a list of
-        /// concrete <see cref="RDFPatternMember"/> (the engine's <see cref="RDFInExpression"/> stores constants, not
-        /// expressions). A term that is a variable or a compound expression is rejected.
+        /// Parses the parenthesised, comma-separated <c>ExpressionList</c> that follows an <c>IN</c> / <c>NOT IN</c>
+        /// operator into a list of <see cref="RDFExpression"/>. Terms may be constants, variables or full expressions
+        /// (the engine's <see cref="RDFInExpression"/> evaluates each per-row as an equality comparison).
         /// </summary>
-        private static List<RDFPatternMember> ParseExpressionTermList(RDFQueryParserContext parserContext)
+        private static List<RDFExpression> ParseExpressionTermList(RDFQueryParserContext parserContext)
         {
             ExpectChar(parserContext, '(', "IN term list");
 
-            List<RDFPatternMember> inTerms = new List<RDFPatternMember>();
+            List<RDFExpression> inTerms = new List<RDFExpression>();
 
             //Empty list 'IN ()' never matches anything but is syntactically legal
             if (SkipWhitespace(parserContext) == ')')
@@ -542,11 +548,7 @@ namespace RDFSharp.Query
 
             while (true)
             {
-                int nextSignificantCodePoint = SkipWhitespace(parserContext);
-                if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
-                    throw new RDFQueryException("Cannot parse SPARQL 'IN' list: the engine supports only constant terms (IRIs/literals), not variables " + GetCoordinates(parserContext));
-
-                inTerms.Add(ParseTerm(parserContext));
+                inTerms.Add(ParseExpression(parserContext));
                 if (SkipWhitespace(parserContext) == ',')
                 {
                     ReadCodePoint(parserContext);

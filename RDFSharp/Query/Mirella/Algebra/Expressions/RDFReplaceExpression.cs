@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,18 +28,27 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Regular Expression to be applied
+        /// Regular Expression to be applied, when given as a fixed (build-time compiled) pattern
         /// </summary>
         public Regex RegEx { get; }
+
+        /// <summary>
+        /// Pattern to be applied, when given as a per-row expression (overrides RegEx)
+        /// </summary>
+        public RDFExpression PatternExpression { get; }
+
+        /// <summary>
+        /// Eventual flags driving the per-row pattern, when given as a per-row expression
+        /// </summary>
+        public RDFExpression FlagsExpression { get; }
         #endregion
 
         #region Ctors
 
         /// <summary>
-        /// Builds a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given (fixed) regular expression
         /// </summary>
-        public RDFReplaceExpression(RDFExpression leftArgument, RDFExpression rightArgument, Regex regex) : base(
-            leftArgument, rightArgument)
+        public RDFReplaceExpression(RDFExpression leftArgument, RDFExpression rightArgument, Regex regex) : base(leftArgument, rightArgument)
         {
             #region Guards
             if (rightArgument == null)
@@ -50,7 +59,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given (fixed) regular expression
         /// </summary>
         public RDFReplaceExpression(RDFExpression leftArgument, RDFVariable rightArgument, Regex regex) : base(leftArgument, rightArgument)
         {
@@ -63,7 +72,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given (fixed) regular expression
         /// </summary>
         public RDFReplaceExpression(RDFVariable leftArgument, RDFExpression rightArgument, Regex regex) : base(leftArgument, rightArgument)
         {
@@ -76,7 +85,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a Regex-replacing function with given arguments
+        /// Builds a Regex-replacing function with given (fixed) regular expression
         /// </summary>
         public RDFReplaceExpression(RDFVariable leftArgument, RDFVariable rightArgument, Regex regex) : base(leftArgument, rightArgument)
         {
@@ -86,6 +95,34 @@ namespace RDFSharp.Query
             #endregion
 
             RegEx = regex ?? throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"regex\" parameter is null.");
+        }
+
+        /// <summary>
+        /// Builds a Regex-replacing function with given (per-row) pattern and flags expressions
+        /// </summary>
+        public RDFReplaceExpression(RDFExpression leftArgument, RDFExpression rightArgument, RDFExpression patternExpression, RDFExpression flagsExpression=null) : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"rightArgument\" parameter is null");
+            #endregion
+
+            PatternExpression = patternExpression ?? throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"patternExpression\" parameter is null.");
+            FlagsExpression = flagsExpression;
+        }
+
+        /// <summary>
+        /// Builds a Regex-replacing function with given (per-row) pattern and flags expressions
+        /// </summary>
+        public RDFReplaceExpression(RDFVariable leftArgument, RDFExpression rightArgument, RDFExpression patternExpression, RDFExpression flagsExpression=null) : base(leftArgument, rightArgument)
+        {
+            #region Guards
+            if (rightArgument == null)
+                throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"rightArgument\" parameter is null");
+            #endregion
+
+            PatternExpression = patternExpression ?? throw new RDFQueryException("Cannot create RDFReplaceExpression because given \"patternExpression\" parameter is null.");
+            FlagsExpression = flagsExpression;
         }
         #endregion
 
@@ -99,31 +136,46 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //Serialize supported flags
-            StringBuilder flags = new StringBuilder();
-            if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
-                flags.Append('i');
-            if (RegEx.Options.HasFlag(RegexOptions.Singleline))
-                flags.Append('s');
-            if (RegEx.Options.HasFlag(RegexOptions.Multiline))
-                flags.Append('m');
-            if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
-                flags.Append('x');
-
-            //(REPLACE(STR(L),regex,STR(R),flags))
-            sb.Append("(REPLACE(STR(");
+            //(REPLACE(L,regex,R,flags))
+            sb.Append("(REPLACE(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append($"), \"{RegEx}\", STR(");
+            sb.Append(", ");
+
+            //Pattern: per-row expression form, or the serialized fixed regular expression
+            if (PatternExpression != null)
+                sb.Append(PatternExpression.ToString(prefixes));
+            else
+                sb.Append($"\"{RegEx}\"");
+
+            sb.Append(", ");
             if (RightArgument is RDFExpression expRightArgument)
                 sb.Append(expRightArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-            sb.Append(')');
-            if (flags.Length > 0)
-                sb.Append($", \"{flags}\"");
+
+            //Flags: per-row expression form, or the serialized fixed regular expression options
+            if (PatternExpression != null)
+            {
+                if (FlagsExpression != null)
+                    sb.Append($", {FlagsExpression.ToString(prefixes)}");
+            }
+            else
+            {
+                StringBuilder flags = new StringBuilder();
+                if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
+                    flags.Append('i');
+                if (RegEx.Options.HasFlag(RegexOptions.Singleline))
+                    flags.Append('s');
+                if (RegEx.Options.HasFlag(RegexOptions.Multiline))
+                    flags.Append('m');
+                if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+                    flags.Append('x');
+                if (flags.Length > 0)
+                    sb.Append($", \"{flags}\"");
+            }
             sb.Append("))");
 
             return sb.ToString();
@@ -161,6 +213,9 @@ namespace RDFSharp.Query
                     rightArgumentPMember = rightArgumentExpression.ApplyExpression(row);
                 else
                     rightArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[RightArgument.ToString()] ?? string.Empty));
+
+                //Compile the per-row regular expression (only when the pattern is given as an expression)
+                Regex perRowRegex = PatternExpression != null ? ResolveRegex(row) : null;
                 #endregion
 
                 #region Calculate Result
@@ -198,9 +253,14 @@ namespace RDFSharp.Query
                         break;
                 }
 
-                if (leftArgumentPMember != null && rightArgumentPMember != null)
+                bool canReplace = leftArgumentPMember != null && rightArgumentPMember != null
+                                   && (PatternExpression == null || perRowRegex != null);
+                if (canReplace)
                 {
-                    string result = Regex.Replace(leftArgumentPMember.ToString(), RegEx.ToString(), rightArgumentPMember.ToString());
+                    //Fixed pattern preserves the legacy static-replace semantics; per-row pattern honors its options
+                    string result = PatternExpression == null
+                        ? Regex.Replace(leftArgumentPMember.ToString(), RegEx.ToString(), rightArgumentPMember.ToString())
+                        : perRowRegex.Replace(leftArgumentPMember.ToString(), rightArgumentPMember.ToString());
 
                     //We want to expose a strongly typed result, depending on its nature
                     if (RDFModelUtilities.GetUriFromString(result) != null)
@@ -213,6 +273,20 @@ namespace RDFSharp.Query
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
             return expressionResult;
+        }
+
+        /// <summary>
+        /// Resolves the regular expression to apply: the fixed one when given, otherwise compiled per-row from the
+        /// evaluated pattern (and flags) expressions. Returns null when the per-row compilation fails (binding error).
+        /// </summary>
+        private Regex ResolveRegex(RDFTableRow row)
+        {
+            if (PatternExpression == null)
+                return RegEx;
+
+            string pattern = (PatternExpression.ApplyExpression(row) as RDFLiteral)?.Value;
+            string flags = (FlagsExpression?.ApplyExpression(row) as RDFLiteral)?.Value ?? string.Empty;
+            return RDFQueryUtilities.CompileRegexOrNull(pattern, flags);
         }
         #endregion
     }

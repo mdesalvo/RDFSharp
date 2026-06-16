@@ -83,7 +83,7 @@ public partial class RDFQueryParserTest
     [DataRow("STRUUID()")]
     [DataRow("BNODE()")]
     // Unary
-    [DataRow("STR(?o)")]
+    [DataRow("?o")]
     [DataRow("LANG(?o)")]
     [DataRow("DATATYPE(?o)")]
     [DataRow("ABS(?o)")]
@@ -281,6 +281,96 @@ public partial class RDFQueryParserTest
         Assert.IsTrue(printed.Contains($"\"{direction}\""));
         Assert.AreEqual(RDFTestUtilities.NormalizeEOL(printed),
             RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(printed).ToString()));
+    }
+
+    //IP2 — composable expressions: parser sweep + iso gate
+
+    [TestMethod]
+    [DataRow("?o NOT IN (\"a\", \"b\")", typeof(RDFNotExpression))]
+    [DataRow("?o IN (?s)", typeof(RDFInExpression))]
+    [DataRow("REGEX(?o, ?o)", typeof(RDFRegexExpression))]
+    public void ShouldParseComposableBareFilter(string constraint, System.Type expectedExpressionType)
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?o FILTER({constraint}) }}");
+
+        RDFExpressionFilter filter = (RDFExpressionFilter)SingleFilterOf(query);
+        Assert.IsInstanceOfType(filter.Expression, expectedExpressionType);
+    }
+
+    [TestMethod]
+    [DataRow("SUBSTR(?o, ?n)")]
+    [DataRow("SUBSTR(?o, ?n, ?n)")]
+    [DataRow("REGEX(?o, ?o, ?o)")]
+    [DataRow("REPLACE(?o, ?o, ?o)")]
+    public void ShouldParseComposableProjection(string expressionCall)
+    {
+        //Parsing the dynamic forms must succeed and print back identically (Gate A round-trip)
+        string printed = RDFSelectQuery.FromString(
+            $"SELECT ({expressionCall} AS ?v) WHERE {{ ?s ?p ?o . ?s ?q ?n }}").ToString();
+
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(printed),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(printed).ToString()));
+    }
+
+    /// <summary>
+    /// "SPARQL 100%" iso-functionality gate for IP2 (composable expressions): each newly representable form
+    /// (logical-NOT expression, NOT IN, IN with variables, and dynamic-argument REGEX/SUBSTR) is exercised BOTH
+    /// ways — built through the fluent API and obtained by parsing the printed SPARQL — and the two must be
+    /// interchangeable on printing round-trip AND on evaluation against a sample graph.
+    /// </summary>
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateComposableExpressionsIso()
+    {
+        RDFResource predicate = new RDFResource("http://example.org/p");
+        RDFResource numberPredicate = new RDFResource("http://example.org/n");
+        RDFGraph sampleGraph = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s1"), predicate, new RDFPlainLiteral("hello")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s2"), predicate, new RDFPlainLiteral("world")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s3"), predicate, new RDFPlainLiteral("ciao")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s1"), numberPredicate, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s2"), numberPredicate, new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s3"), numberPredicate, new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        RDFVariable subjectVariable = new RDFVariable("?s");
+        RDFVariable objectVariable = new RDFVariable("?o");
+        RDFVariable numberVariable = new RDFVariable("?n");
+
+        //NOT IN (constant terms) as a bare FILTER constraint
+        RDFSelectQuery notInQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable))
+                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFInExpression(
+                    objectVariable,
+                    new List<RDFPatternMember> { new RDFPlainLiteral("hello"), new RDFPlainLiteral("world") })))))
+            .AddProjectionVariable(subjectVariable);
+        RDFTestUtilities.AssertIso(notInQuery, sampleGraph);
+
+        //Logical-NOT expression wrapping a boolean built-in as a bare FILTER constraint
+        RDFSelectQuery notQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable))
+                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFIsUriExpression(objectVariable)))))
+            .AddProjectionVariable(subjectVariable);
+        RDFTestUtilities.AssertIso(notQuery, sampleGraph);
+
+        //IN with a variable term as a bare FILTER constraint
+        RDFSelectQuery inVariableQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable))
+                .AddFilter(new RDFExpressionFilter(new RDFInExpression(
+                    objectVariable,
+                    new List<RDFExpression> { new RDFConstantExpression(new RDFPlainLiteral("hello")) }))))
+            .AddProjectionVariable(subjectVariable);
+        RDFTestUtilities.AssertIso(inVariableQuery, sampleGraph);
+
+        //Dynamic SUBSTR (per-row start bound from a second pattern) in a computed projection
+        RDFSelectQuery dynamicSubstringQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable))
+                .AddPattern(new RDFPattern(subjectVariable, numberPredicate, numberVariable)))
+            .AddProjectionVariable(new RDFVariable("?v"),
+                new RDFSubstringExpression(objectVariable, new RDFVariableExpression(numberVariable)));
+        RDFTestUtilities.AssertIso(dynamicSubstringQuery, sampleGraph);
     }
     #endregion
 }

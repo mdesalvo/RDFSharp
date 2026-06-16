@@ -197,5 +197,62 @@ public class RDFGeoBufferExpressionTest
 
         Assert.IsNull(expressionResult);
     }
+
+    // dynamic (per-row) buffer meters
+
+    [TestMethod]
+    public void ShouldCreateGeoBufferExpressionWithDynamicMeters()
+    {
+        RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            new RDFVariableExpression(new RDFVariable("?V")), new RDFVariableExpression(new RDFVariable("?M")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsNotNull(expression.BufferMetersExpression);
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, ?M))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, ?M))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingGeoBufferExpressionBecauseNullMetersExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoBufferExpression(new RDFVariable("?V"), null as RDFExpression));
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithDynamicMetersAndCalculateResultPoint()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?M");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?M", new RDFTypedLiteral("1000", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() }
+        });
+
+        RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            new RDFVariableExpression(new RDFVariable("?MILAN")), new RDFVariableExpression(new RDFVariable("?M")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("POLYGON ((9.20054505 45.46515273, 9.20060654 45.46328561, 9.20020433 45.46147148, 9.19935391 45.45978006, 9.19808799 45.45827634, 9.19645522 45.4570181, 9.19451837 45.45605368, 9.19235185 45.45542015, 9.19003889 45.45514182, 9.18766835 45.45522941, 9.18533128 45.45567953, 9.18311747 45.4564749, 9.18111196 45.45758495, 9.1793918 45.45896703, 9.17802311 45.46056803, 9.17705848 45.46232645, 9.17653501 45.46417472, 9.17647286 45.4660418, 9.17687445 45.46785596, 9.17772438 45.46954748, 9.17899002 45.47105134, 9.18062275 45.47230974, 9.18255982 45.47327432, 9.18472678 45.473908, 9.18704033 45.47418641, 9.18941153 45.47409886, 9.19174922 45.47364871, 9.19396352 45.47285325, 9.19596932 45.47174307, 9.19768951 45.47036082, 9.19905799 45.46875965, 9.20002218 45.46700109, 9.20054505 45.46515273))", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithDynamicMetersAndNotCalculateResultBecauseMetersNotNumeric()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?MILAN");
+        table.AddColumn("?M");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?MILAN", new RDFTypedLiteral("POINT (9.18854 45.464664)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT).ToString() },
+            { "?M", new RDFPlainLiteral("notANumber").ToString() }
+        });
+
+        RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            new RDFVariableExpression(new RDFVariable("?MILAN")), new RDFVariableExpression(new RDFVariable("?M")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNull(expressionResult);
+    }
     #endregion
 }

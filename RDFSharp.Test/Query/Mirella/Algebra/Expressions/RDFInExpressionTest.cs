@@ -132,7 +132,7 @@ public class RDFInExpressionTest
 
         RDFInExpression expression = new RDFInExpression(
             new RDFVariableExpression(new RDFVariable("?A")),
-            null);
+            null as List<RDFPatternMember>);
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
@@ -237,7 +237,7 @@ public class RDFInExpressionTest
 
         RDFInExpression expression = new RDFInExpression(
             new RDFVariable("?A"),
-            null);
+            null as List<RDFPatternMember>);
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
@@ -262,6 +262,105 @@ public class RDFInExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);
+    }
+
+    // IN with variables/expressions
+
+    [TestMethod]
+    public void ShouldCreateInExpressionWithExpressionTerms()
+    {
+        RDFInExpression expression = new RDFInExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new List<RDFExpression>
+            {
+                new RDFVariableExpression(new RDFVariable("?B")),
+                new RDFAddExpression(new RDFVariable("?C"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            });
+
+        Assert.IsNotNull(expression);
+        Assert.IsTrue(expression.ToString().Equals("(?A IN (?B, (?C + 1)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(?A IN (?B, (?C + 1)))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldCreateInExpressionWithVariableLeftAndExpressionTerms()
+    {
+        RDFInExpression expression = new RDFInExpression(
+            new RDFVariable("?A"),
+            new List<RDFExpression> { new RDFVariableExpression(new RDFVariable("?B")) });
+
+        Assert.IsNotNull(expression);
+        Assert.IsTrue(expression.ToString().Equals("(?A IN (?B))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldApplyInExpressionWithVariableTermAndMatch()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("hello").ToString() }
+        });
+
+        RDFInExpression expression = new RDFInExpression(
+            new RDFVariable("?A"),
+            new List<RDFExpression> { new RDFVariableExpression(new RDFVariable("?B")) });
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+    }
+
+    [TestMethod]
+    public void ShouldApplyInExpressionWithExpressionTermAndMatch()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?B", new RDFTypedLiteral("4", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
+        });
+
+        //?A IN (?B + 1) => 5 IN (5) => true
+        RDFInExpression expression = new RDFInExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new List<RDFExpression>
+            {
+                new RDFAddExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            });
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+    }
+
+    [TestMethod]
+    public void ShouldApplyInExpressionWithExpressionTermAndNotMatch()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?B", new RDFTypedLiteral("9", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() }
+        });
+
+        RDFInExpression expression = new RDFInExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new List<RDFExpression>
+            {
+                new RDFAddExpression(new RDFVariable("?B"), new RDFConstantExpression(new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            });
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
     #endregion
 }
