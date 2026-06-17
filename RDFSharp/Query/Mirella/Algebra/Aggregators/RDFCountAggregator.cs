@@ -41,6 +41,13 @@ namespace RDFSharp.Query
         public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
 
         /// <summary>
+        /// Builds a COUNT aggregator on the given expression and with the given projection name. The expression is
+        /// materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFCountAggregator(RDFExpression aggrExpression, RDFVariable projVariable) : base(MakeExpressionVariable(projVariable), projVariable)
+            => AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFCountAggregator because given \"aggrExpression\" parameter is null.");
+
+        /// <summary>
         /// Builds a COUNT(*) aggregator with the given projection name: it counts the group's solutions (rows). The
         /// aggregator variable is set to the projection variable as a harmless placeholder (it is never read).
         /// </summary>
@@ -57,8 +64,8 @@ namespace RDFSharp.Query
             if (IsCountAll)
                 return IsDistinct ? $"(COUNT(DISTINCT *) AS {ProjectionVariable})"
                                   : $"(COUNT(*) AS {ProjectionVariable})";
-            return IsDistinct ? $"(COUNT(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                              : $"(COUNT({AggregatorVariable}) AS {ProjectionVariable})";
+            return IsDistinct ? $"(COUNT(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
+                              : $"(COUNT({AggregatorArgument}) AS {ProjectionVariable})";
         }
         #endregion
 

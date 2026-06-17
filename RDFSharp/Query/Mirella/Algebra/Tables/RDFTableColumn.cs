@@ -33,16 +33,24 @@ namespace RDFSharp.Query
         /// Zero-based position of the column within the owning table
         /// </summary>
         internal int Ordinal { get; set; }
+
+        /// <summary>
+        /// Whether the column was injected by the engine (e.g. a desugared/materialized expression used for grouping
+        /// or aggregation) rather than coming from the query's solution bindings. Such columns are an internal scratch
+        /// and must not surface in the query results.
+        /// </summary>
+        internal bool IsSynthetic { get; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Builds a column with the given (already normalized) name and ordinal
         /// </summary>
-        internal RDFTableColumn(string name, int ordinal)
+        internal RDFTableColumn(string name, int ordinal, bool isSynthetic=false)
         {
             Name = name;
             Ordinal = ordinal;
+            IsSynthetic = isSynthetic;
         }
         #endregion
 

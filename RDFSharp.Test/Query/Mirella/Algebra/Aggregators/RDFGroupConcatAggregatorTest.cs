@@ -79,7 +79,7 @@ public class RDFGroupConcatAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupConcatAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGroupConcatAggregator(null, new RDFVariable("?PROJVAR"), ";"));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGroupConcatAggregator(null as RDFVariable, new RDFVariable("?PROJVAR"), ";"));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingGroupConcatAggregatorBecauseNullPartitionVariable()
@@ -208,5 +208,22 @@ public class RDFGroupConcatAggregatorTest
         Assert.IsTrue(result.Rows[0]["?CONCATPROJ"].ToString().Equals("hello@EN-US;hello@EN", System.StringComparison.Ordinal));
         Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(GROUP_CONCAT(?B; SEPARATOR=\";\") != \"hello\"@EN-US)", System.StringComparison.Ordinal));
     }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateGroupConcatAggregatorOverExpression()
+    {
+        RDFGroupConcatAggregator aggregator = new RDFGroupConcatAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"), "|");
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(GROUP_CONCAT((?X + ?Y); SEPARATOR=\"|\") AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingGroupConcatAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGroupConcatAggregator(null as RDFExpression, new RDFVariable("?PROJVAR"), "|"));
     #endregion
 }

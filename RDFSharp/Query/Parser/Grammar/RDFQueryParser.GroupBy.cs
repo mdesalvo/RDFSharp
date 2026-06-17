@@ -71,43 +71,85 @@ namespace RDFSharp.Query
             if (!TryConsumeKeyword(parserContext, "BY"))
                 throw new RDFQueryException("Cannot parse SPARQL GROUP BY clause: expected 'BY' after 'GROUP' " + GetCoordinates(parserContext));
 
-            List<RDFVariable> partitionVariables = new List<RDFVariable>();
+            RDFGroupByModifier groupByModifier = new RDFGroupByModifier();
+            int anonymousConditionCounter = 0;
+            bool foundAtLeastOneCondition = false;
             while (true)
             {
                 int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
-                //A '?' or '$' sigil starts a bare grouping variable (the only representable GroupCondition)
+                //A '?' or '$' sigil is a bare grouping variable
                 if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
                 {
-                    partitionVariables.Add(ParseVariable(parserContext));
+                    groupByModifier.AddPartitionVariable(ParseVariable(parserContext));
+                    foundAtLeastOneCondition = true;
                     continue;
                 }
 
-                //A '(' opens an '(expr (AS ?v)?)' GroupCondition: spec-legal but not representable by the flat model
+                //A '(' opens a '(Expression ('AS' Var)?)' grouping condition
                 if (nextSignificantCodePoint == '(')
-                    throw new RDFQueryException("Cannot parse SPARQL GROUP BY clause: expression/bracketed grouping conditions are not representable (only bare variables are supported) " + GetCoordinates(parserContext));
+                {
+                    ExpectChar(parserContext, '(', "GROUP BY condition");
+                    RDFExpression groupExpression = ParseExpression(parserContext);
+                    if (TryConsumeKeyword(parserContext, "AS"))
+                    {
+                        //Named: '(expr AS ?v)' => ?v is a real, projectable grouping variable
+                        int sigilCodePoint = SkipWhitespace(parserContext);
+                        if (sigilCodePoint != '?' && sigilCodePoint != '$')
+                            throw new RDFQueryException("Cannot parse SPARQL GROUP BY clause: expected a variable after 'AS' inside '(expr AS ?v)' " + GetCoordinates(parserContext));
+                        groupByModifier.AddPartitionExpression(ParseVariable(parserContext), groupExpression, true);
+                    }
+                    else
+                    {
+                        //Anonymous: '(expr)' => an internal grouping column not projectable by name
+                        groupByModifier.AddPartitionExpression(MakeAnonymousGroupVariable(anonymousConditionCounter++), groupExpression, false);
+                    }
+                    ExpectChar(parserContext, ')', "GROUP BY condition");
+                    foundAtLeastOneCondition = true;
+                    continue;
+                }
 
-                //A bare keyword: either a clause that legally follows GROUP BY (stop here, push it back) or a
-                //built-in/function GroupCondition (not representable -> fail loudly instead of leaving trailing input)
+                //A bare keyword: either a clause that legally follows GROUP BY (stop) or a built-in/function
+                //grouping condition (e.g. 'GROUP BY STR(?x)'), which is parsed as an anonymous expression condition
                 string followerKeyword = ReadKeyword(parserContext);
                 UnreadString(parserContext, followerKeyword);
                 if (followerKeyword.Length > 0 && !GroupByFollowerKeywords.Contains(followerKeyword))
-                    throw new RDFQueryException("Cannot parse SPARQL GROUP BY clause: built-in/function grouping conditions are not representable (only bare variables are supported) " + GetCoordinates(parserContext));
+                {
+                    RDFExpression groupExpression = ParseExpression(parserContext);
+                    groupByModifier.AddPartitionExpression(MakeAnonymousGroupVariable(anonymousConditionCounter++), groupExpression, false);
+                    foundAtLeastOneCondition = true;
+                    continue;
+                }
                 break;
             }
 
-            //At least one grouping variable is mandatory (and the model's ctor also rejects an empty list)
-            if (partitionVariables.Count == 0)
-                throw new RDFQueryException("Cannot parse SPARQL GROUP BY clause: expected at least one grouping variable " + GetCoordinates(parserContext));
+            //At least one grouping condition is mandatory
+            if (!foundAtLeastOneCondition)
+                throw new RDFQueryException("Cannot parse SPARQL GROUP BY clause: expected at least one grouping condition " + GetCoordinates(parserContext));
 
-            //Build the modifier and absorb the aggregates the projection parked while waiting for GROUP BY
-            RDFGroupByModifier groupByModifier = new RDFGroupByModifier(partitionVariables);
-            foreach (RDFAggregator pendingAggregator in pendingAggregators)
-                groupByModifier.AddAggregator(pendingAggregator);
-            pendingAggregators.Clear();
+            //Absorb the aggregates the projection parked while waiting for GROUP BY (registering their computed columns)
+            AbsorbPendingAggregators(groupByModifier, pendingAggregators);
 
             selectQuery.AddModifier(groupByModifier);
             return groupByModifier;
+        }
+
+        /// <summary>
+        /// Builds the internal (synthetic) variable backing an anonymous GROUP BY expression condition ('GROUP BY
+        /// (expr)'): it has no projectable name, so a reserved '__GROUPEXPR_n' name is used and later dropped.
+        /// </summary>
+        private static RDFVariable MakeAnonymousGroupVariable(int index)
+            => new RDFVariable("?__GROUPEXPR_" + index);
+
+        /// <summary>
+        /// Attaches the parked aggregates to the GroupBy modifier (AddAggregator itself registers the computed column
+        /// for any aggregate-over-expression, so the modifier materializes it before partitioning).
+        /// </summary>
+        private static void AbsorbPendingAggregators(RDFGroupByModifier groupByModifier, List<RDFAggregator> pendingAggregators)
+        {
+            foreach (RDFAggregator pendingAggregator in pendingAggregators)
+                groupByModifier.AddAggregator(pendingAggregator);
+            pendingAggregators.Clear();
         }
 
         /// <summary>

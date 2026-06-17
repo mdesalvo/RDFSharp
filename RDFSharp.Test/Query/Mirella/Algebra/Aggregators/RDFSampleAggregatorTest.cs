@@ -43,7 +43,7 @@ public class RDFSampleAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSampleAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFSampleAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFSampleAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSampleAggregatorBecauseNullPartitionVariable()
@@ -191,5 +191,22 @@ public class RDFSampleAggregatorTest
         Assert.IsTrue(result.Rows[1]["?SAMPLEPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
         Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(SAMPLE(?B) > \"hello\"@EN-UK)", System.StringComparison.Ordinal));
     }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateSampleAggregatorOverExpression()
+    {
+        RDFSampleAggregator aggregator = new RDFSampleAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(SAMPLE((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingSampleAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFSampleAggregator(null as RDFExpression, new RDFVariable("?PROJVAR")));
     #endregion
 }

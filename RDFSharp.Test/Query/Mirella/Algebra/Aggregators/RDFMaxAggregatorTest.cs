@@ -48,7 +48,7 @@ public class RDFMaxAggregatorTest
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)]
     public void ShouldThrowExceptionOnCreatingStringMaxAggregatorBecauseNullAggregatorVariable(RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor)
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFMaxAggregator(null, new RDFVariable("?PROJVAR"), aggregatorFlavor));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFMaxAggregator(null as RDFVariable, new RDFVariable("?PROJVAR"), aggregatorFlavor));
 
     [TestMethod]
     [DataRow(RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)]
@@ -396,5 +396,22 @@ public class RDFMaxAggregatorTest
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?MAXPROJ"].ToString().Equals(string.Empty, System.StringComparison.Ordinal));
     }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateMaxAggregatorOverExpression()
+    {
+        RDFMaxAggregator aggregator = new RDFMaxAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric);
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(MAX((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingMaxAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFMaxAggregator(null as RDFExpression, new RDFVariable("?PROJVAR"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric));
     #endregion
 }

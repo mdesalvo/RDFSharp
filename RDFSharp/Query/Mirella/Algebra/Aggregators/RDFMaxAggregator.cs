@@ -39,6 +39,16 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFMaxAggregator(RDFVariable aggrVariable, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable)
             => AggregatorFlavor = aggregatorFlavor;
+
+        /// <summary>
+        /// Builds a MAX aggregator on the given expression, with the given projection name and given flavor. The
+        /// expression is materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFMaxAggregator(RDFExpression aggrExpression, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(MakeExpressionVariable(projVariable), projVariable)
+        {
+            AggregatorFlavor = aggregatorFlavor;
+            AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFMaxAggregator because given \"aggrExpression\" parameter is null.");
+        }
         #endregion
 
         #region Interfaces
@@ -46,8 +56,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the MAX aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? $"(MAX(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(MAX({AggregatorVariable}) AS {ProjectionVariable})";
+            => IsDistinct ? $"(MAX(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
+                          : $"(MAX({AggregatorArgument}) AS {ProjectionVariable})";
         #endregion
 
         #region Methods

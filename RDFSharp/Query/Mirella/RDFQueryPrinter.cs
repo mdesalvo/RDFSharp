@@ -78,17 +78,20 @@ namespace RDFSharp.Query
                 foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
                 {
                     string printedAggregators = string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator)));
-                    if (gm.PartitionVariables.Count > 0)
+                    //Anonymous GROUP BY expression columns ('GROUP BY (expr)') are internal scratch: never projected
+                    List<RDFVariable> projectablePartitionVariables = gm.PartitionVariables
+                        .Where(pv => !gm.SyntheticPartitionVariables.Contains(pv.VariableName)).ToList();
+                    if (projectablePartitionVariables.Count > 0)
                     {
                         //Explicit grouping: partition variables precede the aggregate projections (preserved layout)
                         sb.Append(' ');
-                        sb.Append(string.Join(" ", gm.PartitionVariables));
+                        sb.Append(string.Join(" ", projectablePartitionVariables));
                         sb.Append(' ');
                         sb.Append(printedAggregators);
                     }
                     else
                     {
-                        //Implicit grouping (no partition variables): only the aggregate projections
+                        //Implicit grouping (or only anonymous group expressions): just the aggregate projections
                         sb.Append(' ');
                         sb.Append(printedAggregators);
                     }

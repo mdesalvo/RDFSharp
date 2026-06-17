@@ -39,6 +39,16 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFMinAggregator(RDFVariable aggrVariable, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable)
             => AggregatorFlavor = aggregatorFlavor;
+
+        /// <summary>
+        /// Builds a MIN aggregator on the given expression, with the given projection name and given flavor. The
+        /// expression is materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFMinAggregator(RDFExpression aggrExpression, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(MakeExpressionVariable(projVariable), projVariable)
+        {
+            AggregatorFlavor = aggregatorFlavor;
+            AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFMinAggregator because given \"aggrExpression\" parameter is null.");
+        }
         #endregion
 
         #region Interfaces
@@ -46,8 +56,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the MIN aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? $"(MIN(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(MIN({AggregatorVariable}) AS {ProjectionVariable})";
+            => IsDistinct ? $"(MIN(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
+                          : $"(MIN({AggregatorArgument}) AS {ProjectionVariable})";
         #endregion
 
         #region Methods

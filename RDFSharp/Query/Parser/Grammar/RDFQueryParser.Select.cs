@@ -71,9 +71,7 @@ namespace RDFSharp.Query
             if (pendingAggregators.Count > 0)
             {
                 RDFGroupByModifier implicitGroupByModifier = new RDFGroupByModifier();
-                foreach (RDFAggregator pendingAggregator in pendingAggregators)
-                    implicitGroupByModifier.AddAggregator(pendingAggregator);
-                pendingAggregators.Clear();
+                AbsorbPendingAggregators(implicitGroupByModifier, pendingAggregators);
                 selectQuery.AddModifier(implicitGroupByModifier);
             }
 

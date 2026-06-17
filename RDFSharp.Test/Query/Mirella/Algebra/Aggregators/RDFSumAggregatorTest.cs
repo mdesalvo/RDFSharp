@@ -43,7 +43,7 @@ public class RDFSumAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSumAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFSumAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFSumAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingSumAggregatorBecauseNullPartitionVariable()
@@ -238,6 +238,54 @@ public class RDFSumAggregatorTest
         Assert.IsTrue(result.Rows[1]["?SUMPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[2]["?C"].ToString().Equals("ex:value2", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[2]["?SUMPROJ"].ToString().Equals(string.Empty, System.StringComparison.Ordinal)); //Projection for NaN
+    }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateSumAggregatorOverExpression()
+    {
+        RDFSumAggregator aggregator = new RDFSumAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(SUM((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingSumAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFSumAggregator(null as RDFExpression, new RDFVariable("?PROJVAR")));
+
+    [TestMethod]
+    public void ShouldApplySumAggregatorOverExpression()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?X");
+        table.AddColumn("?Y");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?X", new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?Y", new RDFTypedLiteral("10", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?X", new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?Y", new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+
+        //SUM(?X + ?Y) over the single group ex:value0 => (1+10)+(2+20) = 33
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFSumAggregator(new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?S")));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.ColumnsCount); //?C + ?S (the synthetic aggregator column does not surface)
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?S"].ToString().Equals($"33^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
     }
     #endregion
 }

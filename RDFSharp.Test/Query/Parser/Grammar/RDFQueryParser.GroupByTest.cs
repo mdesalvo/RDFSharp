@@ -110,14 +110,43 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldThrowOnGroupByExpressionCondition()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY (?c + 1)"));
+    public void ShouldParseGroupByAnonymousExpressionCondition()
+    {
+        //GROUP BY (expr) is now representable (IP3.2) as an anonymous grouping column and round-trips identically
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY (?c + 1)");
+
+        RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.AreEqual(1, groupBy.PartitionVariables.Count);
+        Assert.AreEqual(1, groupBy.SyntheticPartitionVariables.Count);
+        Assert.IsTrue(query.ToString().Contains("GROUP BY (?C + 1)"));
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+    }
 
     [TestMethod]
-    public void ShouldThrowOnGroupByFunctionCondition()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY STR(?c)"));
+    public void ShouldParseGroupByNamedExpressionCondition()
+    {
+        //GROUP BY (expr AS ?v) is now representable (IP3.2): ?v is a real projectable grouping variable
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?g (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY (?c + 1 AS ?g)");
+
+        RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.IsTrue(groupBy.PartitionVariables.Any(pv => pv.ToString() == "?G"));
+        Assert.AreEqual(0, groupBy.SyntheticPartitionVariables.Count);
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+    }
+
+    [TestMethod]
+    public void ShouldParseGroupByFunctionCondition()
+    {
+        //GROUP BY built-in/function (e.g. STR(?c)) is now representable (IP3.2) as an anonymous grouping column
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY STR(?c)");
+
+        RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.AreEqual(1, groupBy.PartitionVariables.Count);
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+    }
 
     [TestMethod]
     public void ShouldThrowOnHavingWithoutGroupBy()

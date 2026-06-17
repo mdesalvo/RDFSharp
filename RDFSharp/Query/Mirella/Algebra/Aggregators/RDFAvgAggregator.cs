@@ -31,6 +31,13 @@ namespace RDFSharp.Query
         /// Builds an AVG aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFAvgAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+
+        /// <summary>
+        /// Builds an AVG aggregator on the given expression and with the given projection name. The expression is
+        /// materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFAvgAggregator(RDFExpression aggrExpression, RDFVariable projVariable) : base(MakeExpressionVariable(projVariable), projVariable)
+            => AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFAvgAggregator because given \"aggrExpression\" parameter is null.");
         #endregion
 
         #region Interfaces
@@ -38,8 +45,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the AVG aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? $"(AVG(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(AVG({AggregatorVariable}) AS {ProjectionVariable})";
+            => IsDistinct ? $"(AVG(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
+                          : $"(AVG({AggregatorArgument}) AS {ProjectionVariable})";
         #endregion
 
         #region Methods

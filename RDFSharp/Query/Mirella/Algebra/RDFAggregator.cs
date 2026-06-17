@@ -40,6 +40,14 @@ namespace RDFSharp.Query
         public RDFVariable ProjectionVariable { get; internal set; }
 
         /// <summary>
+        /// Expression aggregated by this aggregator, when the argument is not a bare variable (e.g. SUM(?x + ?y)).
+        /// When set, the GroupBy modifier materializes it into the (synthetic) AggregatorVariable column before
+        /// partitioning, so the aggregation machinery keeps working over a single column; the printer re-emits the
+        /// original expression instead of the synthetic variable.
+        /// </summary>
+        public RDFExpression AggregatorExpression { get; internal set; }
+
+        /// <summary>
         /// Flag indicating that the aggregator discards duplicates
         /// </summary>
         public bool IsDistinct { get; internal set; }
@@ -96,6 +104,21 @@ namespace RDFSharp.Query
         #endregion
 
         #region Methods
+        /// <summary>
+        /// The printed form of the aggregated argument: the original expression when the aggregator was built over an
+        /// expression (SUM(?x + ?y)), otherwise the bare aggregated variable. Used by every aggregator's ToString.
+        /// </summary>
+        protected string AggregatorArgument
+            => AggregatorExpression != null ? AggregatorExpression.ToString() : AggregatorVariable.ToString();
+
+        /// <summary>
+        /// Builds the (synthetic) aggregator variable backing an aggregate-over-expression (e.g. SUM(?x + ?y)): a
+        /// reserved name derived from the projection variable, into which the GroupBy modifier materializes the
+        /// expression's per-row values so the aggregation machinery keeps operating over a single column.
+        /// </summary>
+        internal static RDFVariable MakeExpressionVariable(RDFVariable projectionVariable)
+            => new RDFVariable("?__AGGEXPR_" + (projectionVariable ?? throw new RDFQueryException("Cannot create aggregator because given \"projectionVariable\" parameter is null.")).VariableName.TrimStart('?', '$'));
+
         /// <summary>
         /// Resets the aggregator's execution context, so that the same aggregator (and the
         /// query owning it) can be safely re-executed without carrying over state from a

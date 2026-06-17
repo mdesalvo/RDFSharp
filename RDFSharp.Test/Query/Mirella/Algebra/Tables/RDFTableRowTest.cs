@@ -154,5 +154,24 @@ public class RDFTableRowTest
         Assert.IsFalse(row.HasColumn("?X"));
         Assert.IsFalse(row.HasColumn(null));
     }
+
+    //IP3.1 — full-row signature (used to tell distinct solutions apart, e.g. COUNT(DISTINCT *))
+
+    [TestMethod]
+    public void ShouldGiveRowSignature()
+    {
+        RDFTableRow row = BuildRow("ex:s", "ex:p", "ex:o");
+
+        Assert.AreEqual("ex:s§ex:p§ex:o", row.Signature);
+    }
+
+    [TestMethod]
+    public void ShouldGiveRowSignatureWithUnboundCell()
+    {
+        //An UNBOUND (null) cell contributes an empty chunk, so two differently-bound rows stay distinguishable
+        RDFTableRow row = BuildRow("ex:s", null, "ex:o");
+
+        Assert.AreEqual("ex:s§§ex:o", row.Signature);
+    }
     #endregion
 }

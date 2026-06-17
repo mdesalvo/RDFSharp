@@ -28,6 +28,13 @@ namespace RDFSharp.Query
         /// Builds a SAMPLE aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFSampleAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+
+        /// <summary>
+        /// Builds a SAMPLE aggregator on the given expression and with the given projection name. The expression is
+        /// materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFSampleAggregator(RDFExpression aggrExpression, RDFVariable projVariable) : base(MakeExpressionVariable(projVariable), projVariable)
+            => AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFSampleAggregator because given \"aggrExpression\" parameter is null.");
         #endregion
 
         #region Interfaces
@@ -35,8 +42,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the SAMPLE aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? $"(SAMPLE(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(SAMPLE({AggregatorVariable}) AS {ProjectionVariable})";
+            => IsDistinct ? $"(SAMPLE(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
+                          : $"(SAMPLE({AggregatorArgument}) AS {ProjectionVariable})";
         #endregion
 
         #region Methods

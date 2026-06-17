@@ -103,13 +103,13 @@ namespace RDFSharp.Query
         /// Adds a new column to the table (avoiding duplicates) and returns it. If rows already
         /// exist, they are widened with an UNBOUND cell for the new column.
         /// </summary>
-        internal RDFTableColumn AddColumn(string columnName)
+        internal RDFTableColumn AddColumn(string columnName, bool isSynthetic=false)
         {
             string normalizedName = NormalizeColumnName(columnName);
             if (_ordinals.TryGetValue(normalizedName, out int existingOrdinal))
                 return _columns[existingOrdinal];
 
-            RDFTableColumn column = new RDFTableColumn(normalizedName, _columns.Count);
+            RDFTableColumn column = new RDFTableColumn(normalizedName, _columns.Count, isSynthetic);
             _ordinals.Add(normalizedName, column.Ordinal);
             _columns.Add(column);
 

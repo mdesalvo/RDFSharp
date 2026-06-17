@@ -43,7 +43,7 @@ public class RDFAvgAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAvgAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAvgAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAvgAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAvgAggregatorBecauseNullPartitionVariable()
@@ -239,5 +239,22 @@ public class RDFAvgAggregatorTest
         Assert.IsTrue(result.Rows[2]["?C"].ToString().Equals("ex:value2", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[2]["?AVGPROJ"].ToString().Equals(string.Empty, System.StringComparison.Ordinal)); //Projection for NaN
     }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateAvgAggregatorOverExpression()
+    {
+        RDFAvgAggregator aggregator = new RDFAvgAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(AVG((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingAvgAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAvgAggregator(null as RDFExpression, new RDFVariable("?PROJVAR")));
     #endregion
 }

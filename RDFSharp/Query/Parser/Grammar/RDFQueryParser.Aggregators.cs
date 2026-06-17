@@ -65,6 +65,7 @@ namespace RDFSharp.Query
         {
             internal string Function { get; set; }
             internal RDFVariable AggregatorVariable { get; set; }
+            internal RDFExpression Expression { get; set; }
             internal bool IsDistinct { get; set; }
             internal bool IsCountAll { get; set; }
             internal string Separator { get; set; }
@@ -96,8 +97,7 @@ namespace RDFSharp.Query
             //Optional DISTINCT (applies to every aggregate function in SPARQL 1.1)
             parsedAggregator.IsDistinct = TryConsumeKeyword(parserContext, "DISTINCT");
 
-            //Argument: a single variable, or — for COUNT only — the '*' wildcard (COUNT(*) counts solutions).
-            //Expression arguments (e.g. SUM(?x + ?y)) are spec-legal but not yet representable here (phase IP3.2).
+            //Argument: the '*' wildcard (COUNT only), or a full expression that may reduce to a bare variable.
             int argumentCodePoint = SkipWhitespace(parserContext);
             if (argumentCodePoint == '*')
             {
@@ -106,13 +106,15 @@ namespace RDFSharp.Query
                 ReadCodePoint(parserContext); //consume '*'
                 parsedAggregator.IsCountAll = true;
             }
-            else if (argumentCodePoint != '?' && argumentCodePoint != '$')
-            {
-                throw new RDFQueryException("Cannot parse SPARQL aggregate: only a single variable argument is representable (expression arguments such as 'SUM(?x + ?y)' are not supported) " + GetCoordinates(parserContext));
-            }
             else
             {
-                parsedAggregator.AggregatorVariable = ParseVariable(parserContext);
+                //Parse the argument as an expression: a bare variable stays a variable (aggregated directly), any
+                //other expression (e.g. SUM(?x + ?y)) is materialized into a synthetic column by the GroupBy modifier
+                RDFExpression argumentExpression = ParseExpression(parserContext);
+                if (argumentExpression is RDFVariableExpression bareVariableExpression && bareVariableExpression.LeftArgument is RDFVariable bareVariable)
+                    parsedAggregator.AggregatorVariable = bareVariable;
+                else
+                    parsedAggregator.Expression = argumentExpression;
             }
 
             //GROUP_CONCAT-only optional separator: '; SEPARATOR = String'
@@ -142,33 +144,43 @@ namespace RDFSharp.Query
         /// </summary>
         private static RDFAggregator BuildAggregator(RDFParsedAggregator parsedAggregator, RDFVariable projectionVariable)
         {
+            //An expression argument is aggregated over a synthetic column (materialized by the GroupBy modifier),
+            //so the aggregator operates on that column while remembering the expression for printing.
+            RDFVariable aggregatorVariable = parsedAggregator.Expression != null
+                ? RDFAggregator.MakeExpressionVariable(projectionVariable)
+                : parsedAggregator.AggregatorVariable;
+
             RDFAggregator aggregator;
             switch (parsedAggregator.Function)
             {
                 case "COUNT":
                     aggregator = parsedAggregator.IsCountAll
                         ? new RDFCountAggregator(projectionVariable)
-                        : new RDFCountAggregator(parsedAggregator.AggregatorVariable, projectionVariable);
+                        : new RDFCountAggregator(aggregatorVariable, projectionVariable);
                     break;
                 case "SUM":
-                    aggregator = new RDFSumAggregator(parsedAggregator.AggregatorVariable, projectionVariable);
+                    aggregator = new RDFSumAggregator(aggregatorVariable, projectionVariable);
                     break;
                 case "AVG":
-                    aggregator = new RDFAvgAggregator(parsedAggregator.AggregatorVariable, projectionVariable);
+                    aggregator = new RDFAvgAggregator(aggregatorVariable, projectionVariable);
                     break;
                 case "SAMPLE":
-                    aggregator = new RDFSampleAggregator(parsedAggregator.AggregatorVariable, projectionVariable);
+                    aggregator = new RDFSampleAggregator(aggregatorVariable, projectionVariable);
                     break;
                 case "MIN":
-                    aggregator = new RDFMinAggregator(parsedAggregator.AggregatorVariable, projectionVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric);
+                    aggregator = new RDFMinAggregator(aggregatorVariable, projectionVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric);
                     break;
                 case "MAX":
-                    aggregator = new RDFMaxAggregator(parsedAggregator.AggregatorVariable, projectionVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric);
+                    aggregator = new RDFMaxAggregator(aggregatorVariable, projectionVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric);
                     break;
                 default: //GROUP_CONCAT
-                    aggregator = new RDFGroupConcatAggregator(parsedAggregator.AggregatorVariable, projectionVariable, parsedAggregator.Separator);
+                    aggregator = new RDFGroupConcatAggregator(aggregatorVariable, projectionVariable, parsedAggregator.Separator);
                     break;
             }
+
+            //Carry the aggregated expression (when any) so the modifier materializes it and the printer re-emits it
+            if (parsedAggregator.Expression != null)
+                aggregator.AggregatorExpression = parsedAggregator.Expression;
 
             if (parsedAggregator.IsDistinct)
                 aggregator.Distinct();

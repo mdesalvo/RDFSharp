@@ -147,9 +147,19 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldThrowOnAggregateWithExpressionArgument()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT ?c (SUM(?x + ?y) AS ?s) WHERE { ?e ?p ?c } GROUP BY ?c"));
+    public void ShouldParseAggregateWithExpressionArgument()
+    {
+        //SUM(?x + ?y) is now representable (IP3.2): the expression is materialized into a synthetic column and the
+        //aggregator operates on it; the printed form re-emits the original expression and round-trips identically
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (SUM(?x + ?y) AS ?s) WHERE { ?x ?p ?c . ?x ?q ?y } GROUP BY ?c");
+
+        RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        RDFSumAggregator sumAggregator = groupBy.Aggregators.OfType<RDFSumAggregator>().Single();
+        Assert.IsNotNull(sumAggregator.AggregatorExpression);
+        Assert.IsTrue(query.ToString().Contains("SUM((?X + ?Y))"));
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+    }
 
     [TestMethod]
     public void ShouldParseAggregateWithoutGroupBy()
@@ -204,6 +214,53 @@ public partial class RDFQueryParserTest
             .AddPatternGroup(new RDFPatternGroup().AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable)))
             .AddModifier(new RDFGroupByModifier([subjectVariable]).AddAggregator(new RDFCountAggregator(objectVariable, new RDFVariable("?cnt"))));
         RDFTestUtilities.AssertIso(groupedCountVarQuery, sampleGraph);
+    }
+
+    /// <summary>
+    /// "SPARQL 100%" iso-functionality gate for IP3.2 (aggregation over expressions): SUM over an arithmetic
+    /// expression and a named GROUP BY expression are each built VIA API and must be interchangeable with the query
+    /// obtained by parsing their printed SPARQL — both on printing round-trip and on evaluation against a sample graph.
+    /// </summary>
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateAggregationOverExpressionIso()
+    {
+        RDFResource categoryPredicate = new RDFResource("http://example.org/cat");
+        RDFResource xPredicate = new RDFResource("http://example.org/x");
+        RDFResource yPredicate = new RDFResource("http://example.org/y");
+        RDFGraph sampleGraph = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e1"), categoryPredicate, new RDFResource("http://example.org/A")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e1"), xPredicate, new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e1"), yPredicate, new RDFTypedLiteral("10", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e2"), categoryPredicate, new RDFResource("http://example.org/A")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e2"), xPredicate, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e2"), yPredicate, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e3"), categoryPredicate, new RDFResource("http://example.org/B")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e3"), xPredicate, new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/e3"), yPredicate, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        RDFVariable categoryVariable = new RDFVariable("?cat");
+        RDFVariable xVariable = new RDFVariable("?x");
+        RDFVariable yVariable = new RDFVariable("?y");
+
+        RDFPatternGroup BuildPatternGroup() => new RDFPatternGroup()
+            .AddPattern(new RDFPattern(new RDFVariable("?e"), categoryPredicate, categoryVariable))
+            .AddPattern(new RDFPattern(new RDFVariable("?e"), xPredicate, xVariable))
+            .AddPattern(new RDFPattern(new RDFVariable("?e"), yPredicate, yVariable));
+
+        //SUM over an expression: SUM(?x + ?y) per ?cat
+        RDFSelectQuery sumOverExpressionQuery = new RDFSelectQuery()
+            .AddPatternGroup(BuildPatternGroup())
+            .AddModifier(new RDFGroupByModifier([categoryVariable])
+                .AddAggregator(new RDFSumAggregator(new RDFAddExpression(xVariable, yVariable), new RDFVariable("?s"))));
+        RDFTestUtilities.AssertIso(sumOverExpressionQuery, sampleGraph);
+
+        //Named GROUP BY expression: GROUP BY (?x + ?y AS ?g) with COUNT(*)
+        RDFSelectQuery groupByExpressionQuery = new RDFSelectQuery()
+            .AddPatternGroup(BuildPatternGroup())
+            .AddModifier(new RDFGroupByModifier()
+                .AddPartitionExpression(new RDFVariable("?g"), new RDFAddExpression(xVariable, yVariable), true)
+                .AddAggregator(new RDFCountAggregator(new RDFVariable("?cnt"))));
+        RDFTestUtilities.AssertIso(groupByExpressionQuery, sampleGraph);
     }
 
     #endregion

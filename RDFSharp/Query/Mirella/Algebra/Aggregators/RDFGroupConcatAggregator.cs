@@ -37,6 +37,16 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFGroupConcatAggregator(RDFVariable aggrVariable, RDFVariable projVariable, string separator) : base(aggrVariable, projVariable)
             => Separator = string.IsNullOrEmpty(separator) ? " " : separator;
+
+        /// <summary>
+        /// Builds a GROUP_CONCAT aggregator on the given expression, with the given projection name and separator. The
+        /// expression is materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFGroupConcatAggregator(RDFExpression aggrExpression, RDFVariable projVariable, string separator) : base(MakeExpressionVariable(projVariable), projVariable)
+        {
+            Separator = string.IsNullOrEmpty(separator) ? " " : separator;
+            AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFGroupConcatAggregator because given \"aggrExpression\" parameter is null.");
+        }
         #endregion
 
         #region Interfaces
@@ -44,8 +54,8 @@ namespace RDFSharp.Query
         /// Gets the string representation of the GROUP_CONCAT aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? $"(GROUP_CONCAT(DISTINCT {AggregatorVariable}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})"
-                          : $"(GROUP_CONCAT({AggregatorVariable}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})";
+            => IsDistinct ? $"(GROUP_CONCAT(DISTINCT {AggregatorArgument}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})"
+                          : $"(GROUP_CONCAT({AggregatorArgument}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})";
         #endregion
 
         #region Methods

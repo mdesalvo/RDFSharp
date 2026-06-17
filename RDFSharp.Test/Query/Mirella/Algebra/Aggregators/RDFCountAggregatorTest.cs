@@ -43,7 +43,7 @@ public class RDFCountAggregatorTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullPartitionVariable()
@@ -250,5 +250,23 @@ public class RDFCountAggregatorTest
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
     }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateCountAggregatorOverExpression()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsFalse(aggregator.IsCountAll);
+        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingCountAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(null as RDFExpression, new RDFVariable("?PROJVAR")));
     #endregion
 }

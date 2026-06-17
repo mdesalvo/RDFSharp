@@ -50,6 +50,17 @@ public class RDFTableTest
         Assert.AreEqual("?SUBJECT", column.Name);
         Assert.AreEqual(0, column.Ordinal);
         Assert.AreSame(column, table.Columns[0]);
+        Assert.IsFalse(column.IsSynthetic);
+    }
+
+    [TestMethod]
+    public void ShouldAddSyntheticColumn()
+    {
+        RDFTable table = new RDFTable();
+        RDFTableColumn column = table.AddColumn("?__GROUPEXPR_0", isSynthetic: true);
+
+        Assert.AreEqual(1, table.ColumnsCount);
+        Assert.IsTrue(column.IsSynthetic);
     }
 
     [TestMethod]
