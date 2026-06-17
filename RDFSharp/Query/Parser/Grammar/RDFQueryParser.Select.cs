@@ -66,10 +66,16 @@ namespace RDFSharp.Query
             //GROUP BY / HAVING / ORDER BY / LIMIT / OFFSET (any order, leniently); GROUP BY absorbs the pending aggregates
             ParseSolutionModifiers(parserContext, selectQuery, pendingAggregators);
 
-            //Aggregates left unattached mean the projection used aggregates without a GROUP BY (implicit single
-            //group): the flat model requires a non-empty partitioning, so this case is not representable.
+            //Aggregates left unattached mean the projection used aggregates without a GROUP BY: this is SPARQL
+            //implicit grouping (a single group over the whole result set), modeled by an empty-partition GroupBy.
             if (pendingAggregators.Count > 0)
-                throw new RDFQueryException("Cannot parse SPARQL SELECT query: aggregates in the projection require a GROUP BY clause (implicit grouping is not representable) " + GetCoordinates(parserContext));
+            {
+                RDFGroupByModifier implicitGroupByModifier = new RDFGroupByModifier();
+                foreach (RDFAggregator pendingAggregator in pendingAggregators)
+                    implicitGroupByModifier.AddAggregator(pendingAggregator);
+                pendingAggregators.Clear();
+                selectQuery.AddModifier(implicitGroupByModifier);
+            }
 
             return selectQuery;
         }

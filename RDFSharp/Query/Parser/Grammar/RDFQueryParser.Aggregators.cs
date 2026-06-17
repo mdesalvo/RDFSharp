@@ -66,6 +66,7 @@ namespace RDFSharp.Query
             internal string Function { get; set; }
             internal RDFVariable AggregatorVariable { get; set; }
             internal bool IsDistinct { get; set; }
+            internal bool IsCountAll { get; set; }
             internal string Separator { get; set; }
         }
 
@@ -95,14 +96,24 @@ namespace RDFSharp.Query
             //Optional DISTINCT (applies to every aggregate function in SPARQL 1.1)
             parsedAggregator.IsDistinct = TryConsumeKeyword(parserContext, "DISTINCT");
 
-            //Argument: the flat model can only aggregate over a single variable. COUNT(*) and expression
-            //arguments (e.g. SUM(?x + ?y)) are spec-legal but NOT representable -> explicit failure.
+            //Argument: a single variable, or — for COUNT only — the '*' wildcard (COUNT(*) counts solutions).
+            //Expression arguments (e.g. SUM(?x + ?y)) are spec-legal but not yet representable here (phase IP3.2).
             int argumentCodePoint = SkipWhitespace(parserContext);
             if (argumentCodePoint == '*')
-                throw new RDFQueryException("Cannot parse SPARQL aggregate: 'COUNT(*)' is not representable by the flat aggregator model (only a single aggregated variable is supported) " + GetCoordinates(parserContext));
-            if (argumentCodePoint != '?' && argumentCodePoint != '$')
+            {
+                if (parsedAggregator.Function != "COUNT")
+                    throw new RDFQueryException("Cannot parse SPARQL aggregate: the '*' argument is only allowed for COUNT " + GetCoordinates(parserContext));
+                ReadCodePoint(parserContext); //consume '*'
+                parsedAggregator.IsCountAll = true;
+            }
+            else if (argumentCodePoint != '?' && argumentCodePoint != '$')
+            {
                 throw new RDFQueryException("Cannot parse SPARQL aggregate: only a single variable argument is representable (expression arguments such as 'SUM(?x + ?y)' are not supported) " + GetCoordinates(parserContext));
-            parsedAggregator.AggregatorVariable = ParseVariable(parserContext);
+            }
+            else
+            {
+                parsedAggregator.AggregatorVariable = ParseVariable(parserContext);
+            }
 
             //GROUP_CONCAT-only optional separator: '; SEPARATOR = String'
             if (parsedAggregator.Function == "GROUP_CONCAT" && SkipWhitespace(parserContext) == ';')
@@ -135,7 +146,9 @@ namespace RDFSharp.Query
             switch (parsedAggregator.Function)
             {
                 case "COUNT":
-                    aggregator = new RDFCountAggregator(parsedAggregator.AggregatorVariable, projectionVariable);
+                    aggregator = parsedAggregator.IsCountAll
+                        ? new RDFCountAggregator(projectionVariable)
+                        : new RDFCountAggregator(parsedAggregator.AggregatorVariable, projectionVariable);
                     break;
                 case "SUM":
                     aggregator = new RDFSumAggregator(parsedAggregator.AggregatorVariable, projectionVariable);
@@ -170,6 +183,10 @@ namespace RDFSharp.Query
         /// </summary>
         private static bool MatchesAggregator(RDFAggregator aggregator, RDFParsedAggregator parsedAggregator)
         {
+            //COUNT(*) has no aggregated variable: match it against the count-all aggregator declared by the projection
+            if (parsedAggregator.IsCountAll)
+                return aggregator is RDFCountAggregator countAggregator && countAggregator.IsCountAll;
+
             if (!aggregator.AggregatorVariable.Equals(parsedAggregator.AggregatorVariable))
                 return false;
 

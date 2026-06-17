@@ -77,10 +77,21 @@ namespace RDFSharp.Query
             {
                 foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
                 {
-                    sb.Append(' ');
-                    sb.Append(string.Join(" ", gm.PartitionVariables));
-                    sb.Append(' ');
-                    sb.Append(string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator))));
+                    string printedAggregators = string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator)));
+                    if (gm.PartitionVariables.Count > 0)
+                    {
+                        //Explicit grouping: partition variables precede the aggregate projections (preserved layout)
+                        sb.Append(' ');
+                        sb.Append(string.Join(" ", gm.PartitionVariables));
+                        sb.Append(' ');
+                        sb.Append(printedAggregators);
+                    }
+                    else
+                    {
+                        //Implicit grouping (no partition variables): only the aggregate projections
+                        sb.Append(' ');
+                        sb.Append(printedAggregators);
+                    }
                 }
             }
             //Query hasn't GroupBy modifier => respect given projections
@@ -113,6 +124,11 @@ namespace RDFSharp.Query
             //GROUP BY
             foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
             {
+                //Implicit grouping (no partition variables) emits no GROUP BY clause: the aggregates already
+                //appear in the projection and the grouping is implied by their presence
+                if (gm.PartitionVariables.Count == 0)
+                    continue;
+
                 //GROUP BY
                 sb.AppendLine();
                 sb.Append(subqueryBodySpaces);

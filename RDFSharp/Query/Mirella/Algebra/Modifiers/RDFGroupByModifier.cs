@@ -40,6 +40,18 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
+        /// Builds an implicit-grouping modifier (no partition variables): every solution falls into a single group,
+        /// so the aggregates added to it are computed over the WHOLE result set (SPARQL implicit grouping, i.e. an
+        /// aggregate projection without a GROUP BY clause).
+        /// </summary>
+        public RDFGroupByModifier()
+        {
+            PartitionVariables = new List<RDFVariable>();
+            Aggregators = new List<RDFAggregator>();
+            IsEvaluable = true;
+        }
+
+        /// <summary>
         /// Builds a GroupBy modifier on the given variables
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
@@ -130,8 +142,8 @@ namespace RDFSharp.Query
             if (unavailablePartitionVariables.Count > 0)
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {string.Join(",", unavailablePartitionVariables.Distinct())}");
 
-            //Every aggregator variable must be found in the working table as a column
-            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => !table.HasColumn(ag.AggregatorVariable.ToString()))
+            //Every aggregator variable must be found in the working table as a column (COUNT(*) reads no column)
+            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => ag.RequiresAggregatorColumn && !table.HasColumn(ag.AggregatorVariable.ToString()))
                                                                      .Select(ag => ag.AggregatorVariable.ToString())
                                                                      .ToList();
             if (unavailableAggregatorVariables.Count > 0)

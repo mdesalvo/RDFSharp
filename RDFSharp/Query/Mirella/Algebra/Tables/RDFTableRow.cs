@@ -73,6 +73,13 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// A stable signature of the whole row (all cells joined with a control separator), used to tell distinct
+        /// solutions apart (e.g. for COUNT(DISTINCT *)). UNBOUND cells contribute an empty chunk.
+        /// </summary>
+        internal string Signature
+            => string.Join("§", _cells);
+
+        /// <summary>
         /// Tells whether the row's table owns a column with the given (possibly non-normalized) name.
         /// </summary>
         internal bool HasColumn(string column)

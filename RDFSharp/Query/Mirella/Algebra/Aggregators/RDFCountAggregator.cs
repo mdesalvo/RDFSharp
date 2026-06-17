@@ -26,11 +26,26 @@ namespace RDFSharp.Query
     /// </summary>
     public sealed class RDFCountAggregator : RDFAggregator
     {
+        #region Properties
+        /// <summary>
+        /// Whether this is a COUNT(*): it counts the solutions of the group (each row) instead of the bound values
+        /// of a single variable, so it reads no column from the working table.
+        /// </summary>
+        public bool IsCountAll { get; internal set; }
+        #endregion
+
         #region Ctors
         /// <summary>
         /// Builds a COUNT aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+
+        /// <summary>
+        /// Builds a COUNT(*) aggregator with the given projection name: it counts the group's solutions (rows). The
+        /// aggregator variable is set to the projection variable as a harmless placeholder (it is never read).
+        /// </summary>
+        public RDFCountAggregator(RDFVariable projVariable) : base(projVariable, projVariable)
+            => IsCountAll = true;
         #endregion
 
         #region Interfaces
@@ -38,16 +53,42 @@ namespace RDFSharp.Query
         /// Gets the string representation of the COUNT aggregator
         /// </summary>
         public override string ToString()
-            => IsDistinct ? $"(COUNT(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(COUNT({AggregatorVariable}) AS {ProjectionVariable})";
+        {
+            if (IsCountAll)
+                return IsDistinct ? $"(COUNT(DISTINCT *) AS {ProjectionVariable})"
+                                  : $"(COUNT(*) AS {ProjectionVariable})";
+            return IsDistinct ? $"(COUNT(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
+                              : $"(COUNT({AggregatorVariable}) AS {ProjectionVariable})";
+        }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// COUNT(*) reads no column from the working table (it counts solutions, not a variable's values)
+        /// </summary>
+        internal override bool RequiresAggregatorColumn => !IsCountAll;
+
         /// <summary>
         /// Executes the partition on the given tablerow
         /// </summary>
         internal override void ExecutePartition(string partitionKey, RDFTableRow tableRow)
         {
+            //COUNT(*): count the group's solutions (each row), honoring DISTINCT over the whole solution
+            if (IsCountAll)
+            {
+                if (IsDistinct)
+                {
+                    string rowSignature = tableRow.Signature;
+                    //Cache-Hit: distinctness failed
+                    if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowSignature))
+                        return;
+                    //Cache-Miss: distinctness passed
+                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowSignature);
+                }
+                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
+                return;
+            }
+
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
             if (IsDistinct)

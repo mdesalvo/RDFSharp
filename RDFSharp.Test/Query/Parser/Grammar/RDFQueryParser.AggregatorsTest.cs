@@ -135,9 +135,16 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldThrowOnCountStar()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT ?c (COUNT(*) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY ?c"));
+    public void ShouldParseCountStar()
+    {
+        //COUNT(*) is now representable (IP3.1): it counts the group's solutions and round-trips identically
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(*) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY ?c");
+
+        RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.IsTrue(groupBy.Aggregators.OfType<RDFCountAggregator>().Single().IsCountAll);
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+    }
 
     [TestMethod]
     public void ShouldThrowOnAggregateWithExpressionArgument()
@@ -145,14 +152,59 @@ public partial class RDFQueryParserTest
             RDFSelectQuery.FromString("SELECT ?c (SUM(?x + ?y) AS ?s) WHERE { ?e ?p ?c } GROUP BY ?c"));
 
     [TestMethod]
-    public void ShouldThrowOnAggregateWithoutGroupBy()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c }"));
+    public void ShouldParseAggregateWithoutGroupBy()
+    {
+        //Aggregates without GROUP BY are now representable (IP3.1) as implicit grouping (single group), and the
+        //printed form carries NO 'GROUP BY' clause
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c }");
+
+        RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.AreEqual(0, groupBy.PartitionVariables.Count);
+        Assert.IsFalse(query.ToString().Contains("GROUP BY"));
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+    }
 
     [TestMethod]
     public void ShouldThrowOnGroupConcatWithoutSeparatorKeyword()
         => Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString("SELECT ?c (GROUP_CONCAT(?e; \"|\") AS ?gc) WHERE { ?e ?p ?c } GROUP BY ?c"));
+
+    /// <summary>
+    /// "SPARQL 100%" iso-functionality gate for IP3.1: implicit grouping, COUNT(*) and ordinary grouped COUNT are
+    /// each built VIA API and must be interchangeable with the query obtained by parsing their printed SPARQL —
+    /// both on printing round-trip and on evaluation against a sample graph.
+    /// </summary>
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateAggregationIso()
+    {
+        RDFResource predicate = new RDFResource("http://example.org/p");
+        RDFGraph sampleGraph = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s1"), predicate, new RDFPlainLiteral("a")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s1"), predicate, new RDFPlainLiteral("b")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s2"), predicate, new RDFPlainLiteral("c")));
+
+        RDFVariable subjectVariable = new RDFVariable("?s");
+        RDFVariable objectVariable = new RDFVariable("?o");
+
+        //Implicit grouping: COUNT(*) over the whole result set (single group)
+        RDFSelectQuery implicitCountAllQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup().AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable)))
+            .AddModifier(new RDFGroupByModifier().AddAggregator(new RDFCountAggregator(new RDFVariable("?cnt"))));
+        RDFTestUtilities.AssertIso(implicitCountAllQuery, sampleGraph);
+
+        //Explicit grouping: COUNT(*) per ?s
+        RDFSelectQuery groupedCountAllQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup().AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable)))
+            .AddModifier(new RDFGroupByModifier([subjectVariable]).AddAggregator(new RDFCountAggregator(new RDFVariable("?cnt"))));
+        RDFTestUtilities.AssertIso(groupedCountAllQuery, sampleGraph);
+
+        //Explicit grouping: COUNT(?o) per ?s
+        RDFSelectQuery groupedCountVarQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup().AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable)))
+            .AddModifier(new RDFGroupByModifier([subjectVariable]).AddAggregator(new RDFCountAggregator(objectVariable, new RDFVariable("?cnt"))));
+        RDFTestUtilities.AssertIso(groupedCountVarQuery, sampleGraph);
+    }
 
     #endregion
 }

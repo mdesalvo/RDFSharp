@@ -190,5 +190,65 @@ public class RDFCountAggregatorTest
         Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(COUNT(?B) < \"2\"^^<{RDFVocabulary.XSD.FLOAT}>)", System.StringComparison.Ordinal));
         Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(COUNT(?B) < \"2\"^^xsd:float)", System.StringComparison.Ordinal));
     }
+
+    //IP3.1 — COUNT(*)
+
+    [TestMethod]
+    public void ShouldCreateCountAllAggregator()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsTrue(aggregator.IsCountAll);
+        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(*) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldCreateDistinctCountAllAggregator()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?PROJVAR")).Distinct() as RDFCountAggregator;
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsTrue(aggregator.IsCountAll);
+        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(DISTINCT *) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldApplyModifierWithCountAllAggregator()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
+        });
+
+        //COUNT(*) counts the group's solutions (rows), even though no variable is read
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?COUNTPROJ")));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual(2, result.Rows.Count);
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"2^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+    }
     #endregion
 }

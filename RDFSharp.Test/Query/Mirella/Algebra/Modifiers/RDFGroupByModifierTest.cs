@@ -376,5 +376,52 @@ public class RDFGroupByModifierTest
         Assert.AreEqual(1, secondResult.RowsCount);
         Assert.IsTrue(secondResult.Rows[0]["?C"].Equals("ex:value1", StringComparison.Ordinal));
     }
+
+    //IP3.1 — implicit grouping (no partition variables = single group over the whole result set)
+
+    [TestMethod]
+    public void ShouldCreateImplicitGroupByModifier()
+    {
+        RDFGroupByModifier modifier = new RDFGroupByModifier();
+
+        Assert.IsNotNull(modifier);
+        Assert.AreEqual(0, modifier.PartitionVariables.Count);
+        Assert.AreEqual(0, modifier.Aggregators.Count);
+        Assert.IsTrue(modifier.IsEvaluable);
+    }
+
+    [TestMethod]
+    public void ShouldApplyImplicitGroupByModifierWithCountAll()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+
+        //Implicit grouping: all 3 rows fall into one group => COUNT(*) = 3 in a single result row
+        RDFGroupByModifier modifier = new RDFGroupByModifier();
+        modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?CNT")));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.ColumnsCount);
+        Assert.AreEqual("?CNT", result.Columns[0].Name);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?CNT"].Equals($"3^^{RDFVocabulary.XSD.DECIMAL}", StringComparison.Ordinal));
+    }
     #endregion
 }

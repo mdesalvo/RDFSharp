@@ -50,6 +50,12 @@ namespace RDFSharp.Query
         public (bool, RDFQueryEnums.RDFComparisonFlavors, RDFPatternMember) HavingClause { get; internal set; }
 
         /// <summary>
+        /// Whether the aggregator needs its AggregatorVariable to exist as a column in the working table. True for
+        /// every value-aggregator; overridden to false by COUNT(*), which counts rows without reading any column.
+        /// </summary>
+        internal virtual bool RequiresAggregatorColumn => true;
+
+        /// <summary>
         /// Context for keeping track of aggregator's execution
         /// </summary>
         internal RDFAggregatorContext AggregatorContext { get; set; }
