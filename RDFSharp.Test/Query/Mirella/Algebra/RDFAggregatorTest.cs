@@ -92,6 +92,40 @@ public class RDFAggregatorTest
     }
 
     [TestMethod]
+    public void ShouldSetHiddenFlag()
+    {
+        RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
+        Assert.IsFalse(aggregator.IsHidden);
+
+        aggregator.IsHidden = true;
+        Assert.IsTrue(aggregator.IsHidden);
+    }
+
+    [TestMethod]
+    public void ShouldGetAggregateCallStringForPlainAggregate()
+    {
+        //'(COUNT(?E) AS ?CNT)' → 'COUNT(?E)' (strip the leading '(' and the ' AS ?proj)' suffix)
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?E"), new RDFVariable("?CNT"));
+        Assert.AreEqual("COUNT(?E)", aggregator.GetAggregateCallString());
+    }
+
+    [TestMethod]
+    public void ShouldGetAggregateCallStringForDistinctAggregate()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?E"), new RDFVariable("?CNT"));
+        aggregator.Distinct();
+        Assert.AreEqual("COUNT(DISTINCT ?E)", aggregator.GetAggregateCallString());
+    }
+
+    [TestMethod]
+    public void ShouldGetAggregateCallStringForCountAll()
+    {
+        //COUNT(*) has no aggregated variable but still re-prints faithfully
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?CNT"));
+        Assert.AreEqual("COUNT(*)", aggregator.GetAggregateCallString());
+    }
+
+    [TestMethod]
     public void ShouldGetRowValueAsNumber()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));

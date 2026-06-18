@@ -177,6 +177,20 @@ namespace RDFSharp.Query
             /// </para>
             /// </summary>
             internal List<RDFPattern> TemplatePatternSink { get; set; }
+
+            /// <summary>
+            /// Optional aggregate-aware hook for the expression parser. When non-null, an aggregate function name
+            /// (COUNT/SUM/MIN/MAX/AVG/SAMPLE/GROUP_CONCAT) met in primary-expression position is NOT rejected as an
+            /// unknown built-in: it is parsed into a descriptor and handed to this sink, which resolves it to the
+            /// result-table column produced by a (possibly newly registered, hidden) aggregator and returns the
+            /// <see cref="RDFAggregateReferenceExpression"/> that reads it.
+            /// <para>
+            /// It is set ONLY while parsing the two contexts where an aggregate may legally appear inside a composite
+            /// expression — a free HAVING condition and a projection expression (e.g. '?x + COUNT(?y)') — and cleared
+            /// (in a finally) right after, so an aggregate elsewhere still fails loudly as an unknown built-in.
+            /// </para>
+            /// </summary>
+            internal Func<RDFParsedAggregator, RDFExpression> AggregateExpressionSink { get; set; }
             #endregion
 
             #region Ctors

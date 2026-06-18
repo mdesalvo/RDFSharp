@@ -15,6 +15,7 @@
 */
 
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
@@ -44,18 +45,166 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldRoundTripGroupByWithHavingClause()
+    public void ShouldEvaluateLegacyPerAggregatorHavingClause()
     {
+        //The legacy fluent SetHavingClause (per-aggregator '(AGGREGATE OP value)') is preserved for retro-compat:
+        //it still builds, prints and FILTERS correctly (only groups whose AVG age is >= 30 survive)
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFVariable("p"), new RDFVariable("c")))
-                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFVariable("q"), new RDFVariable("g"))))
+                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFResource("http://example.org/dept"), new RDFVariable("c")))
+                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFResource("http://example.org/age"), new RDFVariable("g"))))
+            .AddProjectionVariable(new RDFVariable("c"))
             .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { new RDFVariable("c") })
                 .AddAggregator(new RDFAvgAggregator(new RDFVariable("g"), new RDFVariable("avg"))
                     .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
-                                     new RDFTypedLiteral("24", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
+                                     new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
 
-        AssertSelectQueryRoundTrips(query);
+        Assert.IsTrue(query.ToString().Contains("HAVING ((AVG(?G) >= "));
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        //Dept A averages (20+30)/2=25 (dropped); dept B averages 40 (kept)
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://example.org/deptB", results.Rows[0]["?C"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripGroupByWithFreeHavingExpression()
+    {
+        //The new fluent SetHavingExpression accepts a full boolean expression; an aggregate is referenced simply by
+        //its projection variable (here '?avg' for the AVG aggregator) — the easy, public way to reference aggregates
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFResource("http://example.org/dept"), new RDFVariable("c")))
+                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFResource("http://example.org/age"), new RDFVariable("g"))))
+            .AddProjectionVariable(new RDFVariable("c"))
+            .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { new RDFVariable("c") })
+                .AddAggregator(new RDFAvgAggregator(new RDFVariable("g"), new RDFVariable("avg")))
+                .SetHavingExpression(new RDFComparisonExpression(
+                    RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                    new RDFVariableExpression(new RDFVariable("avg")),
+                    new RDFConstantExpression(new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))));
+
+        RDFTestUtilities.AssertIso(query, BuildAggregationSampleGraph());
+    }
+
+    [TestMethod]
+    public void ShouldParseHavingClauseFromHandWrittenQuery()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING (AVG(?g) >= 24)");
+
+        RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.IsNotNull(groupByModifier.HavingExpression);
+        Assert.IsTrue(query.ToString().Contains("HAVING ((AVG(?G) >= 24))"));
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateHavingClauseFromHandWrittenQuery()
+    {
+        //A projected aggregate referenced by HAVING reuses its column: only dept B (avg 40) passes '>= 30'
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e <http://example.org/dept> ?c . ?e <http://example.org/age> ?g } GROUP BY ?c HAVING (AVG(?g) >= 30)");
+
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://example.org/deptB", results.Rows[0]["?C"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldParseHavingClauseWithDoubleParentheses()
+    {
+        //The printer wraps each HAVING condition in its own parentheses: '((AVG(?g) >= 24))' must parse too
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING ((AVG(?g) >= 24))");
+
+        Assert.IsNotNull(query.GetModifiers().OfType<RDFGroupByModifier>().Single().HavingExpression);
+    }
+
+    [TestMethod]
+    public void ShouldParseHavingClauseWithConjunction()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING ((COUNT(?e) > 1) && (AVG(?g) >= 24))");
+
+        RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.IsNotNull(groupByModifier.HavingExpression);
+        Assert.IsTrue(query.ToString().Contains("HAVING (((COUNT(?E) > 1) && (AVG(?G) >= 24)))"));
+    }
+
+    [TestMethod]
+    public void ShouldParseHavingClauseWithMultipleSpaceSeparatedConditions()
+    {
+        //Two HavingConditions space-separated (W3C 'HavingCondition+') are conjoined (ANDed) into a single expression
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING (COUNT(?e) > 1) (AVG(?g) >= 24)");
+
+        RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.IsNotNull(groupByModifier.HavingExpression);
+        //The two conditions are ANDed: the printed (idempotent) form combines them with '&&'
+        Assert.IsTrue(query.ToString().Contains("&&"));
+    }
+
+    [TestMethod]
+    public void ShouldParseAndEvaluateHavingWithDisjunction()
+    {
+        //'||' is now representable (IP3.3): keep a group when EITHER condition holds. Dept A avg 25, dept B avg 40:
+        //'(AVG >= 40 || AVG <= 25)' keeps both
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e <http://example.org/dept> ?c . ?e <http://example.org/age> ?g } GROUP BY ?c HAVING ((AVG(?g) >= 40) || (AVG(?g) <= 25))");
+
+        Assert.IsNotNull(query.GetModifiers().OfType<RDFGroupByModifier>().Single().HavingExpression);
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        Assert.AreEqual(2, results.Rows.Count);
+    }
+
+    [TestMethod]
+    public void ShouldParseAndEvaluateHavingOverNonProjectedAggregate()
+    {
+        //An aggregate referenced by HAVING but NOT projected by SELECT is served by a HIDDEN aggregator (IP3.3):
+        //only its filtering effect shows, the aggregate value never surfaces as a result column
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) WHERE { ?e <http://example.org/dept> ?c . ?e <http://example.org/age> ?g } GROUP BY ?c HAVING (AVG(?g) >= 30)");
+
+        RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.IsNotNull(groupByModifier.HavingExpression);
+        Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.IsHidden));
+
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        //Only dept B (avg 40 >= 30) survives; the hidden AVG column must NOT appear among the result columns
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://example.org/deptB", results.Rows[0]["?C"].ToString());
+        Assert.IsFalse(results.Columns.Contains("?__HAVINGAGG_0"));
+        Assert.IsTrue(results.Columns.Contains("?CNT"));
+    }
+
+    [TestMethod]
+    public void ShouldParseAndEvaluateHavingWithReversedComparison()
+    {
+        //The aggregate on the RIGHT-hand side ('30 <= AVG(?g)') is now representable (IP3.3): only dept B passes
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e <http://example.org/dept> ?c . ?e <http://example.org/age> ?g } GROUP BY ?c HAVING (30 <= AVG(?g))");
+
+        Assert.IsNotNull(query.GetModifiers().OfType<RDFGroupByModifier>().Single().HavingExpression);
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://example.org/deptB", results.Rows[0]["?C"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldParseAndEvaluateHavingWithNonComparisonConstraint()
+    {
+        //A non-comparison constraint ('!(...)') is now representable (IP3.3): keep groups whose COUNT is NOT 1.
+        //Dept A has 2 members (kept), dept B has 1 (dropped)
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) WHERE { ?e <http://example.org/dept> ?c . ?e <http://example.org/age> ?g } GROUP BY ?c HAVING (!(COUNT(?e) = 1))");
+
+        Assert.IsNotNull(query.GetModifiers().OfType<RDFGroupByModifier>().Single().HavingExpression);
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://example.org/deptA", results.Rows[0]["?C"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldParseAndEvaluateHavingUnderImplicitGrouping()
+    {
+        //HAVING with implicit grouping (aggregate projected but NO explicit GROUP BY): a single group over the whole
+        //result set. Total members are 3, so '(COUNT(?e) >= 3)' keeps the single (implicit) group
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e <http://example.org/dept> ?c . ?e <http://example.org/age> ?g } HAVING (COUNT(?e) >= 3)");
+
+        Assert.IsNotNull(query.GetModifiers().OfType<RDFGroupByModifier>().Single().HavingExpression);
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.IsTrue(results.Rows[0]["?CNT"].ToString().StartsWith("3^^", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -67,46 +216,6 @@ public partial class RDFQueryParserTest
         Assert.AreEqual(2, groupByModifier.PartitionVariables.Count);
         Assert.AreEqual("?A", groupByModifier.PartitionVariables[0].ToString());
         Assert.AreEqual("?B", groupByModifier.PartitionVariables[1].ToString());
-    }
-
-    [TestMethod]
-    public void ShouldParseHavingClauseFromHandWrittenQuery()
-    {
-        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING (AVG(?g) >= 24)");
-
-        RDFAggregator aggregator = query.GetModifiers().OfType<RDFGroupByModifier>().Single().Aggregators.OfType<RDFAvgAggregator>().Single();
-        Assert.IsTrue(aggregator.HavingClause.Item1);
-        Assert.AreEqual(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, aggregator.HavingClause.Item2);
-    }
-
-    [TestMethod]
-    public void ShouldParseHavingClauseWithDoubleParentheses()
-    {
-        //The printer wraps each HAVING condition in its own parentheses: '((AVG(?g) >= 24))' must parse too
-        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING ((AVG(?g) >= 24))");
-
-        Assert.IsTrue(query.GetModifiers().OfType<RDFGroupByModifier>().Single().Aggregators.OfType<RDFAvgAggregator>().Single().HavingClause.Item1);
-    }
-
-    [TestMethod]
-    public void ShouldParseHavingClauseWithConjunction()
-    {
-        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING ((COUNT(?e) > 1) && (AVG(?g) >= 24))");
-
-        RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.IsTrue(groupByModifier.Aggregators.OfType<RDFCountAggregator>().Single().HavingClause.Item1);
-        Assert.IsTrue(groupByModifier.Aggregators.OfType<RDFAvgAggregator>().Single().HavingClause.Item1);
-    }
-
-    [TestMethod]
-    public void ShouldParseHavingClauseWithMultipleSpaceSeparatedConditions()
-    {
-        //Two HavingConditions space-separated (W3C 'HavingCondition+'), both conjoined into the model
-        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING (COUNT(?e) > 1) (AVG(?g) >= 24)");
-
-        RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.IsTrue(groupByModifier.Aggregators.OfType<RDFCountAggregator>().Single().HavingClause.Item1);
-        Assert.IsTrue(groupByModifier.Aggregators.OfType<RDFAvgAggregator>().Single().HavingClause.Item1);
     }
 
     [TestMethod]
@@ -150,23 +259,87 @@ public partial class RDFQueryParserTest
 
     [TestMethod]
     public void ShouldThrowOnHavingWithoutGroupBy()
+        //No GROUP BY and no projected aggregate: there is no group to filter, so HAVING stays non-representable
         => Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString("SELECT ?c WHERE { ?e ?p ?c } HAVING (COUNT(?e) > 1)"));
 
     [TestMethod]
-    public void ShouldThrowOnHavingWithDisjunction()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING ((COUNT(?e) > 1) || (AVG(?g) >= 24))"));
+    public void ShouldParseAndEvaluateHavingWithCountAll()
+    {
+        //COUNT(*) is referenced by HAVING and reuses its projected column: dept A (2 rows) survives '>= 2'
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(*) AS ?n) WHERE { ?e <http://example.org/dept> ?c . ?e <http://example.org/age> ?g } GROUP BY ?c HAVING (COUNT(*) >= 2)");
+
+        Assert.IsNotNull(query.GetModifiers().OfType<RDFGroupByModifier>().Single().HavingExpression);
+        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://example.org/deptA", results.Rows[0]["?C"].ToString());
+    }
 
     [TestMethod]
-    public void ShouldThrowOnHavingOverNonProjectedAggregate()
+    public void ShouldThrowOnAggregateInsideFilter()
+        //The aggregate-aware sink is only active in HAVING / projection: an aggregate inside a FILTER is still an
+        //unknown built-in (aggregates are not legal in a FILTER), so it must fail loudly
         => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT ?c (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING (AVG(?g) >= 24)"));
+            RDFSelectQuery.FromString("SELECT ?c WHERE { ?e ?p ?c FILTER(COUNT(?e) > 1) } GROUP BY ?c"));
 
     [TestMethod]
-    public void ShouldThrowOnHavingWithReversedComparison()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT ?c (AVG(?g) AS ?avg) WHERE { ?e ?p ?c . ?e ?q ?g } GROUP BY ?c HAVING (24 < AVG(?g))"));
+    public void ShouldParseAndEvaluateNestedAggregateInProjection()
+    {
+        //IP3.2 residual: an aggregate nested inside a projection expression ('?cat + COUNT(?w)'). A hidden COUNT
+        //aggregator feeds the expression; the synthetic column never surfaces. Both categories sum to 3.
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (?cat + COUNT(?w) AS ?v) WHERE { ?e <http://example.org/cat> ?cat . ?e <http://example.org/w> ?w } GROUP BY ?cat");
+
+        RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
+        Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.IsHidden));
+        //Idempotent round-trip of the printed form (the aggregate re-prints as 'COUNT(?W)', not the synthetic column)
+        Assert.IsTrue(query.ToString().Contains("((?CAT + COUNT(?W)) AS ?V)"));
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+
+        DataTable results = query.ApplyToGraph(BuildCategorySampleGraph()).SelectResults;
+        Assert.IsFalse(results.Columns.Contains("?__PROJAGG_0"));
+        Assert.IsTrue(results.Columns.Contains("?V"));
+        //cat 1 has 2 items (1+2=3), cat 2 has 1 item (2+1=3)
+        List<string> projectedValues = results.Rows.Cast<DataRow>().Select(r => r["?V"].ToString()).ToList();
+        Assert.AreEqual(2, projectedValues.Count);
+        Assert.IsTrue(projectedValues.All(v => v.StartsWith("3^^", System.StringComparison.Ordinal)));
+    }
+
+    /// <summary>
+    /// Sample graph for HAVING evaluation: three employees over two departments, with ages chosen so the
+    /// departmental AVG age is 25 for dept A (20, 30) and 40 for dept B (40).
+    /// </summary>
+    private static RDFGraph BuildAggregationSampleGraph()
+    {
+        RDFResource dept = new RDFResource("http://example.org/dept");
+        RDFResource age = new RDFResource("http://example.org/age");
+        RDFResource deptA = new RDFResource("http://example.org/deptA");
+        RDFResource deptB = new RDFResource("http://example.org/deptB");
+        return new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/emp1"), dept, deptA))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/emp1"), age, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/emp2"), dept, deptA))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/emp2"), age, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/emp3"), dept, deptB))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/emp3"), age, new RDFTypedLiteral("40", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+    }
+
+    /// <summary>
+    /// Sample graph for the nested-aggregate projection: two integer categories, with two items in category 1 and
+    /// one in category 2, so '?cat + COUNT(?w)' equals 3 for both categories.
+    /// </summary>
+    private static RDFGraph BuildCategorySampleGraph()
+    {
+        RDFResource cat = new RDFResource("http://example.org/cat");
+        RDFResource w = new RDFResource("http://example.org/w");
+        return new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/i1"), cat, new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/i1"), w, new RDFPlainLiteral("x")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/i2"), cat, new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/i2"), w, new RDFPlainLiteral("y")))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/i3"), cat, new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/i3"), w, new RDFPlainLiteral("z")));
+    }
 
     #endregion
 }

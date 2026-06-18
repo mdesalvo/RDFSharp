@@ -418,10 +418,23 @@ namespace RDFSharp.Query
                 {
                     table = groupByModifier.ApplyModifier(table);
 
+                    //Preserve the user's computed projections (e.g. '?x + COUNT(?y) AS ?v'): they reference the
+                    //columns the GroupBy modifier just materialized and must be re-evaluated AFTER it, so they
+                    //cannot be wiped by the projection rebuild below.
+                    List<KeyValuePair<RDFVariable, (int, RDFExpression)>> computedProjections = selectQuery.ProjectionVars
+                        .Where(projectionVar => projectionVar.Value.Item2 != null)
+                        .OrderBy(projectionVar => projectionVar.Value.Item1)
+                        .ToList();
+
                     //Adjust projection to work only with partition variables and aggregator variables
                     selectQuery.ProjectionVars.Clear();
                     groupByModifier.PartitionVariables.ForEach(pv => selectQuery.AddProjectionVariable(pv));
-                    groupByModifier.Aggregators.ForEach(ag => selectQuery.AddProjectionVariable(ag.ProjectionVariable));
+                    //Hidden aggregators exist only to feed HAVING/projection expressions: keep them OUT of the
+                    //output projection (their materialized column stays in the table to be read by those expressions)
+                    foreach (RDFAggregator visibleAggregator in groupByModifier.Aggregators.Where(ag => !ag.IsHidden))
+                        selectQuery.AddProjectionVariable(visibleAggregator.ProjectionVariable);
+                    //Re-attach the computed projections so the engine evaluates them over the grouped/aggregated table
+                    computedProjections.ForEach(cp => selectQuery.AddProjectionVariable(cp.Key, cp.Value.Item2));
                 }
                 #endregion
 

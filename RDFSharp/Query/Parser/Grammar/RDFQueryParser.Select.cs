@@ -141,8 +141,24 @@ namespace RDFSharp.Query
                 ? ParseAggregator(parserContext)
                 : null;
 
-            //The value-expression to compute (only on the non-aggregate path): the same expression grammar used by FILTER and BIND
-            RDFExpression projectionExpression = parsedAggregator == null ? ParseExpression(parserContext) : null;
+            //The value-expression to compute (only on the non-aggregate path): the same expression grammar used by
+            //FILTER and BIND. A NESTED aggregate inside it (e.g. '?x + COUNT(?y)') is resolved to a reference over a
+            //hidden aggregator column, parked like any other aggregate so GROUP BY (explicit or implicit) absorbs it.
+            RDFExpression projectionExpression = null;
+            if (parsedAggregator == null)
+            {
+                int hiddenProjectionAggregatorCounter = 0;
+                parserContext.AggregateExpressionSink = parsedNestedAggregate =>
+                    ResolveProjectionAggregateReference(pendingAggregators, parsedNestedAggregate, ref hiddenProjectionAggregatorCounter);
+                try
+                {
+                    projectionExpression = ParseExpression(parserContext);
+                }
+                finally
+                {
+                    parserContext.AggregateExpressionSink = null;
+                }
+            }
 
             //The mandatory 'AS' keyword separating the expression/aggregate from the variable it binds
             if (!TryConsumeKeyword(parserContext, "AS"))
@@ -165,6 +181,29 @@ namespace RDFSharp.Query
                 //Computed projection: the variable carries its expression so the engine evaluates it per-solution
                 selectQuery.AddProjectionVariable(projectionVariable, projectionExpression);
         }
+
+        /// <summary>
+        /// Resolves an aggregate nested inside a projection expression (e.g. the <c>COUNT(?y)</c> in
+        /// <c>?x + COUNT(?y)</c>) to a reference over a HIDDEN aggregator column: a freshly built aggregator is
+        /// parked in <paramref name="pendingAggregators"/> (so GROUP BY — explicit or implicit — absorbs it) and
+        /// flagged hidden, so the engine keeps its column out of the output projection while the surrounding
+        /// expression reads it. The returned <see cref="RDFAggregateReferenceExpression"/> re-prints the original
+        /// aggregate call instead of the synthetic column name.
+        /// </summary>
+        private static RDFExpression ResolveProjectionAggregateReference(List<RDFAggregator> pendingAggregators, RDFParsedAggregator parsedAggregate, ref int hiddenProjectionAggregatorCounter)
+        {
+            RDFAggregator hiddenAggregator = BuildAggregator(parsedAggregate, MakeHiddenProjectionVariable(hiddenProjectionAggregatorCounter++));
+            hiddenAggregator.IsHidden = true;
+            pendingAggregators.Add(hiddenAggregator);
+            return new RDFAggregateReferenceExpression(hiddenAggregator);
+        }
+
+        /// <summary>
+        /// Builds the internal projection variable backing a HIDDEN projection aggregator (an aggregate nested inside
+        /// a projection expression): a reserved '__PROJAGG_n' name that never surfaces as an output column.
+        /// </summary>
+        private static RDFVariable MakeHiddenProjectionVariable(int index)
+            => new RDFVariable("?__PROJAGG_" + index);
         #endregion
     }
 }

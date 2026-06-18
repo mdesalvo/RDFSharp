@@ -61,7 +61,7 @@ namespace RDFSharp.Query
         /// only) the separator. The projection variable is intentionally absent — it is supplied later by the
         /// caller via <see cref="BuildAggregator"/> (projection path), or never (HAVING match path).
         /// </summary>
-        private sealed class RDFParsedAggregator
+        internal sealed class RDFParsedAggregator
         {
             internal string Function { get; set; }
             internal RDFVariable AggregatorVariable { get; set; }

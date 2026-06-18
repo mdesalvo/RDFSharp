@@ -64,6 +64,14 @@ namespace RDFSharp.Query
         internal virtual bool RequiresAggregatorColumn => true;
 
         /// <summary>
+        /// Whether the aggregator exists ONLY to feed a composite expression (a free HAVING condition or a
+        /// projection like '?x + COUNT(?y)') rather than to be projected as a query result column. The GroupBy
+        /// modifier still computes its value into a (synthetic) column, but the engine does NOT add it to the
+        /// projection, so it never surfaces as an output column.
+        /// </summary>
+        internal bool IsHidden { get; set; }
+
+        /// <summary>
         /// Context for keeping track of aggregator's execution
         /// </summary>
         internal RDFAggregatorContext AggregatorContext { get; set; }
@@ -118,6 +126,22 @@ namespace RDFSharp.Query
         /// </summary>
         internal static RDFVariable MakeExpressionVariable(RDFVariable projectionVariable)
             => new RDFVariable("?__AGGEXPR_" + (projectionVariable ?? throw new RDFQueryException("Cannot create aggregator because given \"projectionVariable\" parameter is null.")).VariableName.TrimStart('?', '$'));
+
+        /// <summary>
+        /// Extracts the bare aggregate-call form from this aggregator's printed representation: every concrete
+        /// aggregator prints as "(FUNC(args) AS ?proj)", so stripping the leading '(' and the trailing ' AS ?proj)'
+        /// yields just "FUNC(args)" (e.g. "COUNT(?e)", "AVG(DISTINCT ?g)", "GROUP_CONCAT(?x; SEPARATOR=\",\")",
+        /// "COUNT(*)"). Used to re-print an aggregate referenced inside a composite expression (HAVING/projection)
+        /// without leaking the synthetic projection-column name.
+        /// </summary>
+        internal string GetAggregateCallString()
+        {
+            string printedAggregator = ToString();
+            int projectionSuffixStart = printedAggregator.LastIndexOf(" AS ?", StringComparison.Ordinal);
+            return projectionSuffixStart > 1
+                ? printedAggregator.Substring(1, projectionSuffixStart - 1)
+                : printedAggregator;
+        }
 
         /// <summary>
         /// Resets the aggregator's execution context, so that the same aggregator (and the

@@ -284,6 +284,44 @@ public class RDFGroupByModifierTest
         Assert.IsTrue(result.Rows[0]["?C"].Equals("ex:value0", StringComparison.Ordinal));
     }
 
+    [TestMethod]
+    public void ShouldSetHavingExpression()
+    {
+        RDFComparisonExpression havingExpression = new RDFComparisonExpression(
+            RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+            new RDFVariableExpression(new RDFVariable("?CNT")),
+            new RDFConstantExpression(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")])
+            .SetHavingExpression(havingExpression);
+
+        Assert.AreSame(havingExpression, modifier.HavingExpression);
+    }
+
+    [TestMethod]
+    public void ShouldApplyModifierWithFreeHavingExpression()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?C");
+        table.AddColumn("?X");
+        table.AddRow(new Dictionary<string, string> { ["?C"] = new RDFResource("ex:c1").ToString(), ["?X"] = new RDFPlainLiteral("x").ToString() });
+        table.AddRow(new Dictionary<string, string> { ["?C"] = new RDFResource("ex:c1").ToString(), ["?X"] = new RDFPlainLiteral("y").ToString() });
+        table.AddRow(new Dictionary<string, string> { ["?C"] = new RDFResource("ex:c2").ToString(), ["?X"] = new RDFPlainLiteral("z").ToString() });
+
+        //Group by ?C, COUNT(?X) AS ?CNT, keeping only the groups whose count is >= 2 (so ex:c1 survives, ex:c2 is dropped)
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")])
+            .AddAggregator(new RDFCountAggregator(new RDFVariable("?X"), new RDFVariable("?CNT")))
+            .SetHavingExpression(new RDFComparisonExpression(
+                RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                new RDFVariableExpression(new RDFVariable("?CNT")),
+                new RDFConstantExpression(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?C"].Equals("ex:c1", StringComparison.Ordinal));
+    }
+
     //The following two tests guard against a regression where the aggregators' execution
     //context was created once and never reset: re-applying the same modifier (i.e. re-executing
     //the same query object, as happens with cached/reused queries) carried over sums and counters

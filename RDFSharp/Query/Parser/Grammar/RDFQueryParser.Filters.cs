@@ -458,7 +458,20 @@ namespace RDFSharp.Query
 
                 //If the next significant character is '(' the run names a function: dispatch to the built-in parser.
                 if (SkipWhitespace(parserContext) == '(')
+                {
+                    //Aggregate-aware contexts (free HAVING / projection expression): an aggregate function name is
+                    //resolved to a reference over its (existing or hidden) aggregator column rather than being
+                    //rejected as an unknown built-in. Elsewhere the sink is null and the aggregate falls through to
+                    //ParseBuiltInCall, which fails loudly as it must.
+                    if (parserContext.AggregateExpressionSink != null && AggregatorKeywords.Contains(letterRun))
+                    {
+                        UnreadString(parserContext, letterRun);
+                        RDFParsedAggregator nestedAggregate = ParseAggregator(parserContext);
+                        return parserContext.AggregateExpressionSink(nestedAggregate);
+                    }
+
                     return ParseBuiltInCall(parserContext, letterRun.ToUpperInvariant());
+                }
 
                 //Otherwise it is a bareword term (true/false, or — invalid — a relative name): rewind and read it
                 //through the shared term-reader, which recognises the boolean literals.

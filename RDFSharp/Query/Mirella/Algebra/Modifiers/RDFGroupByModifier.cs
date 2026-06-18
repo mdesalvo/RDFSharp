@@ -56,6 +56,16 @@ namespace RDFSharp.Query
         /// an internal grouping scratch (an unnamed 'GROUP BY (expr)' has no projectable variable).
         /// </summary>
         internal HashSet<string> SyntheticPartitionVariables { get; set; }
+
+        /// <summary>
+        /// Free HAVING condition: a single, all-encompassing boolean expression evaluated on the RESULT table (after
+        /// projection), keeping a grouped row only when it evaluates to true. It represents the full SPARQL HAVING
+        /// power the per-aggregator <see cref="RDFAggregator.HavingClause"/> cannot express (disjunctions, aggregate
+        /// on the right-hand side, non-comparison constraints, an aggregate not present in the SELECT projection).
+        /// Aggregates referenced here read their already-materialized columns via <see cref="RDFAggregateReferenceExpression"/>.
+        /// When both this and per-aggregator having-clauses are present, they are conjoined (ANDed).
+        /// </summary>
+        internal RDFExpression HavingExpression { get; set; }
         #endregion
 
         #region Ctors
@@ -130,6 +140,23 @@ namespace RDFSharp.Query
                 if (aggregator.AggregatorExpression != null)
                     AddComputedColumn(aggregator.AggregatorVariable, aggregator.AggregatorExpression);
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the free HAVING condition: a single boolean expression evaluated on the result table, keeping only
+        /// the grouped rows for which it holds. This is the fluent-API counterpart of the SPARQL HAVING clause and
+        /// supersedes the restricted per-aggregator <see cref="RDFAggregator.SetHavingClause"/> for any condition
+        /// the latter cannot express (disjunctions, reversed comparisons, non-comparison constraints).
+        /// <para>
+        /// To reference an aggregate inside the expression, point at the aggregator's projection variable with a plain
+        /// <see cref="RDFVariableExpression"/> (e.g. for '(COUNT(?e) AS ?cnt)', reference '?cnt'): the value is read
+        /// from that already-computed column. There is no need to restate the aggregate function call.
+        /// </para>
+        /// </summary>
+        public RDFGroupByModifier SetHavingExpression(RDFExpression havingExpression)
+        {
+            HavingExpression = havingExpression;
             return this;
         }
 
@@ -316,51 +343,68 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Execute filter algorythm
+        /// Execute filter algorythm: applies the HAVING conditions on the projected result table, keeping only the
+        /// grouped rows that satisfy ALL of them. Two (conjoined) sources of conditions are honored:
+        /// <list type="bullet">
+        /// <item>the restricted per-aggregator having-clauses (legacy fluent API
+        /// <see cref="RDFAggregator.SetHavingClause"/>), each a single '(AGGREGATE OP value)' comparison;</item>
+        /// <item>the free <see cref="HavingExpression"/> (a full boolean expression, e.g. produced by the SPARQL
+        /// parser), evaluated once per row.</item>
+        /// </list>
+        /// When neither source is present the table is returned unchanged.
         /// </summary>
         private RDFTable ExecuteFilterAlgorythm(RDFTable resultTable)
         {
-            if (Aggregators.Any(ag => ag.HavingClause.Item1))
+            //Build a per-row predicate for every legacy per-aggregator having-clause (each '(AGGREGATE OP value)')
+            List<RDFComparisonExpression> aggregatorHavingComparisons = Aggregators
+                .Where(ag => ag.HavingClause.Item1)
+                .Select(ag => new RDFComparisonExpression(
+                    ag.HavingClause.Item2,
+                    ag.ProjectionVariable,
+                    ag.HavingClause.Item3 is RDFResource havingRes ? new RDFConstantExpression(havingRes)
+                     : ag.HavingClause.Item3 is RDFLiteral havingLit ?  new RDFConstantExpression(havingLit)
+                     : ag.HavingClause.Item3 is RDFVariable havingVar ? new RDFVariableExpression(havingVar)
+                     : null as RDFExpression))
+                .ToList();
+
+            //Nothing to filter: neither the legacy clauses nor the free expression are set
+            if (aggregatorHavingComparisons.Count == 0 && HavingExpression == null)
+                return resultTable;
+
+            #region ExecuteFilters
+            RDFTable filteredTable = resultTable.Clone();
+            int width = resultTable.ColumnsCount;
+            foreach (RDFTableRow resultRow in resultTable.Rows)
             {
-                RDFTable filteredTable = resultTable.Clone();
-                List<RDFComparisonExpression> havingExpressions = Aggregators
-                    .Where(ag => ag.HavingClause.Item1)
-                    .Select(ag => new RDFComparisonExpression(
-                        ag.HavingClause.Item2,
-                        ag.ProjectionVariable,
-                        ag.HavingClause.Item3 is RDFResource havingRes ? new RDFConstantExpression(havingRes)
-                         : ag.HavingClause.Item3 is RDFLiteral havingLit ?  new RDFConstantExpression(havingLit)
-                         : ag.HavingClause.Item3 is RDFVariable havingVar ? new RDFVariableExpression(havingVar)
-                         : null as RDFExpression))
-                    .ToList();
+                //A row survives only when every legacy comparison AND the free HAVING expression evaluate to true
+                bool keepRow = true;
 
-                #region ExecuteFilters
-                int width = resultTable.ColumnsCount;
-                foreach (RDFTableRow resultRow in resultTable.Rows)
+                List<RDFComparisonExpression>.Enumerator comparisonsEnum = aggregatorHavingComparisons.GetEnumerator();
+                while (keepRow && comparisonsEnum.MoveNext())
                 {
-                    bool keepRow = true;
-                    List<RDFComparisonExpression>.Enumerator comparisonsEnum = havingExpressions.GetEnumerator();
-                    while (keepRow && comparisonsEnum.MoveNext())
-                    {
-                        RDFPatternMember comparisonResult = comparisonsEnum.Current?.ApplyExpression(resultRow);
-                        if (!(comparisonResult?.Equals(RDFTypedLiteral.True) ?? false))
-                            keepRow = false;
-                    }
-
-                    if (keepRow)
-                    {
-                        string[] cells = new string[width];
-                        for (int c = 0; c < width; c++)
-                            cells[c] = resultRow[c];
-                        filteredTable.AddRow(cells);
-                    }
+                    RDFPatternMember comparisonResult = comparisonsEnum.Current?.ApplyExpression(resultRow);
+                    if (!(comparisonResult?.Equals(RDFTypedLiteral.True) ?? false))
+                        keepRow = false;
                 }
-                #endregion
 
-                return filteredTable;
+                if (keepRow && HavingExpression != null)
+                {
+                    RDFPatternMember havingResult = HavingExpression.ApplyExpression(resultRow);
+                    if (!(havingResult?.Equals(RDFTypedLiteral.True) ?? false))
+                        keepRow = false;
+                }
+
+                if (keepRow)
+                {
+                    string[] cells = new string[width];
+                    for (int c = 0; c < width; c++)
+                        cells[c] = resultRow[c];
+                    filteredTable.AddRow(cells);
+                }
             }
+            #endregion
 
-            return resultTable;
+            return filteredTable;
         }
 
         /// <summary>

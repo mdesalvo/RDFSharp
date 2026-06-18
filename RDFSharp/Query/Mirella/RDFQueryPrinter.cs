@@ -77,23 +77,40 @@ namespace RDFSharp.Query
             {
                 foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
                 {
-                    string printedAggregators = string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator)));
+                    //Visible aggregate projections. Hidden aggregators only feed HAVING / projection expressions and
+                    //must NOT surface as projected columns, so they are excluded here.
+                    string printedAggregators = string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator) && !ag.IsHidden));
+
+                    //Computed projections wrapping an aggregate live in ProjectionVars (the GroupBy modifier owns the
+                    //bare aggregate columns, but '?x + COUNT(?y) AS ?v' is a per-solution expression over them)
+                    string printedComputedProjections = string.Join(" ", selectQuery.ProjectionVars
+                        .Where(pv => pv.Value.Item2 != null)
+                        .OrderBy(pv => pv.Value.Item1)
+                        .Select(pv => $"({pv.Value.Item2.ToString(prefixes)} AS {pv.Key})"));
+
+                    //The non-partition projections are the visible aggregates followed by the computed projections
+                    string printedNonPartitionProjections = printedComputedProjections.Length == 0
+                        ? printedAggregators
+                        : printedAggregators.Length == 0
+                            ? printedComputedProjections
+                            : string.Concat(printedAggregators, " ", printedComputedProjections);
+
                     //Anonymous GROUP BY expression columns ('GROUP BY (expr)') are internal scratch: never projected
                     List<RDFVariable> projectablePartitionVariables = gm.PartitionVariables
                         .Where(pv => !gm.SyntheticPartitionVariables.Contains(pv.VariableName)).ToList();
                     if (projectablePartitionVariables.Count > 0)
                     {
-                        //Explicit grouping: partition variables precede the aggregate projections (preserved layout)
+                        //Explicit grouping: partition variables precede the (aggregate/computed) projections (preserved layout)
                         sb.Append(' ');
                         sb.Append(string.Join(" ", projectablePartitionVariables));
                         sb.Append(' ');
-                        sb.Append(printedAggregators);
+                        sb.Append(printedNonPartitionProjections);
                     }
                     else
                     {
-                        //Implicit grouping (or only anonymous group expressions): just the aggregate projections
+                        //Implicit grouping (or only anonymous group expressions): just the (aggregate/computed) projections
                         sb.Append(' ');
-                        sb.Append(printedAggregators);
+                        sb.Append(printedNonPartitionProjections);
                     }
                 }
             }
@@ -136,8 +153,16 @@ namespace RDFSharp.Query
                 sb.AppendLine();
                 sb.Append(subqueryBodySpaces);
                 sb.Append(gm);
-                //HAVING
-                if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
+                //HAVING: the free boolean expression (full SPARQL HAVING) takes precedence; otherwise fall back to
+                //the legacy per-aggregator having-clauses (restricted '(AGGREGATE OP value)' comparisons, ANDed)
+                if (gm.HavingExpression != null)
+                {
+                    sb.AppendLine();
+                    sb.Append(string.Concat(subqueryBodySpaces, "HAVING ("));
+                    sb.Append(gm.HavingExpression.ToString(selectQuery.Prefixes));
+                    sb.Append(')');
+                }
+                else if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
                 {
                     sb.AppendLine();
                     sb.AppendFormat(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes))));

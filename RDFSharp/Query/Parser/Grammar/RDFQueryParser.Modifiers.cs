@@ -65,8 +65,17 @@ namespace RDFSharp.Query
                         groupByModifier = ParseGroupByModifier(parserContext, selectQuery, pendingAggregators);
                         break;
 
-                    //HAVING clause: attach its conditions, as having-clauses, to the grouping modifier's aggregators
+                    //HAVING clause: build its free boolean condition over the grouping modifier's aggregators. When
+                    //no explicit GROUP BY preceded it but the projection used aggregates, this is SPARQL implicit
+                    //grouping (a single group over the whole result set): materialize the implicit modifier here so
+                    //HAVING has something to hang on (and the later ParseSelectQuery check sees the aggregates absorbed)
                     case "HAVING":
+                        if (groupByModifier == null && pendingAggregators.Count > 0)
+                        {
+                            groupByModifier = new RDFGroupByModifier();
+                            AbsorbPendingAggregators(groupByModifier, pendingAggregators);
+                            selectQuery.AddModifier(groupByModifier);
+                        }
                         ParseHavingClause(parserContext, groupByModifier);
                         break;
 
