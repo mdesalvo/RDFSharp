@@ -53,11 +53,10 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the MIN aggregator
+        /// The MIN function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(MIN(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
-                          : $"(MIN({AggregatorArgument}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => IsDistinct ? $"MIN(DISTINCT {AggregatorArgument})" : $"MIN({AggregatorArgument})";
         #endregion
 
         #region Methods

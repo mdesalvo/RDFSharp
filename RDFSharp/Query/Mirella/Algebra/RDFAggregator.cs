@@ -105,10 +105,18 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the aggregator function
+        /// The aggregate function as it appears in SPARQL — e.g. "COUNT(?e)", "AVG(DISTINCT ?g)",
+        /// "GROUP_CONCAT(?x; SEPARATOR=\",\")", "COUNT(*)" — WITHOUT the surrounding "(... AS ?proj)". Each concrete
+        /// value-aggregator provides its own; the base (and the partition aggregator) has none.
+        /// </summary>
+        protected virtual string AggregatorFunction => string.Empty;
+
+        /// <summary>
+        /// Gives the string representation of the aggregator function: "(call AS ?proj)", or the empty string when the
+        /// aggregator has no call form (the partition aggregator).
         /// </summary>
         public override string ToString()
-            => string.Empty;
+            => AggregatorFunction.Length == 0 ? string.Empty : $"({AggregatorFunction} AS {ProjectionVariable})";
         #endregion
 
         #region Methods
@@ -128,20 +136,11 @@ namespace RDFSharp.Query
             => new RDFVariable("?__AGGEXPR_" + (projectionVariable ?? throw new RDFQueryException("Cannot create aggregator because given \"projectionVariable\" parameter is null.")).VariableName.TrimStart('?', '$'));
 
         /// <summary>
-        /// Extracts the bare aggregate-call form from this aggregator's printed representation: every concrete
-        /// aggregator prints as "(FUNC(args) AS ?proj)", so stripping the leading '(' and the trailing ' AS ?proj)'
-        /// yields just "FUNC(args)" (e.g. "COUNT(?e)", "AVG(DISTINCT ?g)", "GROUP_CONCAT(?x; SEPARATOR=\",\")",
-        /// "COUNT(*)"). Used to re-print an aggregate referenced inside a composite expression (HAVING/projection)
-        /// without leaking the synthetic projection-column name.
+        /// The aggregate function call (e.g. "COUNT(?e)") used to re-print an aggregate referenced inside a composite
+        /// expression (HAVING / projection) without leaking the synthetic projection-column name.
         /// </summary>
         internal string GetAggregateCallString()
-        {
-            string printedAggregator = ToString();
-            int projectionSuffixStart = printedAggregator.LastIndexOf(" AS ?", StringComparison.Ordinal);
-            return projectionSuffixStart > 1
-                ? printedAggregator.Substring(1, projectionSuffixStart - 1)
-                : printedAggregator;
-        }
+            => AggregatorFunction;
 
         /// <summary>
         /// Resets the aggregator's execution context, so that the same aggregator (and the
@@ -225,7 +224,7 @@ namespace RDFSharp.Query
             {
                 StringBuilder result = new StringBuilder();
                 result.Append('(');
-                result.Append(ToString(), 1, ToString().LastIndexOf(" AS ?", StringComparison.Ordinal));
+                result.Append(AggregatorFunction).Append(' ');
                 switch (HavingClause.Item2)
                 {
                     case RDFQueryEnums.RDFComparisonFlavors.LessThan:

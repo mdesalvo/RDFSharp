@@ -57,15 +57,16 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the COUNT aggregator
+        /// The COUNT function (without the surrounding "(... AS ?proj)"), honoring COUNT(*) and DISTINCT.
         /// </summary>
-        public override string ToString()
+        protected override string AggregatorFunction
         {
-            if (IsCountAll)
-                return IsDistinct ? $"(COUNT(DISTINCT *) AS {ProjectionVariable})"
-                                  : $"(COUNT(*) AS {ProjectionVariable})";
-            return IsDistinct ? $"(COUNT(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
-                              : $"(COUNT({AggregatorArgument}) AS {ProjectionVariable})";
+            get
+            {
+                if (IsCountAll)
+                    return IsDistinct ? "COUNT(DISTINCT *)" : "COUNT(*)";
+                return IsDistinct ? $"COUNT(DISTINCT {AggregatorArgument})" : $"COUNT({AggregatorArgument})";
+            }
         }
         #endregion
 

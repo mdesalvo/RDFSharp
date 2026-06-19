@@ -42,11 +42,10 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the SUM aggregator
+        /// The SUM function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(SUM(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
-                          : $"(SUM({AggregatorArgument}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => IsDistinct ? $"SUM(DISTINCT {AggregatorArgument})" : $"SUM({AggregatorArgument})";
         #endregion
 
         #region Methods

@@ -32,10 +32,10 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the PARTITION aggregator
+        /// The partition aggregator is internal grouping scratch and never appears in a printed query, so it has no
+        /// function: its ToString is therefore the empty string.
         /// </summary>
-        public override string ToString()
-            => string.Empty;
+        protected override string AggregatorFunction => string.Empty;
         #endregion
 
         #region Methods

@@ -39,11 +39,10 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the SAMPLE aggregator
+        /// The SAMPLE function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(SAMPLE(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
-                          : $"(SAMPLE({AggregatorArgument}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => IsDistinct ? $"SAMPLE(DISTINCT {AggregatorArgument})" : $"SAMPLE({AggregatorArgument})";
         #endregion
 
         #region Methods

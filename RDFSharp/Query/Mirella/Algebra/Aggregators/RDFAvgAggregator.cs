@@ -42,11 +42,10 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the AVG aggregator
+        /// The AVG function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(AVG(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
-                          : $"(AVG({AggregatorArgument}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => IsDistinct ? $"AVG(DISTINCT {AggregatorArgument})" : $"AVG({AggregatorArgument})";
         #endregion
 
         #region Methods

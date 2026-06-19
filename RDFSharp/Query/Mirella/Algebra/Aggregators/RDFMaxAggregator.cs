@@ -53,11 +53,10 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the MAX aggregator
+        /// The MAX function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(MAX(DISTINCT {AggregatorArgument}) AS {ProjectionVariable})"
-                          : $"(MAX({AggregatorArgument}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => IsDistinct ? $"MAX(DISTINCT {AggregatorArgument})" : $"MAX({AggregatorArgument})";
         #endregion
 
         #region Methods

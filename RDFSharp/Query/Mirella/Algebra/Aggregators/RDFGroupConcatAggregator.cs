@@ -51,11 +51,11 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the GROUP_CONCAT aggregator
+        /// The GROUP_CONCAT function (without the surrounding "(... AS ?proj)"), honoring DISTINCT and the separator.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(GROUP_CONCAT(DISTINCT {AggregatorArgument}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})"
-                          : $"(GROUP_CONCAT({AggregatorArgument}; SEPARATOR=\"{Separator}\") AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => IsDistinct ? $"GROUP_CONCAT(DISTINCT {AggregatorArgument}; SEPARATOR=\"{Separator}\")"
+                          : $"GROUP_CONCAT({AggregatorArgument}; SEPARATOR=\"{Separator}\")";
         #endregion
 
         #region Methods
