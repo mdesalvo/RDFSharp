@@ -82,11 +82,12 @@ namespace RDFSharp.Query
                     string printedAggregators = string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator) && !ag.IsHidden));
 
                     //Computed projections wrapping an aggregate live in ProjectionVars (the GroupBy modifier owns the
-                    //bare aggregate columns, but '?x + COUNT(?y) AS ?v' is a per-solution expression over them)
+                    //bare aggregate columns, but '?x + COUNT(?y) AS ?v' is a per-solution expression over them); any
+                    //hidden aggregate nested inside is re-printed as its original call instead of the synthetic column
                     string printedComputedProjections = string.Join(" ", selectQuery.ProjectionVars
                         .Where(pv => pv.Value.Item2 != null)
                         .OrderBy(pv => pv.Value.Item1)
-                        .Select(pv => $"({pv.Value.Item2.ToString(prefixes)} AS {pv.Key})"));
+                        .Select(pv => $"({gm.ReprintHiddenAggregateCalls(pv.Value.Item2.ToString(prefixes))} AS {pv.Key})"));
 
                     //The non-partition projections are the visible aggregates followed by the computed projections
                     string printedNonPartitionProjections = printedComputedProjections.Length == 0
@@ -159,7 +160,8 @@ namespace RDFSharp.Query
                 {
                     sb.AppendLine();
                     sb.Append(string.Concat(subqueryBodySpaces, "HAVING ("));
-                    sb.Append(gm.HavingExpression.ToString(selectQuery.Prefixes));
+                    //Re-print any hidden aggregate (referenced in HAVING but not projected) as its original call
+                    sb.Append(gm.ReprintHiddenAggregateCalls(gm.HavingExpression.ToString(selectQuery.Prefixes)));
                     sb.Append(')');
                 }
                 else if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))

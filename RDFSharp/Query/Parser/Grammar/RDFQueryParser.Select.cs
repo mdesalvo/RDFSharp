@@ -195,7 +195,8 @@ namespace RDFSharp.Query
             RDFAggregator hiddenAggregator = BuildAggregator(parsedAggregate, MakeHiddenProjectionVariable(hiddenProjectionAggregatorCounter++));
             hiddenAggregator.IsHidden = true;
             pendingAggregators.Add(hiddenAggregator);
-            return new RDFAggregateReferenceExpression(hiddenAggregator);
+            //Reference the synthetic column it produces; the printer re-prints that column as the original aggregate call
+            return new RDFVariableExpression(hiddenAggregator.ProjectionVariable);
         }
 
         /// <summary>

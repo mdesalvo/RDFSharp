@@ -93,7 +93,8 @@ public partial class RDFQueryParserTest
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
         Assert.IsNotNull(groupByModifier.HavingExpression);
-        Assert.IsTrue(query.ToString().Contains("HAVING ((AVG(?G) >= 24))"));
+        //AVG(?g) is projected as ?avg, so HAVING references that (projected) column by its alias
+        Assert.IsTrue(query.ToString().Contains("HAVING ((?AVG >= 24))"));
     }
 
     [TestMethod]
@@ -123,7 +124,8 @@ public partial class RDFQueryParserTest
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
         Assert.IsNotNull(groupByModifier.HavingExpression);
-        Assert.IsTrue(query.ToString().Contains("HAVING (((COUNT(?E) > 1) && (AVG(?G) >= 24)))"));
+        //Both aggregates are projected (?cnt, ?avg), so HAVING references them by their aliases
+        Assert.IsTrue(query.ToString().Contains("HAVING (((?CNT > 1) && (?AVG >= 24)))"));
     }
 
     [TestMethod]
@@ -161,8 +163,15 @@ public partial class RDFQueryParserTest
         Assert.IsNotNull(groupByModifier.HavingExpression);
         Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.IsHidden));
 
+        //PRINTING: the hidden AVG re-prints as its original call (NOT the synthetic '__HAVINGAGG' column), and the
+        //printed query round-trips idempotently
+        Assert.IsTrue(query.ToString().Contains("HAVING ((AVG(?G) >= 30))"));
+        Assert.IsFalse(query.ToString().Contains("__HAVINGAGG"));
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
+            RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
+
+        //EVALUATION: only dept B (avg 40 >= 30) survives; the hidden AVG column must NOT appear among result columns
         DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
-        //Only dept B (avg 40 >= 30) survives; the hidden AVG column must NOT appear among the result columns
         Assert.AreEqual(1, results.Rows.Count);
         Assert.AreEqual("http://example.org/deptB", results.Rows[0]["?C"].ToString());
         Assert.IsFalse(results.Columns.Contains("?__HAVINGAGG_0"));
@@ -291,8 +300,10 @@ public partial class RDFQueryParserTest
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
         Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.IsHidden));
-        //Idempotent round-trip of the printed form (the aggregate re-prints as 'COUNT(?W)', not the synthetic column)
+        //PRINTING: the nested aggregate re-prints as 'COUNT(?W)' (NOT the synthetic '__PROJAGG' column), and the
+        //printed form round-trips idempotently
         Assert.IsTrue(query.ToString().Contains("((?CAT + COUNT(?W)) AS ?V)"));
+        Assert.IsFalse(query.ToString().Contains("__PROJAGG"));
         Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
             RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
 

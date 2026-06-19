@@ -161,6 +161,26 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Re-prints, inside an already-rendered expression (a HAVING condition or a projection expression), any
+        /// aggregate the parser had to materialize behind the scenes — a HIDDEN aggregator, used for an aggregate
+        /// referenced in HAVING but not projected, or one nested in a projection expression — as its ORIGINAL call
+        /// (e.g. "AVG(?g)") instead of the synthetic column name it is evaluated through.
+        /// <para>
+        /// This mirrors how the printer already renders other synthetic columns by their definition rather than their
+        /// internal name (GROUP BY '(expr)', SUM(?x + ?y)). Only the reserved hidden-aggregator column names are
+        /// substituted, longest first (so '?__HAVINGAGG_10' is not corrupted by '?__HAVINGAGG_1'), so it can never
+        /// touch a user variable or alias.
+        /// </para>
+        /// </summary>
+        internal string ReprintHiddenAggregateCalls(string renderedExpression)
+        {
+            foreach (RDFAggregator hiddenAggregator in Aggregators.Where(ag => ag.IsHidden)
+                                                                  .OrderByDescending(ag => ag.ProjectionVariable.ToString().Length))
+                renderedExpression = renderedExpression.Replace(hiddenAggregator.ProjectionVariable.ToString(), hiddenAggregator.GetAggregateCallString());
+            return renderedExpression;
+        }
+
+        /// <summary>
         /// Adds a bare GROUP BY variable condition ('GROUP BY ?v').
         /// </summary>
         internal RDFGroupByModifier AddPartitionVariable(RDFVariable partitionVariable)

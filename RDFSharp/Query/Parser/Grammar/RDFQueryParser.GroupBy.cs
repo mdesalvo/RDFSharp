@@ -218,18 +218,20 @@ namespace RDFSharp.Query
         /// </summary>
         private static RDFExpression ResolveHavingAggregateReference(RDFGroupByModifier groupByModifier, RDFParsedAggregator parsedAggregate, ref int hiddenHavingAggregatorCounter)
         {
-            //Reuse the aggregator the SELECT projection already declared for the same function over the same argument
+            //Reuse the aggregator the SELECT projection already declared for the same function over the same argument:
+            //reference its (projected) column directly — it prints faithfully as its own alias and round-trips
             RDFAggregator existingAggregator = groupByModifier.Aggregators
                 .FirstOrDefault(ag => !(ag is RDFPartitionAggregator) && MatchesAggregator(ag, parsedAggregate));
             if (existingAggregator != null)
-                return new RDFAggregateReferenceExpression(existingAggregator);
+                return new RDFVariableExpression(existingAggregator.ProjectionVariable);
 
-            //Otherwise register a hidden aggregator: it materializes the value into an internal column the HAVING
-            //condition reads, but the engine keeps it out of the output projection
+            //Otherwise register a hidden aggregator: it materializes the value into a synthetic column the HAVING
+            //condition reads (engine keeps it out of the output projection); the printer re-prints that column as the
+            //original aggregate call, so the printed query round-trips
             RDFAggregator hiddenAggregator = BuildAggregator(parsedAggregate, MakeHiddenHavingVariable(hiddenHavingAggregatorCounter++));
             hiddenAggregator.IsHidden = true;
             groupByModifier.AddAggregator(hiddenAggregator);
-            return new RDFAggregateReferenceExpression(hiddenAggregator);
+            return new RDFVariableExpression(hiddenAggregator.ProjectionVariable);
         }
 
         /// <summary>
