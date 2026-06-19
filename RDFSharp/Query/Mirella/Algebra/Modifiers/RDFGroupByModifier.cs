@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,9 +28,12 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// List of variables on which query results are grouped
+        /// The GROUP BY conditions, in order: each is either a bare grouping variable ('GROUP BY ?v') or a grouping
+        /// expression ('GROUP BY (expr AS ?v)' / anonymous '(expr)'). This is the SINGLE source of truth for grouping:
+        /// the partition variables, the expressions to materialize and the synthetic (anonymous) columns are all read
+        /// off these conditions (see <see cref="RDFGroupByCondition"/>).
         /// </summary>
-        internal List<RDFVariable> PartitionVariables { get; set; }
+        internal List<RDFGroupByCondition> PartitionConditions { get; set; }
 
         /// <summary>
         /// List of aggregators applied on the result groups
@@ -38,49 +41,27 @@ namespace RDFSharp.Query
         internal List<RDFAggregator> Aggregators { get; set; }
 
         /// <summary>
-        /// Expressions to be materialized into (synthetic) columns of the working table BEFORE partitioning, so that
-        /// grouping/aggregation over an expression (e.g. GROUP BY (?x+?y) or SUM(?x+?y)) keeps working over a single
-        /// column. Each entry maps the target (group/aggregator) variable to the expression producing its values.
-        /// </summary>
-        internal List<(RDFVariable Target, RDFExpression Expression)> ComputedColumns { get; set; }
-
-        /// <summary>
-        /// Print metadata for the partition variables that come from a GROUP BY expression: keyed by variable name,
-        /// it tells the original expression and whether it was explicitly named ('(expr AS ?v)') or anonymous
-        /// ('(expr)'). Used to re-emit the GROUP BY clause and the SELECT projection faithfully.
-        /// </summary>
-        internal Dictionary<string, (RDFExpression Expression, bool Named)> PartitionConditions { get; set; }
-
-        /// <summary>
-        /// Names of the (anonymous) GROUP BY expression columns that must NOT surface in the query results: they are
-        /// an internal grouping scratch (an unnamed 'GROUP BY (expr)' has no projectable variable).
-        /// </summary>
-        internal HashSet<string> SyntheticPartitionVariables { get; set; }
-
-        /// <summary>
         /// Free HAVING condition: a single, all-encompassing boolean expression evaluated on the RESULT table (after
         /// projection), keeping a grouped row only when it evaluates to true. It represents the full SPARQL HAVING
         /// power the per-aggregator <see cref="RDFAggregator.HavingClause"/> cannot express (disjunctions, aggregate
         /// on the right-hand side, non-comparison constraints, an aggregate not present in the SELECT projection).
-        /// Aggregates referenced here read their already-materialized columns via <see cref="RDFAggregateReferenceExpression"/>.
-        /// When both this and per-aggregator having-clauses are present, they are conjoined (ANDed).
+        /// Aggregates referenced here read their already-materialized columns through a plain
+        /// <see cref="RDFVariableExpression"/>. When both this and per-aggregator having-clauses are present, they are
+        /// conjoined (ANDed).
         /// </summary>
         internal RDFExpression HavingExpression { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds an implicit-grouping modifier (no partition variables): every solution falls into a single group,
+        /// Builds an implicit-grouping modifier (no partition conditions): every solution falls into a single group,
         /// so the aggregates added to it are computed over the WHOLE result set (SPARQL implicit grouping, i.e. an
         /// aggregate projection without a GROUP BY clause).
         /// </summary>
         public RDFGroupByModifier()
         {
-            PartitionVariables = new List<RDFVariable>();
+            PartitionConditions = new List<RDFGroupByCondition>();
             Aggregators = new List<RDFAggregator>();
-            ComputedColumns = new List<(RDFVariable, RDFExpression)>();
-            PartitionConditions = new Dictionary<string, (RDFExpression, bool)>();
-            SyntheticPartitionVariables = new HashSet<string>();
             IsEvaluable = true;
         }
 
@@ -97,7 +78,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFGroupByModifier because given \"partitionVariables\" parameter contains null elements.");
             #endregion
 
-            partitionVariables.ForEach(pv => AddPartitionVariableInternal(pv, null, false));
+            partitionVariables.ForEach(pv => AddPartitionConditionInternal(pv, null, false));
         }
         #endregion
 
@@ -107,16 +88,16 @@ namespace RDFSharp.Query
         /// expression prints as '(expr AS ?v)' when named or '(expr)' when anonymous.
         /// </summary>
         public override string ToString()
-            => $"GROUP BY {string.Join(" ", PartitionVariables.Select(PrintPartitionCondition))}";
+            => $"GROUP BY {string.Join(" ", PartitionConditions.Select(PrintPartitionCondition))}";
 
         /// <summary>
         /// Prints a single GROUP BY condition (bare variable, named expression or anonymous expression).
         /// </summary>
-        private string PrintPartitionCondition(RDFVariable partitionVariable)
+        private static string PrintPartitionCondition(RDFGroupByCondition condition)
         {
-            if (PartitionConditions.TryGetValue(partitionVariable.VariableName, out (RDFExpression Expression, bool Named) condition))
-                return condition.Named ? $"({condition.Expression} AS {partitionVariable})" : $"{condition.Expression}";
-            return partitionVariable.ToString();
+            if (condition.IsExpression)
+                return condition.IsNamed ? $"({condition.Expression} AS {condition.Variable})" : $"{condition.Expression}";
+            return condition.Variable.ToString();
         }
         #endregion
 
@@ -134,11 +115,6 @@ namespace RDFSharp.Query
                     throw new RDFQueryException($"Cannot add aggregator to GroupBy modifier because the given projection variable '{aggregator.ProjectionVariable}' is already used by another aggregator.");
 
                 Aggregators.Add(aggregator);
-
-                //An aggregate-over-expression needs its expression materialized into the (synthetic) aggregator
-                //column before partitioning: register it as a computed column of the modifier
-                if (aggregator.AggregatorExpression != null)
-                    AddComputedColumn(aggregator.AggregatorVariable, aggregator.AggregatorExpression);
             }
             return this;
         }
@@ -185,7 +161,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFGroupByModifier AddPartitionVariable(RDFVariable partitionVariable)
         {
-            AddPartitionVariableInternal(partitionVariable, null, false);
+            AddPartitionConditionInternal(partitionVariable, null, false);
             return this;
         }
 
@@ -195,45 +171,41 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFGroupByModifier AddPartitionExpression(RDFVariable targetVariable, RDFExpression expression, bool named)
         {
-            AddPartitionVariableInternal(targetVariable, expression, named);
+            AddPartitionConditionInternal(targetVariable, expression, named);
             return this;
         }
 
         /// <summary>
-        /// Declares a synthetic column to be materialized from the given expression before partitioning (used for the
-        /// aggregated-expression case, e.g. SUM(?x + ?y), where the aggregator operates on the materialized column).
+        /// Shared GROUP BY condition registration: adds the condition (once per variable) and its mandatory partition
+        /// aggregator. Everything else about the condition — the expression to materialize, whether it is named, and
+        /// whether it is an anonymous synthetic column — lives on the <see cref="RDFGroupByCondition"/> itself.
         /// </summary>
-        internal RDFGroupByModifier AddComputedColumn(RDFVariable targetVariable, RDFExpression expression)
+        private void AddPartitionConditionInternal(RDFVariable partitionVariable, RDFExpression expression, bool named)
         {
-            if (targetVariable != null && expression != null)
-                ComputedColumns.Add((targetVariable, expression));
-            return this;
-        }
-
-        /// <summary>
-        /// Shared partition-variable registration: adds the variable (once), its mandatory partition aggregator and,
-        /// for an expression condition, the print metadata + the computed column to materialize (anonymous
-        /// expressions are also tracked as synthetic, so they do not surface in the results).
-        /// </summary>
-        private void AddPartitionVariableInternal(RDFVariable partitionVariable, RDFExpression expression, bool named)
-        {
-            if (!PartitionVariables.Any(pv => pv.Equals(partitionVariable)))
+            if (!PartitionConditions.Any(condition => condition.Variable.Equals(partitionVariable)))
             {
-                PartitionVariables.Add(partitionVariable);
+                PartitionConditions.Add(new RDFGroupByCondition(partitionVariable, expression, named));
                 IsEvaluable = true;
 
                 //At every partition variable must correspond a partition aggregator
                 Aggregators.Add(new RDFPartitionAggregator(partitionVariable, partitionVariable));
-
-                //An expression condition is materialized into the partition column and remembered for printing
-                if (expression != null)
-                {
-                    PartitionConditions[partitionVariable.VariableName] = (expression, named);
-                    ComputedColumns.Add((partitionVariable, expression));
-                    if (!named)
-                        SyntheticPartitionVariables.Add(partitionVariable.VariableName);
-                }
             }
+        }
+
+        /// <summary>
+        /// The (synthetic) columns to materialize into the working table BEFORE partitioning, so that grouping and
+        /// aggregation keep operating over single columns: every GROUP BY expression condition (e.g. GROUP BY (?x+?y))
+        /// plus every aggregate-over-expression (e.g. SUM(?x+?y)). Each entry pairs the target column with the
+        /// expression producing its values, and flags whether the column is anonymous grouping scratch to be dropped.
+        /// </summary>
+        private List<(RDFVariable Target, RDFExpression Expression, bool IsSynthetic)> CollectComputedColumns()
+        {
+            List<(RDFVariable, RDFExpression, bool)> computedColumns = new List<(RDFVariable, RDFExpression, bool)>();
+            foreach (RDFGroupByCondition condition in PartitionConditions.Where(c => c.IsExpression))
+                computedColumns.Add((condition.Variable, condition.Expression, condition.IsSynthetic));
+            foreach (RDFAggregator aggregator in Aggregators.Where(ag => ag.AggregatorExpression != null))
+                computedColumns.Add((aggregator.AggregatorVariable, aggregator.AggregatorExpression, false));
+            return computedColumns;
         }
 
         /// <summary>
@@ -274,7 +246,8 @@ namespace RDFSharp.Query
         /// </summary>
         private RDFTable MaterializeComputedColumns(RDFTable table)
         {
-            if (ComputedColumns.Count == 0)
+            List<(RDFVariable Target, RDFExpression Expression, bool IsSynthetic)> computedColumns = CollectComputedColumns();
+            if (computedColumns.Count == 0)
                 return table;
 
             RDFTable augmentedTable = new RDFTable();
@@ -282,8 +255,8 @@ namespace RDFSharp.Query
             //Preserve the original columns, then append one (synthetic) column per computed expression
             foreach (RDFTableColumn column in table.Columns)
                 augmentedTable.AddColumn(column.Name);
-            foreach ((RDFVariable target, RDFExpression _) in ComputedColumns)
-                augmentedTable.AddColumn(target.VariableName, isSynthetic: SyntheticPartitionVariables.Contains(target.VariableName));
+            foreach ((RDFVariable target, RDFExpression _, bool isSynthetic) in computedColumns)
+                augmentedTable.AddColumn(target.VariableName, isSynthetic: isSynthetic);
 
             int baseWidth = table.ColumnsCount;
             int augmentedWidth = augmentedTable.ColumnsCount;
@@ -292,8 +265,8 @@ namespace RDFSharp.Query
                 string[] cells = new string[augmentedWidth];
                 for (int c = 0; c < baseWidth; c++)
                     cells[c] = row[c];
-                for (int k = 0; k < ComputedColumns.Count; k++)
-                    cells[baseWidth + k] = ComputedColumns[k].Expression.ApplyExpression(row)?.ToString();
+                for (int k = 0; k < computedColumns.Count; k++)
+                    cells[baseWidth + k] = computedColumns[k].Expression.ApplyExpression(row)?.ToString();
                 augmentedTable.AddRow(cells);
             }
 
@@ -305,9 +278,9 @@ namespace RDFSharp.Query
         /// </summary>
         private void DropSyntheticColumns(RDFTable resultTable)
         {
-            foreach (string syntheticVariable in SyntheticPartitionVariables)
-                if (resultTable.HasColumn(syntheticVariable))
-                    resultTable.RemoveColumn(syntheticVariable);
+            foreach (RDFGroupByCondition syntheticCondition in PartitionConditions.Where(condition => condition.IsSynthetic))
+                if (resultTable.HasColumn(syntheticCondition.Variable.VariableName))
+                    resultTable.RemoveColumn(syntheticCondition.Variable.VariableName);
         }
 
         /// <summary>
@@ -317,9 +290,9 @@ namespace RDFSharp.Query
         private void ConsistencyChecks(RDFTable table)
         {
             //Every partition variable must be found in the working table as a column
-            List<string> unavailablePartitionVariables = PartitionVariables.Where(pv => !table.HasColumn(pv.ToString()))
-                                                                           .Select(pv => pv.ToString())
-                                                                           .ToList();
+            List<string> unavailablePartitionVariables = PartitionConditions.Where(condition => !table.HasColumn(condition.Variable.ToString()))
+                                                                            .Select(condition => condition.Variable.ToString())
+                                                                            .ToList();
             if (unavailablePartitionVariables.Count > 0)
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {string.Join(",", unavailablePartitionVariables.Distinct())}");
 
@@ -331,9 +304,9 @@ namespace RDFSharp.Query
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {string.Join(",", unavailableAggregatorVariables.Distinct())}");
 
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
-            List<string> commonPartitionProjectionVariables = PartitionVariables.Where(pv => Aggregators.Any(ag => !(ag is RDFPartitionAggregator) && pv.Equals(ag.ProjectionVariable)))
-                                                                                .Select(pav => pav.ToString())
-                                                                                .ToList();
+            List<string> commonPartitionProjectionVariables = PartitionConditions.Where(condition => Aggregators.Any(ag => !(ag is RDFPartitionAggregator) && condition.Variable.Equals(ag.ProjectionVariable)))
+                                                                                 .Select(condition => condition.Variable.ToString())
+                                                                                 .ToList();
             if (commonPartitionProjectionVariables.Count > 0)
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the following variables have been specified both for partitioning (in GroupBy) and projection (in Aggregator): {string.Join(",", commonPartitionProjectionVariables.Distinct())}");
         }
@@ -355,8 +328,10 @@ namespace RDFSharp.Query
         /// </summary>
         private RDFTable ExecuteProjectionAlgorythm()
         {
+            List<RDFVariable> partitionVariables = PartitionConditions.Select(condition => condition.Variable).ToList();
+
             List<RDFTable> projFuncTables = new List<RDFTable>(Aggregators.Count);
-            Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjectionTable(PartitionVariables)));
+            Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjectionTable(partitionVariables)));
             projFuncTables.RemoveAll(pft => pft == null);
 
             return RDFTableEngine.CombineTables(projFuncTables);
@@ -436,9 +411,9 @@ namespace RDFSharp.Query
         private string GetPartitionKey(RDFTableRow tableRow)
         {
             StringBuilder partitionKey = new StringBuilder();
-            for (int i = 0; i < PartitionVariables.Count; i++)
+            for (int i = 0; i < PartitionConditions.Count; i++)
             {
-                RDFVariable partitionVariable = PartitionVariables[i];
+                RDFVariable partitionVariable = PartitionConditions[i].Variable;
 
                 //ProjectionKeyPlaceholder separates one variable's chunk from the next (between chunks only)
                 if (i > 0)
@@ -454,4 +429,64 @@ namespace RDFSharp.Query
         }
         #endregion
     }
+
+    #region RDFGroupByCondition
+    /// <summary>
+    /// RDFGroupByCondition is a single SPARQL GROUP BY condition, unifying the three legal forms under one shape so
+    /// the modifier no longer has to spread a grouping condition across several parallel structures:
+    /// <list type="bullet">
+    /// <item>a bare grouping variable 'GROUP BY ?v' — <see cref="Expression"/> is null;</item>
+    /// <item>a named grouping expression 'GROUP BY (expr AS ?v)' — <see cref="IsNamed"/> is true, '?v' is a real,
+    /// projectable variable;</item>
+    /// <item>an anonymous grouping expression 'GROUP BY (expr)' — <see cref="IsNamed"/> is false, backed by a reserved
+    /// (synthetic) variable that must NOT surface in the results.</item>
+    /// </list>
+    /// </summary>
+    internal sealed class RDFGroupByCondition
+    {
+        #region Properties
+        /// <summary>
+        /// The grouping variable: the variable named in 'GROUP BY ?v', the '?v' of '(expr AS ?v)', or the reserved
+        /// (synthetic) variable backing an anonymous '(expr)'.
+        /// </summary>
+        internal RDFVariable Variable { get; }
+
+        /// <summary>
+        /// The grouping expression to materialize into the <see cref="Variable"/> column before partitioning, or null
+        /// for a bare grouping variable.
+        /// </summary>
+        internal RDFExpression Expression { get; }
+
+        /// <summary>
+        /// Whether an expression condition was explicitly named ('(expr AS ?v)', projectable) rather than anonymous
+        /// ('(expr)', internal grouping scratch). Meaningless for a bare variable condition.
+        /// </summary>
+        internal bool IsNamed { get; }
+
+        /// <summary>
+        /// Whether this condition groups over an expression (true) rather than a bare variable (false).
+        /// </summary>
+        internal bool IsExpression => Expression != null;
+
+        /// <summary>
+        /// Whether this condition is an anonymous grouping expression ('GROUP BY (expr)'): its column is internal
+        /// scratch, materialized for partitioning but dropped from the query results.
+        /// </summary>
+        internal bool IsSynthetic => Expression != null && !IsNamed;
+        #endregion
+
+        #region Ctor
+        /// <summary>
+        /// Builds a GROUP BY condition over the given variable, with an optional grouping expression (null for a bare
+        /// variable) and a flag telling, for an expression, whether it was explicitly named.
+        /// </summary>
+        internal RDFGroupByCondition(RDFVariable variable, RDFExpression expression, bool isNamed)
+        {
+            Variable = variable;
+            Expression = expression;
+            IsNamed = isNamed;
+        }
+        #endregion
+    }
+    #endregion
 }

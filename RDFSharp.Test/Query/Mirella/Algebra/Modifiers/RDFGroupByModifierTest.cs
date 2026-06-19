@@ -34,9 +34,9 @@ public class RDFGroupByModifierTest
         RDFGroupByModifier modifier = new RDFGroupByModifier(partitionVariables);
 
         Assert.IsNotNull(modifier);
-        Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.HasCount(1, modifier.PartitionVariables);
-        Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable));
+        Assert.IsNotNull(modifier.PartitionConditions);
+        Assert.HasCount(1, modifier.PartitionConditions);
+        Assert.IsTrue(modifier.PartitionConditions[0].Variable.Equals(variable));
         Assert.IsNotNull(modifier.Aggregators);
         Assert.HasCount(1, modifier.Aggregators);
         Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable));
@@ -74,9 +74,9 @@ public class RDFGroupByModifierTest
         modifier.AddAggregator(null); //Will be discarded, since null aggregators are not allowed
 
         Assert.IsNotNull(modifier);
-        Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.HasCount(1, modifier.PartitionVariables);
-        Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable1));
+        Assert.IsNotNull(modifier.PartitionConditions);
+        Assert.HasCount(1, modifier.PartitionConditions);
+        Assert.IsTrue(modifier.PartitionConditions[0].Variable.Equals(variable1));
         Assert.IsNotNull(modifier.Aggregators);
         Assert.HasCount(2, modifier.Aggregators);
         Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable1));
@@ -423,7 +423,7 @@ public class RDFGroupByModifierTest
         RDFGroupByModifier modifier = new RDFGroupByModifier();
 
         Assert.IsNotNull(modifier);
-        Assert.AreEqual(0, modifier.PartitionVariables.Count);
+        Assert.AreEqual(0, modifier.PartitionConditions.Count);
         Assert.AreEqual(0, modifier.Aggregators.Count);
         Assert.IsTrue(modifier.IsEvaluable);
     }

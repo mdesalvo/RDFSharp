@@ -222,9 +222,9 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?a ?b (COUNT(?x) AS ?cnt) WHERE { ?a ?b ?x } GROUP BY ?a ?b");
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.AreEqual(2, groupByModifier.PartitionVariables.Count);
-        Assert.AreEqual("?A", groupByModifier.PartitionVariables[0].ToString());
-        Assert.AreEqual("?B", groupByModifier.PartitionVariables[1].ToString());
+        Assert.AreEqual(2, groupByModifier.PartitionConditions.Count);
+        Assert.AreEqual("?A", groupByModifier.PartitionConditions[0].Variable.ToString());
+        Assert.AreEqual("?B", groupByModifier.PartitionConditions[1].Variable.ToString());
     }
 
     [TestMethod]
@@ -234,8 +234,8 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY (?c + 1)");
 
         RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.AreEqual(1, groupBy.PartitionVariables.Count);
-        Assert.AreEqual(1, groupBy.SyntheticPartitionVariables.Count);
+        Assert.AreEqual(1, groupBy.PartitionConditions.Count);
+        Assert.AreEqual(1, groupBy.PartitionConditions.Count(c => c.IsSynthetic));
         Assert.IsTrue(query.ToString().Contains("GROUP BY (?C + 1)"));
         Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
             RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
@@ -248,8 +248,8 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?g (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY (?c + 1 AS ?g)");
 
         RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.IsTrue(groupBy.PartitionVariables.Any(pv => pv.ToString() == "?G"));
-        Assert.AreEqual(0, groupBy.SyntheticPartitionVariables.Count);
+        Assert.IsTrue(groupBy.PartitionConditions.Any(c => c.Variable.ToString() == "?G"));
+        Assert.AreEqual(0, groupBy.PartitionConditions.Count(c => c.IsSynthetic));
         Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
             RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
     }
@@ -261,7 +261,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY STR(?c)");
 
         RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.AreEqual(1, groupBy.PartitionVariables.Count);
+        Assert.AreEqual(1, groupBy.PartitionConditions.Count);
         Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
             RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
     }

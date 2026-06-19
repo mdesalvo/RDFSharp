@@ -169,7 +169,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (COUNT(?e) AS ?cnt) WHERE { ?e ?p ?c }");
 
         RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.AreEqual(0, groupBy.PartitionVariables.Count);
+        Assert.AreEqual(0, groupBy.PartitionConditions.Count);
         Assert.IsFalse(query.ToString().Contains("GROUP BY"));
         Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
             RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));
