@@ -308,8 +308,9 @@ namespace RDFSharp.Query
             if (unavailablePartitionVariables.Count > 0)
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {string.Join(",", unavailablePartitionVariables.Distinct())}");
 
-            //Every aggregator variable must be found in the working table as a column (COUNT(*) reads no column)
-            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => ag.RequiresAggregatorColumn && !table.HasColumn(ag.Metadata.AggregatorVariable.ToString()))
+            //Every aggregator variable must be found in the working table as a column. The sole exception is COUNT(*),
+            //which counts the group's solutions (rows) without reading any column, so it needs no backing column.
+            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => !(ag is RDFCountAggregator countAggregator && countAggregator.IsCountAll) && !table.HasColumn(ag.Metadata.AggregatorVariable.ToString()))
                                                                      .Select(ag => ag.Metadata.AggregatorVariable.ToString())
                                                                      .ToList();
             if (unavailableAggregatorVariables.Count > 0)

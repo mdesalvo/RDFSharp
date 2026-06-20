@@ -37,16 +37,9 @@ namespace RDFSharp.Query
         internal RDFAggregatorMetadata Metadata { get; }
 
         /// <summary>
-        /// Whether the aggregator needs its aggregated variable to exist as a column in the working table. True for
-        /// every value-aggregator; overridden to false by COUNT(*), which counts rows without reading any column. This
-        /// stays on the aggregator (not in the metadata) because it is polymorphic BEHAVIOR, not a data field.
+        /// The context for keeping track of aggregator's evaluation    
         /// </summary>
-        internal virtual bool RequiresAggregatorColumn => true;
-
-        /// <summary>
-        /// Context for keeping track of aggregator's execution
-        /// </summary>
-        internal RDFAggregatorContext AggregatorContext { get; set; }
+        internal RDFAggregatorContext Context { get; set; }
 
         /// <summary>
         /// Delimiter separating a partition-variable chunk from the next inside a partition key
@@ -69,7 +62,7 @@ namespace RDFSharp.Query
         internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
         {
             Metadata = new RDFAggregatorMetadata(aggregatorVariable, projectionVariable);
-            AggregatorContext = new RDFAggregatorContext();
+            Context = new RDFAggregatorContext();
         }
         #endregion
 
@@ -118,7 +111,7 @@ namespace RDFSharp.Query
         /// previous run (which would otherwise corrupt sums, counters and caches)
         /// </summary>
         internal void ResetContext()
-            => AggregatorContext = new RDFAggregatorContext();
+            => Context = new RDFAggregatorContext();
 
         /// <summary>
         /// Executes the partition on the given table row
@@ -200,8 +193,8 @@ namespace RDFSharp.Query
     /// <summary>
     /// RDFAggregatorMetadata bundles the DEFINITION of an aggregator (what it aggregates, where it projects, and its
     /// distinct/hidden flags), keeping it together as one descriptor instead of a flat bag of fields scattered on
-    /// <see cref="RDFAggregator"/>. It carries data only — polymorphic behavior (e.g. RequiresAggregatorColumn) and
-    /// execution state (the AggregatorContext) stay on the aggregator.
+    /// <see cref="RDFAggregator"/>. It carries data only — polymorphic behavior (e.g. the aggregate function) and
+    /// execution state (the Context) stay on the aggregator.
     /// </summary>
     internal sealed class RDFAggregatorMetadata
     {

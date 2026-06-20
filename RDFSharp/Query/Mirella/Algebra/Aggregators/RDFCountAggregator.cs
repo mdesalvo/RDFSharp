@@ -72,11 +72,6 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// COUNT(*) reads no column from the working table (it counts solutions, not a variable's values)
-        /// </summary>
-        internal override bool RequiresAggregatorColumn => !IsCountAll;
-
-        /// <summary>
         /// Executes the partition on the given tablerow
         /// </summary>
         internal override void ExecutePartition(string partitionKey, RDFTableRow tableRow)
@@ -88,12 +83,12 @@ namespace RDFSharp.Query
                 {
                     string rowSignature = tableRow.Signature;
                     //Cache-Hit: distinctness failed
-                    if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowSignature))
+                    if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowSignature))
                         return;
                     //Cache-Miss: distinctness passed
-                    AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowSignature);
+                    Context.UpdatePartitionKeyRowValueCache(partitionKey, rowSignature);
                 }
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, Context.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
                 return;
             }
 
@@ -102,14 +97,14 @@ namespace RDFSharp.Query
             if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Update aggregator context (count)
             if (!string.IsNullOrEmpty(rowValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, Context.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
         }
 
         /// <summary>
@@ -125,7 +120,7 @@ namespace RDFSharp.Query
             projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
@@ -143,7 +138,7 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
+            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
             bindings.Add(Metadata.ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
 
             //Add bindings to result's table
