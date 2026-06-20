@@ -30,14 +30,9 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable on which the aggregator is applied
+        /// Variable aggregated by this aggregator, when the argument is a bare variable (e.g. SUM(?x)).
         /// </summary>
         public RDFVariable AggregatorVariable { get; internal set; }
-
-        /// <summary>
-        /// Variable used for projection of aggregator results
-        /// </summary>
-        public RDFVariable ProjectionVariable { get; internal set; }
 
         /// <summary>
         /// Expression aggregated by this aggregator, when the argument is not a bare variable (e.g. SUM(?x + ?y)).
@@ -48,14 +43,22 @@ namespace RDFSharp.Query
         public RDFExpression AggregatorExpression { get; internal set; }
 
         /// <summary>
+        /// Variable used for projection of aggregator results
+        /// </summary>
+        public RDFVariable ProjectionVariable { get; internal set; }
+
+        /// <summary>
         /// Flag indicating that the aggregator discards duplicates
         /// </summary>
         public bool IsDistinct { get; internal set; }
 
         /// <summary>
-        /// Tuple indicating that the aggregator is also an having-clause
+        /// Flag indicating that the aggregator exists ONLY to feed a composite expression (a free HAVING condition,
+        /// or a projection like '?x + COUNT(?y)') rather than to be projected as a query result column. The GroupBy
+        /// modifier still computes its value into a (synthetic) column, but the engine does NOT add it to the
+        /// projection, so it never surfaces as an output column.
         /// </summary>
-        public (bool, RDFQueryEnums.RDFComparisonFlavors, RDFPatternMember) HavingClause { get; internal set; }
+        internal bool IsHidden { get; set; }
 
         /// <summary>
         /// Whether the aggregator needs its AggregatorVariable to exist as a column in the working table. True for
@@ -64,12 +67,9 @@ namespace RDFSharp.Query
         internal virtual bool RequiresAggregatorColumn => true;
 
         /// <summary>
-        /// Whether the aggregator exists ONLY to feed a composite expression (a free HAVING condition or a
-        /// projection like '?x + COUNT(?y)') rather than to be projected as a query result column. The GroupBy
-        /// modifier still computes its value into a (synthetic) column, but the engine does NOT add it to the
-        /// projection, so it never surfaces as an output column.
+        /// Tuple indicating that the aggregator is also an having-clause
         /// </summary>
-        internal bool IsHidden { get; set; }
+        public (bool, RDFQueryEnums.RDFComparisonFlavors, RDFPatternMember) HavingClause { get; internal set; }
 
         /// <summary>
         /// Context for keeping track of aggregator's execution
@@ -77,7 +77,7 @@ namespace RDFSharp.Query
         internal RDFAggregatorContext AggregatorContext { get; set; }
 
         /// <summary>
-        /// Delimiter separating one partition-variable chunk from the next inside a partition key
+        /// Delimiter separating a partition-variable chunk from the next inside a partition key
         /// </summary>
         internal const string ProjectionKeyPlaceholder = "§PK§";
         internal static readonly string[] ProjectionKeyPlaceholders = { ProjectionKeyPlaceholder };
