@@ -85,19 +85,19 @@ namespace RDFSharp.Query
             if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
+            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
             //In case of non-numeric values, consider partitioning failed
             double newAggregatorValue = double.NaN;
             if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
                 newAggregatorValue = Math.Min(rowValue, aggregatorValue);
             //Update aggregator context (min)
-            AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
+            Context.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
         }
         /// <summary>
         /// Executes the partition on the given tablerow (STRING)
@@ -109,18 +109,18 @@ namespace RDFSharp.Query
             if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, null);
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult<string>(partitionKey, null);
             //Update aggregator context (min)
             if (aggregatorValue == null)
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
             else
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, string.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == -1 ? rowValue : aggregatorValue);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, string.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == -1 ? rowValue : aggregatorValue);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace RDFSharp.Query
             projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
@@ -169,7 +169,7 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
+            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
             bindings.Add(Metadata.ProjectionVariable.VariableName,
                 aggregatorValue.Equals(double.NaN)
                     ? string.Empty
@@ -187,7 +187,7 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
             bindings.Add(Metadata.ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table

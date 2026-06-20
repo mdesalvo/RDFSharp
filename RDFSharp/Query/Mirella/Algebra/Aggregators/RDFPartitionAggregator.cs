@@ -45,10 +45,10 @@ namespace RDFSharp.Query
         internal override void ExecutePartition(string partitionKey, RDFTableRow tableRow)
         {
             //Get aggregator value
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (partition)
             if (string.IsNullOrEmpty(aggregatorValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, partitionKey);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, partitionKey);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace RDFSharp.Query
             projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
@@ -83,7 +83,7 @@ namespace RDFSharp.Query
 
             //Add aggregator value to bindings
             if (!bindings.ContainsKey(Metadata.ProjectionVariable.VariableName))
-                bindings.Add(Metadata.ProjectionVariable.VariableName, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty));
+                bindings.Add(Metadata.ProjectionVariable.VariableName, Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty));
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

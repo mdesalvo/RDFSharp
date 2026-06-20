@@ -59,20 +59,20 @@ namespace RDFSharp.Query
             if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
+            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
             //In case of non-numeric values, consider partitioning failed
             double newAggregatorValue = double.NaN;
             if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
                 newAggregatorValue = rowValue + aggregatorValue;
             //Update aggregator context (sum, count)
-            AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
-            AggregatorContext.UpdatePartitionKeyExecutionCounter(partitionKey);
+            Context.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
+            Context.UpdatePartitionKeyExecutionCounter(partitionKey);
         }
 
         /// <summary>
@@ -88,16 +88,16 @@ namespace RDFSharp.Query
             projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Get aggregator value
-                double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
+                double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
                 //In case of non-numeric values, consider partition failed
                 double finalAggregatorValue = double.NaN;
                 if (!aggregatorValue.Equals(double.NaN))
-                    finalAggregatorValue = aggregatorValue / AggregatorContext.GetPartitionKeyExecutionCounter(partitionKey);
+                    finalAggregatorValue = aggregatorValue / Context.GetPartitionKeyExecutionCounter(partitionKey);
                 //Update aggregator context (sum, count)
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, finalAggregatorValue);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, finalAggregatorValue);
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
             }
@@ -114,7 +114,7 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
+            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
             bindings.Add(Metadata.ProjectionVariable.VariableName,
                 aggregatorValue.Equals(double.NaN)
                     ? string.Empty
