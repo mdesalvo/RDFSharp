@@ -135,12 +135,14 @@ namespace RDFSharp.Query
         private static string BuildJoinKey(RDFTableRow row, int[] commonOrdinals)
         {
             StringBuilder keyBuilder = new StringBuilder();
-            for (int i = 0; i < commonOrdinals.Length; i++)
+            foreach (int ordinal in commonOrdinals)
             {
-                string cell = row[commonOrdinals[i]];
+                string cell = row[ordinal];
                 if (cell == null)
                     return null;
-                keyBuilder.Append(cell.Length).Append(':').Append(cell);
+                keyBuilder.Append(cell.Length)
+                          .Append(':')
+                          .Append(cell);
             }
             return keyBuilder.ToString();
         }
@@ -349,11 +351,12 @@ namespace RDFSharp.Query
             //Left wildcard row => scan all right rows, stopping at the first compatible one
             if (leftKey == null)
             {
-                for (int rightRowIndex = 0; rightRowIndex < rightRows.Count; rightRowIndex++)
+                foreach (RDFTableRow rightRow in rightRows)
                 {
-                    if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRows[rightRowIndex], rightCommonOrdinals))
+                    if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRow, rightCommonOrdinals))
                         return true;
                 }
+
                 return false;
             }
 

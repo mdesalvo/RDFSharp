@@ -42,7 +42,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Unique representation of the namespace
         /// </summary>
-        internal long NamespaceID { get; set; }
+        internal long NamespaceID { get; }
 
         /// <summary>
         /// Flag indicating that the namespace is temporary

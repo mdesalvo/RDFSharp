@@ -99,20 +99,18 @@ namespace RDFSharp.Query
                     //Anonymous GROUP BY expression columns ('GROUP BY (expr)') are internal scratch: never projected
                     List<RDFVariable> projectablePartitionVariables = gm.PartitionConditions
                         .Where(condition => !condition.IsSynthetic).Select(condition => condition.Variable).ToList();
+
+                    //Explicit grouping: partition variables precede the (aggregate/computed) projections
                     if (projectablePartitionVariables.Count > 0)
                     {
-                        //Explicit grouping: partition variables precede the (aggregate/computed) projections (preserved layout)
+                        
                         sb.Append(' ');
                         sb.Append(string.Join(" ", projectablePartitionVariables));
-                        sb.Append(' ');
-                        sb.Append(printedNonPartitionProjections);
                     }
-                    else
-                    {
-                        //Implicit grouping (or only anonymous group expressions): just the (aggregate/computed) projections
-                        sb.Append(' ');
-                        sb.Append(printedNonPartitionProjections);
-                    }
+
+                    //Implicit grouping (or only anonymous group expressions): just the (aggregate/computed) projections
+                    sb.Append(' ');
+                    sb.Append(printedNonPartitionProjections);
                 }
             }
             //Query hasn't GroupBy modifier => respect given projections

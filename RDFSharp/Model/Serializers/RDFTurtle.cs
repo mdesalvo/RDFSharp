@@ -85,7 +85,7 @@ namespace RDFSharp.Model
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             RDFGraph result = new RDFGraph().SetContext(graphContext);
-            RDFTurtleContext turtleContext = new RDFTurtleContext()
+            RDFTurtleContext turtleContext = new RDFTurtleContext
             {
                 //Term-level parsers resolve base IRI and prefixes through this graph-backed resolver, which
                 //reads the graph LIVE so that @base/@prefix directives parsed mid-document are honored

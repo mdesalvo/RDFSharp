@@ -130,7 +130,6 @@ namespace RDFSharp.Query
 
                     //A terminating keyword (WHERE / FROM / LIMIT / …): push it back for the caller and stop
                     UnreadString(parserContext, letterRun);
-                    break;
                 }
 
                 //Any other character ('{', EOF, …) ends the describe-term list

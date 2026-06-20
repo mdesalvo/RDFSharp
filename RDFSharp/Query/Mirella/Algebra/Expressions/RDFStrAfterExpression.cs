@@ -123,9 +123,8 @@ namespace RDFSharp.Query
                 //Not found => empty PLAIN literal (no language), per SPARQL semantics
                 if (needleIndex < 0)
                     expressionResult = new RDFPlainLiteral(string.Empty);
+                //Found (including the empty-needle case at index 0 => whole source) => substring after it, carrying the source language
                 else
-                    //Found (including the empty-needle case at index 0 => whole source) => substring after it,
-                    //carrying the source language
                     expressionResult = new RDFPlainLiteral(sourcePLit.Value.Substring(needleIndex + needlePLit.Value.Length), sourcePLit.Language);
                 #endregion
             }

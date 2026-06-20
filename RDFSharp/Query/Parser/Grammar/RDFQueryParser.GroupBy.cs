@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RDFSharp.Model;
 using static RDFSharp.Query.RDFQueryLexer;
 
 namespace RDFSharp.Query

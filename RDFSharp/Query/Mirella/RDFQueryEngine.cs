@@ -1449,10 +1449,7 @@ namespace RDFSharp.Query
                         RDFSelectQueryResult subQueryResult = subQueryLeaf.ApplyToDataSource(datasource);
                         return RDFTable.FromDataTable(subQueryResult.SelectResults);
                     }
-                    else
-                    {
-                        return new RDFQueryEngine().EvaluateSelectQueryToTable(subQueryLeaf, datasource);
-                    }
+                    return new RDFQueryEngine().EvaluateSelectQueryToTable(subQueryLeaf, datasource);
                 }
 
                 case RDFBinaryQueryMember operatorSubtree:
