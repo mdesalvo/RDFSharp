@@ -117,8 +117,8 @@ namespace RDFSharp.Query
                     case RDFLimitModifier _ when modifiers.Any(m => m is RDFLimitModifier):
                     //Ensure to have only one offset modifier in the query
                     case RDFOffsetModifier _ when modifiers.Any(m => m is RDFOffsetModifier):
-                    //Ensure to have only one orderby modifier per variable in the query
-                    case RDFOrderByModifier obm when modifiers.Any(m => m is RDFOrderByModifier om && om.Variable.Equals(obm.Variable)):
+                    //Ensure to have only one orderby modifier per ordering key in the query
+                    case RDFOrderByModifier obm when modifiers.Any(m => m is RDFOrderByModifier om && om.Expression.ToString().Equals(obm.Expression.ToString())):
                         return this;
                     default:
                         QueryMembers.Add(modifier);

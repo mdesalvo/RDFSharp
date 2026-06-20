@@ -170,12 +170,12 @@ namespace RDFSharp.Query
         /// OrderCondition ::= ( ( 'ASC' | 'DESC' ) '(' Expression ')' )
         ///                  | ( Constraint | Var )
         /// </code>
-        /// Only variable-based conditions are representable: an <see cref="RDFOrderByModifier"/> orders by a
-        /// single variable, so expression conditions (e.g. <c>ORDER BY STRLEN(?label)</c>) are a known limit
-        /// (not representable). ASC and DESC directives are accepted with a variable argument. A bare variable implies ASC.
-        /// At least one order condition is required after BY; anything that is not a recognised
-        /// condition (e.g. the LIMIT keyword) is pushed back so <see cref="ParseSolutionModifiers"/>
-        /// can process it.
+        /// The full grammar is supported: an <see cref="RDFOrderByModifier"/> orders by a single ordering key, an
+        /// <see cref="RDFExpression"/> — a bare variable being just its simplest form. So both expression conditions
+        /// (e.g. <c>ORDER BY STRLEN(?label)</c>, <c>ASC(?x + 1)</c>) and bare variables are accepted; a bare
+        /// condition (variable or expression) implies ASC. At least one order condition is required after BY;
+        /// anything that is not a recognised condition (e.g. the LIMIT keyword) is pushed back so
+        /// <see cref="ParseSolutionModifiers"/> can process it.
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When 'BY' is missing or no order condition is found.</exception>
@@ -191,24 +191,26 @@ namespace RDFSharp.Query
             {
                 int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
-                //A '?' or '$' sigil starts a bare variable order condition: ascending by default
-                if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
+                //A '?'/'$' (variable) or '(' (bracketted expression) starts a bare order condition: ascending by default
+                if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$' || nextSignificantCodePoint == '(')
                 {
                     selectQuery.AddModifier(new RDFOrderByModifier(
-                        ParseVariable(parserContext), RDFQueryEnums.RDFOrderByFlavors.ASC));
+                        ParseExpression(parserContext), RDFQueryEnums.RDFOrderByFlavors.ASC));
                     foundAtLeastOneOrderCondition = true;
                     continue;
                 }
 
-                //Otherwise try to read an ASC(...) or DESC(...) directive
+                //Otherwise read a keyword: it is either an ASC/DESC directive, a built-in/function call used as a
+                //bare condition (keyword immediately followed by '('), or a terminator (LIMIT/OFFSET/EOF/...)
                 string directionKeyword = ReadKeyword(parserContext);
                 string normalizedDirectionKeyword = directionKeyword.ToUpperInvariant();
 
                 if (normalizedDirectionKeyword == "ASC" || normalizedDirectionKeyword == "DESC")
                 {
-                    //Both directives require a single variable argument wrapped in parentheses
+                    //Both directives wrap a single expression argument in parentheses (a bare variable being its
+                    //simplest form), so reuse the expression grammar verbatim
                     ExpectChar(parserContext, '(', "ORDER BY condition");
-                    RDFVariable orderingVariable = ParseVariable(parserContext);
+                    RDFExpression orderingExpression = ParseExpression(parserContext);
                     ExpectChar(parserContext, ')', "ORDER BY condition");
 
                     //Map the direction keyword to the corresponding enum value
@@ -216,7 +218,18 @@ namespace RDFSharp.Query
                         ? RDFQueryEnums.RDFOrderByFlavors.ASC
                         : RDFQueryEnums.RDFOrderByFlavors.DESC;
 
-                    selectQuery.AddModifier(new RDFOrderByModifier(orderingVariable, orderingDirection));
+                    selectQuery.AddModifier(new RDFOrderByModifier(orderingExpression, orderingDirection));
+                    foundAtLeastOneOrderCondition = true;
+                    continue;
+                }
+
+                //A non-directive keyword immediately followed by '(' is a built-in/function call used as a bare
+                //condition (e.g. ORDER BY STRLEN(?x)): push the keyword back and parse the whole expression
+                if (directionKeyword.Length > 0 && SkipWhitespace(parserContext) == '(')
+                {
+                    UnreadString(parserContext, directionKeyword);
+                    selectQuery.AddModifier(new RDFOrderByModifier(
+                        ParseExpression(parserContext), RDFQueryEnums.RDFOrderByFlavors.ASC));
                     foundAtLeastOneOrderCondition = true;
                     continue;
                 }
@@ -230,7 +243,7 @@ namespace RDFSharp.Query
 
             //At least one order condition is mandatory in a valid ORDER BY clause
             if (!foundAtLeastOneOrderCondition)
-                throw new RDFQueryException("Cannot parse SPARQL ORDER BY clause: expected at least one variable to order by " + GetCoordinates(parserContext));
+                throw new RDFQueryException("Cannot parse SPARQL ORDER BY clause: expected at least one condition to order by " + GetCoordinates(parserContext));
         }
         #endregion
     }

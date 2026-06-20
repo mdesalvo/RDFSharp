@@ -58,7 +58,44 @@ public partial class RDFQueryParserTest
 
         RDFOrderByModifier orderBy = query.GetModifiers().OfType<RDFOrderByModifier>().Single();
         Assert.AreEqual(RDFQueryEnums.RDFOrderByFlavors.ASC, orderBy.OrderByFlavor);
-        Assert.AreEqual("?S", orderBy.Variable.VariableName);
+        Assert.AreEqual("?S", orderBy.Expression.ToString());
+    }
+    [TestMethod]
+    public void ShouldParseOrderByOnExpressionConditions()
+    {
+        //Bare built-in expression, ASC(expr) and DESC(expr) with non-variable arguments, plus a bare variable
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s ?p ?o } ORDER BY STRLEN(?o) ASC(STRLEN(?s)) DESC(?o) ?s");
+
+        List<RDFOrderByModifier> orderBys = query.GetModifiers().OfType<RDFOrderByModifier>().ToList();
+        Assert.AreEqual(4, orderBys.Count);
+        Assert.AreEqual(RDFQueryEnums.RDFOrderByFlavors.ASC, orderBys[0].OrderByFlavor);
+        Assert.IsTrue(orderBys[0].Expression.ToString().Contains("STRLEN"));
+        Assert.AreEqual(RDFQueryEnums.RDFOrderByFlavors.ASC, orderBys[1].OrderByFlavor);
+        Assert.IsTrue(orderBys[1].Expression.ToString().Contains("STRLEN"));
+        Assert.AreEqual(RDFQueryEnums.RDFOrderByFlavors.DESC, orderBys[2].OrderByFlavor);
+        Assert.AreEqual("?S", orderBys[3].Expression.ToString());
+
+        AssertSelectQueryRoundTrips(query);
+    }
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateOrderByExpressionIso()
+    {
+        //Sample graph with literals of different lengths, so ORDER BY STRLEN(?o) is observable
+        RDFGraph sampleGraph = new RDFGraph();
+        sampleGraph.AddTriple(new RDFTriple(new RDFResource("ex:s1"), new RDFResource("ex:p"), new RDFPlainLiteral("ccc")));
+        sampleGraph.AddTriple(new RDFTriple(new RDFResource("ex:s2"), new RDFResource("ex:p"), new RDFPlainLiteral("a")));
+        sampleGraph.AddTriple(new RDFTriple(new RDFResource("ex:s3"), new RDFResource("ex:p"), new RDFPlainLiteral("bb")));
+
+        //ORDER BY DESC(STRLEN(?o)): the ordering key is a non-variable expression
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFResource("ex:p"), new RDFVariable("o"))))
+            .AddProjectionVariable(new RDFVariable("o"))
+            .AddModifier(new RDFOrderByModifier(
+                new RDFStrLenExpression(new RDFVariable("o")), RDFQueryEnums.RDFOrderByFlavors.DESC));
+
+        RDFTestUtilities.AssertIso(query, sampleGraph);
     }
     [TestMethod]
     public void ShouldParseOrderByWithAscAndDescDirections()

@@ -559,7 +559,7 @@ namespace RDFSharp.Query
 
             RDFTable sortedTable = new RDFTable();
             foreach (RDFTableColumn column in table.Columns)
-                sortedTable.AddColumn(column.Name);
+                sortedTable.AddColumn(column.Name, isSynthetic: column.IsSynthetic);
 
             //Snapshot rows as cell arrays so they can be reordered
             int width = table.ColumnsCount;
@@ -642,14 +642,20 @@ namespace RDFSharp.Query
             //Projection expression variables
             ProjectExpressions(query, table);
 
-            //Execute configured sort modifiers (stable Ordinal sort via RDFTable, UNBOUND sorts smallest)
+            //Execute configured sort modifiers (stable Ordinal sort via RDFTable, UNBOUND sorts smallest).
+            //Each modifier resolves its own ordering-key column: a bare variable sorts on its existing column,
+            //any other expression is materialized into a (synthetic) column dropped right after the sort.
             RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
             if (orderByModifiers.Length > 0)
             {
                 List<(string, bool)> sortKeys = orderByModifiers
-                    .Select(m => (m.Variable.ToString(), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
+                    .Select(m => (m.EnsureSortColumn(table), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
                     .ToList();
                 table = SortTable(table, sortKeys);
+
+                //Drop any synthetic ordering-key column so it never surfaces in the results (e.g. under SELECT *)
+                foreach (RDFTableColumn syntheticColumn in table.Columns.Where(column => column.IsSynthetic).ToList())
+                    table.RemoveColumn(syntheticColumn.Name);
             }
 
             //Execute projection algorithm
@@ -700,15 +706,17 @@ namespace RDFSharp.Query
             => EvaluateExpression(bind.Expression, bind.Variable, table);
 
         /// <summary>
-        /// Evaluates the given expression on the given table and projects the given variable
+        /// Evaluates the given expression on the given table and projects the given variable. When
+        /// <paramref name="isSynthetic"/> is true the projected column is flagged synthetic (internal scratch
+        /// not meant to surface in the results), e.g. for ORDER BY over a non-variable expression.
         /// </summary>
-        internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, RDFTable table)
+        internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, RDFTable table, bool isSynthetic = false)
         {
             string bindVariable = variable.ToString();
             if (!table.HasColumn(bindVariable))
             {
                 //Project bind column
-                table.AddColumn(bindVariable);
+                table.AddColumn(bindVariable, isSynthetic: isSynthetic);
                 int bindOrdinal = table.OrdinalOf(bindVariable);
 
                 //Valorize bind column
