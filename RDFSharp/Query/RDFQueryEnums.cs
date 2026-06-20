@@ -258,9 +258,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFQueryOperatorType represents an enumeration for supported SPARQL algebra binary operators
+        /// RDFBinaryOperatorType represents an enumeration for supported SPARQL algebra binary operators
         /// </summary>
-        public enum RDFQueryOperatorType
+        public enum RDFBinaryOperatorType
         {
             /// <summary>
             /// SPARQL UNION operator

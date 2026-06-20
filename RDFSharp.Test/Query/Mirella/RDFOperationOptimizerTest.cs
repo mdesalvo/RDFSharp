@@ -185,7 +185,7 @@ public class RDFOperationOptimizerTest
         RDFInsertWhereOperation op = new RDFInsertWhereOperation();
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?x"), tagged, new RDFPlainLiteral("entity")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
                 .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
@@ -209,7 +209,7 @@ public class RDFOperationOptimizerTest
         RDFInsertWhereOperation op = new RDFInsertWhereOperation();
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?person"), processed, new RDFPlainLiteral("yes")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
                 .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
@@ -403,7 +403,7 @@ public class RDFOperationOptimizerTest
         // DELETE: remove all rdf:type triples for Persons OR Dogs
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?x"), rdfType, new RDFVariable("?t")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
                 .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog))));
         // We need ?t bound for the template — add a second pattern group that captures it
         // Simpler approach: use a typed template
@@ -411,7 +411,7 @@ public class RDFOperationOptimizerTest
         op2.AddDeleteTemplate(new RDFPattern(new RDFVariable("?x"), rdfType, Person));
         op2.AddDeleteTemplate(new RDFPattern(new RDFVariable("?x"), rdfType, Dog));
         op2.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
                 .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog))));
         RDFOperationResult result = op2.ApplyToGraph(graph);
 
@@ -436,7 +436,7 @@ public class RDFOperationOptimizerTest
         RDFDeleteWhereOperation op = new RDFDeleteWhereOperation();
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?person"), rdfType, Person));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
                 .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
@@ -491,7 +491,7 @@ public class RDFOperationOptimizerTest
         RDFDeleteWhereOperation op = new RDFDeleteWhereOperation();
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?p2"), rdfType, Person));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
                 .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))))
             .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?person")), new RDFVariable("?p2"))));
         RDFOperationResult result = op.ApplyToGraph(graph);
@@ -640,7 +640,7 @@ public class RDFOperationOptimizerTest
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?person"), rdfType, Person));
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?person"), processed, new RDFPlainLiteral("active")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
                 .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
@@ -836,7 +836,7 @@ public class RDFOperationOptimizerTest
         op.AddDeleteTemplate(new RDFPattern(new RDFVariable("?entity"), rdfType, Person));
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?entity"), processed, new RDFPlainLiteral("entity")));
         op.AddPatternGroup(new RDFPatternGroup()
-            .AddOperator(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?x"), rdfType, Person)
                 .Union(new RDFPattern(new RDFVariable("?x"), rdfType, Dog)))
             .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?x")), new RDFVariable("?entity"))));
         RDFOperationResult result = op.ApplyToGraph(graph);
@@ -872,7 +872,7 @@ public class RDFOperationOptimizerTest
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?person"), processed, new RDFPlainLiteral("active")));
         op.AddPatternGroup(new RDFPatternGroup()
             .AddValues(values)
-            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
                 .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true")))));
         RDFOperationResult result = op.ApplyToGraph(graph);
 
@@ -928,7 +928,7 @@ public class RDFOperationOptimizerTest
         op.AddInsertTemplate(new RDFPattern(new RDFVariable("?p2"), processed, new RDFPlainLiteral("complex")));
         op.AddPatternGroup(new RDFPatternGroup()
             .AddValues(values)
-            .AddOperator(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
+            .AddBinaryPatternGroupMember(new RDFPattern(new RDFVariable("?person"), rdfType, Person)
                 .Minus(new RDFPattern(new RDFVariable("?person"), retired, new RDFPlainLiteral("true"))))
             .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend")))      // plain (reorderable)
             .AddPattern(new RDFPattern(new RDFVariable("?friend"), rdfType, Person))                        // plain (reorderable)

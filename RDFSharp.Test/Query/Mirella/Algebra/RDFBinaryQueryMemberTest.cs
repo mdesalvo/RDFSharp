@@ -21,7 +21,7 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query;
 
 [TestClass]
-public class RDFOperatorQueryMemberTest
+public class RDFBinaryQueryMemberTest
 {
     #region Tests
     [TestMethod]
@@ -29,12 +29,12 @@ public class RDFOperatorQueryMemberTest
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = pgA.Union(pgB);
+        RDFBinaryQueryMember op = pgA.Union(pgB);
 
         Assert.IsNotNull(op);
         Assert.IsTrue(op.IsEvaluable);
         Assert.IsFalse(op.IsOptional);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         Assert.AreSame(pgA, op.LeftOperand);
         Assert.AreSame(pgB, op.RightOperand);
     }
@@ -44,12 +44,12 @@ public class RDFOperatorQueryMemberTest
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = pgA.Minus(pgB);
+        RDFBinaryQueryMember op = pgA.Minus(pgB);
 
         Assert.IsNotNull(op);
         Assert.IsTrue(op.IsEvaluable);
         Assert.IsFalse(op.IsOptional);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
         Assert.AreSame(pgA, op.LeftOperand);
         Assert.AreSame(pgB, op.RightOperand);
     }
@@ -59,9 +59,9 @@ public class RDFOperatorQueryMemberTest
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFSelectQuery sqB = new RDFSelectQuery();
-        RDFOperatorQueryMember op = pgA.Union(sqB);
+        RDFBinaryQueryMember op = pgA.Union(sqB);
 
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         Assert.AreSame(pgA, op.LeftOperand);
         Assert.AreSame(sqB, op.RightOperand);
     }
@@ -71,9 +71,9 @@ public class RDFOperatorQueryMemberTest
     {
         RDFSelectQuery sqA = new RDFSelectQuery();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = sqA.Minus(pgB);
+        RDFBinaryQueryMember op = sqA.Minus(pgB);
 
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
         Assert.AreSame(sqA, op.LeftOperand);
         Assert.AreSame(pgB, op.RightOperand);
     }
@@ -83,9 +83,9 @@ public class RDFOperatorQueryMemberTest
     {
         RDFSelectQuery sqA = new RDFSelectQuery();
         RDFSelectQuery sqB = new RDFSelectQuery();
-        RDFOperatorQueryMember op = sqA.Union(sqB);
+        RDFBinaryQueryMember op = sqA.Union(sqB);
 
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         Assert.AreSame(sqA, op.LeftOperand);
         Assert.AreSame(sqB, op.RightOperand);
     }
@@ -98,14 +98,14 @@ public class RDFOperatorQueryMemberTest
         RDFPatternGroup pgC = new RDFPatternGroup();
 
         // (A UNION B) MINUS C
-        RDFOperatorQueryMember op = pgA.Union(pgB).Minus(pgC);
+        RDFBinaryQueryMember op = pgA.Union(pgB).Minus(pgC);
 
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
         Assert.AreSame(pgC, op.RightOperand);
 
-        RDFOperatorQueryMember inner = op.LeftOperand as RDFOperatorQueryMember;
+        RDFBinaryQueryMember inner = op.LeftOperand as RDFBinaryQueryMember;
         Assert.IsNotNull(inner);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, inner.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, inner.OperatorType);
         Assert.AreSame(pgA, inner.LeftOperand);
         Assert.AreSame(pgB, inner.RightOperand);
     }
@@ -118,14 +118,14 @@ public class RDFOperatorQueryMemberTest
         RDFPatternGroup pgC = new RDFPatternGroup();
 
         // (A MINUS B) UNION C
-        RDFOperatorQueryMember op = pgA.Minus(pgB).Union(pgC);
+        RDFBinaryQueryMember op = pgA.Minus(pgB).Union(pgC);
 
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         Assert.AreSame(pgC, op.RightOperand);
 
-        RDFOperatorQueryMember inner = op.LeftOperand as RDFOperatorQueryMember;
+        RDFBinaryQueryMember inner = op.LeftOperand as RDFBinaryQueryMember;
         Assert.IsNotNull(inner);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, inner.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, inner.OperatorType);
         Assert.AreSame(pgA, inner.LeftOperand);
         Assert.AreSame(pgB, inner.RightOperand);
     }
@@ -138,14 +138,14 @@ public class RDFOperatorQueryMemberTest
         RDFPatternGroup pgC = new RDFPatternGroup();
 
         // A UNION (B MINUS C)
-        RDFOperatorQueryMember op = pgA.Union(pgB.Minus(pgC));
+        RDFBinaryQueryMember op = pgA.Union(pgB.Minus(pgC));
 
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         Assert.AreSame(pgA, op.LeftOperand);
 
-        RDFOperatorQueryMember inner = op.RightOperand as RDFOperatorQueryMember;
+        RDFBinaryQueryMember inner = op.RightOperand as RDFBinaryQueryMember;
         Assert.IsNotNull(inner);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, inner.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, inner.OperatorType);
         Assert.AreSame(pgB, inner.LeftOperand);
         Assert.AreSame(pgC, inner.RightOperand);
     }
@@ -155,10 +155,10 @@ public class RDFOperatorQueryMemberTest
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = pgA.Union(pgB).Optional();
+        RDFBinaryQueryMember op = pgA.Union(pgB).Optional();
 
         Assert.IsTrue(op.IsOptional);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
     }
 
     [TestMethod]
@@ -170,64 +170,64 @@ public class RDFOperatorQueryMemberTest
         RDFPatternGroup pgD = new RDFPatternGroup();
 
         // (A UNION B) UNION (C MINUS D)
-        RDFOperatorQueryMember left = pgA.Union(pgB);
-        RDFOperatorQueryMember right = pgC.Minus(pgD);
-        RDFOperatorQueryMember op = left.Union(right);
+        RDFBinaryQueryMember left = pgA.Union(pgB);
+        RDFBinaryQueryMember right = pgC.Minus(pgD);
+        RDFBinaryQueryMember op = left.Union(right);
 
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         Assert.AreSame(left, op.LeftOperand);
         Assert.AreSame(right, op.RightOperand);
     }
 
     [TestMethod]
-    public void ShouldAddOperatorToSelectQuery()
+    public void ShouldAddBinaryQueryMemberToSelectQuery()
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = pgA.Union(pgB);
+        RDFBinaryQueryMember op = pgA.Union(pgB);
 
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(op);
+            .AddBinaryQueryMember(op);
 
         Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
         Assert.AreSame(op, query.GetEvaluableQueryMembers().First());
     }
 
     [TestMethod]
-    public void ShouldAddOperatorToAskQuery()
+    public void ShouldAddBinaryQueryMemberToAskQuery()
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = pgA.Union(pgB);
+        RDFBinaryQueryMember op = pgA.Union(pgB);
 
         RDFAskQuery query = new RDFAskQuery()
-            .AddOperator(op);
+            .AddBinaryQueryMember(op);
 
         Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
     }
 
     [TestMethod]
-    public void ShouldAddOperatorToConstructQuery()
+    public void ShouldAddBinaryQueryMemberToConstructQuery()
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = pgA.Union(pgB);
+        RDFBinaryQueryMember op = pgA.Union(pgB);
 
         RDFConstructQuery query = new RDFConstructQuery()
-            .AddOperator(op);
+            .AddBinaryQueryMember(op);
 
         Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
     }
 
     [TestMethod]
-    public void ShouldAddOperatorToDescribeQuery()
+    public void ShouldAddBinaryQueryMemberToDescribeQuery()
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember op = pgA.Union(pgB);
+        RDFBinaryQueryMember op = pgA.Union(pgB);
 
         RDFDescribeQuery query = new RDFDescribeQuery()
-            .AddOperator(op);
+            .AddBinaryQueryMember(op);
 
         Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
     }
@@ -236,7 +236,7 @@ public class RDFOperatorQueryMemberTest
     public void ShouldNotAddNullOperatorToQuery()
     {
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(null);
+            .AddBinaryQueryMember(null);
 
         Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
     }
@@ -268,7 +268,7 @@ public class RDFOperatorQueryMemberTest
     {
         RDFPatternGroup pgA = new RDFPatternGroup();
         RDFPatternGroup pgB = new RDFPatternGroup();
-        RDFOperatorQueryMember node = pgA.Union(pgB);
+        RDFBinaryQueryMember node = pgA.Union(pgB);
 
         Assert.ThrowsExactly<RDFQueryException>(() => node.Union(node));
     }
@@ -277,14 +277,14 @@ public class RDFOperatorQueryMemberTest
     public void ShouldThrowOnNullLeftOperand()
     {
         Assert.ThrowsExactly<RDFQueryException>(
-            () => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, null, new RDFPatternGroup()));
+            () => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, null, new RDFPatternGroup()));
     }
 
     [TestMethod]
     public void ShouldThrowOnNullRightOperand()
     {
         Assert.ThrowsExactly<RDFQueryException>(
-            () => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, new RDFPatternGroup(), null));
+            () => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, new RDFPatternGroup(), null));
     }
 
     [TestMethod]
@@ -295,10 +295,10 @@ public class RDFOperatorQueryMemberTest
         RDFPatternGroup pgC = new RDFPatternGroup();
 
         // B.Minus(C) creates a new node; A.Union(thatNode) is valid because A != node
-        RDFOperatorQueryMember op = pgA.Union(pgB.Minus(pgC));
+        RDFBinaryQueryMember op = pgA.Union(pgB.Minus(pgC));
 
         Assert.IsNotNull(op);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
     }
 
     [TestMethod]
@@ -309,9 +309,9 @@ public class RDFOperatorQueryMemberTest
         RDFPatternGroup pgC = new RDFPatternGroup();
 
         // pgA appears in both branches but via different tree nodes
-        RDFOperatorQueryMember left = pgA.Union(pgB);
-        RDFOperatorQueryMember right = pgC.Minus(pgA);
-        RDFOperatorQueryMember op = left.Union(right);
+        RDFBinaryQueryMember left = pgA.Union(pgB);
+        RDFBinaryQueryMember right = pgC.Minus(pgA);
+        RDFBinaryQueryMember op = left.Union(right);
 
         Assert.IsNotNull(op);
     }

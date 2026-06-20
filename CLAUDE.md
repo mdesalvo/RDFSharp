@@ -29,7 +29,7 @@ dotnet build -c Release
 dotnet test --no-build -c Release --verbosity normal
 ```
 
-Linux CI additionally runs `--collect:"XPlat Code Coverage"` and uploads to Codecov. There is no separate lint step — `EnableNETAnalyzers` is on in `RDFSharp.csproj`, so warnings come from the build.
+Linux CI additionally runs `--collect:"XPlat Code Coverage"` and uploads to Codecov. — `EnableNETAnalyzers` is on in `RDFSharp.csproj`, so warnings come from the build.
 
 Run a single test class or method:
 

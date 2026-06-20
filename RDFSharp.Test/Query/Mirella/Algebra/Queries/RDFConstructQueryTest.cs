@@ -188,7 +188,7 @@ public class RDFConstructQueryTest
             new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                 .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S")))));
-        query.AddOperator(subQuery1.Union(subQuery2));
+        query.AddBinaryQueryMember(subQuery1.Union(subQuery2));
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 

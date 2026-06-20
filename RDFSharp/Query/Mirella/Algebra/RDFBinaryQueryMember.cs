@@ -17,16 +17,16 @@
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFOperatorQueryMember represents a binary SPARQL algebra node (Union or Minus)
+    /// RDFBinaryQueryMember represents a binary SPARQL algebra node (Union or Minus)
     /// that combines two query members into a tree structure.
     /// </summary>
-    public sealed class RDFOperatorQueryMember : RDFQueryMember
+    public sealed class RDFBinaryQueryMember : RDFQueryMember
     {
         #region Properties
         /// <summary>
         /// Type of the binary operator (Union or Minus)
         /// </summary>
-        public RDFQueryEnums.RDFQueryOperatorType OperatorType { get; }
+        public RDFQueryEnums.RDFBinaryOperatorType OperatorType { get; }
 
         /// <summary>
         /// Left operand of the binary operator
@@ -49,19 +49,19 @@ namespace RDFSharp.Query
         /// Builds a binary operator node with the given operands
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        internal RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType operatorType, RDFQueryMember left, RDFQueryMember right)
+        internal RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType operatorType, RDFQueryMember left, RDFQueryMember right)
         {
             #region Guards
             if (left == null)
-                throw new RDFQueryException("Cannot create RDFOperatorQueryMember because given \"left\" parameter is null.");
+                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"left\" parameter is null.");
             if (right == null)
-                throw new RDFQueryException("Cannot create RDFOperatorQueryMember because given \"right\" parameter is null.");
-            if (!(left is RDFPatternGroup || left is RDFSelectQuery || left is RDFOperatorQueryMember))
-                throw new RDFQueryException("Cannot create RDFOperatorQueryMember because given \"left\" parameter is not a pattern group, select query, or operator node.");
-            if (!(right is RDFPatternGroup || right is RDFSelectQuery || right is RDFOperatorQueryMember))
-                throw new RDFQueryException("Cannot create RDFOperatorQueryMember because given \"right\" parameter is not a pattern group, select query, or operator node.");
+                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"right\" parameter is null.");
+            if (!(left is RDFPatternGroup || left is RDFSelectQuery || left is RDFBinaryQueryMember))
+                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"left\" parameter is not a pattern group, select query, or operator node.");
+            if (!(right is RDFPatternGroup || right is RDFSelectQuery || right is RDFBinaryQueryMember))
+                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"right\" parameter is not a pattern group, select query, or operator node.");
             if (ReferenceEquals(left, right))
-                throw new RDFQueryException("Cannot create RDFOperatorQueryMember because \"left\" and \"right\" are the same instance (self-reference would cause redundant evaluation).");
+                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because \"left\" and \"right\" are the same instance (self-reference would cause redundant evaluation).");
             #endregion
 
             OperatorType = operatorType;
@@ -76,48 +76,48 @@ namespace RDFSharp.Query
         /// Creates a Union operator combining this node with the given query member
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFPatternGroup other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFPatternGroup other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Union operator combining this node with the given subquery
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFSelectQuery other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFSelectQuery other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Union operator combining this node with the given operator tree
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFOperatorQueryMember other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this node with the given query member
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFPatternGroup other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFPatternGroup other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this node with the given subquery
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFSelectQuery other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFSelectQuery other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this node with the given operator tree
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFOperatorQueryMember other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Sets the operator result to be joined as Optional with the previous query member
         /// </summary>
-        public RDFOperatorQueryMember Optional()
+        public RDFBinaryQueryMember Optional()
         {
             IsOptional = true;
             return this;

@@ -65,8 +65,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the query
         /// </summary>
-        public RDFAskQuery AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFAskQuery>(operatorMember);
+        public RDFAskQuery AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFAskQuery>(binaryMember);
 
         /// <summary>
         /// Adds the given prefix declaration to the query

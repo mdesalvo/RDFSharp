@@ -113,8 +113,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the query
         /// </summary>
-        public RDFConstructQuery AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFConstructQuery>(operatorMember);
+        public RDFConstructQuery AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFConstructQuery>(binaryMember);
 
         /// <summary>
         /// Adds the given modifier to the query

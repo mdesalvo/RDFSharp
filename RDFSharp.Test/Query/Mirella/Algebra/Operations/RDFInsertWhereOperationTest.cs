@@ -324,15 +324,15 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
             .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFPatternGroup()
-                    .AddOperator(
+                    .AddBinaryPatternGroupMember(
                         new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                             .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X"))))
                 .Union(
                     new RDFPatternGroup()
                         .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))))
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
@@ -400,10 +400,10 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
             .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND3")))
-                    .AddOperator(
+                    .AddBinaryPatternGroupMember(
                         new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                             .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X"))))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
@@ -412,10 +412,10 @@ public class RDFInsertWhereOperationTest
                     new RDFPatternGroup()
                         .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND2")))
-                        .AddOperator(
+                        .AddBinaryPatternGroupMember(
                             new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                                 .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X"))))))
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
@@ -490,10 +490,10 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
             .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND3")))
-                    .AddOperator(
+                    .AddBinaryPatternGroupMember(
                         new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                             .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X"))))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
@@ -502,10 +502,10 @@ public class RDFInsertWhereOperationTest
                     new RDFPatternGroup()
                         .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND2")))
-                        .AddOperator(
+                        .AddBinaryPatternGroupMember(
                             new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                                 .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X"))))))
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))

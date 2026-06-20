@@ -74,8 +74,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the body of the operation
         /// </summary>
-        public RDFDeleteInsertWhereOperation AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFDeleteInsertWhereOperation>(operatorMember);
+        public RDFDeleteInsertWhereOperation AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFDeleteInsertWhereOperation>(binaryMember);
 
         /// <summary>
         /// Adds the given modifier to the operation

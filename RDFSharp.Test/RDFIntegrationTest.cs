@@ -307,7 +307,7 @@ WHERE {
 }
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
-            .AddOperator(studentsPatternGroup.Union(professorsPatternGroup)));
+            .AddBinaryQueryMember(studentsPatternGroup.Union(professorsPatternGroup)));
 
         //4 students + 2 professors = 6 people
         Assert.AreEqual(6, result.SelectResultsCount);
@@ -631,7 +631,7 @@ WHERE {
 }
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
-            .AddOperator(studentsPatternGroup
+            .AddBinaryQueryMember(studentsPatternGroup
                 .Union(professorsPatternGroup
                     .Minus(course1EnrolleesPatternGroup
                         .Union(building0WorkersPatternGroup)))

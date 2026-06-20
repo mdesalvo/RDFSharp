@@ -109,8 +109,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the query
         /// </summary>
-        public RDFDescribeQuery AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFDescribeQuery>(operatorMember);
+        public RDFDescribeQuery AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFDescribeQuery>(binaryMember);
 
         /// <summary>
         /// Adds the given modifier to the query

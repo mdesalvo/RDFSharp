@@ -213,7 +213,7 @@ namespace RDFSharp.Query
         /// Resolves an aggregate referenced inside a HAVING condition to the result-table column carrying its value:
         /// when the SAME aggregate is already projected by the SELECT clause its existing aggregator column is reused,
         /// otherwise a HIDDEN aggregator is registered on the fly (it computes the value into an internal column that
-        /// is never projected as a result). Either way an <see cref="RDFAggregateReferenceExpression"/> is returned,
+        /// is never projected as a result). Either way an <see cref="RDFExpression"/> is returned,
         /// so the condition reads the column at evaluation time yet re-prints the original aggregate call.
         /// </summary>
         private static RDFExpression ResolveHavingAggregateReference(RDFGroupByModifier groupByModifier, RDFParsedAggregator parsedAggregate, ref int hiddenHavingAggregatorCounter)

@@ -208,7 +208,7 @@ public class RDFSelectQueryTest
             new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                 .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S")))));
-        query.AddOperator(subQuery1.Union(subQuery2));
+        query.AddBinaryQueryMember(subQuery1.Union(subQuery2));
         query.AddModifier(new RDFGroupByModifier([new RDFVariable("?S")]));
         query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
@@ -469,7 +469,7 @@ public class RDFSelectQueryTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDFS.PREFIX))
-            .AddOperator(pg1.Minus(sq1.Union(sq2)));
+            .AddBinaryQueryMember(pg1.Minus(sq1.Union(sq2)));
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -525,7 +525,7 @@ public class RDFSelectQueryTest
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")])));
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
-            .AddOperator(pg1.Minus(sq1))
+            .AddBinaryQueryMember(pg1.Minus(sq1))
             .AddProjectionVariable(new RDFVariable("?S"));
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
 
@@ -643,7 +643,7 @@ public class RDFSelectQueryTest
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException));
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pg1.Union(pg2));
+            .AddBinaryQueryMember(pg1.Union(pg2));
 
         try
         {
@@ -702,7 +702,7 @@ public class RDFSelectQueryTest
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100,
                     RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post));
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pg1.Union(pg2));
+            .AddBinaryQueryMember(pg1.Union(pg2));
 
         try
         {
@@ -761,7 +761,7 @@ public class RDFSelectQueryTest
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult));
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pg1.Union(pg2));
+            .AddBinaryQueryMember(pg1.Union(pg2));
         RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
 
         Assert.IsNotNull(result);
@@ -819,7 +819,7 @@ public class RDFSelectQueryTest
                 .AsService(endpoint, new RDFSPARQLEndpointQueryOptions(100,
                     RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post));
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pg1.Union(pg2));
+            .AddBinaryQueryMember(pg1.Union(pg2));
         RDFSelectQueryResult result = query.ApplyToGraph(new RDFGraph());
 
         Assert.IsNotNull(result);

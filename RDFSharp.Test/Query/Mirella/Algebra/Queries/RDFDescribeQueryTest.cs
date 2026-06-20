@@ -155,7 +155,7 @@ public class RDFDescribeQueryTest
         query.AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"));
         query.AddDescribeTerm(new RDFVariable("?S"));
         query.AddDescribeTerm(new RDFResource("ex:flower"));
-        query.AddOperator(pg.Union(subQuery));
+        query.AddBinaryQueryMember(pg.Union(subQuery));
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 

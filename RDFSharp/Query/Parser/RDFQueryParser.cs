@@ -183,7 +183,7 @@ namespace RDFSharp.Query
             /// (COUNT/SUM/MIN/MAX/AVG/SAMPLE/GROUP_CONCAT) met in primary-expression position is NOT rejected as an
             /// unknown built-in: it is parsed into a descriptor and handed to this sink, which resolves it to the
             /// result-table column produced by a (possibly newly registered, hidden) aggregator and returns the
-            /// <see cref="RDFAggregateReferenceExpression"/> that reads it.
+            /// <see cref="RDFExpression"/> that reads it.
             /// <para>
             /// It is set ONLY while parsing the two contexts where an aggregate may legally appear inside a composite
             /// expression — a free HAVING condition and a projection expression (e.g. '?x + COUNT(?y)') — and cleared

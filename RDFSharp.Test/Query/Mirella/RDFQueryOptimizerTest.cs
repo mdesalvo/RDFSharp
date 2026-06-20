@@ -164,11 +164,11 @@ public class RDFQueryOptimizerTest
     public void ShouldNotReorderUnionOperatorTree()
     {
         // [unionOp, plain(vars=1)]
-        // unionOp is an RDFOperatorPatternGroupMember → barrier (not an RDFPattern)
+        // unionOp is an RDFBinaryPatternGroupMember → barrier (not an RDFPattern)
         // plain is the only reorderable; block length=1 → no change
         RDFPattern unionLeft     = MakePlainPattern(3, "a");
         RDFPattern unionRight    = MakePlainPattern(0, "b");
-        RDFOperatorPatternGroupMember unionOp = unionLeft.Union(unionRight);
+        RDFBinaryPatternGroupMember unionOp = unionLeft.Union(unionRight);
         RDFPattern plain         = MakePlainPattern(1, "c");
         List<RDFPatternGroupMember> members = [unionOp, plain];
         List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
@@ -182,7 +182,7 @@ public class RDFQueryOptimizerTest
     {
         RDFPattern minusLeft     = MakePlainPattern(3, "a");
         RDFPattern minusRight    = MakePlainPattern(0, "b");
-        RDFOperatorPatternGroupMember minusOp = minusLeft.Minus(minusRight);
+        RDFBinaryPatternGroupMember minusOp = minusLeft.Minus(minusRight);
         RDFPattern plain         = MakePlainPattern(1, "c");
         List<RDFPatternGroupMember> members = [minusOp, plain];
         List<RDFPatternGroupMember> result = RDFQueryOptimizer.OptimizePatternGroup(members, null);
@@ -287,7 +287,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p1           = MakePlainPattern(1, "b");
         RDFPattern unionLeft    = MakePlainPattern(2, "c");
         RDFPattern unionRight   = MakePlainPattern(0, "d");
-        RDFOperatorPatternGroupMember unionOp = unionLeft.Union(unionRight);
+        RDFBinaryPatternGroupMember unionOp = unionLeft.Union(unionRight);
         RDFPattern p2           = MakePlainPattern(2, "e");
         RDFPattern p0           = MakePlainPattern(0, "f");
         List<RDFPatternGroupMember> members = [p3, p1, unionOp, p2, p0];
@@ -307,7 +307,7 @@ public class RDFQueryOptimizerTest
         RDFPattern p0           = MakePlainPattern(0, "b");
         RDFPattern minusLeft    = MakePlainPattern(2, "c");
         RDFPattern minusRight   = MakePlainPattern(1, "d");
-        RDFOperatorPatternGroupMember minusOp = minusLeft.Minus(minusRight);
+        RDFBinaryPatternGroupMember minusOp = minusLeft.Minus(minusRight);
         RDFPattern p2           = MakePlainPattern(2, "e");
         RDFPattern p1           = MakePlainPattern(1, "f");
         List<RDFPatternGroupMember> members = [p3, p0, minusOp, p2, p1];
@@ -344,10 +344,10 @@ public class RDFQueryOptimizerTest
         RDFPattern opt  = MakePlainPattern(0, "opt").Optional();
         RDFPattern p3c = MakePlainPattern(3, "3c");
         RDFPattern p1c = MakePlainPattern(1, "1c");
-        RDFOperatorPatternGroupMember unionOp = MakePlainPattern(2, "uL").Union(MakePlainPattern(0, "uF"));
+        RDFBinaryPatternGroupMember unionOp = MakePlainPattern(2, "uL").Union(MakePlainPattern(0, "uF"));
         RDFPattern p2d = MakePlainPattern(2, "2d");
         RDFPattern p0d = MakePlainPattern(0, "0d");
-        RDFOperatorPatternGroupMember minusOp = MakePlainPattern(2, "mL").Minus(MakePlainPattern(1, "mF"));
+        RDFBinaryPatternGroupMember minusOp = MakePlainPattern(2, "mL").Minus(MakePlainPattern(1, "mF"));
         RDFPattern p3e = MakePlainPattern(3, "3e");
         RDFPattern p1e = MakePlainPattern(1, "1e");
 

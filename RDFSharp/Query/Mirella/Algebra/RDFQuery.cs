@@ -141,10 +141,10 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the body of the query
         /// </summary>
-        internal T AddOperator<T>(RDFOperatorQueryMember operatorMember) where T : RDFQuery
+        internal T AddBinaryQueryMember<T>(RDFBinaryQueryMember binaryMember) where T : RDFQuery
         {
-            if (operatorMember != null)
-                QueryMembers.Add(operatorMember);
+            if (binaryMember != null)
+                QueryMembers.Add(binaryMember);
             return (T)this;
         }
 
@@ -179,8 +179,8 @@ namespace RDFSharp.Query
 
             //Collect prefixes from subqueries nested inside operator tree members (Union/Minus),
             //otherwise the printed query would reference prefixes it never declares
-            foreach (RDFOperatorQueryMember operatorMember in QueryMembers.OfType<RDFOperatorQueryMember>())
-                CollectOperatorTreePrefixes(operatorMember, result);
+            foreach (RDFBinaryQueryMember operatorMember in QueryMembers.OfType<RDFBinaryQueryMember>())
+                CollectBinaryQueryMemberPrefixes(operatorMember, result);
 
             return result.Distinct().ToList();
         }
@@ -189,25 +189,25 @@ namespace RDFSharp.Query
         /// Collects the prefixes declared by the subqueries living inside an operator tree node,
         /// recursing through both operands so that deeply nested subqueries are reached as well
         /// </summary>
-        private static void CollectOperatorTreePrefixes(RDFOperatorQueryMember operatorMember, List<RDFNamespace> result)
+        private static void CollectBinaryQueryMemberPrefixes(RDFBinaryQueryMember binaryMember, List<RDFNamespace> result)
         {
-            CollectOperatorTreeOperandPrefixes(operatorMember.LeftOperand, result);
-            CollectOperatorTreeOperandPrefixes(operatorMember.RightOperand, result);
+            CollectQueryMemberPrefixes(binaryMember.LeftOperand, result);
+            CollectQueryMemberPrefixes(binaryMember.RightOperand, result);
         }
 
         /// <summary>
         /// Collects the prefixes from a single operator tree operand: a subquery contributes its own
         /// prefixes, a nested operator node is traversed recursively, a pattern group has no prefixes
         /// </summary>
-        private static void CollectOperatorTreeOperandPrefixes(RDFQueryMember operand, List<RDFNamespace> result)
+        private static void CollectQueryMemberPrefixes(RDFQueryMember operand, List<RDFNamespace> result)
         {
             switch (operand)
             {
                 case RDFSelectQuery subQueryOperand:
                     result.AddRange(subQueryOperand.GetPrefixes());
                     break;
-                case RDFOperatorQueryMember operatorOperand:
-                    CollectOperatorTreePrefixes(operatorOperand, result);
+                case RDFBinaryQueryMember operatorOperand:
+                    CollectBinaryQueryMemberPrefixes(operatorOperand, result);
                     break;
             }
         }

@@ -220,7 +220,7 @@ namespace RDFSharp.Query
 
                     //Tree-based operator node: recursively evaluate the binary algebra tree
                     //(Union/Minus) and store the result with the operator's own ID
-                    case RDFOperatorQueryMember operatorQueryMember:
+                    case RDFBinaryQueryMember operatorQueryMember:
                         RDFTable operatorResultTable = EvaluateOperatorQueryMemberTree(operatorQueryMember, datasource);
                         operatorResultTable.IsOptional = operatorQueryMember.IsOptional || operatorResultTable.IsOptional;
                         QueryMemberResultTables[operatorQueryMember.QueryMemberID] = operatorResultTable;
@@ -324,7 +324,7 @@ namespace RDFSharp.Query
                             existsFilter.PatternResults = ApplyPattern(existsFilter.Pattern, dataSource);
                             break;
 
-                        case RDFOperatorPatternGroupMember operatorPGMember:
+                        case RDFBinaryPatternGroupMember operatorPGMember:
                             //Recursively evaluate the binary algebra tree (Union/Minus) at pattern-group level
                             RDFTable operatorPGResultTable = EvaluateOperatorPatternGroupMemberTree(operatorPGMember, dataSource);
                             //Propagate the Optional flag from the operator node to its result table
@@ -1230,12 +1230,12 @@ namespace RDFSharp.Query
                 => describeResource.IsBlank
                    ? new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                          .AddOperator(
+                          .AddBinaryPatternGroupMember(
                               new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT"))
                                   .Union(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource))))
                    : new RDFSelectQuery()
                         .AddPatternGroup(new RDFPatternGroup()
-                          .AddOperator(
+                          .AddBinaryPatternGroupMember(
                               new RDFPattern(describeResource, new RDFVariable("?PREDICATE"), new RDFVariable("?OBJECT"))
                                   .Union(new RDFPattern(new RDFVariable("?SUBJECT"), describeResource, new RDFVariable("?OBJECT")))
                                   .Union(new RDFPattern(new RDFVariable("?SUBJECT"), new RDFVariable("?PREDICATE"), describeResource))));
@@ -1376,7 +1376,7 @@ namespace RDFSharp.Query
 
                     //OPERATOR TREE NODE (Union/Minus): recurse into both operands so that the
                     //variables of the leaf pattern groups and subqueries are collected for "DESCRIBE *"
-                    case RDFOperatorQueryMember opEvaluableQueryMember:
+                    case RDFBinaryQueryMember opEvaluableQueryMember:
                         FetchDescribeVariablesFromQueryMembers(describeQuery, new RDFQueryMember[] { opEvaluableQueryMember.LeftOperand, opEvaluableQueryMember.RightOperand });
                         break;
                 }
@@ -1391,25 +1391,25 @@ namespace RDFSharp.Query
         /// intermediate result dictionaries don't collide; then the operator (Union → merge, Minus → diff)
         /// is applied to combine left and right result tables into the final table for this tree node.
         /// </summary>
-        internal RDFTable EvaluateOperatorQueryMemberTree(RDFOperatorQueryMember operatorNode, RDFDataSource datasource)
+        internal RDFTable EvaluateOperatorQueryMemberTree(RDFBinaryQueryMember binaryNode, RDFDataSource datasource)
         {
             //Recursively evaluate the left subtree into a result table
-            RDFTable leftResultTable = EvaluateQueryMemberLeafOrSubtree(operatorNode.LeftOperand, datasource);
+            RDFTable leftResultTable = EvaluateQueryMemberLeafOrSubtree(binaryNode.LeftOperand, datasource);
 
             //Recursively evaluate the right subtree into a result table
-            RDFTable rightResultTable = EvaluateQueryMemberLeafOrSubtree(operatorNode.RightOperand, datasource);
+            RDFTable rightResultTable = EvaluateQueryMemberLeafOrSubtree(binaryNode.RightOperand, datasource);
 
             //Apply the binary operator to the two result tables
-            switch (operatorNode.OperatorType)
+            switch (binaryNode.OperatorType)
             {
-                case RDFQueryEnums.RDFQueryOperatorType.Union:
+                case RDFQueryEnums.RDFBinaryOperatorType.Union:
                     //Union merges right into a copy of left (preserving left rows, appending right rows)
                     RDFTable unionResultTable = leftResultTable.Clone();
                     RDFTableEngine.MergeTable(unionResultTable, leftResultTable);
                     RDFTableEngine.MergeTable(unionResultTable, rightResultTable);
                     return unionResultTable;
 
-                case RDFQueryEnums.RDFQueryOperatorType.Minus:
+                case RDFQueryEnums.RDFBinaryOperatorType.Minus:
                     //Minus keeps only left rows that have no compatible right row
                     return RDFTableEngine.DiffJoinTables(leftResultTable, rightResultTable);
 
@@ -1455,7 +1455,7 @@ namespace RDFSharp.Query
                     }
                 }
 
-                case RDFOperatorQueryMember operatorSubtree:
+                case RDFBinaryQueryMember operatorSubtree:
                     //Recurse into the operator subtree
                     return EvaluateOperatorQueryMemberTree(operatorSubtree, datasource);
 
@@ -1470,25 +1470,25 @@ namespace RDFSharp.Query
         /// is evaluated against the datasource; then the operator (Union → merge, Minus → diff) is
         /// applied to combine left and right result tables into the final table for this tree node.
         /// </summary>
-        internal RDFTable EvaluateOperatorPatternGroupMemberTree(RDFOperatorPatternGroupMember operatorNode, RDFDataSource datasource)
+        internal RDFTable EvaluateOperatorPatternGroupMemberTree(RDFBinaryPatternGroupMember binaryNode, RDFDataSource datasource)
         {
             //Recursively evaluate the left subtree into a result table
-            RDFTable leftResultTable = EvaluatePatternGroupMemberLeafOrSubtree(operatorNode.LeftOperand, datasource);
+            RDFTable leftResultTable = EvaluatePatternGroupMemberLeafOrSubtree(binaryNode.LeftOperand, datasource);
 
             //Recursively evaluate the right subtree into a result table
-            RDFTable rightResultTable = EvaluatePatternGroupMemberLeafOrSubtree(operatorNode.RightOperand, datasource);
+            RDFTable rightResultTable = EvaluatePatternGroupMemberLeafOrSubtree(binaryNode.RightOperand, datasource);
 
             //Apply the binary operator to the two result tables
-            switch (operatorNode.OperatorType)
+            switch (binaryNode.OperatorType)
             {
-                case RDFQueryEnums.RDFQueryOperatorType.Union:
+                case RDFQueryEnums.RDFBinaryOperatorType.Union:
                     //Union merges right into a copy of left (preserving left rows, appending right rows)
                     RDFTable unionResultTable = leftResultTable.Clone();
                     RDFTableEngine.MergeTable(unionResultTable, leftResultTable);
                     RDFTableEngine.MergeTable(unionResultTable, rightResultTable);
                     return unionResultTable;
 
-                case RDFQueryEnums.RDFQueryOperatorType.Minus:
+                case RDFQueryEnums.RDFBinaryOperatorType.Minus:
                     //Minus keeps only left rows that have no compatible right row
                     return RDFTableEngine.DiffJoinTables(leftResultTable, rightResultTable);
 
@@ -1513,7 +1513,7 @@ namespace RDFSharp.Query
                     //Evaluate the property path directly against the datasource
                     return ApplyPropertyPath(propertyPathLeaf, datasource);
 
-                case RDFOperatorPatternGroupMember operatorSubtree:
+                case RDFBinaryPatternGroupMember operatorSubtree:
                     //Recurse into the operator subtree
                     return EvaluateOperatorPatternGroupMemberTree(operatorSubtree, datasource);
 

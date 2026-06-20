@@ -41,7 +41,7 @@ public partial class RDFQueryParserTest
         RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
         RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pgA.Union(pgB));
+            .AddBinaryQueryMember(pgA.Union(pgB));
         AssertSelectQueryRoundTrips(query);
     }
 
@@ -52,7 +52,7 @@ public partial class RDFQueryParserTest
         RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
         RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pgA.Union(pgB).Union(pgC));
+            .AddBinaryQueryMember(pgA.Union(pgB).Union(pgC));
         AssertSelectQueryRoundTrips(query);
     }
 
@@ -62,7 +62,7 @@ public partial class RDFQueryParserTest
         RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
         RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pgA.Minus(pgB));
+            .AddBinaryQueryMember(pgA.Minus(pgB));
         AssertSelectQueryRoundTrips(query);
     }
 
@@ -86,7 +86,7 @@ public partial class RDFQueryParserTest
         RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
         RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pgA.Union(pgB.Minus(pgC)));
+            .AddBinaryQueryMember(pgA.Union(pgB.Minus(pgC)));
         AssertSelectQueryRoundTrips(query);
     }
 
@@ -98,7 +98,7 @@ public partial class RDFQueryParserTest
         RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
         RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddOperator(pgA.Union(pgB).Minus(pgC));
+            .AddBinaryQueryMember(pgA.Union(pgB).Minus(pgC));
         AssertSelectQueryRoundTrips(query);
     }
 
@@ -108,12 +108,12 @@ public partial class RDFQueryParserTest
         //OPTIONAL (A ∪ B)
         RDFPatternGroup pgA = MakePG("s", "http://example.org/p1", "o");
         RDFPatternGroup pgB = MakePG("s", "http://example.org/p2", "o");
-        RDFOperatorQueryMember op = pgA.Union(pgB);
+        RDFBinaryQueryMember op = pgA.Union(pgB);
         op.Optional();
         RDFPatternGroup pgC = MakePG("s", "http://example.org/p3", "o");
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(pgC)
-            .AddOperator(op);
+            .AddBinaryQueryMember(op);
         AssertSelectQueryRoundTrips(query);
     }
     #endregion
@@ -128,8 +128,8 @@ public partial class RDFQueryParserTest
 
         List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
         Assert.AreEqual(1, evaluable.Count);
-        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        RDFBinaryQueryMember op = (RDFBinaryQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         Assert.IsInstanceOfType<RDFPatternGroup>(op.LeftOperand);
         Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
     }
@@ -143,12 +143,12 @@ public partial class RDFQueryParserTest
 
         List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
         Assert.AreEqual(1, evaluable.Count);
-        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, op.OperatorType);
+        RDFBinaryQueryMember op = (RDFBinaryQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
         //Left operand is itself a Union(A,B)
-        Assert.IsInstanceOfType<RDFOperatorQueryMember>(op.LeftOperand);
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union,
-            ((RDFOperatorQueryMember)op.LeftOperand).OperatorType);
+        Assert.IsInstanceOfType<RDFBinaryQueryMember>(op.LeftOperand);
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union,
+            ((RDFBinaryQueryMember)op.LeftOperand).OperatorType);
         Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
     }
 
@@ -161,8 +161,8 @@ public partial class RDFQueryParserTest
 
         List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
         Assert.AreEqual(1, evaluable.Count);
-        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        RDFBinaryQueryMember op = (RDFBinaryQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
         Assert.IsInstanceOfType<RDFPatternGroup>(op.LeftOperand);
         Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
     }
@@ -205,8 +205,8 @@ public partial class RDFQueryParserTest
 
         List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
         Assert.AreEqual(1, evaluable.Count);
-        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        RDFBinaryQueryMember op = (RDFBinaryQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
         Assert.IsInstanceOfType<RDFPatternGroup>(op.LeftOperand);
         Assert.IsInstanceOfType<RDFPatternGroup>(op.RightOperand);
     }
@@ -220,12 +220,12 @@ public partial class RDFQueryParserTest
 
         List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
         Assert.AreEqual(1, evaluable.Count);
-        RDFOperatorQueryMember minus = (RDFOperatorQueryMember)evaluable[0];
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, minus.OperatorType);
+        RDFBinaryQueryMember minus = (RDFBinaryQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, minus.OperatorType);
         Assert.IsInstanceOfType<RDFPatternGroup>(minus.LeftOperand);
         //Right operand is Union(B,C)
-        RDFOperatorQueryMember rightUnion = (RDFOperatorQueryMember)minus.RightOperand;
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, rightUnion.OperatorType);
+        RDFBinaryQueryMember rightUnion = (RDFBinaryQueryMember)minus.RightOperand;
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, rightUnion.OperatorType);
     }
 
     [TestMethod]
@@ -237,12 +237,12 @@ public partial class RDFQueryParserTest
 
         List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
         Assert.AreEqual(1, evaluable.Count);
-        RDFOperatorQueryMember union = (RDFOperatorQueryMember)evaluable[0];
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, union.OperatorType);
+        RDFBinaryQueryMember union = (RDFBinaryQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, union.OperatorType);
         Assert.IsInstanceOfType<RDFPatternGroup>(union.LeftOperand);
         //Right operand is Minus(B,C)
-        RDFOperatorQueryMember rightMinus = (RDFOperatorQueryMember)union.RightOperand;
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, rightMinus.OperatorType);
+        RDFBinaryQueryMember rightMinus = (RDFBinaryQueryMember)union.RightOperand;
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, rightMinus.OperatorType);
     }
 
     [TestMethod]
@@ -254,8 +254,8 @@ public partial class RDFQueryParserTest
 
         List<RDFQueryMember> evaluable = query.GetEvaluableQueryMembers().ToList();
         Assert.AreEqual(1, evaluable.Count);
-        RDFOperatorQueryMember op = (RDFOperatorQueryMember)evaluable[0];
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Minus, op.OperatorType);
+        RDFBinaryQueryMember op = (RDFBinaryQueryMember)evaluable[0];
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
         //Left operand must be a subquery wrapping A and B
         Assert.IsInstanceOfType<RDFSelectQuery>(op.LeftOperand);
         RDFSelectQuery leftSubQuery = (RDFSelectQuery)op.LeftOperand;
@@ -463,8 +463,8 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString(
             "SELECT * WHERE { GRAPH ?g { { ?s <http://example.org/p1> ?o } UNION { ?s <http://example.org/p2> ?o } } }");
 
-        RDFOperatorQueryMember union = (RDFOperatorQueryMember)query.GetEvaluableQueryMembers().Single();
-        Assert.AreEqual(RDFQueryEnums.RDFQueryOperatorType.Union, union.OperatorType);
+        RDFBinaryQueryMember union = (RDFBinaryQueryMember)query.GetEvaluableQueryMembers().Single();
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, union.OperatorType);
         RDFPattern leftPattern = ((RDFPatternGroup)union.LeftOperand).GetPatterns().Single();
         RDFPattern rightPattern = ((RDFPatternGroup)union.RightOperand).GetPatterns().Single();
         Assert.AreEqual("?G", leftPattern.Context.ToString());

@@ -68,8 +68,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the body of the operation
         /// </summary>
-        public RDFInsertWhereOperation AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFInsertWhereOperation>(operatorMember);
+        public RDFInsertWhereOperation AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFInsertWhereOperation>(binaryMember);
 
         /// <summary>
         /// Adds the given modifier to the operation

@@ -30,7 +30,6 @@ namespace RDFSharp.Query
         /// <summary>
         /// <para>
         /// Parses the WHERE clause of a SELECT query and attaches the resulting algebra members to
-        /// <paramref name="selectQuery"/>.
         /// </para>
         /// <para>
         /// SPARQL grammar: <c>WhereClause ::= 'WHERE'? GroupGraphPattern</c>.
@@ -100,7 +99,7 @@ namespace RDFSharp.Query
         /// <item>
         ///   <b>GroupOrUnionGraphPattern <c>{ … }</c></b> — delegated to
         ///   <see cref="ParseGroupOrUnionGraphPattern"/>; a UNION chain inside the braces is folded into a
-        ///   single left-associative <see cref="RDFOperatorQueryMember"/> tree node before being appended.
+        ///   single left-associative <see cref="RDFBinaryQueryMember"/> tree node before being appended.
         /// </item>
         /// <item>
         ///   <b>OPTIONAL</b> — the following <c>GroupGraphPattern</c> operand is parsed, its
@@ -111,7 +110,7 @@ namespace RDFSharp.Query
         ///   <b>MINUS</b> — per the SPARQL spec, MINUS binds the ENTIRE left side accumulated so far
         ///   (not just the immediately preceding element). The current accumulator is therefore collapsed to
         ///   a single algebra unit — wrapping in a <c>SELECT *</c> subquery when it contains more than one
-        ///   joined member — and an <see cref="RDFOperatorQueryMember"/>(<c>Minus</c>, collapsedLeft, right)
+        ///   joined member — and an <see cref="RDFBinaryQueryMember"/>(<c>Minus</c>, collapsedLeft, right)
         ///   tree node replaces the entire accumulator. A leading MINUS with an empty accumulator is treated
         ///   resiliently: the right operand is kept as a plain non-MINUS element.
         /// </item>
@@ -177,7 +176,7 @@ namespace RDFSharp.Query
                 //
                 //ASYMMETRY NOTE (why OPTIONAL is a flat flag while MINUS/UNION are tree nodes):
                 //OPTIONAL stays a plain accumulator member carrying IsOptional=true, whereas MINUS and UNION
-                //become explicit RDFOperatorQueryMember binary tree nodes. This is deliberate and rests on how
+                //become explicit RDFBinaryQueryMember binary tree nodes. This is deliberate and rests on how
                 //the engine evaluates the top-level member list: RDFTableEngine.CombineTables performs a LEFT-FOLD
                 //(OuterJoinTables), and when a member's table is optional it left-joins instead of inner-joins.
                 //That fold therefore ALREADY binds the whole accumulated left side as OPTIONAL's left operand, for
@@ -227,8 +226,8 @@ namespace RDFSharp.Query
                         //the accumulator, and push the resulting Minus node as the only element in it.
                         RDFQueryMember minusLeftOperand = CollapseToSingle(accumulatedMembers);
                         accumulatedMembers.Clear();
-                        accumulatedMembers.Add(new RDFOperatorQueryMember(
-                            RDFQueryEnums.RDFQueryOperatorType.Minus, minusLeftOperand, minusRightOperand));
+                        accumulatedMembers.Add(new RDFBinaryQueryMember(
+                            RDFQueryEnums.RDFBinaryOperatorType.Minus, minusLeftOperand, minusRightOperand));
                     }
                     continue;
                 }
@@ -364,7 +363,7 @@ namespace RDFSharp.Query
         /// <para>
         /// A bare group with no UNION continuation is returned as-is from <see cref="ParseGroupGraphPattern"/>.
         /// A chain of two or more groups connected by UNION is folded left-to-right into a binary
-        /// <see cref="RDFOperatorQueryMember"/>(<c>Union</c>, left, right) tree, matching the spec's
+        /// <see cref="RDFBinaryQueryMember"/>(<c>Union</c>, left, right) tree, matching the spec's
         /// left-associative union semantics:
         /// <code>
         ///   A UNION B UNION C  →  Union( Union(A, B), C )
@@ -407,8 +406,8 @@ namespace RDFSharp.Query
                 RDFQueryMember unionRightOperand = ParseGroupGraphPattern(parserContext);
 
                 //Fold: the new left side is a Union tree node combining the running left with the new right
-                unionAccumulatedLeft = new RDFOperatorQueryMember(
-                    RDFQueryEnums.RDFQueryOperatorType.Union, unionAccumulatedLeft, unionRightOperand);
+                unionAccumulatedLeft = new RDFBinaryQueryMember(
+                    RDFQueryEnums.RDFBinaryOperatorType.Union, unionAccumulatedLeft, unionRightOperand);
 
                 //After consuming the right group, the reader may again be on whitespace — skip it before
                 //the next iteration's UNION peek
@@ -682,7 +681,7 @@ namespace RDFSharp.Query
         /// <item><see cref="RDFSelectQuery"/> — an inline subquery (multi-element group collapsed to a
         ///   single subquery by <see cref="CollapseToSingle"/>); its IsOptional property controls whether
         ///   the engine left-joins or inner-joins it.</item>
-        /// <item><see cref="RDFOperatorQueryMember"/> — an OPTIONAL whose operand is itself a nested
+        /// <item><see cref="RDFBinaryQueryMember"/> — an OPTIONAL whose operand is itself a nested
         ///   algebra tree (e.g. OPTIONAL { { A } UNION { B } }); the tree node's IsOptional property
         ///   tells the engine to treat the whole tree as an optional branch.</item>
         /// </list>
@@ -694,7 +693,7 @@ namespace RDFSharp.Query
                 patternGroup.IsOptional = true;
             else if (algebraMember is RDFSelectQuery subQuery)
                 subQuery.IsOptional = true;
-            else if (algebraMember is RDFOperatorQueryMember operatorNode)
+            else if (algebraMember is RDFBinaryQueryMember operatorNode)
                 operatorNode.IsOptional = true;
         }
 
@@ -711,8 +710,8 @@ namespace RDFSharp.Query
         /// <item><see cref="RDFSelectQuery"/> — an inline subquery (e.g. a multi-member group body
         ///   collapsed by <see cref="CollapseToSingle"/>, or an explicit SubSelect); added via
         ///   <see cref="RDFSelectQuery.AddSubQuery"/>.</item>
-        /// <item><see cref="RDFOperatorQueryMember"/> — a binary algebra tree node (Union / Minus /
-        ///   Optional-operator); added via <see cref="RDFSelectQuery.AddOperator"/>.</item>
+        /// <item><see cref="RDFBinaryQueryMember"/> — a binary algebra tree node (Union / Minus /
+        ///   Optional-operator); added via <see cref="RDFSelectQuery.AddBinaryQueryMember"/>.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -722,8 +721,8 @@ namespace RDFSharp.Query
                 targetQuery.AddPatternGroup<TQuery>(patternGroup);
             else if (memberToAdd is RDFSelectQuery subQuery)
                 targetQuery.AddSubQuery<TQuery>(subQuery);
-            else if (memberToAdd is RDFOperatorQueryMember operatorNode)
-                targetQuery.AddOperator<TQuery>(operatorNode);
+            else if (memberToAdd is RDFBinaryQueryMember operatorNode)
+                targetQuery.AddBinaryQueryMember<TQuery>(operatorNode);
         }
         #endregion
     }

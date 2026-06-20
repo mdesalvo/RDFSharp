@@ -187,7 +187,7 @@ namespace RDFSharp.Query
         /// <c>?x + COUNT(?y)</c>) to a reference over a HIDDEN aggregator column: a freshly built aggregator is
         /// parked in <paramref name="pendingAggregators"/> (so GROUP BY — explicit or implicit — absorbs it) and
         /// flagged hidden, so the engine keeps its column out of the output projection while the surrounding
-        /// expression reads it. The returned <see cref="RDFAggregateReferenceExpression"/> re-prints the original
+        /// expression reads it. The returned <see cref="RDFExpression"/> re-prints the original
         /// aggregate call instead of the synthetic column name.
         /// </summary>
         private static RDFExpression ResolveProjectionAggregateReference(List<RDFAggregator> pendingAggregators, RDFParsedAggregator parsedAggregate, ref int hiddenProjectionAggregatorCounter)
