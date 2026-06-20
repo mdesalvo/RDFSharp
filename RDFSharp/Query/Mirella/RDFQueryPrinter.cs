@@ -79,7 +79,7 @@ namespace RDFSharp.Query
                 {
                     //Visible aggregate projections. Hidden aggregators only feed HAVING / projection expressions and
                     //must NOT surface as projected columns, so they are excluded here.
-                    string printedAggregators = string.Join(" ", gm.Aggregators.Where(ag => !(ag is RDFPartitionAggregator) && !ag.IsHidden));
+                    string printedAggregators = string.Join(" ", gm.ProjectableAggregators);
 
                     //Computed projections wrapping an aggregate live in ProjectionVars (the GroupBy modifier owns the
                     //bare aggregate columns, but '?x + COUNT(?y) AS ?v' is a per-solution expression over them); any

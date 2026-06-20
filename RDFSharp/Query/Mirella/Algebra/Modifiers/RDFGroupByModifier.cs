@@ -36,9 +36,24 @@ namespace RDFSharp.Query
         internal List<RDFGroupByCondition> PartitionConditions { get; set; }
 
         /// <summary>
-        /// List of aggregators applied on the result groups
+        /// List of aggregators applied on the result groups. It also holds the automatic <see cref="RDFPartitionAggregator"/>
+        /// of each partition variable; use <see cref="EvaluableAggregators"/> / <see cref="ProjectableAggregators"/> to filter.
         /// </summary>
         internal List<RDFAggregator> Aggregators { get; set; }
+
+        /// <summary>
+        /// The aggregators that actually evaluate an aggregate function (COUNT/SUM/AVG/...): every aggregator except
+        /// the automatic partition ones.
+        /// </summary>
+        internal IEnumerable<RDFAggregator> EvaluableAggregators
+            => Aggregators.Where(ag => !(ag is RDFPartitionAggregator));
+
+        /// <summary>
+        /// The evaluable aggregators that ALSO surface as query result columns: the <see cref="EvaluableAggregators"/>
+        /// minus the hidden ones (which only feed a HAVING / projection expression).
+        /// </summary>
+        internal IEnumerable<RDFAggregator> ProjectableAggregators
+            => EvaluableAggregators.Where(ag => !ag.IsHidden);
 
         /// <summary>
         /// HAVING condition: a single, all-encompassing boolean expression evaluated on the RESULT table (after
@@ -109,7 +124,7 @@ namespace RDFSharp.Query
             if (aggregator != null)
             {
                 //There cannot exist two aggregators projecting the same variable (exclude automatic partition aggregators from the check)
-                if (Aggregators.Any(ag => !(ag is RDFPartitionAggregator) && ag.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
+                if (EvaluableAggregators.Any(ag => ag.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
                     throw new RDFQueryException($"Cannot add aggregator to GroupBy modifier because the given projection variable '{aggregator.ProjectionVariable}' is already used by another aggregator.");
 
                 Aggregators.Add(aggregator);
@@ -301,7 +316,7 @@ namespace RDFSharp.Query
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {string.Join(",", unavailableAggregatorVariables.Distinct())}");
 
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
-            List<string> commonPartitionProjectionVariables = PartitionConditions.Where(condition => Aggregators.Any(ag => !(ag is RDFPartitionAggregator) && condition.Variable.Equals(ag.ProjectionVariable)))
+            List<string> commonPartitionProjectionVariables = PartitionConditions.Where(condition => EvaluableAggregators.Any(ag => condition.Variable.Equals(ag.ProjectionVariable)))
                                                                                  .Select(condition => condition.Variable.ToString())
                                                                                  .ToList();
             if (commonPartitionProjectionVariables.Count > 0)

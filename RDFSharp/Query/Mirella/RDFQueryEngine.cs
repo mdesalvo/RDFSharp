@@ -431,7 +431,7 @@ namespace RDFSharp.Query
                     groupByModifier.PartitionConditions.ForEach(condition => selectQuery.AddProjectionVariable(condition.Variable));
                     //Hidden aggregators exist only to feed HAVING/projection expressions: keep them OUT of the
                     //output projection (their materialized column stays in the table to be read by those expressions)
-                    foreach (RDFAggregator visibleAggregator in groupByModifier.Aggregators.Where(ag => !ag.IsHidden))
+                    foreach (RDFAggregator visibleAggregator in groupByModifier.ProjectableAggregators)
                         selectQuery.AddProjectionVariable(visibleAggregator.ProjectionVariable);
                     //Re-attach the computed projections so the engine evaluates them over the grouped/aggregated table
                     computedProjections.ForEach(cp => selectQuery.AddProjectionVariable(cp.Key, cp.Value.Item2));
