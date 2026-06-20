@@ -31,9 +31,9 @@ public class RDFCountAggregatorTest
         RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(COUNT(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -55,9 +55,9 @@ public class RDFCountAggregatorTest
             .Distinct() as RDFCountAggregator;
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(COUNT(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -199,7 +199,7 @@ public class RDFCountAggregatorTest
 
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.IsCountAll);
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(COUNT(*) AS ?PROJVAR)", System.StringComparison.Ordinal));
     }
 
@@ -210,7 +210,7 @@ public class RDFCountAggregatorTest
 
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.IsCountAll);
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(COUNT(DISTINCT *) AS ?PROJVAR)", System.StringComparison.Ordinal));
     }
 
@@ -260,7 +260,7 @@ public class RDFCountAggregatorTest
 
         Assert.IsNotNull(aggregator);
         Assert.IsFalse(aggregator.IsCountAll);
-        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsNotNull(aggregator.Metadata.AggregatorExpression);
         Assert.IsTrue(aggregator.ToString().Equals("(COUNT((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
     }
 

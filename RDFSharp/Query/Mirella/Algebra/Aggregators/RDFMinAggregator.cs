@@ -47,7 +47,7 @@ namespace RDFSharp.Query
         public RDFMinAggregator(RDFExpression aggrExpression, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(MakeExpressionVariable(projVariable), projVariable)
         {
             AggregatorFlavor = aggregatorFlavor;
-            AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFMinAggregator because given \"aggrExpression\" parameter is null.");
+            Metadata.AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFMinAggregator because given \"aggrExpression\" parameter is null.");
         }
         #endregion
 
@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         /// The MIN function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
         protected override string AggregatorFunction
-            => IsDistinct ? $"MIN(DISTINCT {AggregatorArgument})" : $"MIN({AggregatorArgument})";
+            => Metadata.IsDistinct ? $"MIN(DISTINCT {AggregatorArgument})" : $"MIN({AggregatorArgument})";
         #endregion
 
         #region Methods
@@ -82,7 +82,7 @@ namespace RDFSharp.Query
         {
             //Get row value
             double rowValue = GetRowValueAsNumber(tableRow);
-            if (IsDistinct)
+            if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
                 if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
@@ -106,7 +106,7 @@ namespace RDFSharp.Query
         {
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
-            if (IsDistinct)
+            if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
                 if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
@@ -133,7 +133,7 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
@@ -170,7 +170,7 @@ namespace RDFSharp.Query
 
             //Add aggregator value to bindings
             double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
-            bindings.Add(ProjectionVariable.VariableName,
+            bindings.Add(Metadata.ProjectionVariable.VariableName,
                 aggregatorValue.Equals(double.NaN)
                     ? string.Empty
                     : new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture),RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
@@ -188,7 +188,7 @@ namespace RDFSharp.Query
 
             //Add aggregator value to bindings
             string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
-            bindings.Add(ProjectionVariable.VariableName, aggregatorValue);
+            bindings.Add(Metadata.ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

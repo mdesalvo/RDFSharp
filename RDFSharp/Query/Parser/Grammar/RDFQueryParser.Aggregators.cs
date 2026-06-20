@@ -180,7 +180,7 @@ namespace RDFSharp.Query
 
             //Carry the aggregated expression (when any) so the modifier materializes it and the printer re-emits it
             if (parsedAggregator.Expression != null)
-                aggregator.AggregatorExpression = parsedAggregator.Expression;
+                aggregator.Metadata.AggregatorExpression = parsedAggregator.Expression;
 
             if (parsedAggregator.IsDistinct)
                 aggregator.Distinct();
@@ -199,7 +199,7 @@ namespace RDFSharp.Query
             if (parsedAggregator.IsCountAll)
                 return aggregator is RDFCountAggregator countAggregator && countAggregator.IsCountAll;
 
-            if (!aggregator.AggregatorVariable.Equals(parsedAggregator.AggregatorVariable))
+            if (!aggregator.Metadata.AggregatorVariable.Equals(parsedAggregator.AggregatorVariable))
                 return false;
 
             switch (parsedAggregator.Function)

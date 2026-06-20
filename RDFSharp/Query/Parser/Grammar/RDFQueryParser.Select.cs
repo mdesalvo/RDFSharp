@@ -193,10 +193,10 @@ namespace RDFSharp.Query
         private static RDFExpression ResolveProjectionAggregateReference(List<RDFAggregator> pendingAggregators, RDFParsedAggregator parsedAggregate, ref int hiddenProjectionAggregatorCounter)
         {
             RDFAggregator hiddenAggregator = BuildAggregator(parsedAggregate, MakeHiddenProjectionVariable(hiddenProjectionAggregatorCounter++));
-            hiddenAggregator.IsHidden = true;
+            hiddenAggregator.Metadata.IsHidden = true;
             pendingAggregators.Add(hiddenAggregator);
             //Reference the synthetic column it produces; the printer re-prints that column as the original aggregate call
-            return new RDFVariableExpression(hiddenAggregator.ProjectionVariable);
+            return new RDFVariableExpression(hiddenAggregator.Metadata.ProjectionVariable);
         }
 
         /// <summary>

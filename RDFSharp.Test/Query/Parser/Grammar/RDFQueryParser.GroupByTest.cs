@@ -139,7 +139,7 @@ public partial class RDFQueryParserTest
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
         Assert.IsNotNull(groupByModifier.HavingExpression);
-        Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.IsHidden));
+        Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.Metadata.IsHidden));
 
         //PRINTING: the hidden AVG re-prints as its original call (NOT the synthetic '__HAVINGAGG' column), and the
         //printed query round-trips idempotently
@@ -277,7 +277,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (?cat + COUNT(?w) AS ?v) WHERE { ?e <http://example.org/cat> ?cat . ?e <http://example.org/w> ?w } GROUP BY ?cat");
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.IsHidden));
+        Assert.IsTrue(groupByModifier.Aggregators.Any(ag => ag.Metadata.IsHidden));
         //PRINTING: the nested aggregate re-prints as 'COUNT(?W)' (NOT the synthetic '__PROJAGG' column), and the
         //printed form round-trips idempotently
         Assert.IsTrue(query.ToString().Contains("((?CAT + COUNT(?W)) AS ?V)"));

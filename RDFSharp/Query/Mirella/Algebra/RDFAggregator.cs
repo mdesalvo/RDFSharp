@@ -29,39 +29,17 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable aggregated by this aggregator, when the argument is a bare variable (e.g. SUM(?x)).
+        /// The aggregator's metadata: the aggregated argument (variable or expression), the projection target, and the
+        /// distinct/hidden flags. Grouped into one descriptor so the aggregator class itself stays focused on behavior
+        /// (partition/projection execution) rather than carrying a flat bag of definition fields. See
+        /// <see cref="RDFAggregatorMetadata"/>.
         /// </summary>
-        public RDFVariable AggregatorVariable { get; internal set; }
+        internal RDFAggregatorMetadata Metadata { get; }
 
         /// <summary>
-        /// Expression aggregated by this aggregator, when the argument is not a bare variable (e.g. SUM(?x + ?y)).
-        /// When set, the GroupBy modifier materializes it into the (synthetic) AggregatorVariable column before
-        /// partitioning, so the aggregation machinery keeps working over a single column; the printer re-emits the
-        /// original expression instead of the synthetic variable.
-        /// </summary>
-        public RDFExpression AggregatorExpression { get; internal set; }
-
-        /// <summary>
-        /// Variable used for projection of aggregator results
-        /// </summary>
-        public RDFVariable ProjectionVariable { get; internal set; }
-
-        /// <summary>
-        /// Flag indicating that the aggregator discards duplicates
-        /// </summary>
-        public bool IsDistinct { get; internal set; }
-
-        /// <summary>
-        /// Flag indicating that the aggregator exists ONLY to feed a composite expression (a free HAVING condition,
-        /// or a projection like '?x + COUNT(?y)') rather than to be projected as a query result column. The GroupBy
-        /// modifier still computes its value into a (synthetic) column, but the engine does NOT add it to the
-        /// projection, so it never surfaces as an output column.
-        /// </summary>
-        internal bool IsHidden { get; set; }
-
-        /// <summary>
-        /// Whether the aggregator needs its AggregatorVariable to exist as a column in the working table. True for
-        /// every value-aggregator; overridden to false by COUNT(*), which counts rows without reading any column.
+        /// Whether the aggregator needs its aggregated variable to exist as a column in the working table. True for
+        /// every value-aggregator; overridden to false by COUNT(*), which counts rows without reading any column. This
+        /// stays on the aggregator (not in the metadata) because it is polymorphic BEHAVIOR, not a data field.
         /// </summary>
         internal virtual bool RequiresAggregatorColumn => true;
 
@@ -90,8 +68,7 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
         {
-            AggregatorVariable = aggregatorVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
-            ProjectionVariable = projectionVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
+            Metadata = new RDFAggregatorMetadata(aggregatorVariable, projectionVariable);
             AggregatorContext = new RDFAggregatorContext();
         }
         #endregion
@@ -109,7 +86,7 @@ namespace RDFSharp.Query
         /// aggregator has no call form (the partition aggregator).
         /// </summary>
         public override string ToString()
-            => AggregatorFunction.Length == 0 ? string.Empty : $"({AggregatorFunction} AS {ProjectionVariable})";
+            => AggregatorFunction.Length == 0 ? string.Empty : $"({AggregatorFunction} AS {Metadata.ProjectionVariable})";
         #endregion
 
         #region Methods
@@ -118,7 +95,7 @@ namespace RDFSharp.Query
         /// expression (SUM(?x + ?y)), otherwise the bare aggregated variable. Used by every aggregator's ToString.
         /// </summary>
         protected string AggregatorArgument
-            => AggregatorExpression != null ? AggregatorExpression.ToString() : AggregatorVariable.ToString();
+            => Metadata.AggregatorExpression != null ? Metadata.AggregatorExpression.ToString() : Metadata.AggregatorVariable.ToString();
 
         /// <summary>
         /// Builds the (synthetic) aggregator variable backing an aggregate-over-expression (e.g. SUM(?x + ?y)): a
@@ -165,9 +142,9 @@ namespace RDFSharp.Query
         {
             try
             {
-                if (tableRow.IsBound(AggregatorVariable.VariableName))
+                if (tableRow.IsBound(Metadata.AggregatorVariable.VariableName))
                 {
-                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[AggregatorVariable.VariableName]);
+                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[Metadata.AggregatorVariable.VariableName]);
                     //Only numeric typedliterals are suitable for processing
                     if (rowAggregatorValue is RDFTypedLiteral rowAggregatorValueTLit && rowAggregatorValueTLit.HasDecimalDatatype())
                     {
@@ -190,8 +167,8 @@ namespace RDFSharp.Query
         {
             try
             {
-                return tableRow.IsBound(AggregatorVariable.VariableName)
-                    ? tableRow[AggregatorVariable.VariableName]
+                return tableRow.IsBound(Metadata.AggregatorVariable.VariableName)
+                    ? tableRow[Metadata.AggregatorVariable.VariableName]
                     : string.Empty;
             }
             catch { return string.Empty; }
@@ -213,11 +190,66 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFAggregator Distinct()
         {
-            IsDistinct = true;
+            Metadata.IsDistinct = true;
             return this;
         }
         #endregion
     }
+
+    #region RDFAggregatorMetadata
+    /// <summary>
+    /// RDFAggregatorMetadata bundles the DEFINITION of an aggregator (what it aggregates, where it projects, and its
+    /// distinct/hidden flags), keeping it together as one descriptor instead of a flat bag of fields scattered on
+    /// <see cref="RDFAggregator"/>. It carries data only — polymorphic behavior (e.g. RequiresAggregatorColumn) and
+    /// execution state (the AggregatorContext) stay on the aggregator.
+    /// </summary>
+    internal sealed class RDFAggregatorMetadata
+    {
+        #region Properties
+        /// <summary>
+        /// Variable aggregated by the aggregator, when the argument is a bare variable (e.g. SUM(?x)). For an
+        /// expression argument it is the (synthetic) column the expression is materialized into.
+        /// </summary>
+        internal RDFVariable AggregatorVariable { get; set; }
+
+        /// <summary>
+        /// Expression aggregated by the aggregator, when the argument is not a bare variable (e.g. SUM(?x + ?y)). When
+        /// set, the GroupBy modifier materializes it into the (synthetic) <see cref="AggregatorVariable"/> column
+        /// before partitioning, and the printer re-emits the original expression instead of the synthetic variable.
+        /// </summary>
+        internal RDFExpression AggregatorExpression { get; set; }
+
+        /// <summary>
+        /// Variable used for projection of the aggregator's results.
+        /// </summary>
+        internal RDFVariable ProjectionVariable { get; set; }
+
+        /// <summary>
+        /// Whether the aggregator discards duplicates (DISTINCT).
+        /// </summary>
+        internal bool IsDistinct { get; set; }
+
+        /// <summary>
+        /// Whether the aggregator exists ONLY to feed a composite expression (a free HAVING condition, or a projection
+        /// like '?x + COUNT(?y)') rather than to be projected as a query result column. The GroupBy modifier still
+        /// computes its value into a (synthetic) column, but the engine keeps it out of the output projection.
+        /// </summary>
+        internal bool IsHidden { get; set; }
+        #endregion
+
+        #region Ctor
+        /// <summary>
+        /// Builds the metadata for an aggregator on the given aggregated variable and projection name.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When either variable is null.</exception>
+        internal RDFAggregatorMetadata(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
+        {
+            AggregatorVariable = aggregatorVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
+            ProjectionVariable = projectionVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
+        }
+        #endregion
+    }
+    #endregion
 
     #region RDFAggregatorContext
     /// <summary>

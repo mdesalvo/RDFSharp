@@ -223,15 +223,15 @@ namespace RDFSharp.Query
             RDFAggregator existingAggregator = groupByModifier.Aggregators
                 .FirstOrDefault(ag => !(ag is RDFPartitionAggregator) && MatchesAggregator(ag, parsedAggregate));
             if (existingAggregator != null)
-                return new RDFVariableExpression(existingAggregator.ProjectionVariable);
+                return new RDFVariableExpression(existingAggregator.Metadata.ProjectionVariable);
 
             //Otherwise register a hidden aggregator: it materializes the value into a synthetic column the HAVING
             //condition reads (engine keeps it out of the output projection); the printer re-prints that column as the
             //original aggregate call, so the printed query round-trips
             RDFAggregator hiddenAggregator = BuildAggregator(parsedAggregate, MakeHiddenHavingVariable(hiddenHavingAggregatorCounter++));
-            hiddenAggregator.IsHidden = true;
+            hiddenAggregator.Metadata.IsHidden = true;
             groupByModifier.AddAggregator(hiddenAggregator);
-            return new RDFVariableExpression(hiddenAggregator.ProjectionVariable);
+            return new RDFVariableExpression(hiddenAggregator.Metadata.ProjectionVariable);
         }
 
         /// <summary>

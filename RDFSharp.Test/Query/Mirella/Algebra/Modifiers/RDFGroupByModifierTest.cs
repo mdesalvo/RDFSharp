@@ -39,8 +39,8 @@ public class RDFGroupByModifierTest
         Assert.IsTrue(modifier.PartitionConditions[0].Variable.Equals(variable));
         Assert.IsNotNull(modifier.Aggregators);
         Assert.HasCount(1, modifier.Aggregators);
-        Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable));
-        Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.ProjectionVariable.Equals(variable));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.AggregatorVariable.Equals(variable));
         Assert.IsTrue(modifier.IsEvaluable);
         Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);
@@ -79,10 +79,10 @@ public class RDFGroupByModifierTest
         Assert.IsTrue(modifier.PartitionConditions[0].Variable.Equals(variable1));
         Assert.IsNotNull(modifier.Aggregators);
         Assert.HasCount(2, modifier.Aggregators);
-        Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable1));
-        Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable1));
-        Assert.IsTrue(modifier.Aggregators[1].AggregatorVariable.Equals(variable2));
-        Assert.IsTrue(modifier.Aggregators[1].ProjectionVariable.Equals(variable3));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.AggregatorVariable.Equals(variable1));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.ProjectionVariable.Equals(variable1));
+        Assert.IsTrue(modifier.Aggregators[1].Metadata.AggregatorVariable.Equals(variable2));
+        Assert.IsTrue(modifier.Aggregators[1].Metadata.ProjectionVariable.Equals(variable3));
         Assert.IsTrue(modifier.IsEvaluable);
         Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR1", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);

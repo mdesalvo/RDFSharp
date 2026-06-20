@@ -53,7 +53,7 @@ namespace RDFSharp.Query
         /// minus the hidden ones (which only feed a HAVING / projection expression).
         /// </summary>
         internal IEnumerable<RDFAggregator> ProjectableAggregators
-            => EvaluableAggregators.Where(ag => !ag.IsHidden);
+            => EvaluableAggregators.Where(ag => !ag.Metadata.IsHidden);
 
         /// <summary>
         /// HAVING condition: a single, all-encompassing boolean expression evaluated on the RESULT table (after
@@ -124,8 +124,8 @@ namespace RDFSharp.Query
             if (aggregator != null)
             {
                 //There cannot exist two aggregators projecting the same variable (exclude automatic partition aggregators from the check)
-                if (EvaluableAggregators.Any(ag => ag.ProjectionVariable.Equals(aggregator.ProjectionVariable)))
-                    throw new RDFQueryException($"Cannot add aggregator to GroupBy modifier because the given projection variable '{aggregator.ProjectionVariable}' is already used by another aggregator.");
+                if (EvaluableAggregators.Any(ag => ag.Metadata.ProjectionVariable.Equals(aggregator.Metadata.ProjectionVariable)))
+                    throw new RDFQueryException($"Cannot add aggregator to GroupBy modifier because the given projection variable '{aggregator.Metadata.ProjectionVariable}' is already used by another aggregator.");
 
                 Aggregators.Add(aggregator);
             }
@@ -162,9 +162,9 @@ namespace RDFSharp.Query
         /// </summary>
         internal string ReprintHiddenAggregateCalls(string renderedExpression)
         {
-            foreach (RDFAggregator hiddenAggregator in Aggregators.Where(ag => ag.IsHidden)
-                                                                  .OrderByDescending(ag => ag.ProjectionVariable.ToString().Length))
-                renderedExpression = renderedExpression.Replace(hiddenAggregator.ProjectionVariable.ToString(), hiddenAggregator.GetAggregateCallString());
+            foreach (RDFAggregator hiddenAggregator in Aggregators.Where(ag => ag.Metadata.IsHidden)
+                                                                  .OrderByDescending(ag => ag.Metadata.ProjectionVariable.ToString().Length))
+                renderedExpression = renderedExpression.Replace(hiddenAggregator.Metadata.ProjectionVariable.ToString(), hiddenAggregator.GetAggregateCallString());
             return renderedExpression;
         }
 
@@ -215,8 +215,8 @@ namespace RDFSharp.Query
             List<(RDFVariable, RDFExpression, bool)> computedColumns = new List<(RDFVariable, RDFExpression, bool)>();
             foreach (RDFGroupByCondition condition in PartitionConditions.Where(c => c.IsExpression))
                 computedColumns.Add((condition.Variable, condition.Expression, condition.IsSynthetic));
-            foreach (RDFAggregator aggregator in Aggregators.Where(ag => ag.AggregatorExpression != null))
-                computedColumns.Add((aggregator.AggregatorVariable, aggregator.AggregatorExpression, false));
+            foreach (RDFAggregator aggregator in Aggregators.Where(ag => ag.Metadata.AggregatorExpression != null))
+                computedColumns.Add((aggregator.Metadata.AggregatorVariable, aggregator.Metadata.AggregatorExpression, false));
             return computedColumns;
         }
 
@@ -309,14 +309,14 @@ namespace RDFSharp.Query
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for partitioning: {string.Join(",", unavailablePartitionVariables.Distinct())}");
 
             //Every aggregator variable must be found in the working table as a column (COUNT(*) reads no column)
-            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => ag.RequiresAggregatorColumn && !table.HasColumn(ag.AggregatorVariable.ToString()))
-                                                                     .Select(ag => ag.AggregatorVariable.ToString())
+            List<string> unavailableAggregatorVariables = Aggregators.Where(ag => ag.RequiresAggregatorColumn && !table.HasColumn(ag.Metadata.AggregatorVariable.ToString()))
+                                                                     .Select(ag => ag.Metadata.AggregatorVariable.ToString())
                                                                      .ToList();
             if (unavailableAggregatorVariables.Count > 0)
                 throw new RDFQueryException($"Cannot apply GroupBy modifier because the working table does not contain the following columns needed for aggregation: {string.Join(",", unavailableAggregatorVariables.Distinct())}");
 
             //There should NOT be intersection between partition variables (GroupBy) and projection variables (Aggregators)
-            List<string> commonPartitionProjectionVariables = PartitionConditions.Where(condition => EvaluableAggregators.Any(ag => condition.Variable.Equals(ag.ProjectionVariable)))
+            List<string> commonPartitionProjectionVariables = PartitionConditions.Where(condition => EvaluableAggregators.Any(ag => condition.Variable.Equals(ag.Metadata.ProjectionVariable)))
                                                                                  .Select(condition => condition.Variable.ToString())
                                                                                  .ToList();
             if (commonPartitionProjectionVariables.Count > 0)

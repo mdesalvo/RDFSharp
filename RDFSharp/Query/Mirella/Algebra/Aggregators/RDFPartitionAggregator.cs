@@ -61,7 +61,7 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
@@ -82,8 +82,8 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            if (!bindings.ContainsKey(ProjectionVariable.VariableName))
-                bindings.Add(ProjectionVariable.VariableName, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty));
+            if (!bindings.ContainsKey(Metadata.ProjectionVariable.VariableName))
+                bindings.Add(Metadata.ProjectionVariable.VariableName, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty));
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

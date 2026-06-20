@@ -32,9 +32,9 @@ public class RDFAggregatorTest
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -56,9 +56,9 @@ public class RDFAggregatorTest
         aggregator.Distinct();
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -69,10 +69,10 @@ public class RDFAggregatorTest
     public void ShouldSetHiddenFlag()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        Assert.IsFalse(aggregator.IsHidden);
+        Assert.IsFalse(aggregator.Metadata.IsHidden);
 
-        aggregator.IsHidden = true;
-        Assert.IsTrue(aggregator.IsHidden);
+        aggregator.Metadata.IsHidden = true;
+        Assert.IsTrue(aggregator.Metadata.IsHidden);
     }
 
     [TestMethod]

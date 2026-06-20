@@ -102,9 +102,9 @@ public partial class RDFQueryParserTest
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
         RDFAggregator aggregator = groupByModifier.Aggregators.OfType<RDFCountAggregator>().Single();
-        Assert.AreEqual("?E", aggregator.AggregatorVariable.ToString());
-        Assert.AreEqual("?CNT", aggregator.ProjectionVariable.ToString());
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.AreEqual("?E", aggregator.Metadata.AggregatorVariable.ToString());
+        Assert.AreEqual("?CNT", aggregator.Metadata.ProjectionVariable.ToString());
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
     }
 
     [TestMethod]
@@ -113,7 +113,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?c (COUNT(DISTINCT ?e) AS ?cnt) WHERE { ?e ?p ?c } GROUP BY ?c");
 
         RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
-        Assert.IsTrue(groupByModifier.Aggregators.OfType<RDFCountAggregator>().Single().IsDistinct);
+        Assert.IsTrue(groupByModifier.Aggregators.OfType<RDFCountAggregator>().Single().Metadata.IsDistinct);
     }
 
     [TestMethod]
@@ -155,7 +155,7 @@ public partial class RDFQueryParserTest
 
         RDFGroupByModifier groupBy = query.GetModifiers().OfType<RDFGroupByModifier>().Single();
         RDFSumAggregator sumAggregator = groupBy.Aggregators.OfType<RDFSumAggregator>().Single();
-        Assert.IsNotNull(sumAggregator.AggregatorExpression);
+        Assert.IsNotNull(sumAggregator.Metadata.AggregatorExpression);
         Assert.IsTrue(query.ToString().Contains("SUM((?X + ?Y))"));
         Assert.AreEqual(RDFTestUtilities.NormalizeEOL(query.ToString()),
             RDFTestUtilities.NormalizeEOL(RDFSelectQuery.FromString(query.ToString()).ToString()));

@@ -31,9 +31,9 @@ public class RDFSampleAggregatorTest
         RDFSampleAggregator aggregator = new RDFSampleAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(SAMPLE(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -55,9 +55,9 @@ public class RDFSampleAggregatorTest
             .Distinct() as RDFSampleAggregator;
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(SAMPLE(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -201,7 +201,7 @@ public class RDFSampleAggregatorTest
             new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsNotNull(aggregator.AggregatorExpression);
+        Assert.IsNotNull(aggregator.Metadata.AggregatorExpression);
         Assert.IsTrue(aggregator.ToString().Equals("(SAMPLE((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
     }
 

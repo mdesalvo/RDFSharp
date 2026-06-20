@@ -31,9 +31,9 @@ public class RDFPartitionAggregatorTest
         RDFPartitionAggregator aggregator = new RDFPartitionAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals(string.Empty, System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
@@ -55,9 +55,9 @@ public class RDFPartitionAggregatorTest
             .Distinct() as RDFPartitionAggregator;
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals(string.Empty, System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
         Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);

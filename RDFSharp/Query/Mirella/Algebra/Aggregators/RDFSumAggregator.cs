@@ -37,7 +37,7 @@ namespace RDFSharp.Query
         /// materialized into a synthetic column before partitioning, the aggregator then operating on it.
         /// </summary>
         public RDFSumAggregator(RDFExpression aggrExpression, RDFVariable projVariable) : base(MakeExpressionVariable(projVariable), projVariable)
-            => AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFSumAggregator because given \"aggrExpression\" parameter is null.");
+            => Metadata.AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFSumAggregator because given \"aggrExpression\" parameter is null.");
         #endregion
 
         #region Interfaces
@@ -45,7 +45,7 @@ namespace RDFSharp.Query
         /// The SUM function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
         protected override string AggregatorFunction
-            => IsDistinct ? $"SUM(DISTINCT {AggregatorArgument})" : $"SUM({AggregatorArgument})";
+            => Metadata.IsDistinct ? $"SUM(DISTINCT {AggregatorArgument})" : $"SUM({AggregatorArgument})";
         #endregion
 
         #region Methods
@@ -56,7 +56,7 @@ namespace RDFSharp.Query
         {
             //Get row value
             double rowValue = GetRowValueAsNumber(tableRow);
-            if (IsDistinct)
+            if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
                 if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
@@ -84,7 +84,7 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
@@ -106,7 +106,7 @@ namespace RDFSharp.Query
 
             //Add aggregator value to bindings
             double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
-            bindings.Add(ProjectionVariable.VariableName,
+            bindings.Add(Metadata.ProjectionVariable.VariableName,
                 aggregatorValue.Equals(double.NaN)
                     ? string.Empty
                     : new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture),RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());

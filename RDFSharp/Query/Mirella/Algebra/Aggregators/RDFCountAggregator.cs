@@ -45,7 +45,7 @@ namespace RDFSharp.Query
         /// materialized into a synthetic column before partitioning, the aggregator then operating on it.
         /// </summary>
         public RDFCountAggregator(RDFExpression aggrExpression, RDFVariable projVariable) : base(MakeExpressionVariable(projVariable), projVariable)
-            => AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFCountAggregator because given \"aggrExpression\" parameter is null.");
+            => Metadata.AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFCountAggregator because given \"aggrExpression\" parameter is null.");
 
         /// <summary>
         /// Builds a COUNT(*) aggregator with the given projection name: it counts the group's solutions (rows). The
@@ -64,8 +64,8 @@ namespace RDFSharp.Query
             get
             {
                 if (IsCountAll)
-                    return IsDistinct ? "COUNT(DISTINCT *)" : "COUNT(*)";
-                return IsDistinct ? $"COUNT(DISTINCT {AggregatorArgument})" : $"COUNT({AggregatorArgument})";
+                    return Metadata.IsDistinct ? "COUNT(DISTINCT *)" : "COUNT(*)";
+                return Metadata.IsDistinct ? $"COUNT(DISTINCT {AggregatorArgument})" : $"COUNT({AggregatorArgument})";
             }
         }
         #endregion
@@ -84,7 +84,7 @@ namespace RDFSharp.Query
             //COUNT(*): count the group's solutions (each row), honoring DISTINCT over the whole solution
             if (IsCountAll)
             {
-                if (IsDistinct)
+                if (Metadata.IsDistinct)
                 {
                     string rowSignature = tableRow.Signature;
                     //Cache-Hit: distinctness failed
@@ -99,7 +99,7 @@ namespace RDFSharp.Query
 
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
-            if (IsDistinct)
+            if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
                 if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
@@ -122,7 +122,7 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
             foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
@@ -144,7 +144,7 @@ namespace RDFSharp.Query
 
             //Add aggregator value to bindings
             double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
-            bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
+            bindings.Add(Metadata.ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);
