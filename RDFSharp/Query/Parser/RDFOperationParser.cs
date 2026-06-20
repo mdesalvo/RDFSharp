@@ -148,8 +148,6 @@ namespace RDFSharp.Query
         /// absolute <see cref="Uri"/>. The IRI is read through the shared term-reader (so prologue BASE/PREFIX
         /// resolution applies). A variable, a literal or a blank node in this position is invalid.
         /// </summary>
-        /// <param name="grammarContext">The clause name used in error messages (e.g. "LOAD source").</param>
-        /// <exception cref="RDFQueryException">When the term is not an absolute IRI.</exception>
         private static Uri ParseOperationIri(RDFQueryParserContext parserContext, string grammarContext)
         {
             //A variable is never a valid graph reference
