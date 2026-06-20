@@ -154,8 +154,7 @@ namespace RDFSharp.Query
                 sb.AppendLine();
                 sb.Append(subqueryBodySpaces);
                 sb.Append(gm);
-                //HAVING: the free boolean expression (full SPARQL HAVING) takes precedence; otherwise fall back to
-                //the legacy per-aggregator having-clauses (restricted '(AGGREGATE OP value)' comparisons, ANDed)
+                //HAVING: the single free boolean expression (full SPARQL HAVING)
                 if (gm.HavingExpression != null)
                 {
                     sb.AppendLine();
@@ -163,11 +162,6 @@ namespace RDFSharp.Query
                     //Re-print any hidden aggregate (referenced in HAVING but not projected) as its original call
                     sb.Append(gm.ReprintHiddenAggregateCalls(gm.HavingExpression.ToString(selectQuery.Prefixes)));
                     sb.Append(')');
-                }
-                else if (gm.Aggregators.Any(ag => ag.HavingClause.Item1))
-                {
-                    sb.AppendLine();
-                    sb.AppendFormat(string.Concat(subqueryBodySpaces, "HAVING ({0})"), string.Join(" && ", gm.Aggregators.Where(ag => ag.HavingClause.Item1).Select(x => x.PrintHavingClause(selectQuery.Prefixes))));
                 }
             }
 

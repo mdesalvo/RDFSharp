@@ -3778,8 +3778,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
@@ -3834,7 +3834,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           UNION
           {
@@ -3886,8 +3886,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         ).Minus(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -3925,7 +3925,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           }
           MINUS
@@ -3964,8 +3964,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         ).Minus(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -4003,7 +4003,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           }
           MINUS
@@ -4037,8 +4037,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Minus(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -4069,7 +4069,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
+            HAVING ((?AVG_S >= 11.44))
           }
           MINUS
           {
@@ -4105,8 +4105,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Union(new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
         .AddPatternGroup(new RDFPatternGroup()
@@ -4137,7 +4137,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
+            HAVING ((?AVG_S >= 11.44))
           }
           UNION
           {
@@ -4173,8 +4173,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
       .AddModifier(new RDFDistinctModifier())
@@ -4203,7 +4203,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^<http://www.w3.org/2001/XMLSchema#float>))
+            HAVING ((?AVG_S >= 11.44))
           }
           MINUS
           {
@@ -4303,8 +4303,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         ).Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
       .AddPatternGroup(new RDFPatternGroup()
@@ -4354,7 +4354,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           }
           MINUS
@@ -4396,8 +4396,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))))
       .AddPatternGroup(new RDFPatternGroup()
@@ -4443,7 +4443,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           MINUS
           {
@@ -4486,8 +4486,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S1"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("eitchetta", "it")))
         ).Union(new RDFPatternGroup()
@@ -4534,7 +4534,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
             MINUS
             {
@@ -5747,8 +5747,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
@@ -5807,7 +5807,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           UNION
           {
@@ -7144,8 +7144,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
@@ -7200,7 +7200,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           UNION
           {
@@ -8232,8 +8232,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
@@ -8291,7 +8291,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           UNION
           {
@@ -9285,8 +9285,8 @@ public class RDFQueryPrinterTest
         .AddPatternGroup(new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label","en"))))
         .AddModifier(new RDFGroupByModifier([new RDFVariable("?S")])
-          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT))))
+          .AddAggregator(new RDFAvgAggregator(new RDFVariable("?S"), new RDFVariable("?AVG_S")))
+          .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFVariableExpression(new RDFVariable("?AVG_S")), new RDFConstantExpression(new RDFTypedLiteral("11.44", RDFModelEnums.RDFDatatypes.XSD_FLOAT)))))
         .Union(new RDFSelectQuery()
         .AddSubQuery(new RDFSelectQuery()
           .AddPatternGroup(new RDFPatternGroup()
@@ -9341,7 +9341,7 @@ public class RDFQueryPrinterTest
               }
             }
             GROUP BY ?S
-            HAVING ((AVG(?S) >= "11.44"^^xsd:float))
+            HAVING ((?AVG_S >= 11.44))
           }
           UNION
           {

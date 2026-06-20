@@ -364,7 +364,7 @@ WHERE {
   }
 }
 GROUP BY ?C
-HAVING ((AVG(?G) >= ""24""^^<http://www.w3.org/2001/XMLSchema#decimal>))
+HAVING ((?AVG >= 24))
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
@@ -373,9 +373,10 @@ HAVING ((AVG(?G) >= ""24""^^<http://www.w3.org/2001/XMLSchema#decimal>))
                 .AddPattern(new RDFPattern(Variable("?e"), UniversityResource("grade"), Variable("?g"))))
             .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { Variable("?c") })
                 .AddAggregator(new RDFCountAggregator(Variable("?e"), Variable("?cnt")))
-                .AddAggregator(new RDFAvgAggregator(Variable("?g"), Variable("?avg"))
-                    .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
-                                     new RDFTypedLiteral("24", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))));
+                .AddAggregator(new RDFAvgAggregator(Variable("?g"), Variable("?avg")))
+                .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                                                                 new RDFVariableExpression(Variable("?avg")),
+                                                                 new RDFConstantExpression(new RDFTypedLiteral("24", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))));
 
         //Per-course averages are course0=25, course1=23, course2=26: HAVING avg>=24 keeps course0 and course2
         Assert.AreEqual(2, result.SelectResultsCount);

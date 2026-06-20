@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -67,11 +66,6 @@ namespace RDFSharp.Query
         internal virtual bool RequiresAggregatorColumn => true;
 
         /// <summary>
-        /// Tuple indicating that the aggregator is also an having-clause
-        /// </summary>
-        public (bool, RDFQueryEnums.RDFComparisonFlavors, RDFPatternMember) HavingClause { get; internal set; }
-
-        /// <summary>
         /// Context for keeping track of aggregator's execution
         /// </summary>
         internal RDFAggregatorContext AggregatorContext { get; set; }
@@ -98,7 +92,6 @@ namespace RDFSharp.Query
         {
             AggregatorVariable = aggregatorVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
             ProjectionVariable = projectionVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
-            HavingClause = (false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null);
             AggregatorContext = new RDFAggregatorContext();
         }
         #endregion
@@ -216,59 +209,11 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Prints the having-clause of the aggregator
-        /// </summary>
-        internal string PrintHavingClause(List<RDFNamespace> prefixes)
-        {
-            if (HavingClause.Item1)
-            {
-                StringBuilder result = new StringBuilder();
-                result.Append('(');
-                result.Append(AggregatorFunction).Append(' ');
-                switch (HavingClause.Item2)
-                {
-                    case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                        result.Append("< ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                        result.Append("<= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                        result.Append("= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                        result.Append("!= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                        result.Append(">= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                        result.Append("> ");
-                        break;
-                }
-                result.Append(RDFQueryPrinter.PrintPatternMember(HavingClause.Item3, prefixes));
-                result.Append(')');
-                return result.ToString();
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
         /// Sets the aggregator to discard duplicates
         /// </summary>
         public RDFAggregator Distinct()
         {
             IsDistinct = true;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the aggregator to also represent an having-clause
-        /// </summary>
-        public RDFAggregator SetHavingClause(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember comparisonValue)
-        {
-            if (comparisonValue != null)
-                HavingClause = (true, comparisonFlavor, comparisonValue);
             return this;
         }
         #endregion

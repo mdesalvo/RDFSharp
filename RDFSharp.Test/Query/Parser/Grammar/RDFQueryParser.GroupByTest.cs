@@ -45,28 +45,6 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateLegacyPerAggregatorHavingClause()
-    {
-        //The legacy fluent SetHavingClause (per-aggregator '(AGGREGATE OP value)') is preserved for retro-compat:
-        //it still builds, prints and FILTERS correctly (only groups whose AVG age is >= 30 survive)
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFResource("http://example.org/dept"), new RDFVariable("c")))
-                .AddPattern(new RDFPattern(new RDFVariable("e"), new RDFResource("http://example.org/age"), new RDFVariable("g"))))
-            .AddProjectionVariable(new RDFVariable("c"))
-            .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { new RDFVariable("c") })
-                .AddAggregator(new RDFAvgAggregator(new RDFVariable("g"), new RDFVariable("avg"))
-                    .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
-                                     new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
-
-        Assert.IsTrue(query.ToString().Contains("HAVING ((AVG(?G) >= "));
-        DataTable results = query.ApplyToGraph(BuildAggregationSampleGraph()).SelectResults;
-        //Dept A averages (20+30)/2=25 (dropped); dept B averages 40 (kept)
-        Assert.AreEqual(1, results.Rows.Count);
-        Assert.AreEqual("http://example.org/deptB", results.Rows[0]["?C"].ToString());
-    }
-
-    [TestMethod]
     public void ShouldRoundTripGroupByWithFreeHavingExpression()
     {
         //The new fluent SetHavingExpression accepts a full boolean expression; an aggregate is referenced simply by

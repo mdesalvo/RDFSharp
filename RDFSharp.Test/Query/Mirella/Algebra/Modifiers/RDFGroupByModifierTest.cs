@@ -273,8 +273,11 @@ public class RDFGroupByModifierTest
         });
 
         //This will behave like a partition aggregator on column "?C" with an having clause "?C = ex:value0"
-        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        modifier.Aggregators[0].SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFResource("ex:value0"));
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")])
+            .SetHavingExpression(new RDFComparisonExpression(
+                RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                new RDFVariableExpression(new RDFVariable("?C")),
+                new RDFConstantExpression(new RDFResource("ex:value0"))));
         RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
@@ -396,9 +399,11 @@ public class RDFGroupByModifierTest
 
         //GROUP BY ?C with AVG(?A) AS ?AVG HAVING (?AVG >= 28) : ex:value0 -> 25.5 (dropped), ex:value1 -> 30 (kept)
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVG"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
-                             new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+        modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVG")))
+            .SetHavingExpression(new RDFComparisonExpression(
+                RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                new RDFVariableExpression(new RDFVariable("?AVG")),
+                new RDFConstantExpression(new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
 
         //First application : only ex:value1 survives the HAVING clause
         RDFTable firstResult = modifier.ApplyModifier(table);

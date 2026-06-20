@@ -35,7 +35,6 @@ public class RDFMinAggregatorTest
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
         Assert.AreEqual(aggregatorFlavor, aggregator.AggregatorFlavor);
         Assert.IsTrue(aggregator.ToString().Equals("(MIN(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
@@ -67,7 +66,6 @@ public class RDFMinAggregatorTest
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
         Assert.AreEqual(aggregatorFlavor, aggregator.AggregatorFlavor);
         Assert.IsTrue(aggregator.ToString().Equals("(MIN(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
@@ -197,9 +195,8 @@ public class RDFMinAggregatorTest
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        RDFMinAggregator aggregator = new RDFMinAggregator(new RDFVariable("?B"), new RDFVariable("?MINPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.String)
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.LessThan, new RDFPlainLiteral("hello", "en-US")) as RDFMinAggregator;
-        modifier.AddAggregator(aggregator);
+        modifier.AddAggregator(new RDFMinAggregator(new RDFVariable("?B"), new RDFVariable("?MINPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.String));
+        modifier.SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessThan, new RDFVariableExpression(new RDFVariable("?MINPROJ")), new RDFConstantExpression(new RDFPlainLiteral("hello", "en-US"))));
         RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
@@ -211,8 +208,6 @@ public class RDFMinAggregatorTest
         Assert.IsTrue(result.Rows[0]["?MINPROJ"].ToString().Equals("hello@EN", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?MINPROJ"].ToString().Equals("hello@EN", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(MIN(?B) < \"hello\"@EN-US)", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(MIN(?B) < \"hello\"@EN-US)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -336,9 +331,8 @@ public class RDFMinAggregatorTest
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        RDFMinAggregator aggregator = new RDFMinAggregator(new RDFVariable("?A"), new RDFVariable("?MINPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)) as RDFMinAggregator;
-        modifier.AddAggregator(aggregator);
+        modifier.AddAggregator(new RDFMinAggregator(new RDFVariable("?A"), new RDFVariable("?MINPROJ"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric));
+        modifier.SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFVariableExpression(new RDFVariable("?MINPROJ")), new RDFConstantExpression(new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER))));
         RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
@@ -348,8 +342,6 @@ public class RDFMinAggregatorTest
         Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[0]["?MINPROJ"].ToString().Equals($"28.24^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(MIN(?A) > \"28\"^^<{RDFVocabulary.XSD.POSITIVE_INTEGER}>)", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(MIN(?A) > \"28\"^^xsd:positiveInteger)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

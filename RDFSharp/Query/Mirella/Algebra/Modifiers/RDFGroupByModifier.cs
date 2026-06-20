@@ -41,13 +41,11 @@ namespace RDFSharp.Query
         internal List<RDFAggregator> Aggregators { get; set; }
 
         /// <summary>
-        /// Free HAVING condition: a single, all-encompassing boolean expression evaluated on the RESULT table (after
-        /// projection), keeping a grouped row only when it evaluates to true. It represents the full SPARQL HAVING
-        /// power the per-aggregator <see cref="RDFAggregator.HavingClause"/> cannot express (disjunctions, aggregate
-        /// on the right-hand side, non-comparison constraints, an aggregate not present in the SELECT projection).
-        /// Aggregates referenced here read their already-materialized columns through a plain
-        /// <see cref="RDFVariableExpression"/>. When both this and per-aggregator having-clauses are present, they are
-        /// conjoined (ANDed).
+        /// HAVING condition: a single, all-encompassing boolean expression evaluated on the RESULT table (after
+        /// projection), keeping a grouped row only when it evaluates to true. It expresses the full SPARQL HAVING
+        /// power (disjunctions, aggregate on the right-hand side, non-comparison constraints, an aggregate not present
+        /// in the SELECT projection). Aggregates referenced here read their already-materialized columns through a
+        /// plain <see cref="RDFVariableExpression"/>.
         /// </summary>
         internal RDFExpression HavingExpression { get; set; }
         #endregion
@@ -120,10 +118,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Sets the free HAVING condition: a single boolean expression evaluated on the result table, keeping only
-        /// the grouped rows for which it holds. This is the fluent-API counterpart of the SPARQL HAVING clause and
-        /// supersedes the restricted per-aggregator <see cref="RDFAggregator.SetHavingClause"/> for any condition
-        /// the latter cannot express (disjunctions, reversed comparisons, non-comparison constraints).
+        /// Sets the HAVING condition: a single boolean expression evaluated on the result table, keeping only the
+        /// grouped rows for which it holds. This is the fluent-API counterpart of the SPARQL HAVING clause, with the
+        /// full expressive power (disjunctions, reversed comparisons, non-comparison constraints).
         /// <para>
         /// To reference an aggregate inside the expression, point at the aggregator's projection variable with a plain
         /// <see cref="RDFVariableExpression"/> (e.g. for '(COUNT(?e) AS ?cnt)', reference '?cnt'): the value is read
@@ -338,58 +335,22 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Execute filter algorythm: applies the HAVING conditions on the projected result table, keeping only the
-        /// grouped rows that satisfy ALL of them. Two (conjoined) sources of conditions are honored:
-        /// <list type="bullet">
-        /// <item>the restricted per-aggregator having-clauses (legacy fluent API
-        /// <see cref="RDFAggregator.SetHavingClause"/>), each a single '(AGGREGATE OP value)' comparison;</item>
-        /// <item>the free <see cref="HavingExpression"/> (a full boolean expression, e.g. produced by the SPARQL
-        /// parser), evaluated once per row.</item>
-        /// </list>
-        /// When neither source is present the table is returned unchanged.
+        /// Execute filter algorythm: applies the HAVING condition (the single free boolean
+        /// <see cref="HavingExpression"/>) on the projected result table, keeping only the grouped rows for which it
+        /// evaluates to true. When no HAVING is set the table is returned unchanged.
         /// </summary>
         private RDFTable ExecuteFilterAlgorythm(RDFTable resultTable)
         {
-            //Build a per-row predicate for every legacy per-aggregator having-clause (each '(AGGREGATE OP value)')
-            List<RDFComparisonExpression> aggregatorHavingComparisons = Aggregators
-                .Where(ag => ag.HavingClause.Item1)
-                .Select(ag => new RDFComparisonExpression(
-                    ag.HavingClause.Item2,
-                    ag.ProjectionVariable,
-                    ag.HavingClause.Item3 is RDFResource havingRes ? new RDFConstantExpression(havingRes)
-                     : ag.HavingClause.Item3 is RDFLiteral havingLit ?  new RDFConstantExpression(havingLit)
-                     : ag.HavingClause.Item3 is RDFVariable havingVar ? new RDFVariableExpression(havingVar)
-                     : null as RDFExpression))
-                .ToList();
-
-            //Nothing to filter: neither the legacy clauses nor the free expression are set
-            if (aggregatorHavingComparisons.Count == 0 && HavingExpression == null)
+            if (HavingExpression == null)
                 return resultTable;
 
-            #region ExecuteFilters
             RDFTable filteredTable = resultTable.Clone();
             int width = resultTable.ColumnsCount;
             foreach (RDFTableRow resultRow in resultTable.Rows)
             {
-                //A row survives only when every legacy comparison AND the free HAVING expression evaluate to true
-                bool keepRow = true;
-
-                List<RDFComparisonExpression>.Enumerator comparisonsEnum = aggregatorHavingComparisons.GetEnumerator();
-                while (keepRow && comparisonsEnum.MoveNext())
-                {
-                    RDFPatternMember comparisonResult = comparisonsEnum.Current?.ApplyExpression(resultRow);
-                    if (!(comparisonResult?.Equals(RDFTypedLiteral.True) ?? false))
-                        keepRow = false;
-                }
-
-                if (keepRow && HavingExpression != null)
-                {
-                    RDFPatternMember havingResult = HavingExpression.ApplyExpression(resultRow);
-                    if (!(havingResult?.Equals(RDFTypedLiteral.True) ?? false))
-                        keepRow = false;
-                }
-
-                if (keepRow)
+                //A grouped row survives only when the HAVING expression evaluates to true
+                RDFPatternMember havingResult = HavingExpression.ApplyExpression(resultRow);
+                if (havingResult?.Equals(RDFTypedLiteral.True) ?? false)
                 {
                     string[] cells = new string[width];
                     for (int c = 0; c < width; c++)
@@ -397,7 +358,6 @@ namespace RDFSharp.Query
                     filteredTable.AddRow(cells);
                 }
             }
-            #endregion
 
             return filteredTable;
         }

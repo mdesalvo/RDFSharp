@@ -33,7 +33,6 @@ public class RDFSampleAggregatorTest
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsFalse(aggregator.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(SAMPLE(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
@@ -58,7 +57,6 @@ public class RDFSampleAggregatorTest
         Assert.IsNotNull(aggregator);
         Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
         Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
         Assert.IsTrue(aggregator.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(SAMPLE(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
         Assert.IsNotNull(aggregator.AggregatorContext);
@@ -175,9 +173,12 @@ public class RDFSampleAggregatorTest
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        RDFSampleAggregator aggregator = new RDFSampleAggregator(new RDFVariable("?B"), new RDFVariable("?SAMPLEPROJ"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterThan, new RDFPlainLiteral("hello", "en-UK")) as RDFSampleAggregator;
+        RDFSampleAggregator aggregator = new RDFSampleAggregator(new RDFVariable("?B"), new RDFVariable("?SAMPLEPROJ"));
         modifier.AddAggregator(aggregator);
+        modifier.SetHavingExpression(new RDFComparisonExpression(
+            RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
+            new RDFVariableExpression(new RDFVariable("?SAMPLEPROJ")),
+            new RDFConstantExpression(new RDFPlainLiteral("hello", "en-UK"))));
         RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
@@ -189,7 +190,6 @@ public class RDFSampleAggregatorTest
         Assert.IsTrue(result.Rows[0]["?SAMPLEPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?SAMPLEPROJ"].ToString().Equals("hello@EN-US", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals("(SAMPLE(?B) > \"hello\"@EN-UK)", System.StringComparison.Ordinal));
     }
 
     //IP3.2 — aggregate over expression
