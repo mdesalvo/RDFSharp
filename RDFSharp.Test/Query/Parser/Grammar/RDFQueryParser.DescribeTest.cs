@@ -73,6 +73,15 @@ public partial class RDFQueryParserTest
             .AddModifier(new RDFOffsetModifier(5)));
 
     [TestMethod]
+    public void ShouldRoundTripDescribeWithOrderByAndGroupBy()
+        => AssertDescribeQueryRoundTrips(new RDFDescribeQuery()
+            .AddDescribeTerm(new RDFVariable("s"))
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))))
+            .AddModifier(new RDFGroupByModifier([new RDFVariable("s")]))
+            .AddModifier(new RDFOrderByModifier(new RDFVariable("s"), RDFQueryEnums.RDFOrderByFlavors.ASC)));
+
+    [TestMethod]
     public void ShouldRoundTripDescribeWithUnionInWhere()
         => AssertDescribeQueryRoundTrips(RDFDescribeQuery.FromString(
             "DESCRIBE ?s WHERE { { ?s ?p ?o } UNION { ?a ?b ?c } }"));
@@ -134,14 +143,22 @@ public partial class RDFQueryParserTest
             RDFDescribeQuery.FromString("DESCRIBE ?s FROM <http://example.org/g> WHERE { ?s ?p ?o }"));
 
     [TestMethod]
-    public void ShouldThrowOnDescribeWithOrderByModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFDescribeQuery.FromString("DESCRIBE ?s WHERE { ?s ?p ?o } ORDER BY ?s"));
+    public void ShouldParseDescribeWithOrderByModifier()
+    {
+        RDFDescribeQuery query = RDFDescribeQuery.FromString("DESCRIBE ?s WHERE { ?s ?p ?o } ORDER BY ?s");
+
+        Assert.AreEqual(1, query.DescribeTerms.Count);
+        Assert.IsTrue(query.GetModifiers().Any(m => m is RDFOrderByModifier));
+    }
 
     [TestMethod]
-    public void ShouldThrowOnDescribeWithGroupByModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFDescribeQuery.FromString("DESCRIBE ?s WHERE { ?s ?p ?o } GROUP BY ?s"));
+    public void ShouldParseDescribeWithGroupByModifier()
+    {
+        RDFDescribeQuery query = RDFDescribeQuery.FromString("DESCRIBE ?s WHERE { ?s ?p ?o } GROUP BY ?s");
+
+        Assert.AreEqual(1, query.DescribeTerms.Count);
+        Assert.IsTrue(query.GetModifiers().Any(m => m is RDFGroupByModifier));
+    }
 
     [TestMethod]
     public void ShouldThrowOnDescribeWithLiteralTerm()

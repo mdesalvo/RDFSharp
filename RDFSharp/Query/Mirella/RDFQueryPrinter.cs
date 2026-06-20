@@ -142,7 +142,26 @@ namespace RDFSharp.Query
             #endregion
 
             #region MODIFIERS
-            //GROUP BY
+            PrintSolutionModifiers(sb, modifiers, selectQuery.Prefixes, subqueryBodySpaces);
+            #endregion
+
+            //CLOSURE
+            sb.AppendLine();
+            if (selectQuery.IsSubQuery)
+                sb.AppendLine(string.Concat(subquerySpaces, "}"));
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the trailing solution-modifier section shared by SELECT/CONSTRUCT/DESCRIBE in SPARQL order:
+        /// GROUP BY (with its HAVING), then ORDER BY, then LIMIT, then OFFSET. <paramref name="queryPrefixes"/> is
+        /// used only to render the HAVING expression with prefixed names; <paramref name="subqueryBodySpaces"/> is
+        /// the indentation prefix (empty at top level, non-empty for a nested SELECT subquery).
+        /// </summary>
+        internal static void PrintSolutionModifiers(StringBuilder sb, List<RDFModifier> modifiers, List<RDFNamespace> queryPrefixes, string subqueryBodySpaces)
+        {
+            //GROUP BY (+ HAVING)
             foreach (RDFGroupByModifier gm in modifiers.OfType<RDFGroupByModifier>())
             {
                 //Implicit grouping (no partition conditions) emits no GROUP BY clause: the aggregates already
@@ -160,7 +179,7 @@ namespace RDFSharp.Query
                     sb.AppendLine();
                     sb.Append(string.Concat(subqueryBodySpaces, "HAVING ("));
                     //Re-print any hidden aggregate (referenced in HAVING but not projected) as its original call
-                    sb.Append(gm.ReprintHiddenAggregateCalls(gm.HavingExpression.ToString(selectQuery.Prefixes)));
+                    sb.Append(gm.ReprintHiddenAggregateCalls(gm.HavingExpression.ToString(queryPrefixes)));
                     sb.Append(')');
                 }
             }
@@ -185,14 +204,6 @@ namespace RDFSharp.Query
                 sb.AppendLine();
                 sb.Append(string.Concat(subqueryBodySpaces, off.ToString()));
             }
-            #endregion
-
-            //CLOSURE
-            sb.AppendLine();
-            if (selectQuery.IsSubQuery)
-                sb.AppendLine(string.Concat(subquerySpaces, "}"));
-
-            return sb.ToString();
         }
 
         /// <summary>
@@ -222,18 +233,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region MODIFIERS
-            List<RDFModifier> modifiers = describeQuery.GetModifiers().ToList();
-            // LIMIT/OFFSET
-            foreach (RDFLimitModifier lim in modifiers.OfType<RDFLimitModifier>())
-            {
-                sb.AppendLine();
-                sb.Append(lim);
-            }
-            foreach (RDFOffsetModifier off in modifiers.OfType<RDFOffsetModifier>())
-            {
-                sb.AppendLine();
-                sb.Append(off);
-            }
+            PrintSolutionModifiers(sb, describeQuery.GetModifiers().ToList(), describeQuery.Prefixes, string.Empty);
             #endregion
 
             return sb.ToString();
@@ -279,18 +279,7 @@ namespace RDFSharp.Query
             #endregion
 
             #region MODIFIERS
-            List<RDFModifier> modifiers = constructQuery.GetModifiers().ToList();
-            // LIMIT/OFFSET
-            foreach (RDFLimitModifier lim in modifiers.OfType<RDFLimitModifier>())
-            {
-                sb.AppendLine();
-                sb.Append(lim);
-            }
-            foreach (RDFOffsetModifier off in modifiers.OfType<RDFOffsetModifier>())
-            {
-                sb.AppendLine();
-                sb.Append(off);
-            }
+            PrintSolutionModifiers(sb, constructQuery.GetModifiers().ToList(), constructQuery.Prefixes, string.Empty);
             #endregion
 
             return sb.ToString();

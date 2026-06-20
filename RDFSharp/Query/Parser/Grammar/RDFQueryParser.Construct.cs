@@ -82,9 +82,10 @@ namespace RDFSharp.Query
                 ParseConstructShortForm(parserContext, constructQuery);
             }
 
-            //SolutionModifier: only LIMIT/OFFSET are representable on a CONSTRUCT query (ORDER BY / GROUP BY /
-            //HAVING are rejected as non-representable). Shared with DESCRIBE via ParseLimitOffsetOnlyModifiers.
-            ParseLimitOffsetOnlyModifiers(parserContext, constructQuery, "CONSTRUCT");
+            //SolutionModifier: GROUP BY / HAVING / ORDER BY / LIMIT / OFFSET, applied to the WHERE solution
+            //sequence before the template is instantiated (SPARQL 1.1 §16.2/§18.4). No projection aggregates exist
+            //on a CONSTRUCT (empty pendingAggregators); aggregates may only appear inside HAVING as hidden ones.
+            ParseSolutionModifiers(parserContext, modifier => constructQuery.AddModifier(modifier), new List<RDFAggregator>());
 
             return constructQuery;
         }

@@ -103,28 +103,8 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSelectQuery AddModifier(RDFModifier modifier)
         {
-            if (modifier != null)
-            {
-                List<RDFModifier> modifiers = GetModifiers().ToList();
-
-                switch (modifier)
-                {
-                    //Ensure to have only one groupby modifier in the query
-                    case RDFGroupByModifier _ when modifiers.Any(m => m is RDFGroupByModifier):
-                    //Ensure to have only one distinct modifier in the query
-                    case RDFDistinctModifier _ when modifiers.Any(m => m is RDFDistinctModifier):
-                    //Ensure to have only one limit modifier in the query
-                    case RDFLimitModifier _ when modifiers.Any(m => m is RDFLimitModifier):
-                    //Ensure to have only one offset modifier in the query
-                    case RDFOffsetModifier _ when modifiers.Any(m => m is RDFOffsetModifier):
-                    //Ensure to have only one orderby modifier per ordering key in the query
-                    case RDFOrderByModifier obm when modifiers.Any(m => m is RDFOrderByModifier om && om.Expression.ToString().Equals(obm.Expression.ToString())):
-                        return this;
-                    default:
-                        QueryMembers.Add(modifier);
-                        break;
-                }
-            }
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: true))
+                QueryMembers.Add(modifier);
             return this;
         }
 

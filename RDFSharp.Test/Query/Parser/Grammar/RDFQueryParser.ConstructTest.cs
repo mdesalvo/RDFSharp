@@ -72,6 +72,16 @@ public partial class RDFQueryParserTest
             "CONSTRUCT { ?s ?p ?o } WHERE { { ?s ?p ?o } UNION { ?a ?b ?c } }"));
 
     [TestMethod]
+    public void ShouldRoundTripConstructWithOrderByAndGroupBy()
+        => AssertConstructQueryRoundTrips(new RDFConstructQuery()
+            .AddTemplate(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))))
+            .AddModifier(new RDFGroupByModifier([new RDFVariable("s")]))
+            .AddModifier(new RDFOrderByModifier(new RDFStrLenExpression(new RDFVariable("s")), RDFQueryEnums.RDFOrderByFlavors.DESC))
+            .AddModifier(new RDFLimitModifier(5)));
+
+    [TestMethod]
     public void ShouldParseConstructWithSinglePattern()
     {
         RDFConstructQuery query = RDFConstructQuery.FromString("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
@@ -152,14 +162,22 @@ public partial class RDFQueryParserTest
             RDFConstructQuery.FromString("CONSTRUCT { ?s ?p ?o FILTER(BOUND(?s)) } WHERE { ?s ?p ?o }"));
 
     [TestMethod]
-    public void ShouldThrowOnConstructWithOrderByModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFConstructQuery.FromString("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } ORDER BY ?s"));
+    public void ShouldParseConstructWithOrderByModifier()
+    {
+        RDFConstructQuery query = RDFConstructQuery.FromString("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } ORDER BY ?s");
+
+        Assert.AreEqual(1, query.Templates.Count);
+        Assert.IsTrue(query.GetModifiers().Any(m => m is RDFOrderByModifier));
+    }
 
     [TestMethod]
-    public void ShouldThrowOnConstructWithGroupByModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFConstructQuery.FromString("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } GROUP BY ?s"));
+    public void ShouldParseConstructWithGroupByModifier()
+    {
+        RDFConstructQuery query = RDFConstructQuery.FromString("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } GROUP BY ?s");
+
+        Assert.AreEqual(1, query.Templates.Count);
+        Assert.IsTrue(query.GetModifiers().Any(m => m is RDFGroupByModifier));
+    }
 
     [TestMethod]
     public void ShouldParseConstructWithLimitOffset()

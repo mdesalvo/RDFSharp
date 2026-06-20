@@ -115,20 +115,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFDescribeQuery AddModifier(RDFDistinctModifier modifier)
-            => AddModifier<RDFDescribeQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFDescribeQuery AddModifier(RDFLimitModifier modifier)
-            => AddModifier<RDFDescribeQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFDescribeQuery AddModifier(RDFOffsetModifier modifier)
-            => AddModifier<RDFDescribeQuery>(modifier);
+        public RDFDescribeQuery AddModifier(RDFModifier modifier)
+        {
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: false))
+                QueryMembers.Add(modifier);
+            return this;
+        }
 
         /// <summary>
         /// Adds the given prefix declaration to the query

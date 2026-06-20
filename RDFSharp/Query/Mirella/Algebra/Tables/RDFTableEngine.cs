@@ -635,34 +635,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the projection operator on the given table, based on the given query's projection variables
+        /// Applies the projection operator: rebuilds the table keeping only the query's projection variables in
+        /// their target ordinal order (values taken from the matching source column when present, otherwise UNBOUND)
         /// </summary>
-        internal static RDFTable ProjectTable(RDFSelectQuery query, RDFTable table)
+        internal static RDFTable ProjectColumns(RDFSelectQuery query, RDFTable table)
         {
-            //Projection expression variables
-            ProjectExpressions(query, table);
-
-            //Execute configured sort modifiers (stable Ordinal sort via RDFTable, UNBOUND sorts smallest).
-            //Each modifier resolves its own ordering-key column: a bare variable sorts on its existing column,
-            //any other expression is materialized into a (synthetic) column dropped right after the sort.
-            RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
-            if (orderByModifiers.Length > 0)
-            {
-                List<(string, bool)> sortKeys = orderByModifiers
-                    .Select(m => (m.EnsureSortColumn(table), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
-                    .ToList();
-                table = SortTable(table, sortKeys);
-
-                //Drop any synthetic ordering-key column so it never surfaces in the results (e.g. under SELECT *)
-                foreach (RDFTableColumn syntheticColumn in table.Columns.Where(column => column.IsSynthetic).ToList())
-                    table.RemoveColumn(syntheticColumn.Name);
-            }
-
-            //Execute projection algorithm
             if (query.ProjectionVars.Count > 0)
             {
-                //BuildTransitiveClosureIndex the projected table with the projection variables, ordered by their target ordinal:
-                //values are taken from the matching source column when present, otherwise the column stays UNBOUND
                 List<KeyValuePair<RDFVariable, (int, RDFExpression)>> orderedProjections = query.ProjectionVars
                     .OrderBy(pv => pv.Value.Item1)
                     .ToList();

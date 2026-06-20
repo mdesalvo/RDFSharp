@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using static RDFSharp.Query.RDFQueryLexer;
 
@@ -44,7 +45,7 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When a recognized modifier keyword is followed by a malformed body.</exception>
-        private static void ParseSolutionModifiers(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery, List<RDFAggregator> pendingAggregators)
+        private static void ParseSolutionModifiers(RDFQueryParserContext parserContext, Action<RDFModifier> addModifier, List<RDFAggregator> pendingAggregators)
         {
             //The single GROUP BY modifier, captured once parsed, so a later HAVING can hang its conditions off
             //the very same aggregators (HAVING follows GROUP BY in the SPARQL grammar)
@@ -62,7 +63,7 @@ namespace RDFSharp.Query
                 {
                     //GROUP BY clause: build the grouping modifier and absorb the projection's parked aggregates
                     case "GROUP":
-                        groupByModifier = ParseGroupByModifier(parserContext, selectQuery, pendingAggregators);
+                        groupByModifier = ParseGroupByModifier(parserContext, addModifier, pendingAggregators);
                         break;
 
                     //HAVING clause: build its free boolean condition over the grouping modifier's aggregators. When
@@ -74,83 +75,29 @@ namespace RDFSharp.Query
                         {
                             groupByModifier = new RDFGroupByModifier();
                             AbsorbPendingAggregators(groupByModifier, pendingAggregators);
-                            selectQuery.AddModifier(groupByModifier);
+                            addModifier(groupByModifier);
                         }
                         ParseHavingClause(parserContext, groupByModifier);
                         break;
 
                     //ORDER BY clause: consume 'BY' and the sequence of order conditions
                     case "ORDER":
-                        ParseOrderByModifier(parserContext, selectQuery);
+                        ParseOrderByModifier(parserContext, addModifier);
                         break;
 
                     //LIMIT n: parse the non-negative integer and add a RDFLimitModifier
                     case "LIMIT":
-                        selectQuery.AddModifier(new RDFLimitModifier(ParseInteger(parserContext, "LIMIT")));
+                        addModifier(new RDFLimitModifier(ParseInteger(parserContext, "LIMIT")));
                         break;
 
                     //OFFSET n: parse the non-negative integer and add a RDFOffsetModifier
                     case "OFFSET":
-                        selectQuery.AddModifier(new RDFOffsetModifier(ParseInteger(parserContext, "OFFSET")));
+                        addModifier(new RDFOffsetModifier(ParseInteger(parserContext, "OFFSET")));
                         break;
 
                     default:
                         //The keyword run is not a recognized modifier (or is empty at EOF): push it back so
                         //the reader position is restored, and stop scanning modifiers
-                        UnreadString(parserContext, modifierKeyword);
-                        return;
-                }
-            }
-        }
-
-        /// <summary>
-        /// <para>
-        /// Parses the trailing solution-modifier section of a query whose flat model can carry ONLY the
-        /// LIMIT and OFFSET modifiers — i.e. CONSTRUCT and DESCRIBE, whose query classes expose no slot for
-        /// ORDER BY / GROUP BY / HAVING. LIMIT/OFFSET are attached via the generic base
-        /// <see cref="RDFQuery.AddModifier{T}(RDFLimitModifier)"/> / <see cref="RDFQuery.AddModifier{T}(RDFOffsetModifier)"/>;
-        /// ORDER BY / GROUP BY / HAVING are spec-legal here but NOT representable, so they raise an explicit
-        /// <see cref="RDFQueryException"/> rather than being silently dropped.
-        /// </para>
-        /// <para>
-        /// Scanning stops (pushing the token back) at the first non-modifier keyword or at end of input, so the
-        /// caller is not required to enforce end-of-input itself.
-        /// </para>
-        /// </summary>
-        /// <param name="queryFormName">The query-form name used in the rejection message (e.g. "CONSTRUCT", "DESCRIBE").</param>
-        /// <exception cref="RDFQueryException">When a non-representable modifier appears, or a LIMIT/OFFSET body is malformed.</exception>
-        private static void ParseLimitOffsetOnlyModifiers<TQuery>(RDFQueryParserContext parserContext, TQuery targetQuery, string queryFormName) where TQuery : RDFQuery
-        {
-            while (true)
-            {
-                //Advance to the first significant character so ReadKeyword finds the keyword immediately
-                SkipWhitespace(parserContext);
-
-                //Read the upcoming keyword (may be empty at EOF or when the next token is not a keyword)
-                string modifierKeyword = ReadKeyword(parserContext);
-
-                switch (modifierKeyword.ToUpperInvariant())
-                {
-                    //LIMIT n: parse the non-negative integer and add a RDFLimitModifier
-                    case "LIMIT":
-                        targetQuery.AddModifier<TQuery>(new RDFLimitModifier(ParseInteger(parserContext, "LIMIT")));
-                        break;
-
-                    //OFFSET n: parse the non-negative integer and add a RDFOffsetModifier
-                    case "OFFSET":
-                        targetQuery.AddModifier<TQuery>(new RDFOffsetModifier(ParseInteger(parserContext, "OFFSET")));
-                        break;
-
-                    //ORDER BY / GROUP BY / HAVING are valid SPARQL here, but the flat model has no slot for them:
-                    //reject explicitly (non-representable) instead of silently dropping them
-                    case "ORDER":
-                    case "GROUP":
-                    case "HAVING":
-                        throw new RDFQueryException("Cannot parse SPARQL " + queryFormName + " query: the '" + modifierKeyword.ToUpperInvariant() + "' solution modifier is not representable on a " + queryFormName + " query (only LIMIT and OFFSET are) " + GetCoordinates(parserContext));
-
-                    default:
-                        //The keyword run is not a recognized modifier (or is empty at EOF): push it back so the
-                        //reader position is restored, and stop scanning modifiers
                         UnreadString(parserContext, modifierKeyword);
                         return;
                 }
@@ -179,7 +126,7 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When 'BY' is missing or no order condition is found.</exception>
-        private static void ParseOrderByModifier(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery)
+        private static void ParseOrderByModifier(RDFQueryParserContext parserContext, Action<RDFModifier> addModifier)
         {
             //The 'BY' keyword is mandatory and must immediately follow 'ORDER'
             if (!TryConsumeKeyword(parserContext, "BY"))
@@ -194,7 +141,7 @@ namespace RDFSharp.Query
                 //A '?'/'$' (variable) or '(' (bracketted expression) starts a bare order condition: ascending by default
                 if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$' || nextSignificantCodePoint == '(')
                 {
-                    selectQuery.AddModifier(new RDFOrderByModifier(
+                    addModifier(new RDFOrderByModifier(
                         ParseExpression(parserContext), RDFQueryEnums.RDFOrderByFlavors.ASC));
                     foundAtLeastOneOrderCondition = true;
                     continue;
@@ -218,7 +165,7 @@ namespace RDFSharp.Query
                         ? RDFQueryEnums.RDFOrderByFlavors.ASC
                         : RDFQueryEnums.RDFOrderByFlavors.DESC;
 
-                    selectQuery.AddModifier(new RDFOrderByModifier(orderingExpression, orderingDirection));
+                    addModifier(new RDFOrderByModifier(orderingExpression, orderingDirection));
                     foundAtLeastOneOrderCondition = true;
                     continue;
                 }
@@ -228,7 +175,7 @@ namespace RDFSharp.Query
                 if (directionKeyword.Length > 0 && SkipWhitespace(parserContext) == '(')
                 {
                     UnreadString(parserContext, directionKeyword);
-                    selectQuery.AddModifier(new RDFOrderByModifier(
+                    addModifier(new RDFOrderByModifier(
                         ParseExpression(parserContext), RDFQueryEnums.RDFOrderByFlavors.ASC));
                     foundAtLeastOneOrderCondition = true;
                     continue;

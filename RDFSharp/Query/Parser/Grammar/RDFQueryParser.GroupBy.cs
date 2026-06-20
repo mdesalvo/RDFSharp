@@ -65,7 +65,7 @@ namespace RDFSharp.Query
         /// returns it so a later HAVING clause can hang its conditions off the very same aggregators.
         /// </summary>
         /// <exception cref="RDFQueryException">When 'BY' is missing, no grouping variable is found, or a non-representable (non-variable) GroupCondition is encountered.</exception>
-        private static RDFGroupByModifier ParseGroupByModifier(RDFQueryParserContext parserContext, RDFSelectQuery selectQuery, List<RDFAggregator> pendingAggregators)
+        private static RDFGroupByModifier ParseGroupByModifier(RDFQueryParserContext parserContext, Action<RDFModifier> addModifier, List<RDFAggregator> pendingAggregators)
         {
             //The 'BY' keyword is mandatory and must immediately follow 'GROUP'
             if (!TryConsumeKeyword(parserContext, "BY"))
@@ -130,7 +130,7 @@ namespace RDFSharp.Query
             //Absorb the aggregates the projection parked while waiting for GROUP BY (registering their computed columns)
             AbsorbPendingAggregators(groupByModifier, pendingAggregators);
 
-            selectQuery.AddModifier(groupByModifier);
+            addModifier(groupByModifier);
             return groupByModifier;
         }
 

@@ -119,20 +119,12 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFConstructQuery AddModifier(RDFDistinctModifier modifier)
-            => AddModifier<RDFConstructQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFConstructQuery AddModifier(RDFLimitModifier modifier)
-            => AddModifier<RDFConstructQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFConstructQuery AddModifier(RDFOffsetModifier modifier)
-            => AddModifier<RDFConstructQuery>(modifier);
+        public RDFConstructQuery AddModifier(RDFModifier modifier)
+        {
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: false))
+                QueryMembers.Add(modifier);
+            return this;
+        }
 
         /// <summary>
         /// Adds the given prefix declaration to the query

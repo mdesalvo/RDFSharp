@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System.Collections.Generic;
 using RDFSharp.Model;
 using static RDFSharp.Query.RDFQueryLexer;
 
@@ -66,9 +67,10 @@ namespace RDFSharp.Query
             if (IsWhereClauseAhead(parserContext))
                 ParseWhereClause(parserContext, describeQuery);
 
-            //SolutionModifier: only LIMIT/OFFSET are representable on a DESCRIBE query (ORDER BY / GROUP BY /
-            //HAVING are rejected as non-representable). Shared with CONSTRUCT via ParseLimitOffsetOnlyModifiers.
-            ParseLimitOffsetOnlyModifiers(parserContext, describeQuery, "DESCRIBE");
+            //SolutionModifier: GROUP BY / HAVING / ORDER BY / LIMIT / OFFSET, applied to the WHERE solution
+            //sequence before the resources are described (SPARQL 1.1 §16.4/§18.4). No projection aggregates exist
+            //on a DESCRIBE (empty pendingAggregators); aggregates may only appear inside HAVING as hidden ones.
+            ParseSolutionModifiers(parserContext, modifier => describeQuery.AddModifier(modifier), new List<RDFAggregator>());
 
             return describeQuery;
         }

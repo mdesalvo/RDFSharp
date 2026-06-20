@@ -119,10 +119,11 @@ namespace RDFSharp.Query
             //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(describeQuery, datasource);
 
-            //Expose the result of the query
+            //Expose the result of the query. A DESCRIBE result is an RDF graph (a SET of triples), so the filled
+            //describe terms are de-duplicated: DISTINCT is not a CONSTRUCT/DESCRIBE modifier, the set semantics is inherent.
             return new RDFDescribeQueryResult
             {
-                DescribeResults = ApplyModifiers(describeQuery, FillDescribeTerms(queryResultTable)).ToDataTable()
+                DescribeResults = RDFTableEngine.DistinctTable(FillDescribeTerms(ApplyModifiers(describeQuery, queryResultTable))).ToDataTable()
             };
         }
 
@@ -134,10 +135,11 @@ namespace RDFSharp.Query
             //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(constructQuery, datasource);
 
-            //Expose the result of the query
+            //Expose the result of the query. A CONSTRUCT result is an RDF graph (a SET of triples), so the
+            //instantiated templates are de-duplicated: DISTINCT is not a CONSTRUCT/DESCRIBE modifier, the set semantics is inherent.
             return new RDFConstructQueryResult
             {
-                ConstructResults = ApplyModifiers(constructQuery, FillTemplates(constructQuery.Templates, queryResultTable, false)).ToDataTable()
+                ConstructResults = RDFTableEngine.DistinctTable(FillTemplates(constructQuery.Templates, ApplyModifiers(constructQuery, queryResultTable), false)).ToDataTable()
             };
         }
 
@@ -439,8 +441,22 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region PROJECTION
-                table = RDFTableEngine.ProjectTable(selectQuery, table);
+                //SPARQL algebra order: Extend (projection expressions) → OrderBy → Project (keep projected columns).
+                //ORDER BY sits between Extend and Project so it can sort by a non-projected column dropped afterwards.
+                RDFTableEngine.ProjectExpressions(selectQuery, table);
+                table = ApplyOrderBy(selectQuery, table);
+                table = RDFTableEngine.ProjectColumns(selectQuery, table);
                 #endregion
+            }
+            else
+            {
+                //CONSTRUCT/DESCRIBE: solution-sequence modifiers on the WHERE results (no projection). Group/aggregate
+                //(HAVING lives inside the GroupBy modifier), then sort, before templates are instantiated / resources described.
+                RDFGroupByModifier groupByModifier = modifiers.OfType<RDFGroupByModifier>().FirstOrDefault();
+                if (groupByModifier != null)
+                    table = groupByModifier.ApplyModifier(table);
+
+                table = ApplyOrderBy(query, table);
             }
             #endregion
 
@@ -464,6 +480,31 @@ namespace RDFSharp.Query
 
             //Carry the incoming Optional flag through the modifiers onto the query result table
             table.IsOptional = inOptional;
+            return table;
+        }
+
+        /// <summary>
+        /// Applies the query's ORDER BY modifiers to the given table (query-level orchestration over the table
+        /// primitive <see cref="RDFTableEngine.SortTable"/>). Each modifier resolves its own ordering-key column via
+        /// <see cref="RDFOrderByModifier.EnsureSortColumn"/>: a bare variable sorts on its existing column, any other
+        /// expression is materialized into a (synthetic) column dropped right after the sort (so it never surfaces
+        /// in the results, e.g. under SELECT *). Used by SELECT (between Extend and Project) and by CONSTRUCT/DESCRIBE
+        /// (sorting the WHERE solution sequence before templates are instantiated / resources are described).
+        /// </summary>
+        private static RDFTable ApplyOrderBy(RDFQuery query, RDFTable table)
+        {
+            RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
+            if (orderByModifiers.Length > 0)
+            {
+                List<(string, bool)> sortKeys = orderByModifiers
+                    .Select(m => (m.EnsureSortColumn(table), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
+                    .ToList();
+                table = RDFTableEngine.SortTable(table, sortKeys);
+
+                //Drop any synthetic ordering-key column so it never surfaces in the results (e.g. under SELECT *)
+                foreach (RDFTableColumn syntheticColumn in table.Columns.Where(column => column.IsSynthetic).ToList())
+                    table.RemoveColumn(syntheticColumn.Name);
+            }
             return table;
         }
 

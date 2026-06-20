@@ -51,6 +51,34 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Checks whether the given candidate modifier may be added to the query
+        /// </summary>
+        internal bool CheckModifierIsAcceptable(RDFModifier candidateModifier, bool allowsDistinct)
+        {
+            IEnumerable<RDFModifier> modifiers = GetModifiers();
+            switch (candidateModifier)
+            {
+                //DISTINCT: at most one and only if the query form allows it
+                case RDFDistinctModifier _:
+                    return allowsDistinct && !modifiers.Any(m => m is RDFDistinctModifier);
+
+                //GROUP BY, LIMIT, OFFSET: at most one
+                case RDFGroupByModifier _:
+                    return !modifiers.Any(m => m is RDFGroupByModifier);
+                case RDFLimitModifier _:
+                    return !modifiers.Any(m => m is RDFLimitModifier);
+                case RDFOffsetModifier _:
+                    return !modifiers.Any(m => m is RDFOffsetModifier);
+ 
+                //ORDER BY: at most one per ordering key
+                case RDFOrderByModifier candidateOrderBy:
+                    return !modifiers.Any(m => m is RDFOrderByModifier existingOrderBy && existingOrderBy.Expression.ToString().Equals(candidateOrderBy.Expression.ToString()));
+ 
+                default: return true;
+            }
+        }
+
+        /// <summary>
         /// Adds the given pattern group to the body of the query
         /// </summary>
         internal T AddPatternGroup<T>(RDFPatternGroup patternGroup) where T: RDFQuery
