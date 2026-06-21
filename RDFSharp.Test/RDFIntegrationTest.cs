@@ -724,5 +724,45 @@ WHERE {
         Assert.AreEqual(40, bonusByStudent[$"{UniversityNamespace}student0"]);
         Assert.AreEqual(60, bonusByStudent[$"{UniversityNamespace}student2"]);
     }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerCombinedRecentInnovations()
+    {
+        //A single query that crosses the most recent design phases end-to-end (string -> object-model -> engine),
+        //and incidentally drives the resurrected pure-inner join fast-path:
+        // - the 3-pattern BGP is fully bound and non-optional, so CombineTables takes InnerJoinTables (the fast-path);
+        // - FILTER carries a string built-in (STRSTARTS over STR()) — an IP-era expression in a bare boolean filter;
+        // - GROUP BY + COUNT/AVG with a FREE HAVING that references the aggregate AVG(?G) directly (IP3.3);
+        // - ORDER BY on the aggregate alias plus the complete CONSTRUCT/SELECT modifier handling (IP4);
+        // - a TRAILING query-level VALUES clause (IP5.1), joined with the WHERE solutions BEFORE the modifiers,
+        //   which is what actually drops course0 before grouping.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?C (COUNT(?E) AS ?CNT) (AVG(?G) AS ?AVG) WHERE {
+                ?E a uni:Exam .
+                ?E uni:examCourse ?C .
+                ?E uni:grade ?G .
+                FILTER(STRSTARTS(STR(?C), STR(uni:course)))
+            }
+            GROUP BY ?C
+            HAVING(AVG(?G) >= 20)
+            ORDER BY DESC(?AVG)
+            VALUES ?C { uni:course1 uni:course2 }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //Exams per course: course0=[25], course1=[28,18], course2=[30,22]. The trailing VALUES restricts to
+        //course1/course2 (course0 dropped BEFORE grouping); both survive HAVING avg>=20; ORDER BY DESC(?AVG)
+        //yields course2 (avg 26) first, then course1 (avg 23).
+        Assert.AreEqual(2, result.SelectResultsCount);
+
+        Assert.AreEqual($"{UniversityNamespace}course2", result.SelectResults.Rows[0]["?C"].ToString());
+        Assert.AreEqual(2, GetNumericValue(result.SelectResults.Rows[0]["?CNT"]));
+        Assert.AreEqual(26, GetNumericValue(result.SelectResults.Rows[0]["?AVG"]));
+
+        Assert.AreEqual($"{UniversityNamespace}course1", result.SelectResults.Rows[1]["?C"].ToString());
+        Assert.AreEqual(2, GetNumericValue(result.SelectResults.Rows[1]["?CNT"]));
+        Assert.AreEqual(23, GetNumericValue(result.SelectResults.Rows[1]["?AVG"]));
+    }
     #endregion
 }

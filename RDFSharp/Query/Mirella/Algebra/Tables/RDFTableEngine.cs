@@ -48,8 +48,6 @@ namespace RDFSharp.Query
             bool rowAdded = false;
 
             DataRow resultRow = table.NewRow();
-            //Plain iteration over the bindings avoids the per-row LINQ Where() iterator/closure
-            //allocation, and the KeyValuePair access avoids re-looking-up the value by key
             foreach (KeyValuePair<string, string> binding in bindings)
             {
                 if (table.Columns.Contains(binding.Key))
@@ -91,6 +89,10 @@ namespace RDFSharp.Query
                     cells[colO] = triple.Object.ToString();
                 resultTable.AddRow(cells);
             }
+
+            //Every row binds all pattern variables (the table's columns ARE the pattern variables), so the result
+            //carries no UNBOUND cell: raise the safe hint enabling the pure-inner fast-path in CombineTables.
+            resultTable.IsFullyBound = true;
         }
 
         /// <summary>
@@ -126,6 +128,10 @@ namespace RDFSharp.Query
                     cells[colO] = quadruple.Object.ToString();
                 resultTable.AddRow(cells);
             }
+
+            //Every row binds all pattern variables (the table's columns ARE the pattern variables), so the result
+            //carries no UNBOUND cell: raise the safe hint enabling the pure-inner fast-path in CombineTables.
+            resultTable.IsFullyBound = true;
         }
 
         /// <summary>
@@ -180,6 +186,10 @@ namespace RDFSharp.Query
         internal static RDFTable InnerJoinTables(RDFTable leftTable, RDFTable rightTable)
         {
             RDFTable joinTable = new RDFTable();
+            //An inner-join only copies existing cells (common columns taken from left, never synthesized), so the
+            //result has no UNBOUND cell exactly when both inputs are fully bound. Computed once here and stamped on
+            //every return, so a fully-bound BGP combine keeps the hint and the fast-path propagates upward.
+            bool resultIsFullyBound = leftTable.IsFullyBound && rightTable.IsFullyBound;
             List<string> commonNames = CommonColumnNames(leftTable, rightTable);
 
             //PRODUCT-JOIN (no common columns): full cartesian product, left-major
@@ -202,6 +212,7 @@ namespace RDFSharp.Query
                             cells[leftWidth + i] = rightRow[i];
                         joinTable.AddRow(cells);
                     }
+                joinTable.IsFullyBound = resultIsFullyBound;
                 return joinTable;
             }
 
@@ -252,6 +263,7 @@ namespace RDFSharp.Query
                     joinTable.AddRow(cells);
                 }
             }
+            joinTable.IsFullyBound = resultIsFullyBound;
             return joinTable;
         }
 
@@ -516,7 +528,11 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Combines the given tables by joining them (using outer-join when any table is Optional)
+        /// Combines the given tables by joining them. Each step uses the cheaper strict inner-join when the join
+        /// is provably pure-inner (the right table is non-optional and BOTH operands are fully bound, so there is
+        /// no UNBOUND cell in the common columns); otherwise it falls back to the safe outer-join, which honors
+        /// OPTIONAL and the compatible-mappings semantics (UNBOUND in a common column joins as a wildcard). The
+        /// two produce identical results (same rows, same order) under that guard, so this is a pure fast-path.
         /// </summary>
         internal static RDFTable CombineTables(List<RDFTable> dataTables)
         {
@@ -528,7 +544,12 @@ namespace RDFSharp.Query
 
             RDFTable finalTable = dataTables[0];
             for (int i = 1; i < dataTables.Count; i++)
-                finalTable = OuterJoinTables(finalTable, dataTables[i]);
+            {
+                RDFTable rightTable = dataTables[i];
+                finalTable = !rightTable.IsOptional && finalTable.IsFullyBound && rightTable.IsFullyBound
+                    ? InnerJoinTables(finalTable, rightTable)
+                    : OuterJoinTables(finalTable, rightTable);
+            }
             return finalTable;
         }
 
@@ -601,6 +622,9 @@ namespace RDFSharp.Query
 
             foreach (string[] cells in rows)
                 sortedTable.AddRow(cells);
+
+            //Sorting only reorders rows (same columns, same cells), so it preserves the fully-bound hint
+            sortedTable.IsFullyBound = table.IsFullyBound;
             return sortedTable;
         }
 
@@ -634,6 +658,9 @@ namespace RDFSharp.Query
                 if (seenKeys.Add(keyBuilder.ToString()))
                     distinctTable.AddRow(cells);
             }
+
+            //Dedup only drops duplicate rows (same columns, same cells), so it preserves the fully-bound hint
+            distinctTable.IsFullyBound = table.IsFullyBound;
             return distinctTable;
         }
 
@@ -666,6 +693,10 @@ namespace RDFSharp.Query
                         cells[i] = sourceOrdinals[i] >= 0 ? sourceRow[sourceOrdinals[i]] : null;
                     projectedTable.AddRow(cells);
                 }
+
+                //The projection only copies existing cells: the result stays fully bound iff the source was AND
+                //every projected variable resolved to a real source column (an unresolved one would be all-UNBOUND).
+                projectedTable.IsFullyBound = table.IsFullyBound && Array.TrueForAll(sourceOrdinals, ordinal => ordinal >= 0);
                 table = projectedTable;
             }
             return table;

@@ -3239,6 +3239,64 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
+    public void ShouldEvaluateBGPThroughPureInnerJoinFastPath()
+    {
+        //Two fully-bound, non-optional patterns sharing ?o => CombineTables takes the strict inner-join fast-path.
+        //The end-to-end result must be exactly the equi-join (Alice knows Bob, Bob is 30).
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:alice"), new RDFResource("ex:knows"), new RDFResource("ex:bob")),
+            new RDFTriple(new RDFResource("ex:bob"), new RDFResource("ex:age"), new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+            new RDFTriple(new RDFResource("ex:alice"), new RDFResource("ex:age"), new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER))
+        ]);
+
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?s"), new RDFResource("ex:knows"), new RDFVariable("?o")))
+                .AddPattern(new RDFPattern(new RDFVariable("?o"), new RDFResource("ex:age"), new RDFVariable("?age"))));
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("ex:alice", results.Rows[0]["?s"].ToString());
+        Assert.AreEqual("ex:bob", results.Rows[0]["?o"].ToString());
+        Assert.IsTrue(results.Rows[0]["?age"].ToString().StartsWith("30", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldInnerJoinFullyBoundSubQueryWithMother()
+    {
+        //A subselect that joins INNER with its mother: the outer pattern '?s ex:knows ?o' joins on ?s with the
+        //subquery 'SELECT ?s WHERE { ?s a ex:Person }'. Both are fully bound and non-optional, so CombineTables
+        //picks the strict inner-join: only Alice (a Person who knows Bob) survives; Carol (not a Person) is dropped.
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")),
+            new RDFTriple(new RDFResource("ex:bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")),
+            new RDFTriple(new RDFResource("ex:alice"), new RDFResource("ex:knows"), new RDFResource("ex:bob")),
+            new RDFTriple(new RDFResource("ex:carol"), new RDFResource("ex:knows"), new RDFResource("ex:alice"))
+        ]);
+
+        RDFSelectQuery subQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?s"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person"))))
+            .AddProjectionVariable(new RDFVariable("?s"));
+
+        //The subquery result is fully bound (BGP binds ?s, projection keeps an existing column) => inner-eligible
+        RDFTable subQueryTable = new RDFQueryEngine().EvaluateSelectQueryToTable(subQuery, graph);
+        Assert.IsTrue(subQueryTable.IsFullyBound);
+
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?s"), new RDFResource("ex:knows"), new RDFVariable("?o"))))
+            .AddSubQuery(subQuery);
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("ex:alice", results.Rows[0]["?s"].ToString());
+        Assert.AreEqual("ex:bob", results.Rows[0]["?o"].ToString());
+    }
+
+    [TestMethod]
     public void ShouldEvaluatePatternGroupWithResultsFromExistsFilter()
     {
         RDFGraph graph = new RDFGraph(

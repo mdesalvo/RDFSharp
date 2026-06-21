@@ -1275,6 +1275,63 @@ public class RDFTableEngineTest
     }
 
     [TestMethod]
+    public void ShouldProduceIdenticalResultsForInnerAndOuterWhenFullyBound()
+    {
+        //The pure-inner fast-path is sound only when there is no UNBOUND in the common columns: on such fully
+        //bound data InnerJoinTables and OuterJoinTables must agree EXACTLY (rows AND order) in all three regimes.
+
+        //Equi-join with matches on the shared column ?X
+        RDFTable left = BuildTable(["?S", "?X"], ["s1", "v1"], ["s2", "v2"], ["s3", "v1"]);
+        RDFTable right = BuildTable(["?X", "?O"], ["v1", "o1"], ["v1", "o2"], ["v2", "o3"]);
+        Assert.AreEqual(RenderTable(RDFTableEngine.OuterJoinTables(left, right)),
+                        RenderTable(RDFTableEngine.InnerJoinTables(left, right)));
+
+        //Equi-join with NO matching key => empty result on both
+        RDFTable leftNoMatch = BuildTable(["?S", "?X"], ["s1", "vX"]);
+        RDFTable rightNoMatch = BuildTable(["?X", "?O"], ["vY", "o1"]);
+        Assert.AreEqual(RenderTable(RDFTableEngine.OuterJoinTables(leftNoMatch, rightNoMatch)),
+                        RenderTable(RDFTableEngine.InnerJoinTables(leftNoMatch, rightNoMatch)));
+
+        //Product (no common column) => full cartesian product on both
+        RDFTable leftProd = BuildTable(["?S"], ["a"], ["b"]);
+        RDFTable rightProd = BuildTable(["?O"], ["p1"], ["p2"]);
+        Assert.AreEqual(RenderTable(RDFTableEngine.OuterJoinTables(leftProd, rightProd)),
+                        RenderTable(RDFTableEngine.InnerJoinTables(leftProd, rightProd)));
+    }
+
+    [TestMethod]
+    public void ShouldMaintainIsFullyBoundHint()
+    {
+        //Default is the safe (pessimistic) false
+        Assert.IsFalse(new RDFTable().IsFullyBound);
+        //Adding a column lowers the hint (widening introduces an UNBOUND cell on existing/future rows)
+        Assert.IsFalse(BuildTable(["?S"], ["a"]).IsFullyBound);
+
+        //PopulateTable raises it: a pattern binds all its variables in every row
+        RDFTable populated = new RDFTable();
+        populated.AddColumn("?S");
+        populated.AddColumn("?O");
+        RDFTableEngine.PopulateTable(
+            new RDFPattern(new RDFVariable("?s"), new RDFResource("ex:p"), new RDFVariable("?o")),
+            [new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:p"), new RDFResource("ex:b"))],
+            populated);
+        Assert.IsTrue(populated.IsFullyBound);
+
+        //InnerJoin of two fully-bound tables stays fully bound; if either input is not, the result is not
+        RDFTable boundLeft = BuildTable(["?S", "?X"], ["s1", "v1"]);
+        boundLeft.IsFullyBound = true;
+        RDFTable boundRight = BuildTable(["?X", "?O"], ["v1", "o1"]);
+        boundRight.IsFullyBound = true;
+        Assert.IsTrue(RDFTableEngine.InnerJoinTables(boundLeft, boundRight).IsFullyBound);
+
+        RDFTable unboundRight = BuildTable(["?X", "?O"], ["v1", "o1"]); //IsFullyBound stays false
+        Assert.IsFalse(RDFTableEngine.InnerJoinTables(boundLeft, unboundRight).IsFullyBound);
+
+        //OuterJoin never claims fully-bound (it may synthesize UNBOUND cells via optional/coalescing)
+        Assert.IsFalse(RDFTableEngine.OuterJoinTables(boundLeft, boundRight).IsFullyBound);
+    }
+
+    [TestMethod]
     public void ShouldOuterJoinWithNullCoalescing()
     {
         Assert.AreEqual(
