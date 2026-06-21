@@ -42,6 +42,11 @@ namespace RDFSharp.Query
         /// Dictionary of projection variables and associated ordinals
         /// </summary>
         internal Dictionary<RDFVariable, (int, RDFExpression)> ProjectionVars { get; set; }
+
+        /// <summary>
+        /// Trailing inline-data block
+        /// </summary>
+        internal RDFValues QueryValues { get; set; }
         #endregion
 
         #region Ctors
@@ -105,6 +110,17 @@ namespace RDFSharp.Query
         {
             if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: true))
                 QueryMembers.Add(modifier);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the trailing query-level inline-data block (<c>SELECT ... WHERE { ... } VALUES ...</c>): the
+        /// given values are joined with the whole WHERE solution sequence before the solution modifiers run.
+        /// </summary>
+        public RDFSelectQuery SetValues(RDFValues values)
+        {
+            if (values != null && values.IsEvaluable)
+                QueryValues = values;
             return this;
         }
 

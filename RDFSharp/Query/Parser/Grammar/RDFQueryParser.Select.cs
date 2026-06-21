@@ -75,6 +75,12 @@ namespace RDFSharp.Query
                 selectQuery.AddModifier(implicitGroupByModifier);
             }
 
+            //Trailing ValuesClause (SelectQuery ::= ... SolutionModifier ValuesClause): a query-level VALUES,
+            //joined with the whole WHERE solution sequence. It is SELECT-only and applies to both the top-level
+            //query and a subselect (which reuses this very method), so it is consumed here at the end.
+            if (TryConsumeKeyword(parserContext, "VALUES"))
+                selectQuery.SetValues(ParseDataBlock(parserContext));
+
             return selectQuery;
         }
 

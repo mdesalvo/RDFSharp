@@ -3223,7 +3223,7 @@ public class RDFQueryEngineTest
         ]);
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), null)); //UNDEF
+            .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [null])); //one UNDEF row
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 

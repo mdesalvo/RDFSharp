@@ -77,34 +77,39 @@ namespace RDFSharp.Query
         /// (the <c>'VALUES'</c> keyword has already been consumed by the dispatcher). The compact one-variable form
         /// and the extended multi-variable form share the same column-oriented <see cref="RDFValues"/> model.
         /// </summary>
-        /// <exception cref="RDFQueryException">When the block is malformed, declares no variable, holds no row, or a row's arity does not match the variable list.</exception>
+        /// <exception cref="RDFQueryException">When the block is malformed or a row's arity does not match the variable list.</exception>
         private static void ParseValues(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
+            => targetPatternGroup.AddValues(ParseDataBlock(parserContext));
+
+        /// <summary>
+        /// Parses a standalone <c>DataBlock</c> (the part of <c>VALUES</c> after the keyword) and returns it as a
+        /// freestanding <see cref="RDFValues"/>, without attaching it anywhere. This is the shared entry point used
+        /// both by an in-pattern-group VALUES (via <see cref="ParseValues"/>) and by the trailing query-level
+        /// ValuesClause (<c>SELECT ... WHERE { ... } VALUES ...</c>, parsed in ParseSelectQuery).
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the block is malformed or a row's arity does not match the variable list.</exception>
+        private static RDFValues ParseDataBlock(RDFQueryParserContext parserContext)
         {
             int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
             //InlineDataOneVar: a single bare variable followed by a brace-delimited list of plain values
             if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
-            {
-                ParseInlineDataOneVar(parserContext, targetPatternGroup);
-                return;
-            }
+                return ParseInlineDataOneVar(parserContext);
 
             //InlineDataFull: a parenthesised variable list followed by a brace-delimited list of parenthesised rows
             if (nextSignificantCodePoint == '(')
-            {
-                ParseInlineDataFull(parserContext, targetPatternGroup);
-                return;
-            }
+                return ParseInlineDataFull(parserContext);
 
             throw new RDFQueryException("Cannot parse SPARQL VALUES: expected a variable or '(' after 'VALUES' " + GetCoordinates(parserContext));
         }
 
         /// <summary>
-        /// Parses the compact one-variable inline-data form <c>Var '{' DataBlockValue* '}'</c> and attaches the
-        /// resulting single-column <see cref="RDFValues"/> to the target pattern group. Each value becomes one row
-        /// of that single column; an <c>UNDEF</c> token becomes a null (unbound) binding.
+        /// Parses the compact one-variable inline-data form <c>Var '{' DataBlockValue* '}'</c> and returns the
+        /// resulting single-column <see cref="RDFValues"/>. Each value becomes one row of that single column; an
+        /// <c>UNDEF</c> token becomes a null (unbound) binding. An empty value list (<c>VALUES ?v { }</c>) yields a
+        /// declared-but-empty column (zero rows): a legal SPARQL block whose meaning is "zero solutions".
         /// </summary>
-        private static void ParseInlineDataOneVar(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
+        private static RDFValues ParseInlineDataOneVar(RDFQueryParserContext parserContext)
         {
             //The single variable whose column this block fills
             RDFVariable valuesVariable = ParseVariable(parserContext);
@@ -128,23 +133,20 @@ namespace RDFSharp.Query
                 columnBindings.Add(ParseDataBlockValue(parserContext));
             }
 
-            //A VALUES block with no rows would degrade (via AddColumn) to a single UNDEF row, silently changing the
-            //query's meaning (zero solutions vs one all-unbound solution). Reject it rather than mis-represent it.
-            if (columnBindings.Count == 0)
-                throw new RDFQueryException("Cannot parse SPARQL VALUES: an empty data block ('VALUES ?v { }') is not supported " + GetCoordinates(parserContext));
-
-            //Attach the single-column inline data to the surrounding pattern group
-            targetPatternGroup.AddValues(new RDFValues().AddColumn(valuesVariable, columnBindings));
+            //Build the single-column inline data (an empty column list means zero rows: AddColumn keeps it empty)
+            return new RDFValues().AddColumn(valuesVariable, columnBindings);
         }
 
         /// <summary>
         /// Parses the extended multi-variable inline-data form
-        /// <c>'(' Var* ')' '{' ( '(' DataBlockValue* ')' | NIL )* '}'</c> and attaches the resulting
-        /// <see cref="RDFValues"/> to the target pattern group. Rows are read tuple-by-tuple and then transposed
-        /// into the column-oriented model (one <see cref="RDFValues.AddColumn"/> call per declared variable); each
-        /// row's arity must equal the number of declared variables, and <c>UNDEF</c> tokens become null bindings.
+        /// <c>'(' Var* ')' '{' ( '(' DataBlockValue* ')' | NIL )* '}'</c> and returns the resulting
+        /// <see cref="RDFValues"/>. Rows are read tuple-by-tuple and then transposed into the column-oriented model
+        /// (one <see cref="RDFValues.AddColumn"/> call per declared variable); each row's arity must equal the
+        /// number of declared variables, and <c>UNDEF</c> tokens become null bindings. The variable list may be NIL
+        /// (<c>VALUES () { ... }</c>): with zero variables the rows are empty-domain identity mappings, whose count
+        /// is carried explicitly (no column to derive it from). An empty row list yields a "zero solutions" block.
         /// </summary>
-        private static void ParseInlineDataFull(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
+        private static RDFValues ParseInlineDataFull(RDFQueryParserContext parserContext)
         {
             //Opening parenthesis of the variable list
             ExpectChar(parserContext, '(', "VALUES");
@@ -167,10 +169,6 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot parse SPARQL VALUES: expected a variable or ')' in the variable list " + GetCoordinates(parserContext));
             }
 
-            //A no-variable VALUES is degenerate (no column to bind) and not representable by the column model
-            if (valuesVariables.Count == 0)
-                throw new RDFQueryException("Cannot parse SPARQL VALUES: the variable list must declare at least one variable " + GetCoordinates(parserContext));
-
             //Opening brace of the row list
             ExpectChar(parserContext, '{', "VALUES");
 
@@ -190,20 +188,26 @@ namespace RDFSharp.Query
                 dataRows.Add(ParseInlineDataRow(parserContext, valuesVariables.Count));
             }
 
-            //As in the one-variable form, a block with no rows cannot be represented faithfully: reject it
-            if (dataRows.Count == 0)
-                throw new RDFQueryException("Cannot parse SPARQL VALUES: an empty data block ('VALUES (...) { }') is not supported " + GetCoordinates(parserContext));
-
-            //Transpose the row-major tuples into the column-oriented RDFValues model: one column per declared variable
             RDFValues inlineData = new RDFValues();
+
+            //NIL data block ('VALUES () { () () }'): no variable to bind, so the model carries the count of the
+            //empty-domain identity rows explicitly. It is evaluable even with zero rows ('VALUES () { }' means
+            //"zero solutions"), so the flag is raised here rather than relying on AddColumn.
+            if (valuesVariables.Count == 0)
+            {
+                inlineData.NilRowsCount = dataRows.Count;
+                inlineData.IsEvaluable = true;
+                return inlineData;
+            }
+
+            //Transpose the row-major tuples into the column-oriented RDFValues model: one column per declared
+            //variable (an empty row list leaves every column empty, i.e. a "zero solutions" block)
             for (int columnIndex = 0; columnIndex < valuesVariables.Count; columnIndex++)
             {
                 int capturedColumnIndex = columnIndex;
                 inlineData.AddColumn(valuesVariables[columnIndex], dataRows.Select(dataRow => dataRow[capturedColumnIndex]).ToList());
             }
-
-            //Attach the multi-column inline data to the surrounding pattern group
-            targetPatternGroup.AddValues(inlineData);
+            return inlineData;
         }
 
         /// <summary>

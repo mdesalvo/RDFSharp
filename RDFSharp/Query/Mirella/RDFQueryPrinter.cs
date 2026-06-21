@@ -143,6 +143,16 @@ namespace RDFSharp.Query
             PrintSolutionModifiers(sb, modifiers, selectQuery.Prefixes, subqueryBodySpaces);
             #endregion
 
+            #region TRAILING VALUES
+            //Query-level VALUES (SELECT ... WHERE { ... } VALUES ...): printed after the solution modifiers,
+            //at the SELECT body indentation (inside the braces for a subquery, thanks to the closure below)
+            if (selectQuery.QueryValues != null)
+            {
+                sb.AppendLine();
+                sb.Append(string.Concat(subqueryBodySpaces, PrintValues(selectQuery.QueryValues, prefixes, subqueryBodySpaces)));
+            }
+            #endregion
+
             //CLOSURE
             sb.AppendLine();
             if (selectQuery.IsSubQuery)
@@ -409,7 +419,7 @@ namespace RDFSharp.Query
                         result.AppendLine($"{spaces}    {PrintPropertyPath(ppPgMember, prefixes)} .");
                         break;
 
-                    case RDFValues vlPgMember when vlPgMember.IsEvaluable && !vlPgMember.IsInjected:
+                    case RDFValues vlPgMember when vlPgMember.IsEvaluable:
                         result.AppendLine($"{spaces}    {PrintValues(vlPgMember, prefixes, spaces)} .");
                         break;
 

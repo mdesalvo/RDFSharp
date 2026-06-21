@@ -90,6 +90,10 @@ namespace RDFSharp.Query
             //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(selectQuery, datasource);
 
+            //Evaluate trailing query-level VALUES
+            if (selectQuery.QueryValues?.IsEvaluable == true)
+                queryResultTable = RDFTableEngine.OuterJoinTables(queryResultTable, selectQuery.QueryValues.GetRDFTable());
+
             //Evaluate the modifiers of the query
             return ApplyModifiers(selectQuery, queryResultTable);
         }
