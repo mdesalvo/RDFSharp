@@ -356,6 +356,76 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Prints an EXISTS / NOT EXISTS group graph pattern (braces included). Per SPARQL grammar the body is either a
+        /// SubSelect (<see cref="RDFSelectQuery"/>) or a GroupGraphPatternSub (<see cref="RDFPatternGroup"/>): the
+        /// pattern group is rendered as a compact single-line brace block (reusing the per-element printers, so literal
+        /// content is preserved verbatim), while a SubSelect is rendered by the canonical (brace-wrapped) printer.
+        /// </summary>
+        internal static string PrintGroupGraphPattern(RDFQueryMember groupGraphPattern, List<RDFNamespace> prefixes)
+        {
+            switch (groupGraphPattern)
+            {
+                case RDFPatternGroup patternGroup:
+                    return PrintExistsPatternGroupBody(patternGroup, prefixes);
+                case RDFSelectQuery subSelect:
+                    //The EXISTS body SubSelect is always flagged IsSubQuery (set when the filter is built), so it is
+                    //rendered brace-wrapped and without a prologue of its own
+                    return PrintSelectQuery(subSelect, 0, false).Trim();
+                default:
+                    return "{ }";
+            }
+        }
+
+        /// <summary>
+        /// Renders a pattern group as the compact single-line group graph pattern body used inside EXISTS / NOT EXISTS:
+        /// triple/path/values/bind members (each suffixed with " .") and filters, all wrapped in a single pair of braces.
+        /// </summary>
+        private static string PrintExistsPatternGroupBody(RDFPatternGroup patternGroup, List<RDFNamespace> prefixes)
+        {
+            List<string> bodyParts = new List<string>();
+
+            foreach (RDFPatternGroupMember pgMember in patternGroup.GetEvaluablePatternGroupMembers())
+            {
+                string renderedMember = PrintExistsPatternGroupMember(pgMember, prefixes);
+                if (renderedMember != null)
+                    //Triple-like members carry a dot terminator; binary (UNION/MINUS) trees stand on their own
+                    bodyParts.Add(pgMember is RDFBinaryPatternGroupMember ? renderedMember : string.Concat(renderedMember, " ."));
+            }
+
+            foreach (RDFFilter filter in patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter)))
+                bodyParts.Add(filter.ToString(prefixes));
+
+            return bodyParts.Count == 0 ? "{ }" : string.Concat("{ ", string.Join(" ", bodyParts), " }");
+        }
+
+        /// <summary>
+        /// Renders a single pattern group member (no dot terminator) for the compact EXISTS body, reusing the canonical
+        /// per-element printers and recursing into binary (UNION/MINUS) trees.
+        /// </summary>
+        private static string PrintExistsPatternGroupMember(RDFPatternGroupMember pgMember, List<RDFNamespace> prefixes)
+        {
+            switch (pgMember)
+            {
+                case RDFPattern pattern:
+                    return PrintPattern(pattern, prefixes);
+                case RDFPropertyPath propertyPath when propertyPath.IsEvaluable:
+                    return PrintPropertyPath(propertyPath, prefixes);
+                case RDFValues values when values.IsEvaluable:
+                    return PrintValues(values, prefixes, string.Empty);
+                case RDFBind bind:
+                    return PrintBind(bind, prefixes);
+                case RDFBinaryPatternGroupMember binaryMember:
+                {
+                    string operatorKeyword = binaryMember.OperatorType == RDFQueryEnums.RDFBinaryOperatorType.Union ? "UNION" : "MINUS";
+                    return string.Concat("{ ", PrintExistsPatternGroupMember(binaryMember.LeftOperand, prefixes), " . } ", operatorKeyword,
+                                         " { ", PrintExistsPatternGroupMember(binaryMember.RightOperand, prefixes), " . }");
+                }
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
         /// Prints the string representation of a pattern group
         /// </summary>
         internal static string PrintPatternGroup(RDFPatternGroup patternGroup, int spaceIndent, bool skipOptional, List<RDFNamespace> prefixes)

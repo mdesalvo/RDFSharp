@@ -15,7 +15,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using RDFSharp.Model;
 using static RDFSharp.Query.RDFQueryLexer;
 
@@ -54,8 +53,8 @@ namespace RDFSharp.Query
     /// MODEL LIMITATIONS (intentional, surfaced as precise RDFQueryException). The object model has no Boolean-NOT
     /// expression and no way to embed EXISTS inside an expression, so <c>!</c> and <c>EXISTS</c> only live at the
     /// FILTER skeleton; using them deep inside a value-expression is rejected. <see cref="RDFExistsFilter"/> carries a
-    /// single <see cref="RDFPattern"/>, so EXISTS over a multi-triple group is rejected. A handful of SPARQL built-ins
-    /// have no expression class (IRI/URI, STRBEFORE/STRAFTER, TIMEZONE/TZ) and are rejected as "not supported yet".
+    /// full group graph pattern (a <see cref="RDFPatternGroup"/> or a <see cref="RDFSelectQuery"/> SubSelect), so EXISTS
+    /// over multi-triple / UNION / OPTIONAL groups is supported.
     /// </para>
     /// </summary>
     internal static partial class RDFQueryParser
@@ -186,37 +185,31 @@ namespace RDFSharp.Query
         /// Parses an <c>EXISTS</c> / <c>NOT EXISTS</c> graph-pattern test (the keyword has already been consumed) into
         /// the corresponding <see cref="RDFExistsFilter"/> / <see cref="RDFNotExistsFilter"/>.
         /// <para>
-        /// MODEL LIMITATION. The engine's EXISTS filter carries exactly one <see cref="RDFPattern"/>, so the
-        /// parenthesised group must reduce to a single triple pattern. An empty group, a group of more than one
-        /// triple, or a group containing non-triple elements is rejected with a precise message.
+        /// The operand is a full <c>GroupGraphPattern</c> (<c>'{' ( SubSelect | GroupGraphPatternSub ) '}'</c>): it is
+        /// parsed by the shared group machinery and mapped onto the filter's two constructors — a
+        /// <see cref="RDFPatternGroup"/> (GroupGraphPatternSub) or a <see cref="RDFSelectQuery"/> (SubSelect). A
+        /// UNION/OPTIONAL/MINUS at the head of the group parses to a binary algebra tree, which is represented as the
+        /// legal SubSelect alternative by wrapping it into a <c>SELECT *</c> subquery.
         /// </para>
         /// </summary>
         private static RDFFilter ParseExistsFilter(RDFQueryParserContext parserContext, bool negated)
         {
             //The operand is a GroupGraphPattern: parse it with the existing group machinery so it shares the very
-            //same triple/blank-node/collection handling as ordinary patterns
+            //same triple/blank-node/collection/UNION/OPTIONAL handling as ordinary group graph patterns
             RDFQueryMember existsGroupMember = ParseGroupGraphPattern(parserContext);
 
-            //Reduce the parsed group to the single triple pattern the model can carry
-            RDFPattern existsPattern = ExtractSingleExistsPattern(parserContext, existsGroupMember);
-
-            return negated ? (RDFFilter)new RDFNotExistsFilter(existsPattern) : new RDFExistsFilter(existsPattern);
-        }
-
-        /// <summary>
-        /// Reduces the group parsed for an EXISTS test to the single <see cref="RDFPattern"/> the engine's EXISTS
-        /// filter can hold, rejecting every shape that cannot be represented (empty, multi-pattern, or non-pattern).
-        /// </summary>
-        private static RDFPattern ExtractSingleExistsPattern(RDFQueryParserContext parserContext, RDFQueryMember existsGroupMember)
-        {
-            if (existsGroupMember is RDFPatternGroup existsPatternGroup)
+            //Map the parsed member onto the filter's two GroupGraphPattern alternatives. A binary algebra tree
+            //(UNION/OPTIONAL/MINUS in head position) becomes a SELECT * subquery: the SubSelect alternative.
+            switch (existsGroupMember)
             {
-                List<RDFPattern> existsPatterns = existsPatternGroup.GetPatterns().ToList();
-                if (existsPatterns.Count == 1 && existsPatternGroup.GetFilters().ToList().Count == 0)
-                    return existsPatterns[0];
+                case RDFPatternGroup patternGroup:
+                    return negated ? (RDFFilter)new RDFNotExistsFilter(patternGroup) : new RDFExistsFilter(patternGroup);
+                case RDFSelectQuery subSelect:
+                    return negated ? (RDFFilter)new RDFNotExistsFilter(subSelect) : new RDFExistsFilter(subSelect);
+                default:
+                    RDFSelectQuery wrappedSubSelect = WrapIntoSubQuery(new List<RDFQueryMember> { existsGroupMember });
+                    return negated ? (RDFFilter)new RDFNotExistsFilter(wrappedSubSelect) : new RDFExistsFilter(wrappedSubSelect);
             }
-
-            throw new RDFQueryException("Cannot parse SPARQL FILTER EXISTS/NOT EXISTS: the engine supports only a single triple pattern inside the group (e.g. 'EXISTS { ?s ?p ?o }') " + GetCoordinates(parserContext));
         }
 
         /// <summary>

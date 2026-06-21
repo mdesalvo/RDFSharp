@@ -324,8 +324,10 @@ namespace RDFSharp.Query
                             break;
 
                         case RDFExistsFilter existsFilter:
-                            //Evaluate exists filter's pattern on the given data source and save its result directly into the filter
-                            existsFilter.PatternResults = ApplyPattern(existsFilter.Pattern, dataSource);
+                            //Evaluate exists filter's group graph pattern (SubSelect or pattern group) on the given
+                            //data source and save its result directly into the filter. Reuse the same leaf evaluator
+                            //used by binary algebra trees, so EXISTS supports any group graph pattern shape.
+                            existsFilter.PatternResults = EvaluateQueryMemberLeafOrSubtree(existsFilter.GroupGraphPattern, dataSource);
                             break;
 
                         case RDFBinaryPatternGroupMember operatorPGMember:

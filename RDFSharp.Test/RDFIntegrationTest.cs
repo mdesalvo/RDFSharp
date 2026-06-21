@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -25,10 +26,10 @@ using RDFSharp.Query;
 namespace RDFSharp.Test;
 
 /// <summary>
-/// End-to-end integration tests for the Mirella query engine. The 13 queries cut across the whole
+/// End-to-end integration tests for the Mirella query engine. The 15 queries cut across the whole
 /// engine surface: BGP, multi-join, OPTIONAL, UNION, FILTER, GROUP BY/aggregation+HAVING,
 /// ORDER BY+LIMIT, DISTINCT, transitive property paths, sub-query, projection expression (BIND-like),
-/// FILTER NOT EXISTS and deeply nested Union/Minus operator trees.
+/// FILTER NOT EXISTS, FILTER (multi-pattern) EXISTS, inline VALUES and deeply nested Union/Minus operator trees.
 /// </summary>
 [TestClass]
 public class RDFIntegrationTest
@@ -554,14 +555,14 @@ WHERE {
 WHERE {
   {
     ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uni.org/Student> .
-    FILTER ( NOT EXISTS { ?E <http://uni.org/examStudent> ?S } ) 
+    FILTER ( NOT EXISTS { ?E <http://uni.org/examStudent> ?S . } ) 
   }
 }
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFNotExistsFilter(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s"))))));
+                .AddFilter(new RDFNotExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s")))))));
 
         //student3 is the only one who never took an exam
         Assert.AreEqual(1, result.SelectResultsCount);
@@ -645,6 +646,61 @@ WHERE {
         Assert.AreEqual("Student 0@EN", nameByPerson[$"{UniversityNamespace}student0"]);
         Assert.AreEqual("Student 3@EN", nameByPerson[$"{UniversityNamespace}student3"]);
         Assert.AreEqual("Professor 1@EN", nameByPerson[$"{UniversityNamespace}prof1"]);
+    }
+
+    [TestMethod]
+    public void ShouldAnswerQ14FilterExistsStudentsWithExamInProf0Course()
+    {
+        //Q14 - positive multi-pattern EXISTS (the new IP5.2 form): keep students for whom there EXISTS an exam
+        //in a course taught by prof0. The EXISTS body is a 3-triple group correlated with the outer row on ?S.
+        const string expectedQueryString = @"SELECT *
+WHERE {
+  {
+    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uni.org/Student> .
+    FILTER ( EXISTS { ?EX <http://uni.org/examStudent> ?S . ?EX <http://uni.org/examCourse> ?COURSE . ?COURSE <http://uni.org/taughtBy> <http://uni.org/prof0> . } ) 
+  }
+}
+";
+        RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
+                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course")))
+                    .AddPattern(new RDFPattern(Variable("?course"), UniversityResource("taughtBy"), UniversityResource("prof0")))))));
+
+        //student0 (exam in course0+course1, both prof0) and student1 (exam in course1, prof0) qualify;
+        //student2 only took course2 (prof1) and student3 took no exam => 2 results
+        Assert.AreEqual(2, result.SelectResultsCount);
+        List<string> keptStudents = result.SelectResults.Rows.Cast<DataRow>().Select(r => r["?S"].ToString()).OrderBy(s => s).ToList();
+        CollectionAssert.AreEqual(new List<string> { $"{UniversityNamespace}student0", $"{UniversityNamespace}student1" }, keptStudents);
+    }
+
+    [TestMethod]
+    public void ShouldAnswerQ15ValuesInlineWithMultiPatternExists()
+    {
+        //Q15 - orthogonal coverage of two seldom-exercised constructs together: an inline VALUES data block
+        //restricting ?S to {student2, student3}, plus a multi-pattern EXISTS keeping only those with an exam.
+        const string expectedQueryString = @"SELECT *
+WHERE {
+  {
+    VALUES ?S { <http://uni.org/student2> <http://uni.org/student3> } .
+    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uni.org/Student> .
+    FILTER ( EXISTS { ?EX <http://uni.org/examStudent> ?S . ?EX <http://uni.org/examCourse> ?COURSE . } ) 
+  }
+}
+";
+        RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddValues(new RDFValues().AddColumn(Variable("?s"), new List<RDFPatternMember> { UniversityResource("student2"), UniversityResource("student3") }))
+                .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
+                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course")))))));
+
+        //Of {student2, student3}, only student2 has an exam => 1 result
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual($"{UniversityNamespace}student2", result.SelectResults.Rows[0]["?S"].ToString());
     }
     #endregion
 

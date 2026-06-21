@@ -168,11 +168,93 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldThrowOnMultiPatternExistsFilter()
+    public void ShouldParseMultiPatternExistsFilter()
     {
-        //The engine's EXISTS filter carries a single triple pattern only
-        Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z . ?z <http://ex/r> ?w } }"));
+        //EXISTS now carries a full group graph pattern: a multi-triple body is a pattern group
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z . ?z <http://ex/r> ?w } }");
+
+        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
+        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFPatternGroup));
+        Assert.AreEqual(2, ((RDFPatternGroup)existsFilter.GroupGraphPattern).GetPatterns().Count());
+    }
+
+    [TestMethod]
+    public void ShouldParseUnionInsideExistsFilter()
+    {
+        //A UNION at the head of the EXISTS group parses to a binary tree, represented as a SubSelect
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { { ?s <http://ex/q> ?z } UNION { ?s <http://ex/r> ?z } } }");
+
+        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
+        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFSelectQuery));
+    }
+
+    [TestMethod]
+    public void ShouldParseOptionalInsideExistsFilter()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z . OPTIONAL { ?z <http://ex/r> ?w } } }");
+
+        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
+        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFSelectQuery));
+    }
+
+    [TestMethod]
+    public void ShouldParseSubSelectInsideExistsFilter()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { SELECT ?s WHERE { ?s <http://ex/q> ?z } } }");
+
+        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
+        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFSelectQuery));
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateMultiPatternExistsIso()
+    {
+        //Sample graph: alice -knows-> bob -age-> 30 ; carol -knows-> dave (dave has no age)
+        RDFGraph graph = new RDFGraph();
+        RDFResource alice = new RDFResource("http://ex/alice");
+        RDFResource bob = new RDFResource("http://ex/bob");
+        RDFResource carol = new RDFResource("http://ex/carol");
+        RDFResource dave = new RDFResource("http://ex/dave");
+        RDFResource knows = new RDFResource("http://ex/knows");
+        RDFResource age = new RDFResource("http://ex/age");
+        graph.AddTriple(new RDFTriple(alice, knows, bob));
+        graph.AddTriple(new RDFTriple(carol, knows, dave));
+        graph.AddTriple(new RDFTriple(bob, age, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //EXISTS over a two-triple group correlated on ?friend: keep ?person whose friend has an age
+        RDFSelectQuery apiQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend")))
+                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?friend"), age, new RDFVariable("?friendAge")))))
+                .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend"))));
+
+        RDFTestUtilities.AssertIso(apiQuery, graph);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateMultiPatternNotExistsIso()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFResource alice = new RDFResource("http://ex/alice");
+        RDFResource bob = new RDFResource("http://ex/bob");
+        RDFResource carol = new RDFResource("http://ex/carol");
+        RDFResource dave = new RDFResource("http://ex/dave");
+        RDFResource knows = new RDFResource("http://ex/knows");
+        RDFResource age = new RDFResource("http://ex/age");
+        graph.AddTriple(new RDFTriple(alice, knows, bob));
+        graph.AddTriple(new RDFTriple(carol, knows, dave));
+        graph.AddTriple(new RDFTriple(bob, age, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //NOT EXISTS: keep ?person whose friend has NO age (carol -> dave)
+        RDFSelectQuery apiQuery = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend")))
+                .AddFilter(new RDFNotExistsFilter(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?friend"), age, new RDFVariable("?friendAge")))))
+                .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend"))));
+
+        RDFTestUtilities.AssertIso(apiQuery, graph);
     }
 
     //Helper: a small graph with integer ages and string names for filter-execution tests.

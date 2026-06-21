@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +20,20 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFNotExistsFilter represents a filter for checking absence of given RDF pattern.
+    /// RDFNotExistsFilter represents a filter for checking absence of a given group graph pattern.
     /// </summary>
     public sealed class RDFNotExistsFilter : RDFExistsFilter
     {
         #region Ctors
         /// <summary>
-        /// Builds a NotExists filter on the given pattern
+        /// Builds a NotExists filter on the given SubSelect group graph pattern
         /// </summary>
-        public RDFNotExistsFilter(RDFPattern pattern) : base(pattern) { }
+        public RDFNotExistsFilter(RDFSelectQuery subSelect) : base(subSelect) { }
+
+        /// <summary>
+        /// Builds a NotExists filter on the given pattern group graph pattern
+        /// </summary>
+        public RDFNotExistsFilter(RDFPatternGroup patternGroup) : base(patternGroup) { }
         #endregion
 
         #region Interfaces
@@ -38,12 +43,12 @@ namespace RDFSharp.Query
         public override string ToString()
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( NOT EXISTS { ", Pattern.ToString(prefixes), " } )");
+            => string.Concat("FILTER ( NOT EXISTS ", RDFQueryPrinter.PrintGroupGraphPattern(GroupGraphPattern, prefixes), " )");
         #endregion
 
         #region Methods
         /// <summary>
-        /// Applies the filter on the column corresponding to the pattern in the given datarow
+        /// Applies the filter on the given datarow
         /// </summary>
         internal override bool ApplyFilter(RDFTableRow row, bool applyNegation)
         {

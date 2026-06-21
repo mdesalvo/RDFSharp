@@ -3309,7 +3309,7 @@ public class RDFQueryEngineTest
         ]);
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddFilter(new RDFExistsFilter(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))));
+            .AddFilter(new RDFExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
@@ -3345,7 +3345,7 @@ public class RDFQueryEngineTest
         ]);
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddFilter(new RDFExistsFilter(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X"))));
+            .AddFilter(new RDFExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
