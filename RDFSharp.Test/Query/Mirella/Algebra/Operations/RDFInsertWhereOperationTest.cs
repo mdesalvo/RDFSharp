@@ -375,7 +375,7 @@ public class RDFInsertWhereOperationTest
                   SELECT ?Y
                   WHERE {
                     {
-                      ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                      ?Y <http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment> ?X .
                     }
                   }
                 }
@@ -465,7 +465,7 @@ public class RDFInsertWhereOperationTest
                   SELECT ?Y
                   WHERE {
                     {
-                      ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                      ?Y <http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment> ?X .
                     }
                   }
                 }
@@ -555,7 +555,7 @@ public class RDFInsertWhereOperationTest
                   SELECT ?Y
                   WHERE {
                     {
-                      ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                      ?Y <http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment> ?X .
                     }
                   }
                 }

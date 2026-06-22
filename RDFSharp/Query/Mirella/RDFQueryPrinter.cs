@@ -526,11 +526,11 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Returns the SPARQL cardinality suffix for a property path step
+        /// Returns the SPARQL cardinality suffix for the given cardinality
         /// </summary>
-        private static string PrintStepCardinality(RDFPropertyPathStep step)
+        private static string PrintPathCardinality(RDFQueryEnums.RDFPropertyPathStepCardinalities cardinality)
         {
-            switch (step.StepCardinality)
+            switch (cardinality)
             {
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:  return "?";
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:  return "+";
@@ -540,96 +540,96 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Operator precedence of a property path expression, used to decide when a child needs parentheses:
+        /// alternative (1) binds looser than sequence (2), and an atom or any decorated node (4) binds tightest
+        /// (its own decoration already parenthesizes a composite base when needed).
+        /// </summary>
+        private static int PathExpressionPrecedence(RDFPropertyPathExpression expression)
+        {
+            if (expression.IsInverse || expression.Cardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
+                return 4;
+            switch (expression.Kind)
+            {
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative: return 1;
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence:    return 2;
+                default:                                                       return 4; //Link, NegatedPropertySet
+            }
+        }
+
+        /// <summary>
+        /// Prints a property path expression as a child of a parent context with the given precedence, adding
+        /// parentheses only when the child binds looser than the context requires.
+        /// </summary>
+        private static string PrintPathExpression(RDFPropertyPathExpression expression, int parentPrecedence, List<RDFNamespace> prefixes)
+        {
+            string rendered = PrintPathExpression(expression, prefixes);
+            return PathExpressionPrecedence(expression) < parentPrecedence ? $"({rendered})" : rendered;
+        }
+
+        /// <summary>
+        /// Prints a property path expression, recursively, with its inverse (<c>^</c>) and cardinality
+        /// (<c>? * +</c>) decorations. A decoration wrapping a composite base (sequence/alternative) parenthesizes
+        /// that base so it binds as a unit.
+        /// </summary>
+        private static string PrintPathExpression(RDFPropertyPathExpression expression, List<RDFNamespace> prefixes)
+        {
+            //Render the base (kind + children), ignoring the node's own inverse/cardinality decorations
+            string baseString;
+            switch (expression.Kind)
+            {
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence:
+                    //A single-child sequence is the implicit group used to wrap a decorated inner sub-path
+                    baseString = expression.Children.Count == 1
+                        ? PrintPathExpression(expression.Children[0], prefixes)
+                        : string.Join("/", expression.Children.Select(child => PrintPathExpression(child, 2, prefixes)));
+                    break;
+
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative:
+                    baseString = string.Join("|", expression.Children.Select(child => PrintPathExpression(child, 1, prefixes)));
+                    break;
+
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.NegatedPropertySet:
+                    baseString = PrintNegatedPropertySet(expression.NegatedMembers, prefixes);
+                    break;
+
+                default: // Link
+                    baseString = PrintPatternMember(expression.Property, prefixes);
+                    break;
+            }
+
+            //A decoration over a composite base must parenthesize the base so the decoration binds the whole group
+            bool decorated = expression.IsInverse || expression.Cardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne;
+            bool compositeBase = expression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence
+                                  || expression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative;
+            if (decorated && compositeBase)
+                baseString = $"({baseString})";
+
+            if (expression.IsInverse)
+                baseString = "^" + baseString;
+            return baseString + PrintPathCardinality(expression.Cardinality);
+        }
+
+        /// <summary>
+        /// Prints a negated property set: <c>!iri</c> / <c>!^iri</c> for a single member, <c>!(a|^b|…)</c> otherwise.
+        /// </summary>
+        private static string PrintNegatedPropertySet(List<(RDFResource Property, bool IsInverse)> members, List<RDFNamespace> prefixes)
+        {
+            string PrintMember((RDFResource Property, bool IsInverse) member)
+                => (member.IsInverse ? "^" : string.Empty) + PrintPatternMember(member.Property, prefixes);
+
+            return members.Count == 1
+                ? "!" + PrintMember(members[0])
+                : "!(" + string.Join("|", members.Select(PrintMember)) + ")";
+        }
+
+        /// <summary>
         /// Prints the string representation of a property path
         /// </summary>
         internal static string PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
         {
-            StringBuilder result = new StringBuilder();
-            result.Append(PrintPatternMember(propertyPath.Start, prefixes));
-            result.Append(' ');
-
-            #region Single Property
-            if (propertyPath.Steps.Count == 1)
-            {
-                //InversePath (will swap start/end)
-                if (propertyPath.Steps[0].IsInverseStep)
-                    result.Append('^');
-
-                RDFResource propPath = propertyPath.Steps[0].StepProperty;
-                result.Append(PrintPatternMember(propPath, prefixes));
-                result.Append(PrintStepCardinality(propertyPath.Steps[0]));
-            }
-            #endregion
-
-            #region Multiple Properties
-            else
-            {
-                //Initialize printing
-                bool openedParenthesis = false;
-
-                //Iterate properties
-                for (int i = 0; i < propertyPath.Steps.Count; i++)
-                    //Alternative: generate union pattern
-                    if (propertyPath.Steps[i].StepFlavor == RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative)
-                    {
-                        if (!openedParenthesis)
-                        {
-                            openedParenthesis = true;
-                            result.Append('(');
-                        }
-
-                        //InversePath (will swap start/end)
-                        if (propertyPath.Steps[i].IsInverseStep)
-                            result.Append('^');
-
-                        var propPath = propertyPath.Steps[i].StepProperty;
-                        if (i < propertyPath.Steps.Count - 1)
-                        {
-                            result.Append(PrintPatternMember(propPath, prefixes));
-                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
-                            result.Append((char)propertyPath.Steps[i].StepFlavor);
-                        }
-                        else
-                        {
-                            result.Append(PrintPatternMember(propPath, prefixes));
-                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
-                            result.Append(')');
-                        }
-                    }
-
-                    //Sequence: generate pattern
-                    else
-                    {
-                        if (openedParenthesis)
-                        {
-                            result.Remove(result.Length - 1, 1);
-                            openedParenthesis = false;
-                            result.Append(")/");
-                        }
-
-                        //InversePath (will swap start/end)
-                        if (propertyPath.Steps[i].IsInverseStep)
-                            result.Append('^');
-
-                        var propPath = propertyPath.Steps[i].StepProperty;
-                        if (i < propertyPath.Steps.Count - 1)
-                        {
-                            result.Append(PrintPatternMember(propPath, prefixes));
-                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
-                            result.Append((char)propertyPath.Steps[i].StepFlavor);
-                        }
-                        else
-                        {
-                            result.Append(PrintPatternMember(propPath, prefixes));
-                            result.Append(PrintStepCardinality(propertyPath.Steps[i]));
-                        }
-                    }
-            }
-            #endregion
-
-            result.Append(' ');
-            result.Append(PrintPatternMember(propertyPath.End, prefixes));
-            string pathString = result.ToString();
+            //An empty path (no steps yet) prints with an empty middle, preserving the historical double space
+            string expressionString = propertyPath.Expression != null ? PrintPathExpression(propertyPath.Expression, prefixes) : string.Empty;
+            string pathString = $"{PrintPatternMember(propertyPath.Start, prefixes)} {expressionString} {PrintPatternMember(propertyPath.End, prefixes)}";
             return propertyPath.IsOptional ? $"OPTIONAL {{ {pathString} }}" : pathString;
         }
 

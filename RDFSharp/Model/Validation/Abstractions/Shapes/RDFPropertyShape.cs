@@ -203,7 +203,7 @@ namespace RDFSharp.Model
             {
                 RDFResource pathBNode = new RDFResource();
                 RDFCollection pathColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                AlternativePath.Steps.ForEach(pathStep => pathColl.AddItem(pathStep.StepProperty));
+                AlternativePath.GetFlatStepProperties().ForEach(pathStep => pathColl.AddItem(pathStep));
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
                 result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.ALTERNATIVE_PATH, pathColl.ReificationSubject));
                 result.AddCollection(pathColl);
@@ -212,7 +212,7 @@ namespace RDFSharp.Model
             else if (SequencePath != null)
             {
                 RDFCollection pathColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                SequencePath.Steps.ForEach(pathStep => pathColl.AddItem(pathStep.StepProperty));
+                SequencePath.GetFlatStepProperties().ForEach(pathStep => pathColl.AddItem(pathStep));
                 result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathColl.ReificationSubject));
                 result.AddCollection(pathColl);
             }

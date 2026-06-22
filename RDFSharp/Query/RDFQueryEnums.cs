@@ -98,6 +98,29 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// RDFPropertyPathExpressionKinds represents an enumeration for the node kinds of a SPARQL property path expression tree.
+        /// </summary>
+        public enum RDFPropertyPathExpressionKinds
+        {
+            /// <summary>
+            /// A single predicate IRI (the atomic step)
+            /// </summary>
+            Link = 1,
+            /// <summary>
+            /// An ordered composition of sub-paths (SPARQL /)
+            /// </summary>
+            Sequence = 2,
+            /// <summary>
+            /// A union of sub-paths (SPARQL |)
+            /// </summary>
+            Alternative = 3,
+            /// <summary>
+            /// One hop over any predicate not in the given set (SPARQL !)
+            /// </summary>
+            NegatedPropertySet = 4
+        }
+
+        /// <summary>
         /// RDFPropertyPathStepCardinalities represents an enumeration for possible cardinality constraints on a property path step.
         /// </summary>
         public enum RDFPropertyPathStepCardinalities

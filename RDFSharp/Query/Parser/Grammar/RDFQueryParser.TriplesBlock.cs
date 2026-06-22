@@ -141,7 +141,7 @@ namespace RDFSharp.Query
                 else if (verb.IsSimpleIri)
                     ParseObjectList(parserContext, targetPatternGroup, tripleSubject, verb.SimpleIri);
                 else
-                    ParsePathObjectList(parserContext, targetPatternGroup, tripleSubject, verb.PathUnits);
+                    ParsePathObjectList(parserContext, targetPatternGroup, tripleSubject, verb.PathExpression);
 
                 //A ';' introduces a second (or further) predicate-object group on the same subject
                 if (SkipWhitespace(parserContext) == ';')

@@ -3845,7 +3845,7 @@ public class RDFQueryPrinterTest
                 WHERE {
                   {
                     VALUES ?S { <ex:org> } .
-                    ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                    ?START rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class> ?END .
                   }
                 }
               }
@@ -4793,7 +4793,7 @@ public class RDFQueryPrinterTest
             MINUS
             {
               {
-                ?S (<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>|rdfs:subClassOf) ?E .
+                ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>|rdfs:subClassOf ?E .
                 VALUES ?S { "test" } .
               }
               UNION
@@ -5818,7 +5818,7 @@ public class RDFQueryPrinterTest
                 WHERE {
                   {
                     VALUES ?S { <ex:org> } .
-                    ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                    ?START rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class> ?END .
                     BIND((ABS(?T)) AS ?ABST) .
                   }
                 }
@@ -7211,7 +7211,7 @@ public class RDFQueryPrinterTest
                 WHERE {
                   {
                     VALUES ?S { <ex:org> } .
-                    ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                    ?START rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class> ?END .
                   }
                 }
               }
@@ -8302,7 +8302,7 @@ public class RDFQueryPrinterTest
                 WHERE {
                   {
                     VALUES ?S { <ex:org> } .
-                    ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                    ?START rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class> ?END .
                   }
                 }
               }
@@ -9352,7 +9352,7 @@ public class RDFQueryPrinterTest
                 WHERE {
                   {
                     VALUES ?S { <ex:org> } .
-                    ?START (rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class>) ?END .
+                    ?START rdfs:Class|rdfs:label|^<http://www.w3.org/2002/07/owl#Class> ?END .
                   }
                 }
               }

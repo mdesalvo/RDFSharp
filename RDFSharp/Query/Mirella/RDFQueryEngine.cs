@@ -848,51 +848,13 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Applies the given property path to the given graph
+        /// Applies the given property path to the given datasource. A property path is a recursive expression tree
+        /// denoting a binary relation over the datasource resources: the evaluation is delegated wholesale to
+        /// <see cref="RDFPathEngine"/>, which composes that relation (reusing the memoized per-property adjacency
+        /// and SCC transitive closure) and emits the (Start, End) bindings.
         /// </summary>
         internal RDFTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
-        {
-            //Dispatch to transitive evaluation when any step carries a cardinality constraint
-            if (propertyPath.HasTransitiveSteps)
-                return RDFPathEngine.ApplyTransitivePropertyPath(propertyPath, dataSource);
-
-            //Otherwise evaluate a standard "finite-set" property path
-            //Translate property path into equivalent list of patterns (with merge flags for alternatives)
-            List<(RDFPattern Pattern, bool MergeWithNext)> patternEntries = propertyPath.GetPatternList();
-
-            //Evaluate all patterns against the datasource
-            List<RDFTable> evaluatedTables = new List<RDFTable>(patternEntries.Count);
-            foreach ((RDFPattern Pattern, bool MergeWithNext) in patternEntries)
-                evaluatedTables.Add(ApplyPattern(Pattern, dataSource));
-
-            //Combine: merge consecutive MergeWithNext entries (alternative steps produce union),
-            //then collect the resulting groups for joining (sequence steps produce join)
-            List<RDFTable> combinedTables = new List<RDFTable>();
-            for (int idx = 0; idx < evaluatedTables.Count; idx++)
-            {
-                RDFTable currentGroup = evaluatedTables[idx];
-                while (idx < patternEntries.Count - 1 && patternEntries[idx].MergeWithNext)
-                {
-                    idx++;
-                    RDFTableEngine.MergeTable(currentGroup, evaluatedTables[idx]);
-                }
-                combinedTables.Add(currentGroup);
-            }
-
-            //Join the combined groups
-            RDFTable resultTable = RDFTableEngine.CombineTables(combinedTables);
-
-            //Remove property path variables
-            foreach (string ppColumn in (from RDFTableColumn ppCol
-                                         in resultTable.Columns
-                                         where ppCol.Name.StartsWith("?__PP", StringComparison.Ordinal)
-                                         select ppCol.Name).ToArray())
-            {
-                resultTable.RemoveColumn(ppColumn);
-            }
-
-            return resultTable;
-        }
+            => RDFPathEngine.ApplyPropertyPath(propertyPath, dataSource);
 
         /// <summary>
         /// Applies the given raw string query to the given SPARQL endpoint
