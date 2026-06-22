@@ -90,19 +90,19 @@ namespace RDFSharp.Query
                 if (!addedRows.Add(key))
                     return;
 
+                //At least one variable: populate the corresponding columns
                 if (startIsVar || endIsVar)
                 {
-                    //At least one variable: populate the corresponding columns
                     Dictionary<string, string> row = new Dictionary<string, string>();
                     if (startIsVar)
                         row[propertyPath.Start.ToString()] = s.ToString();
                     if (endIsVar)
                         row[propertyPath.End.ToString()]   = e.ToString();
                     resultTable.AddRow(row);
-                }
+                } 
+                //Both terms are concrete: emit a blank existence row (pattern matched)
                 else
                 {
-                    //Both terms are concrete: emit a blank existence row (pattern matched)
                     resultTable.AddRow(new string[resultTable.ColumnsCount]);
                 }
             }
@@ -147,9 +147,12 @@ namespace RDFSharp.Query
         /// </summary>
         private static IEnumerable<RDFPatternMember> GetSeeds(RDFPropertyPathExpression rootExpression, bool startIsVar, RDFResource startResource, RDFPathEvaluationCache evaluationCache)
         {
+            //Concrete start: the single resource is the only seed
             if (!startIsVar)
                 return new List<RDFPatternMember> { startResource };
 
+            //Variable start over a single Link that cannot match zero-length (a plain or '+' hop): only the terms
+            //with an outgoing edge on that property can begin a match, so seed from its domain instead of all nodes
             if (rootExpression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Link
                  && (rootExpression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne
                       || rootExpression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore))
@@ -157,6 +160,8 @@ namespace RDFSharp.Query
                 return evaluationCache.GetSources(rootExpression.Property, rootExpression.IsInverse);
             }
 
+            //Anything else (a zero-length-capable '?'/'*', or a composite/negated root) may bind the start to any
+            //term via a zero-length or backward match, so every node is a candidate seed
             return GetAllNodes(evaluationCache.DataSource);
         }
 
@@ -188,9 +193,11 @@ namespace RDFSharp.Query
         /// </summary>
         private static IEnumerable<RDFPatternMember> EvaluateLinkFromNode(RDFPatternMember node, RDFPropertyPathExpression linkExpression, RDFPathEvaluationCache evaluationCache)
         {
+            //Direction of the hop: '^' reads the reverse adjacency (object→subject)
             bool inverse = linkExpression.IsInverse;
             switch (linkExpression.Cardinality)
             {
+                //'?': the node itself (zero hops) plus its direct successors (at most one hop), deduplicated by hash
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:
                 {
                     Dictionary<long, RDFPatternMember> result = new Dictionary<long, RDFPatternMember> { [node.PatternMemberID] = node };
@@ -199,9 +206,11 @@ namespace RDFSharp.Query
                     return result.Values;
                 }
 
+                //'+': one-or-more hops = the memoized transitive closure from the node (no zero-length match)
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:
                     return evaluationCache.GetClosureIndex(linkExpression.Property, inverse).EnumerateReachableNodes(node);
 
+                //'*': zero-or-more hops = the node itself (zero-length) unioned with its '+' closure
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore:
                 {
                     Dictionary<long, RDFPatternMember> result = new Dictionary<long, RDFPatternMember> { [node.PatternMemberID] = node };
@@ -210,7 +219,8 @@ namespace RDFSharp.Query
                     return result.Values;
                 }
 
-                default: // ExactlyOne
+                //ExactlyOne: a single direct hop
+                default:
                     return evaluationCache.GetDirectSuccessors(node, linkExpression.Property, inverse);
             }
         }
@@ -263,11 +273,13 @@ namespace RDFSharp.Query
         /// </summary>
         private static IEnumerable<RDFPatternMember> EvaluateDecoratedCompositeFromNode(RDFPatternMember node, RDFPropertyPathExpression expression, RDFPathEvaluationCache evaluationCache)
         {
-            //Materialize the (possibly reversed) base relation of the composite, memoized per node identity
+            //Materialize the (possibly reversed) base relation of the composite, memoized per node identity. The
+            //node's cardinality is applied below ON TOP of this finite relation (never on the live data graph).
             RDFPathRelation relation = evaluationCache.GetCompositeRelation(expression);
 
             switch (expression.Cardinality)
             {
+                //'?': the node itself plus its direct successors in the composite relation
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:
                 {
                     Dictionary<long, RDFPatternMember> result = new Dictionary<long, RDFPatternMember> { [node.PatternMemberID] = node };
@@ -276,9 +288,11 @@ namespace RDFSharp.Query
                     return result.Values;
                 }
 
+                //'+': the SCC transitive closure of the composite relation from the node
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:
                     return evaluationCache.GetCompositeClosure(expression).EnumerateReachableNodes(node);
 
+                //'*': the node itself (zero-length) unioned with the '+' closure of the composite relation
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore:
                 {
                     Dictionary<long, RDFPatternMember> result = new Dictionary<long, RDFPatternMember> { [node.PatternMemberID] = node };
@@ -287,7 +301,8 @@ namespace RDFSharp.Query
                     return result.Values;
                 }
 
-                default: // ExactlyOne (decorated only by inverse)
+                //ExactlyOne: the composite is decorated only by inverse, so just one step over the (reversed) relation
+                default:
                     return relation.GetSuccessors(node);
             }
         }
@@ -302,7 +317,7 @@ namespace RDFSharp.Query
             List<RDFPatternMember> nodes = new List<RDFPatternMember>();
 
             #region Utilities
-            //Add n to the list only the first time its hash is encountered
+            //Add n to the list only the first time its hash is encountered (distinct, insertion-ordered)
             void CollectNode(RDFPatternMember n)
             {
                 if (n != null && seen.Add(n.PatternMemberID))
@@ -310,6 +325,8 @@ namespace RDFSharp.Query
             }
             #endregion
 
+            //Every subject and every object of the datasource is a candidate term (objects include literals); a
+            //federation is the union of its members' nodes
             switch (dataSource)
             {
                 case RDFGraph graph:
@@ -351,7 +368,15 @@ namespace RDFSharp.Query
         /// </summary>
         private sealed class RDFPathRelation
         {
+            /// <summary>
+            /// The adjacency itself: each node hash mapped to the list of terms it relates to (its successors).
+            /// </summary>
             internal Dictionary<long, List<RDFPatternMember>> Map { get; }
+
+            /// <summary>
+            /// The node registry resolving every hash appearing in the relation (source or successor) back to its
+            /// term — needed because the maps are keyed by hash for speed.
+            /// </summary>
             internal Dictionary<long, RDFPatternMember> Nodes { get; }
 
             internal RDFPathRelation(Dictionary<long, List<RDFPatternMember>> map, Dictionary<long, RDFPatternMember> nodes)
@@ -360,14 +385,17 @@ namespace RDFSharp.Query
                 Nodes = nodes;
             }
 
+            //Successors of the node, or the shared empty list when it has no outgoing edge in this relation
             internal List<RDFPatternMember> GetSuccessors(RDFPatternMember node)
                 => Map.TryGetValue(node.PatternMemberID, out List<RDFPatternMember> successors) ? successors : EmptyNodeList;
 
             /// <summary>
-            /// Returns the reverse of this relation (edges flipped), preserving the node registry.
+            /// Returns the reverse of this relation (edges flipped), preserving the node registry. Used to apply an
+            /// inverse decoration ('^') to a composite sub-path.
             /// </summary>
             internal RDFPathRelation Reverse()
             {
+                //Accumulate, for each former successor, the set of its former sources (deduplicated by hash)
                 Dictionary<long, Dictionary<long, RDFPatternMember>> reversed = new Dictionary<long, Dictionary<long, RDFPatternMember>>();
                 foreach (KeyValuePair<long, List<RDFPatternMember>> edges in Map)
                 {
@@ -379,6 +407,7 @@ namespace RDFSharp.Query
                         preds[from.PatternMemberID] = from;
                     }
                 }
+                //Flatten the dedup dictionaries into plain successor lists, reusing the same node registry
                 Dictionary<long, List<RDFPatternMember>> reversedMap = new Dictionary<long, List<RDFPatternMember>>(reversed.Count);
                 foreach (KeyValuePair<long, Dictionary<long, RDFPatternMember>> kv in reversed)
                     reversedMap[kv.Key] = new List<RDFPatternMember>(kv.Value.Values);
@@ -393,10 +422,33 @@ namespace RDFSharp.Query
         /// </summary>
         private sealed class RDFPathEvaluationCache
         {
+            /// <summary>
+            /// The datasource being evaluated; the single source from which every adjacency is materialized.
+            /// </summary>
             internal RDFDataSource DataSource { get; }
+
+            /// <summary>
+            /// Per-property one-hop adjacency, keyed by the predicate hash: built once on first use of each step
+            /// property and reused (with its lazily-built closures) across every seed and frontier node.
+            /// </summary>
             private readonly Dictionary<long, RDFPropertyAdjacency> byProperty = new Dictionary<long, RDFPropertyAdjacency>();
+
+            /// <summary>
+            /// Per-negated-set one-hop adjacency, keyed by a canonical signature of the member set (so two
+            /// occurrences of the same <c>!(…)</c> share one scan of the datasource).
+            /// </summary>
             private readonly Dictionary<string, RDFNegatedAdjacency> byNegatedSet = new Dictionary<string, RDFNegatedAdjacency>();
+
+            /// <summary>
+            /// The materialized finite relation of each composite sub-path (Sequence/Alternative/NegatedPropertySet
+            /// carrying an inverse and/or cardinality), keyed by the expression node identity to memoize the sweep.
+            /// </summary>
             private readonly Dictionary<RDFPropertyPathExpression, RDFPathRelation> compositeRelations = new Dictionary<RDFPropertyPathExpression, RDFPathRelation>();
+
+            /// <summary>
+            /// The transitive closure over each composite sub-path's relation (for <c>+</c>/<c>*</c> on a group),
+            /// keyed by the expression node identity so the cycle-proof SCC closure is built only once.
+            /// </summary>
             private readonly Dictionary<RDFPropertyPathExpression, RDFTransitiveClosureIndex> compositeClosures = new Dictionary<RDFPropertyPathExpression, RDFTransitiveClosureIndex>();
 
             internal RDFPathEvaluationCache(RDFDataSource dataSource)
@@ -405,6 +457,8 @@ namespace RDFSharp.Query
             #region Per-property adjacency / closure
             private RDFPropertyAdjacency GetPropertyAdjacency(RDFResource property)
             {
+                //Build the property's adjacency on first request, then cache it so every later hop on the same
+                //predicate (and every direction/closure derived from it) reuses a single datasource scan
                 if (!byProperty.TryGetValue(property.PatternMemberID, out RDFPropertyAdjacency adjacency))
                 {
                     adjacency = RDFPropertyAdjacency.BuildPropertyAdjaceny(property, DataSource);
@@ -419,7 +473,9 @@ namespace RDFSharp.Query
             /// </summary>
             internal List<RDFPatternMember> GetDirectSuccessors(RDFPatternMember node, RDFResource property, bool inverse)
             {
+                //Pick the forward (subject→object) or reverse (object→subject) map for the requested direction
                 Dictionary<long, List<RDFPatternMember>> successorsMap = inverse ? GetPropertyAdjacency(property).Reverse : GetPropertyAdjacency(property).Forward;
+                //Look up the node's successors, returning the shared empty list when it has no outgoing edge
                 return successorsMap.TryGetValue(node.PatternMemberID, out List<RDFPatternMember> successors) ? successors : EmptyNodeList;
             }
 
@@ -430,7 +486,9 @@ namespace RDFSharp.Query
             internal IEnumerable<RDFPatternMember> GetSources(RDFResource property, bool inverse)
             {
                 RDFPropertyAdjacency adjacency = GetPropertyAdjacency(property);
+                //The keys of the chosen direction's map are exactly the terms with at least one outgoing edge
                 Dictionary<long, List<RDFPatternMember>> adjacencyMap = inverse ? adjacency.Reverse : adjacency.Forward;
+                //Resolve each source hash back to its term via the node registry
                 List<RDFPatternMember> sources = new List<RDFPatternMember>(adjacencyMap.Count);
                 foreach (long key in adjacencyMap.Keys)
                     sources.Add(adjacency.Nodes[key]);
@@ -443,6 +501,8 @@ namespace RDFSharp.Query
             internal RDFTransitiveClosureIndex GetClosureIndex(RDFResource property, bool inverse)
             {
                 RDFPropertyAdjacency adjacency = GetPropertyAdjacency(property);
+                //Build the closure for the requested direction lazily on first use and cache it on the adjacency,
+                //so the (potentially expensive) SCC condensation is computed at most once per property+direction
                 if (inverse)
                     return adjacency.ReverseClosure ?? (adjacency.ReverseClosure = RDFTransitiveClosureIndex.BuildTransitiveClosureIndex(adjacency.Reverse, adjacency.Nodes));
                 return adjacency.ForwardClosure ?? (adjacency.ForwardClosure = RDFTransitiveClosureIndex.BuildTransitiveClosureIndex(adjacency.Forward, adjacency.Nodes));
@@ -457,12 +517,16 @@ namespace RDFSharp.Query
             /// </summary>
             internal List<RDFPatternMember> GetNegatedSuccessors(RDFPatternMember node, List<(RDFResource Property, bool IsInverse)> members)
             {
+                //Canonical, order-independent signature of the member set (each member tagged '^' if inverse),
+                //so two textually-different but equivalent negated sets share one built adjacency
                 string key = string.Join("|", members.Select(m => (m.IsInverse ? "^" : "") + m.Property.PatternMemberID).OrderBy(s => s, StringComparer.Ordinal));
+                //Build the negated adjacency on first request and cache it under that signature
                 if (!byNegatedSet.TryGetValue(key, out RDFNegatedAdjacency adjacency))
                 {
                     adjacency = RDFNegatedAdjacency.BuildNegatedAdjacency(members, DataSource);
                     byNegatedSet[key] = adjacency;
                 }
+                //Return the node's successors, or the shared empty list when it has none
                 return adjacency.Forward.TryGetValue(node.PatternMemberID, out List<RDFPatternMember> successors) ? successors : EmptyNodeList;
             }
             #endregion
@@ -475,8 +539,11 @@ namespace RDFSharp.Query
             /// </summary>
             internal RDFPathRelation GetCompositeRelation(RDFPropertyPathExpression expression)
             {
+                //Materialize the composite's relation once per expression node and cache it
                 if (!compositeRelations.TryGetValue(expression, out RDFPathRelation relation))
                 {
+                    //First the kind+children base relation, then the node's own inverse (if any) by flipping it;
+                    //the cardinality is NOT applied here (it is handled by GetCompositeClosure)
                     relation = BuildCompositeBaseRelation(expression);
                     if (expression.IsInverse)
                         relation = relation.Reverse();
@@ -491,8 +558,11 @@ namespace RDFSharp.Query
             /// </summary>
             internal RDFTransitiveClosureIndex GetCompositeClosure(RDFPropertyPathExpression expression)
             {
+                //Build the closure once per expression node and cache it
                 if (!compositeClosures.TryGetValue(expression, out RDFTransitiveClosureIndex closure))
                 {
+                    //Feed the composite's already-materialized finite relation to the same cycle-proof SCC builder
+                    //used for single properties — this is what makes (a/b)+ safe and fast on cyclic data
                     RDFPathRelation relation = GetCompositeRelation(expression);
                     closure = RDFTransitiveClosureIndex.BuildTransitiveClosureIndex(relation.Map, relation.Nodes);
                     compositeClosures[expression] = closure;
@@ -504,17 +574,23 @@ namespace RDFSharp.Query
             //node by sweeping all nodes and evaluating the lazy base from each
             private RDFPathRelation BuildCompositeBaseRelation(RDFPropertyPathExpression expression)
             {
+                //The relation being built: node-hash → successors, plus the registry resolving each hash to its term
                 Dictionary<long, List<RDFPatternMember>> map = new Dictionary<long, List<RDFPatternMember>>();
                 Dictionary<long, RDFPatternMember> nodes = new Dictionary<long, RDFPatternMember>();
 
+                //Evaluate the composite's undecorated base from every node, recording the edges it produces. This
+                //single sweep turns the recursive sub-path into an explicit finite map (the anti-loop invariant:
+                //the closure later runs on THIS map, never on the live data graph).
                 foreach (RDFPatternMember seed in GetAllNodes(DataSource))
                 {
                     List<RDFPatternMember> successors = null;
                     foreach (RDFPatternMember reached in EvaluateUndecoratedCompositeFromNode(seed, expression, this))
                     {
+                        //Lazily create the successor list only for seeds that actually reach something
                         (successors ?? (successors = new List<RDFPatternMember>())).Add(reached);
                         nodes[reached.PatternMemberID] = reached;
                     }
+                    //Register the seed and its edges only when non-empty (sinks stay absent from the map)
                     if (successors != null)
                     {
                         nodes[seed.PatternMemberID] = seed;
@@ -542,36 +618,43 @@ namespace RDFSharp.Query
             /// </summary>
             internal static RDFNegatedAdjacency BuildNegatedAdjacency(List<(RDFResource Property, bool IsInverse)> members, RDFDataSource dataSource)
             {
-                HashSet<long> forwardExcluded = new HashSet<long>(members.Where(m => !m.IsInverse).Select(m => m.Property.PatternMemberID));
-                HashSet<long> inverseExcluded = new HashSet<long>(members.Where(m => m.IsInverse).Select(m => m.Property.PatternMemberID));
+                //The predicates the negated set forbids in each direction (kept as their pattern-member hashes):
+                //the plain members forbid the forward direction, the '^' members forbid the inverse direction.
+                HashSet<long> forwardForbiddenPredicates = new HashSet<long>(members.Where(m => !m.IsInverse).Select(m => m.Property.PatternMemberID));
+                HashSet<long> inverseForbiddenPredicates = new HashSet<long>(members.Where(m => m.IsInverse).Select(m => m.Property.PatternMemberID));
 
                 //Per SPARQL 1.1 §18.4, the negated set is the UNION of a forward branch (present when the set has
                 //forward members, or is empty) and an inverse branch (present only when the set has inverse '^'
                 //members). A purely-inverse set (e.g. !^p) therefore does NOT traverse the forward direction.
-                bool forwardActive = inverseExcluded.Count == 0 || forwardExcluded.Count > 0;
-                bool inverseActive = inverseExcluded.Count > 0;
+                bool traversesForward = inverseForbiddenPredicates.Count == 0 || forwardForbiddenPredicates.Count > 0;
+                bool traversesInverse = inverseForbiddenPredicates.Count > 0;
 
                 Dictionary<long, Dictionary<long, RDFPatternMember>> forward = new Dictionary<long, Dictionary<long, RDFPatternMember>>();
 
                 #region Utilities
+                //Records a directed edge from→to in the negated-set forward map, deduplicating successors by hash
                 void AddEdge(RDFPatternMember from, RDFPatternMember to)
                 {
                     if (!forward.TryGetValue(from.PatternMemberID, out Dictionary<long, RDFPatternMember> outgoing))
                         forward[from.PatternMemberID] = outgoing = new Dictionary<long, RDFPatternMember>();
                     outgoing[to.PatternMemberID] = to;
                 }
-                void Consider(RDFResource subj, RDFResource pred, RDFPatternMember obj)
+
+                //Decides which negated-set edges a single (subject, predicate, object) triple contributes: a
+                //forward edge subject→object unless the predicate is a forward-excluded member, and/or a reverse
+                //edge object→subject unless the predicate is an inverse-excluded ('^') member.
+                void AddNegatedEdgesForTriple(RDFResource subject, RDFResource predicate, RDFPatternMember objectTerm)
                 {
-                    //Forward direction: predicate not among the excluded forward (non-inverse) members
-                    if (forwardActive && !forwardExcluded.Contains(pred.PatternMemberID))
-                        AddEdge(subj, obj);
-                    //Inverse direction: predicate not among the excluded inverse ('^') members
-                    if (inverseActive && !inverseExcluded.Contains(pred.PatternMemberID))
-                        AddEdge(obj, subj);
+                    //Forward direction: predicate not among the forward-forbidden (non-inverse) members
+                    if (traversesForward && !forwardForbiddenPredicates.Contains(predicate.PatternMemberID))
+                        AddEdge(subject, objectTerm);
+                    //Inverse direction: predicate not among the inverse-forbidden ('^') members
+                    if (traversesInverse && !inverseForbiddenPredicates.Contains(predicate.PatternMemberID))
+                        AddEdge(objectTerm, subject);
                 }
                 #endregion
 
-                CollectAllEdges(dataSource, Consider);
+                CollectAllEdges(dataSource, AddNegatedEdgesForTriple);
 
                 Dictionary<long, List<RDFPatternMember>> flattened = new Dictionary<long, List<RDFPatternMember>>(forward.Count);
                 foreach (KeyValuePair<long, Dictionary<long, RDFPatternMember>> kv in forward)
@@ -579,24 +662,25 @@ namespace RDFSharp.Query
                 return new RDFNegatedAdjacency { Forward = flattened };
             }
 
-            //Walks the datasource (recursing over federation members) emitting every (subject, predicate, object) edge
-            private static void CollectAllEdges(RDFDataSource dataSource, Action<RDFResource, RDFResource, RDFPatternMember> consider)
+            //Walks the datasource (recursing over federation members) handing every (subject, predicate, object)
+            //triple to the given edge-builder
+            private static void CollectAllEdges(RDFDataSource dataSource, Action<RDFResource, RDFResource, RDFPatternMember> addEdgesForTriple)
             {
                 switch (dataSource)
                 {
                     case RDFGraph graph:
                         foreach (RDFTriple triple in graph.SelectTriples())
-                            consider((RDFResource)triple.Subject, (RDFResource)triple.Predicate, triple.Object);
+                            addEdgesForTriple((RDFResource)triple.Subject, (RDFResource)triple.Predicate, triple.Object);
                         break;
 
                     case RDFStore store:
                         foreach (RDFQuadruple quadruple in store.SelectQuadruples())
-                            consider((RDFResource)quadruple.Subject, (RDFResource)quadruple.Predicate, quadruple.Object);
+                            addEdgesForTriple((RDFResource)quadruple.Subject, (RDFResource)quadruple.Predicate, quadruple.Object);
                         break;
 
                     case RDFFederation federation:
                         foreach (RDFDataSource member in federation)
-                            CollectAllEdges(member, consider);
+                            CollectAllEdges(member, addEdgesForTriple);
                         break;
                 }
             }
@@ -626,6 +710,8 @@ namespace RDFSharp.Query
                 Dictionary<long, RDFPatternMember> nodes = new Dictionary<long, RDFPatternMember>();
 
                 #region Utilities
+                //Records the property edge subject→object in both the forward and reverse maps (deduplicating
+                //successors by hash) and registers both terms in the node registry
                 void AddEdge(RDFResource subj, RDFPatternMember obj)
                 {
                     long subjHash = subj.PatternMemberID, objHash = obj.PatternMemberID;
