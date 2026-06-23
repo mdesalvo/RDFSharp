@@ -53,8 +53,8 @@ namespace RDFSharp.Query
             //The WHERE clause body is a single GroupGraphPattern: consume its opening brace …
             ExpectChar(parserContext, '{', "WHERE clause");
 
-            //… parse the content of the group into a list of algebra members …
-            List<RDFQueryMember> whereClauseMembers = ParseGroupGraphPatternSub(parserContext);
+            //… parse the content of the group into a list of algebra members plus the group-scoped filters …
+            (List<RDFQueryMember> whereClauseMembers, List<RDFFilter> whereClauseFilters) = ParseGroupGraphPatternSub(parserContext);
 
             //… and close the group
             ExpectChar(parserContext, '}', "WHERE clause");
@@ -62,6 +62,17 @@ namespace RDFSharp.Query
             //Attach every algebra member produced by the body to the query
             foreach (RDFQueryMember whereClauseMember in whereClauseMembers)
                 AddQueryMember(targetQuery, whereClauseMember);
+
+            //Place the group-scoped filters. Two cases, mirroring CollapseToSingle for nested groups:
+            // - lone, NON-optional basic graph pattern: the WHERE clause coincides with that pattern, so the filters
+            //   stay ON the pattern group (the historical per-pattern-group mechanism applies them correctly), keeping
+            //   the model and the round-trip identical to before for the common '{ ...triples... FILTER(...) }' shape;
+            // - any compound WHERE clause: the filters are hoisted to WHERE-clause scope, so the engine applies them
+            //   after joining all the query members (across OPTIONAL/UNION/MINUS/nested groups), as the spec requires.
+            if (whereClauseMembers.Count == 1 && whereClauseMembers[0] is RDFPatternGroup loneBasicGraphPattern && !loneBasicGraphPattern.IsOptional)
+                whereClauseFilters.ForEach(whereClauseFilter => loneBasicGraphPattern.AddFilter(whereClauseFilter));
+            else
+                whereClauseFilters.ForEach(whereClauseFilter => targetQuery.AddQueryFilter<TQuery>(whereClauseFilter));
         }
 
         /// <summary>
@@ -137,12 +148,18 @@ namespace RDFSharp.Query
         /// operator tree nodes) in left-to-right order, ready to be attached to the enclosing query.
         /// </returns>
         /// <exception cref="RDFQueryException">On unbalanced braces, malformed triples, or unsupported keywords.</exception>
-        private static List<RDFQueryMember> ParseGroupGraphPatternSub(RDFQueryParserContext parserContext)
+        private static (List<RDFQueryMember> Members, List<RDFFilter> Filters) ParseGroupGraphPatternSub(RDFQueryParserContext parserContext)
         {
             //The accumulator holds the algebra members produced so far within this group body.
             //Elements are appended left-to-right; a MINUS flushes and replaces the whole accumulator
             //with a single Minus tree node, enforcing SPARQL's "MINUS binds the whole left side" rule.
             List<RDFQueryMember> accumulatedMembers = new List<RDFQueryMember>();
+
+            //The filters collected here are the ones written DIRECTLY in this group body (not those belonging to
+            //nested groups, which are gathered by the recursive calls on their own bodies). Per SPARQL 1.1 their
+            //scope is the entire group, so they are kept aside and placed by the caller after the group's members
+            //are known (back onto a lone basic graph pattern, or up at the WHERE-clause/sub-select level otherwise).
+            List<RDFFilter> accumulatedFilters = new List<RDFFilter>();
 
             while (true)
             {
@@ -152,7 +169,7 @@ namespace RDFSharp.Query
                 //A '}' ends this group body: return control to the caller which will consume the brace.
                 //EOF is treated the same way so the caller's ExpectChar('}') surfaces a clean error.
                 if (nextSignificantCodePoint == '}' || nextSignificantCodePoint == -1)
-                    return accumulatedMembers;
+                    return (accumulatedMembers, accumulatedFilters);
 
                 //A '.' is the optional separator that SPARQL allows between any two consecutive elements
                 //of a GroupGraphPatternSub (e.g. between a TriplesBlock and an OptionalGraphPattern).
@@ -223,8 +240,11 @@ namespace RDFSharp.Query
                     else
                     {
                         //Normal case: collapse everything accumulated so far into a single left operand, clear
-                        //the accumulator, and push the resulting Minus node as the only element in it.
-                        RDFQueryMember minusLeftOperand = CollapseToSingle(accumulatedMembers);
+                        //the accumulator, and push the resulting Minus node as the only element in it. The body's
+                        //group filters are NOT consumed here: their scope is the whole group, so they stay in the
+                        //accumulator and are applied AFTER the Minus (Filter(f, Minus(left, right))), not to the
+                        //Minus left operand alone.
+                        RDFQueryMember minusLeftOperand = CollapseToSingle(accumulatedMembers, new List<RDFFilter>());
                         accumulatedMembers.Clear();
                         accumulatedMembers.Add(new RDFBinaryQueryMember(
                             RDFQueryEnums.RDFBinaryOperatorType.Minus, minusLeftOperand, minusRightOperand));
@@ -267,7 +287,7 @@ namespace RDFSharp.Query
                 //the member follows a triple run.
                 if (upcomingKeyword == "FILTER" || upcomingKeyword == "BIND" || upcomingKeyword == "VALUES")
                 {
-                    accumulatedMembers.Add(ParseBasicGraphPatternMember(parserContext));
+                    AppendBasicGraphPatternMember(parserContext, accumulatedMembers, accumulatedFilters);
                     continue;
                 }
 
@@ -304,11 +324,29 @@ namespace RDFSharp.Query
                 //No keyword was recognised. Dispatch on the first character:
                 //  '{' → a nested GroupOrUnionGraphPattern (UNION chain or bare group)
                 //  anything else → a bare TriplesBlock (sequence of triple patterns)
-                RDFQueryMember parsedElement = nextSignificantCodePoint == '{'
-                    ? ParseGroupOrUnionGraphPattern(parserContext)
-                    : ParseBasicGraphPatternMember(parserContext);
-                accumulatedMembers.Add(parsedElement);
+                if (nextSignificantCodePoint == '{')
+                    accumulatedMembers.Add(ParseGroupOrUnionGraphPattern(parserContext));
+                else
+                    AppendBasicGraphPatternMember(parserContext, accumulatedMembers, accumulatedFilters);
             }
+        }
+
+        /// <summary>
+        /// Parses a basic graph pattern run and appends it to the current group body
+        /// </summary>
+        private static void AppendBasicGraphPatternMember(RDFQueryParserContext parserContext, List<RDFQueryMember> accumulatedMembers, List<RDFFilter> accumulatedFilters)
+        {
+            //Read the triples/binds/values into a fresh pattern group, and the direct filters aside
+            (RDFPatternGroup patternGroup, List<RDFFilter> directFilters) = ParseBasicGraphPatternMember(parserContext);
+
+            //Append the pattern group only if it actually carries members: a run made of FILTER(s) alone produces
+            //an empty pattern group (its filters went to 'directFilters'), which must not pollute the body with a
+            //stray empty '{}' element
+            if (patternGroup.GroupMembers.Count > 0)
+                accumulatedMembers.Add(patternGroup);
+
+            //The filters written directly in this run belong to the whole group: collect them at body level
+            accumulatedFilters.AddRange(directFilters);
         }
 
         /// <summary>
@@ -340,16 +378,17 @@ namespace RDFSharp.Query
             //Consume the opening '{' that delimits this group
             ExpectChar(parserContext, '{', "group graph pattern");
 
-            //Parse everything inside the braces into a flat list of algebra members
-            List<RDFQueryMember> groupBodyMembers = ParseGroupGraphPatternSub(parserContext);
+            //Parse everything inside the braces into a flat list of algebra members plus the group-scoped filters
+            (List<RDFQueryMember> groupBodyMembers, List<RDFFilter> groupBodyFilters) = ParseGroupGraphPatternSub(parserContext);
 
             //Consume the closing '}' that ends this group
             ExpectChar(parserContext, '}', "group graph pattern");
 
-            //Reduce the list to a single algebra unit: a bare element if there is exactly one, or a
-            //SELECT * subquery wrapping multiple joined elements, or an empty PatternGroup if the body
-            //was empty (which is legal in SPARQL — '{}' is a valid, trivially-satisfied group).
-            return CollapseToSingle(groupBodyMembers);
+            //Reduce the list to a single algebra unit, carrying the group filters with it: a bare pattern group
+            //(filters kept on it) for a lone basic graph pattern, a SELECT * subquery (filters at WHERE-clause
+            //scope) wrapping multiple joined elements, or an empty PatternGroup if the body was empty (which is
+            //legal in SPARQL — '{}' is a valid, trivially-satisfied group).
+            return CollapseToSingle(groupBodyMembers, groupBodyFilters);
         }
 
         /// <summary>
@@ -557,10 +596,17 @@ namespace RDFSharp.Query
         /// in <see cref="ParseGroupGraphPatternSub"/>.
         /// </para>
         /// </summary>
-        private static RDFPatternGroup ParseBasicGraphPatternMember(RDFQueryParserContext parserContext)
+        private static (RDFPatternGroup PatternGroup, List<RDFFilter> DirectFilters) ParseBasicGraphPatternMember(RDFQueryParserContext parserContext)
         {
-            //Allocate a fresh pattern group to collect the triples (and filters) produced by this BGP scan
+            //Allocate a fresh pattern group to collect the triples (and binds/values) produced by this BGP scan
             RDFPatternGroup basicGraphPatternGroup = new RDFPatternGroup();
+
+            //FILTERs encountered in this run are NOT kept on the pattern group: per SPARQL 1.1 (§18.2.2.5) a FILTER
+            //ranges over the WHOLE group graph pattern, not over the single basic graph pattern it sits next to. We
+            //therefore surface them to the caller (ParseGroupGraphPatternSub), which decides their final placement:
+            //back onto the pattern group when the group is a lone basic graph pattern (scope coincides), or up at the
+            //WHERE-clause/sub-select level when the group is compound (so the filter can see sibling-bound variables).
+            List<RDFFilter> directFilters = new List<RDFFilter>();
 
             //A pattern-group member is a maximal run of triple blocks INTERLEAVED with the inline pattern-group
             //members FILTER / BIND / VALUES. ParseTriplesBlock reads the triples and stops at any graph-pattern
@@ -589,7 +635,9 @@ namespace RDFSharp.Query
                 if (upcomingKeyword == "FILTER")
                 {
                     ConsumeKeyword(parserContext);
-                    ParseFilter(parserContext, basicGraphPatternGroup);
+                    //Collect the filter aside instead of attaching it to the pattern group: its scope is the
+                    //whole group graph pattern, so the caller will place it at the proper (possibly higher) level
+                    directFilters.Add(ParseConstraint(parserContext));
                     continue;
                 }
                 if (upcomingKeyword == "BIND")
@@ -606,7 +654,7 @@ namespace RDFSharp.Query
                 }
 
                 //Not an inline pattern-group member: this pattern-group member is complete
-                return basicGraphPatternGroup;
+                return (basicGraphPatternGroup, directFilters);
             }
         }
 
@@ -626,20 +674,43 @@ namespace RDFSharp.Query
         /// </list>
         /// </para>
         /// </summary>
-        private static RDFQueryMember CollapseToSingle(List<RDFQueryMember> membersToCollapse)
+        private static RDFQueryMember CollapseToSingle(List<RDFQueryMember> membersToCollapse, List<RDFFilter> groupFilters)
         {
-            switch (membersToCollapse.Count)
+            //CASE — no group-scoped filters: classic collapse (preserves the historical, filter-free shapes)
+            if (groupFilters.Count == 0)
             {
-                //An empty group body is legal in SPARQL ('{}' matches every binding) — model it as an empty
-                //pattern group rather than null so the rest of the pipeline never needs null checks
-                case 0: return new RDFPatternGroup();
+                switch (membersToCollapse.Count)
+                {
+                    //An empty group body is legal in SPARQL ('{}' matches every binding) — model it as an empty
+                    //pattern group rather than null so the rest of the pipeline never needs null checks
+                    case 0: return new RDFPatternGroup();
 
-                //A single member needs no structural wrapper: return it directly
-                case 1: return membersToCollapse[0];
+                    //A single member needs no structural wrapper: return it directly
+                    case 1: return membersToCollapse[0];
 
-                //Two or more joined members must be wrapped so the engine can treat them as one combined unit
-                default: return WrapIntoSubQuery(membersToCollapse);
+                    //Two or more joined members must be wrapped so the engine can treat them as one combined unit
+                    default: return WrapIntoSubQuery(membersToCollapse);
+                }
             }
+
+            //CASE — lone, NON-optional basic graph pattern + filters: the group coincides with the basic graph
+            //pattern, so the filter scope coincides too. Keep the filters ON the pattern group (the historical
+            //per-pattern-group mechanism handles them correctly) → no subquery wrapping, round-trip stays identical.
+            //An optional pattern group is excluded on purpose: its filter would belong to the optional's inner
+            //group and be applied BEFORE the left-join, which differs from the outer-group (post-join) scope.
+            if (membersToCollapse.Count == 1 && membersToCollapse[0] is RDFPatternGroup loneBasicGraphPattern && !loneBasicGraphPattern.IsOptional)
+            {
+                groupFilters.ForEach(groupFilter => loneBasicGraphPattern.AddFilter(groupFilter));
+                return loneBasicGraphPattern;
+            }
+
+            //CASE — any compound group (multiple members, or a single optional/sub-select/operator member) carrying
+            //filters: wrap the members into a SELECT * subquery and attach the filters at its WHERE-clause scope, so
+            //the engine applies them AFTER joining the members (matching the SPARQL "filter ranges over the whole
+            //group graph pattern" rule). An empty member list is allowed here (the degenerate '{ FILTER(...) }').
+            RDFSelectQuery wrappingSubQuery = WrapIntoSubQuery(membersToCollapse);
+            groupFilters.ForEach(groupFilter => wrappingSubQuery.AddFilter(groupFilter));
+            return wrappingSubQuery;
         }
 
         /// <summary>

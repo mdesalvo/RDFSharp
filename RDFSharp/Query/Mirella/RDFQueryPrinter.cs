@@ -331,7 +331,19 @@ namespace RDFSharp.Query
         {
             sb.AppendLine(string.Concat(subqueryBodySpaces, "WHERE {"));
             PrintWhereClauseMembers(query, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+            PrintWhereClauseFilters(query, sb, prefixes, subqueryBodySpaces);
             sb.Append(string.Concat(subqueryBodySpaces, "}"));
+        }
+
+        /// <summary>
+        /// Prints the WHERE-clause-scoped filters (those ranging over the whole top-level group graph pattern)
+        /// </summary>
+        private static void PrintWhereClauseFilters(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes, string subqueryBodySpaces)
+        {
+            //These filters are rendered after all the group members, inside the WHERE braces: re-parsing places
+            //them back at WHERE-clause scope (the parser hoists group-spanning filters), keeping the round-trip stable
+            foreach (RDFFilter queryFilter in query.QueryFilters.Where(f => !(f is RDFValuesFilter)))
+                sb.AppendLine(string.Concat(subqueryBodySpaces, "  ", queryFilter.ToString(prefixes)));
         }
         private static void PrintWhereClauseMembers(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes,
             string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)

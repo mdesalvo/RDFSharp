@@ -179,6 +179,16 @@ namespace RDFSharp.Query
                 queryResultTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
             }
 
+            //EXISTS/NOT EXISTS filters living at WHERE-clause scope need their inner group graph pattern evaluated
+            //(into PatternResults) before being applied, exactly as EvaluatePatternGroup does for pattern-group ones
+            foreach (RDFFilter queryFilter in query.QueryFilters)
+                if (queryFilter is RDFExistsFilter existsFilter)
+                    existsFilter.PatternResults = EvaluateQueryMemberLeafOrSubtree(existsFilter.GroupGraphPattern, datasource);
+
+            //Apply the WHERE-clause-scoped filters (those ranging over the whole top-level group graph pattern) AFTER
+            //joining all query members, so they see variables bound by sibling members regardless of textual position
+            queryResultTable = FilterTable(queryResultTable, query.QueryFilters);
+
             return queryResultTable;
         }
 
@@ -375,37 +385,50 @@ namespace RDFSharp.Query
                                                                          .ToList();
             List<RDFFilter> filters = patternGroup.GetFilters().ToList();
             if (evaluablePGMembers.Count > 0 && filters.Count > 0)
+                //Filter the pattern group's result table in place and save it back
+                QueryMemberResultTables[patternGroup.QueryMemberID] = FilterTable(QueryMemberResultTables[patternGroup.QueryMemberID], filters);
+        }
+
+        /// <summary>
+        /// Returns a copy of the given table keeping only the rows that satisfy ALL the given filters (logical AND).
+        /// This is the shared filtering primitive used both for per-pattern-group filters (<see cref="ApplyFilters"/>)
+        /// and for WHERE-clause-scoped filters (the filters ranging over the whole top-level group graph pattern,
+        /// see <see cref="RDFQuery.QueryFilters"/>): in both cases the conjunction of filters is evaluated against
+        /// an already-joined result table. When there are no filters the original table is returned unchanged.
+        /// </summary>
+        internal static RDFTable FilterTable(RDFTable tableToFilter, List<RDFFilter> filters)
+        {
+            //Nothing to filter: hand back the original table untouched
+            if (filters == null || filters.Count == 0)
+                return tableToFilter;
+
+            RDFTable filteredTable = tableToFilter.Clone();
+            int columnsCount = tableToFilter.ColumnsCount;
+
+            //Iterate the rows of the table to be filtered
+            foreach (RDFTableRow currentRow in tableToFilter.Rows)
             {
-                RDFTable patternGroupMemberTable = QueryMemberResultTables[patternGroup.QueryMemberID];
-                RDFTable filteredPatternGroupMemberTable = patternGroupMemberTable.Clone();
-                int columnsCount = patternGroupMemberTable.ColumnsCount;
-
-                //Iterate the rows of the pattern group's result table
-                foreach (RDFTableRow currentRow in patternGroupMemberTable.Rows)
+                //Apply the filters on the row (logical AND of all of them)
+                bool keepRow = true;
+                foreach (RDFFilter filter in filters)
                 {
-                    //Apply the pattern group's filters on the row
-                    bool keepRow = true;
-                    foreach (RDFFilter filter in filters)
-                    {
-                        keepRow = filter.ApplyFilter(currentRow, false);
-                        //Quick-Exit at the first failure
-                        if (!keepRow)
-                            break;
-                    }
-
-                    //If the row has passed all the filters, keep it in the filtered result table
-                    if (keepRow)
-                    {
-                        string[] cells = new string[columnsCount];
-                        for (int c = 0; c < columnsCount; c++)
-                            cells[c] = currentRow[c];
-                        filteredPatternGroupMemberTable.AddRow(cells);
-                    }
+                    keepRow = filter.ApplyFilter(currentRow, false);
+                    //Quick-Exit at the first failure
+                    if (!keepRow)
+                        break;
                 }
 
-                //Save the result table
-                QueryMemberResultTables[patternGroup.QueryMemberID] = filteredPatternGroupMemberTable;
+                //If the row has passed all the filters, keep it in the filtered result table
+                if (keepRow)
+                {
+                    string[] cells = new string[columnsCount];
+                    for (int c = 0; c < columnsCount; c++)
+                        cells[c] = currentRow[c];
+                    filteredTable.AddRow(cells);
+                }
             }
+
+            return filteredTable;
         }
 
         /// <summary>

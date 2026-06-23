@@ -61,15 +61,6 @@ namespace RDFSharp.Query
     {
         #region Filter
         /// <summary>
-        /// Parses a SPARQL <c>FILTER</c> clause (the <c>FILTER</c> keyword has already been consumed by the caller)
-        /// and attaches the resulting <see cref="RDFFilter"/> to <paramref name="targetPatternGroup"/>.
-        /// <para>SPARQL grammar: <c>Filter ::= 'FILTER' Constraint</c>; <c>Constraint ::= BrackettedExpression | BuiltInCall | FunctionCall</c>.</para>
-        /// </summary>
-        /// <exception cref="RDFQueryException">When the constraint is malformed or uses an unsupported construct.</exception>
-        private static void ParseFilter(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
-            => targetPatternGroup.AddFilter(ParseConstraint(parserContext));
-
-        /// <summary>
         /// Parses a single FILTER <c>Constraint</c> into the <see cref="RDFFilter"/> it denotes.
         /// <list type="bullet">
         /// <item>A <c>(</c> opens a <c>BrackettedExpression</c>: the parenthesised content is the full boolean

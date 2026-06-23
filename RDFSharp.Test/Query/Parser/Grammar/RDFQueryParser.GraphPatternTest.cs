@@ -290,13 +290,12 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldParseFilterOnlyGroup()
     {
-        //A group whose only member is a FILTER is legal: it yields a pattern group with no patterns and one filter
-        //(FILTER support landed in phase F6, so this construct is no longer rejected as "not supported yet")
+        //A group whose only member is a FILTER is legal: since a FILTER scopes the whole group graph pattern (not a
+        //single basic graph pattern), it is kept at WHERE-clause scope and the (empty) pattern group is not emitted
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { FILTER(?x > 0) }");
 
-        RDFPatternGroup group = (RDFPatternGroup)query.GetEvaluableQueryMembers().Single();
-        Assert.AreEqual(0, group.GetPatterns().Count());
-        Assert.AreEqual(1, group.GetFilters().Count());
+        Assert.AreEqual(0, query.GetEvaluableQueryMembers().Count());
+        Assert.AreEqual(1, query.QueryFilters.Count);
     }
     #endregion
 

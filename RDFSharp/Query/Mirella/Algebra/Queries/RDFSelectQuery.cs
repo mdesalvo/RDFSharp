@@ -114,6 +114,12 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given filter at the scope of the whole WHERE clause
+        /// </summary>
+        public RDFSelectQuery AddFilter(RDFFilter filter)
+            => AddQueryFilter<RDFSelectQuery>(filter);
+
+        /// <summary>
         /// Sets the trailing query-level inline-data block (<c>SELECT ... WHERE { ... } VALUES ...</c>): the
         /// given values are joined with the whole WHERE solution sequence before the solution modifiers run.
         /// </summary>

@@ -820,5 +820,45 @@ WHERE {
         Assert.AreEqual(2, GetNumericValue(result.SelectResults.Rows[1]["?CNT"]));
         Assert.AreEqual(23, GetNumericValue(result.SelectResults.Rows[1]["?AVG"]));
     }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerNestedSubQueriesWithScopedFiltersAndExists()
+    {
+        //IP5.4 sentinel: a single query that puts FILTERs at THREE different group-graph-pattern scopes — across a
+        //sub-query NESTED INSIDE another sub-query — plus a group-level EXISTS reaching past an OPTIONAL. The result
+        //is engineered so that each filter is load-bearing: drop or mis-scope any one of them and the row set changes.
+        //
+        //  - innermost sub-query: lone BGP '?S a Student ; age ?A' with FILTER(?A >= 24) (filter on the pattern group)
+        //      students by age: student0=20, student1=26, student2=30, student3=24  =>  keeps {student1, student2, student3}
+        //  - middle sub-query: wraps the innermost group and adds FILTER(?A <= 28) at WHERE-clause scope (hoisted,
+        //      since its body is the single sub-select member)                       =>  keeps {student1(26), student3(24)}
+        //  - outer query: a COMPOUND group { <sub-query> OPTIONAL{ name } } with a group-level FILTER EXISTS{ has exam }
+        //      hoisted to WHERE-clause scope; student1 has exams, student3 has none   =>  keeps {student1}
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?S ?A WHERE {
+                {
+                    SELECT ?S ?A WHERE {
+                        {
+                            SELECT ?S ?A WHERE {
+                                ?S a uni:Student .
+                                ?S uni:age ?A .
+                                FILTER(?A >= 24)
+                            }
+                        }
+                        FILTER(?A <= 28)
+                    }
+                }
+                OPTIONAL { ?S uni:name ?NAME }
+                FILTER EXISTS { ?E uni:examStudent ?S }
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //Only student1 (age 26) survives all three filter scopes plus the EXISTS
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual($"{UniversityNamespace}student1", result.SelectResults.Rows[0]["?S"].ToString());
+        Assert.AreEqual(26, GetNumericValue(result.SelectResults.Rows[0]["?A"]));
+    }
     #endregion
 }

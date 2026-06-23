@@ -35,6 +35,11 @@ namespace RDFSharp.Query
         /// List of prefixes registered for the query
         /// </summary>
         internal List<RDFNamespace> Prefixes { get; set; }
+
+        /// <summary>
+        /// List of filters scoped to the whole query
+        /// </summary>
+        internal List<RDFFilter> QueryFilters { get; set; }
         #endregion
 
         #region Ctors
@@ -45,6 +50,7 @@ namespace RDFSharp.Query
         {
             QueryMembers = new List<RDFQueryMember>();
             Prefixes = new List<RDFNamespace>();
+            QueryFilters = new List<RDFFilter>();
             IsEvaluable = true;
         }
         #endregion
@@ -115,6 +121,16 @@ namespace RDFSharp.Query
         {
             if (modifier != null && !GetModifiers().Any(m => m is RDFOffsetModifier))
                 QueryMembers.Add(modifier);
+            return (T)this;
+        }
+
+        /// <summary>
+        /// Adds the given WHERE-clause-scoped filter to the query
+        /// </summary>
+        internal T AddQueryFilter<T>(RDFFilter filter) where T : RDFQuery
+        {
+            if (filter != null && !QueryFilters.Any(f => f.Equals(filter)))
+                QueryFilters.Add(filter);
             return (T)this;
         }
 
