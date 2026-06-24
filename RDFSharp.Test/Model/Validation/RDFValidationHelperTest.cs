@@ -1164,5 +1164,42 @@ public class RDFValidationHelperTest
         Assert.IsNotNull(detectedShape);
         Assert.AreEqual(0, detectedShape.TargetsCount);
     }
+
+    [TestMethod]
+    public void ShouldDetectSPARQLConstraint()
+    {
+        RDFSelectQuery selectQuery = RDFSelectQuery.FromString(
+            "PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?this ?value WHERE { ?this foaf:age ?value . FILTER(?value < 18) }");
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        nodeShape.AddConstraint(new RDFSPARQLConstraint(selectQuery));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(nodeShape.ToRDFGraph());
+
+        Assert.IsNotNull(shapesGraph);
+        Assert.AreEqual(1, shapesGraph.ShapesCount);
+
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(1, detectedShape.ConstraintsCount);
+        RDFSPARQLConstraint detectedConstraint = detectedShape.Constraints[0] as RDFSPARQLConstraint;
+        Assert.IsNotNull(detectedConstraint);
+        //Round-trip: the parsed query must re-stringify identically to the original
+        Assert.AreEqual(selectQuery.ToString(), detectedConstraint.SelectQuery.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldNotDetectSPARQLConstraintBecauseMissingType()
+    {
+        //sh:sparql object without "a sh:SPARQLConstraint" must be ignored (no constraint contribution)
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.SPARQL, new RDFResource("bnode:c")));
+        graph.AddTriple(new RDFTriple(new RDFResource("bnode:c"), RDFVocabulary.SHACL.SELECT, new RDFTypedLiteral("SELECT ?THIS WHERE { ?THIS ?P ?O }", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(graph);
+
+        Assert.IsNotNull(shapesGraph);
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(0, detectedShape.ConstraintsCount);
+    }
     #endregion
 }

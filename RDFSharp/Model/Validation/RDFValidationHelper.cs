@@ -665,6 +665,21 @@ namespace RDFSharp.Model
                 xoneConstraintCollection.Items.ForEach(item => xoneConstraint.AddShape((RDFResource)item));
                 shape.AddConstraint(xoneConstraint);
             }
+
+            //sh:sparql (accepted occurrences: N)
+            foreach (RDFTriple shapeSparqlConstraint in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.SPARQL)
+                                                                       .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            {
+                //The sh:sparql object must be typed as sh:SPARQLConstraint and must carry an sh:select query
+                RDFGraph sparqlConstraintDefinition = graph[s: (RDFResource)shapeSparqlConstraint.Object];
+                if (sparqlConstraintDefinition.ContainsTriple(new RDFTriple((RDFResource)shapeSparqlConstraint.Object, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.SPARQL_CONSTRAINT)))
+                {
+                    RDFTriple sparqlConstraintSelect = sparqlConstraintDefinition.SelectTriples(p: RDFVocabulary.SHACL.SELECT)
+                                                                                 .FirstOrDefault(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+                    if (sparqlConstraintSelect != null)
+                        shape.AddConstraint(new RDFSPARQLConstraint(RDFSelectQuery.FromString(((RDFLiteral)sparqlConstraintSelect.Object).Value)));
+                }
+            }
         }
         #endregion
     }
