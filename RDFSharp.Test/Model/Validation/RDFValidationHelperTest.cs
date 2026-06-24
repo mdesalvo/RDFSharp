@@ -282,6 +282,46 @@ public class RDFValidationHelperTest
     }
 
     [TestMethod]
+    public void ShouldGetFocusNodesOfNodeShapeWithTargetSPARQL()
+    {
+        RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
+            .AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(
+                "SELECT ?THIS WHERE { ?THIS <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Person> }")));
+        List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
+
+        Assert.IsNotNull(focusNodes);
+        Assert.HasCount(3, focusNodes);
+        Assert.IsTrue(focusNodes.Contains(new RDFResource("ex:Alice")));
+        Assert.IsTrue(focusNodes.Contains(new RDFResource("ex:Bob")));
+        Assert.IsTrue(focusNodes.Contains(new RDFResource("ex:Jane")));
+    }
+
+    [TestMethod]
+    public void ShouldGetFocusNodesOfNodeShapeWithTargetSPARQLDiscardingLiterals()
+    {
+        //The "?this" binding may legally hit a literal (foaf:name), which is not a legal focus node and must be discarded
+        RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
+            .AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(
+                "SELECT ?THIS WHERE { ?S <http://xmlns.com/foaf/0.1/name> ?THIS }")));
+        List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
+
+        Assert.IsNotNull(focusNodes);
+        Assert.IsEmpty(focusNodes);
+    }
+
+    [TestMethod]
+    public void ShouldGetFocusNodesOfNodeShapeWithTargetSPARQLNoMatches()
+    {
+        RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
+            .AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(
+                "SELECT ?THIS WHERE { ?THIS <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Alien> }")));
+        List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
+
+        Assert.IsNotNull(focusNodes);
+        Assert.IsEmpty(focusNodes);
+    }
+
+    [TestMethod]
     public void ShouldGetFocusNodesOfNullShape()
     {
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(null);
@@ -1086,6 +1126,43 @@ public class RDFValidationHelperTest
         Assert.AreEqual(1, inlinePropertyShape.ConstraintsCount);
         Assert.IsTrue(inlinePropertyShape.Constraints[0] is RDFClassConstraint classConstraint
                       && classConstraint.ClassType.Equals(new RDFResource("ex:Class")));
+    }
+
+    [TestMethod]
+    public void ShouldDetectSPARQLTarget()
+    {
+        RDFSelectQuery selectQuery = RDFSelectQuery.FromString(
+            "SELECT ?THIS WHERE { ?THIS <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Person> }");
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        nodeShape.AddTarget(new RDFTargetSPARQL(selectQuery));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(nodeShape.ToRDFGraph());
+
+        Assert.IsNotNull(shapesGraph);
+        Assert.AreEqual(1, shapesGraph.ShapesCount);
+
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(1, detectedShape.TargetsCount);
+        RDFTargetSPARQL detectedTarget = detectedShape.Targets[0] as RDFTargetSPARQL;
+        Assert.IsNotNull(detectedTarget);
+        //Round-trip: the parsed query must re-stringify identically to the original
+        Assert.AreEqual(selectQuery.ToString(), detectedTarget.SelectQuery.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldNotDetectSPARQLTargetBecauseMissingType()
+    {
+        //sh:target object without "a sh:SPARQLTarget" must be ignored (no focus-node contribution)
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.TARGET, new RDFResource("bnode:t")));
+        graph.AddTriple(new RDFTriple(new RDFResource("bnode:t"), RDFVocabulary.SHACL.SELECT, new RDFTypedLiteral("SELECT ?THIS WHERE { ?THIS ?P ?O }", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(graph);
+
+        Assert.IsNotNull(shapesGraph);
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(0, detectedShape.TargetsCount);
     }
     #endregion
 }

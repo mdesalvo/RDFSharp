@@ -12,6 +12,7 @@
 */
 
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using RDFSharp.Query;
@@ -58,6 +59,23 @@ namespace RDFSharp.Model
                             result.AddRange(dataGraph.SelectTriples(p: target.TargetValue)
                                   .Select(x => x.Object)
                                   .OfType<RDFResource>());
+                            break;
+
+                        //sh:SPARQLTarget
+                        case RDFTargetSPARQL targetSPARQL:
+                            //Run the self-contained SELECT query over the data graph and collect the "?this" bindings
+                            DataTable targetResults = targetSPARQL.SelectQuery.ApplyToGraph(dataGraph).SelectResults;
+                            if (targetResults.Columns.Contains("?THIS"))
+                                foreach (DataRow targetResult in targetResults.Rows)
+                                {
+                                    //Skip rows where "?this" is unbound (UNDEF/null), since they cannot designate a focus node
+                                    if (targetResult.IsNull("?THIS"))
+                                        continue;
+
+                                    //Only resources are legal focus nodes: literals bound to "?this" are silently discarded
+                                    if (RDFQueryUtilities.ParseRDFPatternMember(targetResult["?THIS"].ToString()) is RDFResource focusNode)
+                                        result.Add(focusNode);
+                                }
                             break;
                     }
             }
@@ -321,6 +339,21 @@ namespace RDFSharp.Model
             foreach (RDFTriple targetObjectOf in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.TARGET_OBJECTS_OF)
                                                                 .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
                 shape.AddTarget(new RDFTargetObjectsOf((RDFResource)targetObjectOf.Object));
+
+            //sh:SPARQLTarget via sh:target (accepted occurrences: N)
+            foreach (RDFTriple target in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.TARGET)
+                                                        .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
+            {
+                //The sh:target object must be typed as sh:SPARQLTarget and must carry an sh:select query
+                RDFGraph targetDefinition = graph[s: (RDFResource)target.Object];
+                if (targetDefinition.ContainsTriple(new RDFTriple((RDFResource)target.Object, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.SPARQL_TARGET)))
+                {
+                    RDFTriple targetSelect = targetDefinition.SelectTriples(p: RDFVocabulary.SHACL.SELECT)
+                                                             .FirstOrDefault(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPL);
+                    if (targetSelect != null)
+                        shape.AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(((RDFLiteral)targetSelect.Object).Value)));
+                }
+            }
         }
 
         /// <summary>
