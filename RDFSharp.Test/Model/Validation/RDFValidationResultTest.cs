@@ -33,7 +33,7 @@ public class RDFValidationResultTest
             new RDFNodeShape(new RDFResource("ex:sourceShape")),
             new RDFMinLengthConstraint(8),
             new RDFResource("ex:focusNode"),
-            new RDFResource("ex:resultPath"),
+            RDFTestUtilities.ShaclPath(new RDFResource("ex:resultPath")),
             new RDFPlainLiteral("resultValue"),
             [new RDFPlainLiteral("resultMessage")],
             severity
@@ -48,7 +48,7 @@ public class RDFValidationResultTest
         Assert.IsNotNull(result.FocusNode);
         Assert.IsTrue(result.FocusNode.Equals(new RDFResource("ex:focusNode")));
         Assert.IsNotNull(result.ResultPath);
-        Assert.IsTrue(result.ResultPath.Equals(new RDFResource("ex:resultPath")));
+        Assert.IsTrue(result.ResultPath.AsSinglePredicate().Equals(new RDFResource("ex:resultPath")));
         Assert.IsNotNull(result.ResultValue);
         Assert.IsTrue(result.ResultValue.Equals(new RDFPlainLiteral("resultValue")));
         Assert.IsNotNull(result.ResultMessages);
@@ -68,7 +68,7 @@ public class RDFValidationResultTest
             new RDFNodeShape(new RDFResource("ex:sourceShape")),
             constraint,
             new RDFResource("ex:focusNode"),
-            new RDFResource("ex:resultPath"),
+            RDFTestUtilities.ShaclPath(new RDFResource("ex:resultPath")),
             new RDFPlainLiteral("resultValue"),
             [new RDFPlainLiteral("resultMessage")],
             severity
@@ -109,7 +109,7 @@ public class RDFValidationResultTest
             new RDFNodeShape(new RDFResource("ex:sourceShape")),
             constraint,
             new RDFResource("ex:focusNode"),
-            new RDFResource("ex:resultPath"),
+            RDFTestUtilities.ShaclPath(new RDFResource("ex:resultPath")),
             new RDFResource("ex:resultValue"),
             [new RDFPlainLiteral("resultMessage","en")],
             severity

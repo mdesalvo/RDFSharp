@@ -72,8 +72,11 @@ namespace RDFSharp.Model
                 //Extend ignored properties with paths of property constraints
                 List<RDFResource> allowedProperties = new List<RDFResource>(IgnoredProperties.Values);
                 foreach (RDFPropertyConstraint propertyConstraint in shape.Constraints.OfType<RDFPropertyConstraint>())
-                    if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape)
-                        allowedProperties.Add(propertyShape.Path);
+                    if (shapesGraph.SelectShape(propertyConstraint.PropertyShapeUri.ToString()) is RDFPropertyShape propertyShape
+                         && propertyShape.Path.AsSinglePredicate() is RDFResource allowedProperty)
+                    {
+                        allowedProperties.Add(allowedProperty);
+                    }
 
                 //Opt into identity membership: probe allowed properties in O(1) instead of scanning per triple
                 BuildIdentityLookup(allowedProperties);
@@ -91,7 +94,7 @@ namespace RDFSharp.Model
                             report.AddResult(new RDFValidationResult(shape,
                                                                      RDFVocabulary.SHACL.CLOSED_CONSTRAINT_COMPONENT,
                                                                      valueNodeResource,
-                                                                     unallowedTriple.Predicate as RDFResource,
+                                                                     RDFValidationHelper.SinglePredicatePath(unallowedTriple.Predicate as RDFResource),
                                                                      unallowedTriple.Object,
                                                                      shapeMessages,
                                                                      shape.Severity));

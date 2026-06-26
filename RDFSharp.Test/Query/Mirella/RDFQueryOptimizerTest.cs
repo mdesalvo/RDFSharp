@@ -72,7 +72,7 @@ public class RDFQueryOptimizerTest
 
     private static RDFPropertyPath MakePropertyPath()
         => new RDFPropertyPath(new RDFVariable("?start"), new RDFVariable("?end"))
-            .AddSequenceStep(new RDFPropertyPathStep(new RDFResource("ex:prop")));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:prop")));
 
     // Builds an inner-join pattern from S/P/O tokens: a token starting with '?' becomes a variable, otherwise a
     // resource (prefixed "ex:"). This lets tests wire SHARED variables across patterns to drive the join-graph

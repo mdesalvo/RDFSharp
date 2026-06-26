@@ -456,7 +456,7 @@ WHERE {
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Variable("?c"), Variable("?root"))
-                    .AddSequenceStep(new RDFPropertyPathStep(UniversityResource("prerequisite")).OneOrMore()))));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(UniversityResource("prerequisite")).OneOrMore()))));
 
         //Closure of "course1->course0, course2->course1, course3->course1":
         //course1+ = {course0}; course2+ = {course1, course0}; course3+ = {course1, course0} => 5 pairs

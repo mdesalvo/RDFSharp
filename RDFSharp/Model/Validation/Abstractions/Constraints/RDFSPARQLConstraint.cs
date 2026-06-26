@@ -90,7 +90,7 @@ namespace RDFSharp.Model
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.SPARQL_CONSTRAINT_COMPONENT,
                                                              focusNode,
-                                                             resultPath,
+                                                             RDFValidationHelper.SinglePredicatePath(resultPath),
                                                              resultValue,
                                                              resultMessages,
                                                              shape.Severity));

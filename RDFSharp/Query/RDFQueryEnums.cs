@@ -83,21 +83,6 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFPropertyPathStepFlavors represents an enumeration for possible connection types within a property path.
-        /// </summary>
-        public enum RDFPropertyPathStepFlavors
-        {
-            /// <summary>
-            /// Steps within a property path are connected with AND semantic
-            /// </summary>
-            Sequence = '/',
-            /// <summary>
-            /// Steps within a property path are connected with OR semantic
-            /// </summary>
-            Alternative = '|'
-        }
-
-        /// <summary>
         /// RDFPropertyPathExpressionKinds represents an enumeration for the node kinds of a SPARQL property path expression tree.
         /// </summary>
         public enum RDFPropertyPathExpressionKinds

@@ -242,7 +242,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), RDFVocabulary.RDFS.CLASS)
-                    .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))))
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE))))
 ;
         RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 

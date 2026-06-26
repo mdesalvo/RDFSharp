@@ -38,6 +38,38 @@ internal static class RDFTestUtilities
     internal static string NormalizeEOL(string value)
         => value?.Replace("\r\n", "\n");
 
+    #region SHACL path builders
+    /// <summary>
+    /// Builds the SHACL property path of a single predicate (optionally traversed backward), with the SHACL
+    /// placeholder endpoints. Concise stand-in for the verbose RDFPropertyPath builder in property-shape tests.
+    /// </summary>
+    internal static RDFPropertyPath ShaclPath(RDFResource predicate, bool inverse=false)
+    {
+        RDFPropertyPathExpression step = RDFPropertyPathExpression.Link(predicate);
+        if (inverse)
+            step.Inverse();
+        return new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END")).AddSequenceStep(step);
+    }
+
+    /// <summary>
+    /// Builds the SHACL property path of a sequence of single predicates (P1/P2/...).
+    /// </summary>
+    internal static RDFPropertyPath ShaclSequencePath(params RDFResource[] predicates)
+    {
+        RDFPropertyPath path = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
+        foreach (RDFResource predicate in predicates)
+            path.AddSequenceStep(RDFPropertyPathExpression.Link(predicate));
+        return path;
+    }
+
+    /// <summary>
+    /// Builds the SHACL property path of an alternative of single predicates (P1|P2|...).
+    /// </summary>
+    internal static RDFPropertyPath ShaclAlternativePath(params RDFResource[] predicates)
+        => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+            .AddAlternativeSteps(predicates.Select(predicate => RDFPropertyPathExpression.Link(predicate)).ToList());
+    #endregion
+
     #region SPARQL iso-functionality harness
     /// <summary>
     /// Bidirectional isomorphism gate (the "SPARQL 100%" spine): asserts that a query built through the fluent

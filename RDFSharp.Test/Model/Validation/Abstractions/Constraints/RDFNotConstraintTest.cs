@@ -219,7 +219,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShape);
 
@@ -250,7 +250,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShape);
 
@@ -281,7 +281,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShape);
 
@@ -312,7 +312,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShape);
 
@@ -503,7 +503,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(8));
         shapesGraph.AddShape(propertyShape);
 
@@ -543,7 +543,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(8));
         shapesGraph.AddShape(propertyShape);
 
@@ -583,7 +583,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(8));
         shapesGraph.AddShape(propertyShape);
 
@@ -623,7 +623,7 @@ public class RDFNotConstraintTest
         nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFNotConstraint(new RDFResource("ex:PropertyShape")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGENT);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGENT));
         propertyShape.AddConstraint(new RDFMinLengthConstraint(8));
         shapesGraph.AddShape(propertyShape);
 

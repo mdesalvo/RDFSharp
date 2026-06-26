@@ -223,7 +223,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(4));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(4));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -256,7 +256,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(4));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(4));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -289,7 +289,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(4));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(4));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -322,7 +322,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(4));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(4));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -531,7 +531,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(6));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -550,7 +550,7 @@ public class RDFXoneConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.XONE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -573,7 +573,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(6));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -592,7 +592,7 @@ public class RDFXoneConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.XONE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -615,7 +615,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(6));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -634,7 +634,7 @@ public class RDFXoneConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.XONE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -657,7 +657,7 @@ public class RDFXoneConstraintTest
         nodeShape1.AddConstraint(new RDFMinLengthConstraint(6));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:NodeShape2"));
         nodeShape2.AddConstraint(new RDFMaxLengthConstraint(6));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:NodeShape1"))
             .AddShape(new RDFResource("ex:NodeShape2")));
@@ -676,7 +676,7 @@ public class RDFXoneConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Value does not have exactly one of the shapes in sh:xone enumeration")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.XONE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -700,9 +700,9 @@ public class RDFXoneConstraintTest
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
         nodeShape.AddConstraint(new RDFXoneConstraint().AddShape(new RDFResource("ex:PropShape1"))
             .AddShape(new RDFResource("ex:PropShape2")));
-        RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propShape1.AddConstraint(new RDFPatternConstraint(new Regex("^ex:", RegexOptions.IgnoreCase)));
-        RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFVocabulary.FOAF.AGE);
+        RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE));
         propShape2.AddConstraint(new RDFMaxExclusiveConstraint(new RDFTypedLiteral("22.0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
         shapesGraph.AddShape(nodeShape);
         shapesGraph.AddShape(propShape1);
@@ -730,9 +730,9 @@ public class RDFXoneConstraintTest
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
         RDFNodeShape nodeShape1 = new RDFNodeShape(new RDFResource("ex:SuperShape"));
         nodeShape1.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropShape1")));
-        RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), new RDFResource("ex:property"));
+        RDFPropertyShape propShape1 = new RDFPropertyShape(new RDFResource("ex:PropShape1"), RDFTestUtilities.ShaclPath(new RDFResource("ex:property")));
         propShape1.AddConstraint(new RDFMinCountConstraint(2));
-        RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), new RDFResource("ex:property"));
+        RDFPropertyShape propShape2 = new RDFPropertyShape(new RDFResource("ex:PropShape2"), RDFTestUtilities.ShaclPath(new RDFResource("ex:property")));
         propShape2.AddConstraint(new RDFMinLengthConstraint(3));
         RDFNodeShape nodeShape2 = new RDFNodeShape(new RDFResource("ex:ExampleXoneShape"));
         nodeShape2.AddTarget(new RDFTargetNode(new RDFResource("ex:A")));

@@ -26,24 +26,9 @@ namespace RDFSharp.Model
     {
         #region Properties
         /// <summary>
-        /// Indicates the property on which this property shape is applied (sh:path)
+        /// Indicates the path on which this property shape is applied (sh:path)
         /// </summary>
-        public RDFResource Path { get; internal set; }
-
-        /// <summary>
-        /// Indicates that the path of this property shape should be considered backward (sh:inversePath)
-        /// </summary>
-        public bool IsInversePath { get; internal set; }
-
-        /// <summary>
-        /// Indicates the alternative properties on which this property shape is applied (sh:alternativePath)
-        /// </summary>
-        public RDFPropertyPath AlternativePath { get; internal set; }
-
-        /// <summary>
-        /// Indicates the sequence properties on which this property shape is applied (sh:path)
-        /// </summary>
-        public RDFPropertyPath SequencePath { get; internal set; }
+        public RDFPropertyPath Path { get; internal set; }
 
         /// <summary>
         /// Indicates the human-readable descriptions of this property shape's path (sh:description)
@@ -68,60 +53,28 @@ namespace RDFSharp.Model
 
         #region Ctors
         /// <summary>
-        /// Builds a named property shape on the given property
+        /// Builds a named property shape on the given path
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
-        public RDFPropertyShape(RDFResource propertyShapeName, RDFResource path, bool isInversePath=false) : base(propertyShapeName)
-        {
-            Path = path ?? throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
-            IsInversePath = isInversePath;
-            Descriptions = new List<RDFLiteral>();
-            Names = new List<RDFLiteral>();
-        }
-
-        /// <summary>
-        /// Builds a named property shape on the given properties
-        /// </summary>
-        /// <exception cref="RDFModelException"></exception>
-        public RDFPropertyShape(RDFResource propertyShapeName, List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor) : base(propertyShapeName)
+        public RDFPropertyShape(RDFResource propertyShapeName, RDFPropertyPath path) : base(propertyShapeName)
         {
             #region Guards
-            if (pathSteps == null)
-                throw new RDFModelException("Cannot create RDFPropertyShape because given \"pathSteps\" parameter is null.");
-            if (pathSteps.Count == 0)
-                throw new RDFModelException("Cannot create RDFPropertyShape because given \"pathSteps\" parameter is empty.");
+            if (path == null)
+                throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
+            if (path.Expression == null)
+                throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter has no steps.");
             #endregion
 
-            switch (pathStepsFlavor)
-            {
-                //sh:path
-                case RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence:
-                    SequencePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-                    foreach (RDFResource pathStep in pathSteps)
-                        SequencePath.AddSequenceStep(new RDFPropertyPathStep(pathStep));
-                    break;
-
-                //sh:alternativePath
-                case RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative:
-                    AlternativePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                                        .AddAlternativeSteps(pathSteps.ConvertAll(pathStep => new RDFPropertyPathStep(pathStep)));
-                    break;
-            }
+            Path = path;
             Descriptions = new List<RDFLiteral>();
             Names = new List<RDFLiteral>();
         }
 
         /// <summary>
-        /// Builds a blank property shape on the given property
+        /// Builds a blank property shape on the given path
         /// </summary>
-        public RDFPropertyShape(RDFResource path, bool isInversePath=false)
-            : this(new RDFResource(), path, isInversePath) { }
-
-        /// <summary>
-        /// Builds a blank property shape on the given properties
-        /// </summary>
-        public RDFPropertyShape(List<RDFResource> pathSteps, RDFQueryEnums.RDFPropertyPathStepFlavors pathStepsFlavor)
-            : this(new RDFResource(), pathSteps, pathStepsFlavor) { }
+        public RDFPropertyShape(RDFPropertyPath path)
+            : this(new RDFResource(), path) { }
         #endregion
 
         #region Methods
@@ -191,36 +144,8 @@ namespace RDFSharp.Model
             //PropertyShape
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
 
-            //Path (inverse)
-            if (IsInversePath)
-            {
-                RDFResource pathBNode = new RDFResource();
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
-                result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.INVERSE_PATH, Path));
-            }
-            //Path (alternative)
-            else if (AlternativePath != null)
-            {
-                RDFResource pathBNode = new RDFResource();
-                RDFCollection pathColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                AlternativePath.GetFlatStepProperties().ForEach(pathStep => pathColl.AddItem(pathStep));
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathBNode));
-                result.AddTriple(new RDFTriple(pathBNode, RDFVocabulary.SHACL.ALTERNATIVE_PATH, pathColl.ReificationSubject));
-                result.AddCollection(pathColl);
-            }
-            //Path (sequence)
-            else if (SequencePath != null)
-            {
-                RDFCollection pathColl = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                SequencePath.GetFlatStepProperties().ForEach(pathStep => pathColl.AddItem(pathStep));
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, pathColl.ReificationSubject));
-                result.AddCollection(pathColl);
-            }
             //Path
-            else
-            {
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, Path));
-            }
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, RDFValidationHelper.SerializeShapePath(result, Path.Expression)));
 
             //Descriptions
             Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));

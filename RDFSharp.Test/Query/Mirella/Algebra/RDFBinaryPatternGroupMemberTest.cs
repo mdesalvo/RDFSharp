@@ -63,7 +63,7 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable y = new RDFVariable("?Y");
         RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
         RDFPropertyPath ppB = new RDFPropertyPath(x, y)
-            .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
         RDFBinaryPatternGroupMember op = pA.Union(ppB);
 
         Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
@@ -77,9 +77,9 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable x = new RDFVariable("?X");
         RDFVariable y = new RDFVariable("?Y");
         RDFPropertyPath ppA = new RDFPropertyPath(x, y)
-            .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
         RDFPropertyPath ppB = new RDFPropertyPath(x, y)
-            .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE));
         RDFBinaryPatternGroupMember op = ppA.Union(ppB);
 
         Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
@@ -190,7 +190,7 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable z = new RDFVariable("?Z");
         RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
         RDFPropertyPath ppB = new RDFPropertyPath(x, z)
-            .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
 
         RDFBinaryPatternGroupMember op = pA.Union(ppB);
 
@@ -244,7 +244,7 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable x = new RDFVariable("?X");
         RDFVariable y = new RDFVariable("?Y");
         RDFPropertyPath pp = new RDFPropertyPath(x, y)
-            .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
 
         Assert.ThrowsExactly<RDFQueryException>(() => pp.Minus(pp));
     }

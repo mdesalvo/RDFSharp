@@ -63,7 +63,6 @@ namespace RDFSharp.Model
 
                         //sh:SPARQLTarget
                         case RDFTargetSPARQL targetSPARQL:
-                            //Run the self-contained SELECT query over the data graph and collect the "?this" bindings
                             DataTable targetResults = targetSPARQL.SelectQuery.ApplyToGraph(dataGraph).SelectResults;
                             if (targetResults.Columns.Contains("?THIS"))
                                 foreach (DataRow targetResult in targetResults.Rows)
@@ -101,44 +100,39 @@ namespace RDFSharp.Model
                     case RDFPropertyShape propertyShape:
                         if (focusNode is RDFResource focusNodeResource)
                         {
-                            #region inversePath
-                            if (propertyShape.IsInversePath)
-                                result.AddRange(dataGraph.SelectTriples(p: propertyShape.Path, o: focusNodeResource)
-                                      .Select(t => t.Object));
+                            RDFPropertyPathExpression pathExpression = propertyShape.Path.Expression;
+
+                            #region single predicate (fast path)
+                            //A plain single predicate (possibly inverse) is a ground triple lookup, not a path evaluation
+                            if (pathExpression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Link
+                                 && pathExpression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
+                            {
+                                if (pathExpression.IsInverse)
+                                    result.AddRange(dataGraph.SelectTriples(p: pathExpression.Property, o: focusNodeResource)
+                                          .Select(t => t.Subject));
+                                else
+                                    result.AddRange(dataGraph.SelectTriples(s: focusNodeResource, p: pathExpression.Property)
+                                          .Select(t => t.Object));
+                            }
                             #endregion
 
-                            #region [alternative|sequence]Path
-                            else if (propertyShape.AlternativePath != null || propertyShape.SequencePath != null)
+                            #region complex path (tree evaluation)
+                            //Every other SHACL path (sequence/alternative/inverse-of-group/recursive cardinality)
+                            //is evaluated as a binary relation rooted at the focus node, collecting the endpoints
+                            else
                             {
-                                bool isAlternativePath = propertyShape.AlternativePath != null;
-
-                                //Contextualize property path to the given focus node
-                                if (isAlternativePath)
-                                    propertyShape.AlternativePath.Start = focusNode;
-                                else
-                                    propertyShape.SequencePath.Start = focusNode;
-
-                                //Compute property path on the given focus node
-                                RDFTable pathResult = new RDFQueryEngine().ApplyPropertyPath(
-                                    isAlternativePath ? propertyShape.AlternativePath : propertyShape.SequencePath, dataGraph);
+                                //Compute the property path on a fresh copy rooted at the given focus node (sharing the
+                                //immutable path units): the shape's stored path is never touched, so concurrent
+                                //validations stay isolated and the focus node is the only varying boundary term
+                                RDFPropertyPath contextualizedPath = new RDFPropertyPath(focusNode, new RDFVariable("?END"));
+                                propertyShape.Path.SequenceUnits.ForEach(pathUnit => contextualizedPath.AddSequenceStep(pathUnit));
+                                RDFTable pathResult = new RDFQueryEngine().ApplyPropertyPath(contextualizedPath, dataGraph);
                                 result.AddRange(from RDFTableRow pathResultRow
                                                 in pathResult.Rows
                                                 select pathResultRow["?END"]
                                                 into prValue where !string.IsNullOrEmpty(prValue)
                                                 select RDFQueryUtilities.ParseRDFPatternMember(prValue));
-
-                                //Recontextualize property path to the initial configuration
-                                if (isAlternativePath)
-                                    propertyShape.AlternativePath.Start = new RDFVariable("?START");
-                                else
-                                    propertyShape.SequencePath.Start = new RDFVariable("?START");
                             }
-                            #endregion
-
-                            #region path
-                            else
-                                result.AddRange(dataGraph.SelectTriples(s: focusNodeResource, p: propertyShape.Path)
-                                      .Select(t => t.Object));
                             #endregion
                         }
                         break;
@@ -175,6 +169,9 @@ namespace RDFSharp.Model
         #endregion
 
         #region Conversion
+        /// <summary>
+        /// Gets ths SHACL shapes graph definition encoded in the given RDF graph
+        /// </summary>
         internal static RDFShapesGraph FromRDFGraph(RDFGraph graph)
         {
             if (graph != null)
@@ -217,71 +214,14 @@ namespace RDFSharp.Model
                 RDFTriple declaredPropertyShapePath = graph.SelectTriples(s: (RDFResource)declaredPropertyShape.Subject, p: RDFVocabulary.SHACL.PATH).FirstOrDefault();
                 if (declaredPropertyShapePath?.Object is RDFResource declaredPropertyShapePathObject)
                 {
-                    RDFPropertyShape propertyShape;
-                    if (declaredPropertyShapePathObject.IsBlank)
-                    {
-                        #region inverse
-                        RDFTriple inversePath = graph.SelectTriples(s: declaredPropertyShapePathObject, p: RDFVocabulary.SHACL.INVERSE_PATH).FirstOrDefault();
-                        if (inversePath?.Object is RDFResource inversePathObject)
-                        {
-                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, inversePathObject, true);
+                    RDFPropertyShape propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, DetectShapePath(graph, declaredPropertyShapePathObject));
 
-                            DetectShapeTargets(graph, propertyShape);
-                            DetectShapeAttributes(graph, propertyShape);
-                            DetectShapeNonValidatingAttributes(graph, propertyShape);
-                            DetectShapeConstraints(graph, propertyShape);
+                    DetectShapeTargets(graph, propertyShape);
+                    DetectShapeAttributes(graph, propertyShape);
+                    DetectShapeNonValidatingAttributes(graph, propertyShape);
+                    DetectShapeConstraints(graph, propertyShape);
 
-                            shapesGraph.AddShape(propertyShape);
-                            continue;
-                        }
-                        #endregion
-
-                        #region alternative
-                        RDFTriple alternativePath = graph.SelectTriples(s: declaredPropertyShapePathObject, p: RDFVocabulary.SHACL.ALTERNATIVE_PATH).FirstOrDefault();
-                        if (alternativePath?.Object is RDFResource alternativePathObject)
-                        {
-                            RDFCollection alternativePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph,
-                                alternativePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
-                            propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject,
-                                alternativePathCollection.Items.OfType<RDFResource>().ToList(), RDFQueryEnums.RDFPropertyPathStepFlavors.Alternative);
-
-                            DetectShapeTargets(graph, propertyShape);
-                            DetectShapeAttributes(graph, propertyShape);
-                            DetectShapeNonValidatingAttributes(graph, propertyShape);
-                            DetectShapeConstraints(graph, propertyShape);
-
-                            shapesGraph.AddShape(propertyShape);
-                            continue;
-                        }
-                        #endregion
-
-                        #region sequence
-                        RDFCollection sequencePathCollection = RDFModelUtilities.DeserializeCollectionFromGraph(graph,
-                                declaredPropertyShapePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
-                        propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject,
-                            sequencePathCollection.Items.OfType<RDFResource>().ToList(), RDFQueryEnums.RDFPropertyPathStepFlavors.Sequence);
-
-                        DetectShapeTargets(graph, propertyShape);
-                        DetectShapeAttributes(graph, propertyShape);
-                        DetectShapeNonValidatingAttributes(graph, propertyShape);
-                        DetectShapeConstraints(graph, propertyShape);
-
-                        shapesGraph.AddShape(propertyShape);
-                        #endregion
-                    }
-                    else
-                    {
-                        #region path
-                        propertyShape = new RDFPropertyShape((RDFResource)declaredPropertyShape.Subject, declaredPropertyShapePathObject);
-
-                        DetectShapeTargets(graph, propertyShape);
-                        DetectShapeAttributes(graph, propertyShape);
-                        DetectShapeNonValidatingAttributes(graph, propertyShape);
-                        DetectShapeConstraints(graph, propertyShape);
-
-                        shapesGraph.AddShape(propertyShape);
-                        #endregion
-                    }
+                    shapesGraph.AddShape(propertyShape);
                 }
             }
         }
@@ -301,7 +241,7 @@ namespace RDFSharp.Model
                     RDFTriple inlinePropertyShapePath = graph.SelectTriples(s: inlinePropertyShapeResource, p: RDFVocabulary.SHACL.PATH).FirstOrDefault();
                     if (inlinePropertyShapePath?.Object is RDFResource inlinePropertyShapePathObject)
                     {
-                        RDFPropertyShape propertyShape = new RDFPropertyShape(inlinePropertyShapeResource, inlinePropertyShapePathObject);
+                        RDFPropertyShape propertyShape = new RDFPropertyShape(inlinePropertyShapeResource, DetectShapePath(graph, inlinePropertyShapePathObject));
 
                         DetectShapeTargets(graph, propertyShape);
                         DetectShapeAttributes(graph, propertyShape);
@@ -344,7 +284,6 @@ namespace RDFSharp.Model
             foreach (RDFTriple target in shapeDefinition.SelectTriples(p: RDFVocabulary.SHACL.TARGET)
                                                         .Where(t => t.TripleFlavor == RDFModelEnums.RDFTripleFlavors.SPO))
             {
-                //The sh:target object must be typed as sh:SPARQLTarget and must carry an sh:select query
                 RDFGraph targetDefinition = graph[s: (RDFResource)target.Object];
                 if (targetDefinition.ContainsTriple(new RDFTriple((RDFResource)target.Object, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.SPARQL_TARGET)))
                 {
@@ -680,6 +619,143 @@ namespace RDFSharp.Model
                         shape.AddConstraint(new RDFSPARQLConstraint(RDFSelectQuery.FromString(((RDFLiteral)sparqlConstraintSelect.Object).Value)));
                 }
             }
+        }
+        
+        /// <summary>
+        /// Detects the path rooted at the given node
+        /// </summary>
+        private static RDFPropertyPath DetectShapePath(RDFGraph graph, RDFResource node)
+            => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                    .AddSequenceStep(DetectShapePathExpression(graph, node));
+
+        /// <summary>
+        /// Detects a single node of the path definition, turning it into the equivalent path expression
+        /// </summary>
+        private static RDFPropertyPathExpression DetectShapePathExpression(RDFGraph graph, RDFResource node)
+        {
+            //A bare predicate IRI is a plain Link
+            if (!node.IsBlank)
+                return RDFPropertyPathExpression.Link(node);
+
+            RDFGraph pathDefinition = graph[s: node];
+
+            //sh:inversePath O -> ^(...)
+            if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.INVERSE_PATH).FirstOrDefault()?.Object is RDFResource inversePathObject)
+                return DetectShapePathExpression(graph, inversePathObject).Inverse();
+
+            //sh:zeroOrMorePath O -> (...)*
+            if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ZERO_OR_MORE_PATH).FirstOrDefault()?.Object is RDFResource zeroOrMorePathObject)
+                return DetectShapePathExpression(graph, zeroOrMorePathObject).ZeroOrMore();
+
+            //sh:oneOrMorePath O -> (...)+
+            if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ONE_OR_MORE_PATH).FirstOrDefault()?.Object is RDFResource oneOrMorePathObject)
+                return DetectShapePathExpression(graph, oneOrMorePathObject).OneOrMore();
+
+            //sh:zeroOrOnePath O -> (...)?
+            if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ZERO_OR_ONE_PATH).FirstOrDefault()?.Object is RDFResource zeroOrOnePathObject)
+                return DetectShapePathExpression(graph, zeroOrOnePathObject).ZeroOrOne();
+
+            //sh:alternativePath L -> (...|...)
+            if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ALTERNATIVE_PATH).FirstOrDefault()?.Object is RDFResource alternativePathObject)
+            {
+                RDFCollection alternativeList = RDFModelUtilities.DeserializeCollectionFromGraph(graph, alternativePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
+                return RDFPropertyPathExpression.Alternative(alternativeList.Items.OfType<RDFResource>()
+                                                                                  .Select(item => DetectShapePathExpression(graph, item))
+                                                                                  .ToList());
+            }
+
+            //Otherwise the node is an rdf:List (sequence) -> P1/P2/...
+            RDFCollection sequenceList = RDFModelUtilities.DeserializeCollectionFromGraph(graph, node, RDFModelEnums.RDFTripleFlavors.SPO);
+            List<RDFPropertyPathExpression> sequenceSteps = sequenceList.Items.OfType<RDFResource>()
+                                                                              .Select(item => DetectShapePathExpression(graph, item))
+                                                                              .ToList();
+            return sequenceSteps.Count == 1 ? sequenceSteps[0] : RDFPropertyPathExpression.Sequence(sequenceSteps);
+        }
+        #endregion
+
+        #region Serialization
+        /// <summary>
+        /// Builds the single-predicate property path equivalent to the given predicate IRI: this is the
+        /// bare-predicate result path reported by SHACL-SPARQL and closed-shape constraints (a single violating
+        /// predicate, not a property shape's path). Returns null when the IRI is null.
+        /// </summary>
+        internal static RDFPropertyPath SinglePredicatePath(RDFResource predicate)
+            => predicate != null
+                ? new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+                        .AddSequenceStep(RDFPropertyPathExpression.Link(predicate))
+                : null;
+
+        /// <summary>
+        /// Serializes the given path expression into RDF, returning its path node (the bare predicate IRI for
+        /// a plain single predicate, otherwise the blank node rooting the structure) and adding the structure triples
+        /// to the given graph.
+        /// </summary>
+        /// <exception cref="RDFModelException"></exception>
+        internal static RDFResource SerializeShapePath(RDFGraph graph, RDFPropertyPathExpression expression)
+        {
+            #region Utilities
+            //Builds the rdf:List of the SHACL path nodes of the given children, returning the list head
+            RDFResource SerializeShaclPathList(List<RDFPropertyPathExpression> pathExpressions)
+            {
+                RDFCollection pathNodes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
+                pathExpressions.ForEach(pathExpression => pathNodes.AddItem(SerializeShapePath(graph, pathExpression)));
+                graph.AddCollection(pathNodes);
+                return pathNodes.ReificationSubject;
+            }
+            
+            //Wraps the given inner path node in a fresh blank node carrying the given SHACL path predicate
+            RDFResource WrapShaclPath(RDFResource shaclPathPredicate, RDFResource innerPathNode)
+            {
+                RDFResource wrapperNode = new RDFResource();
+                graph.AddTriple(new RDFTriple(wrapperNode, shaclPathPredicate, innerPathNode));
+                return wrapperNode;
+            }
+            #endregion
+
+            //Undecorated core (the node kind)
+            RDFResource pathNode;
+            switch (expression.Kind)
+            {
+                //A single predicate: the path node is the bare IRI
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Link:
+                    pathNode = expression.Property;
+                    break;
+
+                //A sequence P1/P2/...: the path node is the rdf:List of the child path nodes
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence:
+                    pathNode = SerializeShaclPathList(expression.Children);
+                    break;
+
+                //An alternative P1|P2|...: bnode sh:alternativePath -> rdf:List of the child path nodes
+                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative:
+                    pathNode = new RDFResource();
+                    graph.AddTriple(new RDFTriple(pathNode, RDFVocabulary.SHACL.ALTERNATIVE_PATH, SerializeShaclPathList(expression.Children)));
+                    break;
+
+                //A negated property set has no SHACL representation (SHACL paths do not include negation)
+                default:
+                    throw new RDFModelException("Cannot serialize SHACL property path because it contains a negated property set, which is not representable in SHACL.");
+            }
+
+            //Cardinality decoration: ?/+/* -> bnode sh:zeroOrOnePath/oneOrMorePath/zeroOrMorePath
+            switch (expression.Cardinality)
+            {
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:
+                    pathNode = WrapShaclPath(RDFVocabulary.SHACL.ZERO_OR_ONE_PATH, pathNode);
+                    break;
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:
+                    pathNode = WrapShaclPath(RDFVocabulary.SHACL.ONE_OR_MORE_PATH, pathNode);
+                    break;
+                case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore:
+                    pathNode = WrapShaclPath(RDFVocabulary.SHACL.ZERO_OR_MORE_PATH, pathNode);
+                    break;
+            }
+
+            //Inverse decoration: ^ -> bnode sh:inversePath
+            if (expression.IsInverse)
+                pathNode = WrapShaclPath(RDFVocabulary.SHACL.INVERSE_PATH, pathNode);
+
+            return pathNode;
         }
         #endregion
     }
