@@ -88,10 +88,11 @@ namespace RDFSharp.Query
                         parsedOperation = ParseDeleteWhereOperation(parserContext);
                     break;
 
-                //WITH <iri> opens a Modify whose DELETE/INSERT clauses act on a fixed graph: the flat model has no
-                //dataset slot for it, so reject it as non-representable (precise message, not a generic token error)
+                //WITH <iri> opens a Modify whose DELETE/INSERT clauses act on a fixed graph: deliberately NOT
+                //supported, because WITH (like FROM/USING) tells a SPARQL endpoint which dataset to operate on,
+                //whereas RDFSharp operates over the source you provide; target a graph explicitly with GRAPH instead
                 case "WITH":
-                    throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: a WITH clause is not representable by the flat model " + GetCoordinates(parserContext));
+                    throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: a WITH clause is not supported. WITH tells a SPARQL endpoint which graph to operate on, whereas RDFSharp operates over the data source you provide; target a named graph explicitly with GRAPH in the template/WHERE instead " + GetCoordinates(parserContext));
 
                 //Valid SPARQL graph-management operations that the flat model cannot represent (no matching class):
                 //reject them explicitly as non-representable rather than as a generic unexpected token

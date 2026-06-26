@@ -66,8 +66,10 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Rejects a leading <c>DatasetClause</c> (FROM / FROM NAMED) — the clause between the SELECT/ASK header
-        /// and the WHERE clause: the flat model has no dataset to attach it to, so it is not representable. Shared
-        /// by every query form (SELECT, ASK). The keyword run is peeked and pushed back before throwing.
+        /// and the WHERE clause. It is deliberately NOT supported: FROM/FROM NAMED instruct a SPARQL endpoint to
+        /// procure (dereference/compose) its dataset on-the-fly, whereas RDFSharp is the evaluation engine over the
+        /// data source you provide (graph/store/federation), not an endpoint. The equivalent scoping is expressed
+        /// with GRAPH patterns over a store, so the clause is redundant here.
         /// </summary>
         /// <exception cref="RDFQueryException">When the next token is the FROM keyword.</exception>
         private static void RejectDatasetClause(RDFQueryParserContext parserContext)
@@ -77,7 +79,7 @@ namespace RDFSharp.Query
             UnreadString(parserContext, upcomingKeyword);
 
             if (upcomingKeyword.Equals("FROM", StringComparison.OrdinalIgnoreCase))
-                throw new RDFQueryException("Cannot parse SPARQL query: a dataset clause (FROM / FROM NAMED) is not representable by the flat model " + GetCoordinates(parserContext));
+                throw new RDFQueryException("Cannot parse SPARQL query: a dataset clause (FROM / FROM NAMED) is not supported. These clauses tell a SPARQL endpoint to procure its dataset on-the-fly, whereas RDFSharp evaluates queries over the data source you provide (graph/store/federation); use GRAPH patterns over a store to scope named graphs instead " + GetCoordinates(parserContext));
         }
 
         /// <summary>

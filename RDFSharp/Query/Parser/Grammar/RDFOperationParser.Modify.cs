@@ -141,9 +141,10 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Rejects a <c>UsingClause</c> (<c>USING [NAMED] iri</c>): it restricts the operation to a dataset the
-        /// flat operation model has no slot for, so it is not representable. The keyword is peeked and pushed back
-        /// before throwing.
+        /// Rejects a <c>UsingClause</c> (<c>USING [NAMED] iri</c>): deliberately NOT supported, because USING (like
+        /// FROM/WITH) tells a SPARQL endpoint which dataset the operation's WHERE should match, whereas RDFSharp
+        /// evaluates over the source you provide; the same scoping is expressed with GRAPH patterns. The keyword is
+        /// peeked and pushed back before throwing.
         /// </summary>
         /// <exception cref="RDFQueryException">When the next token is the USING keyword.</exception>
         private static void RejectUsingClause(RDFQueryParserContext parserContext)
@@ -153,7 +154,7 @@ namespace RDFSharp.Query
             UnreadString(parserContext, upcomingKeyword);
 
             if (upcomingKeyword.Equals("USING", System.StringComparison.OrdinalIgnoreCase))
-                throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: a USING clause (USING / USING NAMED) is not representable by the flat model " + GetCoordinates(parserContext));
+                throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: a USING clause (USING / USING NAMED) is not supported. USING tells a SPARQL endpoint which dataset the WHERE should match, whereas RDFSharp evaluates over the data source you provide; use GRAPH patterns to scope named graphs instead " + GetCoordinates(parserContext));
         }
         #endregion
     }
