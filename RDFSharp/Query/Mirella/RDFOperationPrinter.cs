@@ -199,6 +199,115 @@ namespace RDFSharp.Query
             return sb.ToString();
         }
         /// <summary>
+        /// Prints the string representation of a SPARQL CREATE operation
+        /// </summary>
+        internal static string PrintCreateOperation(RDFCreateOperation createOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (createOperation != null)
+            {
+                sb.Append("CREATE ");
+
+                if (createOperation.IsSilent)
+                    sb.Append("SILENT ");
+
+                sb.Append($"GRAPH <{createOperation.FromContext}>");
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL DROP operation (twin of CLEAR: same GraphRefAll grammar)
+        /// </summary>
+        internal static string PrintDropOperation(RDFDropOperation dropOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (dropOperation != null)
+            {
+                sb.Append("DROP ");
+
+                if (dropOperation.IsSilent)
+                    sb.Append("SILENT ");
+
+                if (dropOperation.FromContext != null)
+                {
+                    sb.Append($"GRAPH <{dropOperation.FromContext}>");
+                }
+                else
+                {
+                    switch (dropOperation.OperationFlavor)
+                    {
+                        case RDFQueryEnums.RDFClearOperationFlavor.DEFAULT:
+                            sb.Append("DEFAULT");
+                            break;
+
+                        case RDFQueryEnums.RDFClearOperationFlavor.NAMED:
+                            sb.Append("NAMED");
+                            break;
+
+                        case RDFQueryEnums.RDFClearOperationFlavor.ALL:
+                            sb.Append("ALL");
+                            break;
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL ADD operation
+        /// </summary>
+        internal static string PrintAddOperation(RDFAddOperation addOperation)
+            => PrintCopyMoveAddOperation("ADD", addOperation?.IsSilent ?? false, addOperation?.FromContext, addOperation?.ToContext, addOperation != null);
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL COPY operation
+        /// </summary>
+        internal static string PrintCopyOperation(RDFCopyOperation copyOperation)
+            => PrintCopyMoveAddOperation("COPY", copyOperation?.IsSilent ?? false, copyOperation?.FromContext, copyOperation?.ToContext, copyOperation != null);
+
+        /// <summary>
+        /// Prints the string representation of a SPARQL MOVE operation
+        /// </summary>
+        internal static string PrintMoveOperation(RDFMoveOperation moveOperation)
+            => PrintCopyMoveAddOperation("MOVE", moveOperation?.IsSilent ?? false, moveOperation?.FromContext, moveOperation?.ToContext, moveOperation != null);
+
+        /// <summary>
+        /// Prints the shared string representation of the source→destination graph-management operations
+        /// (ADD/COPY/MOVE): <c>KEYWORD 'SILENT'? GraphOrDefault TO GraphOrDefault</c>. A null context is the
+        /// DEFAULT graph; a non-null context is rendered as a bare IRIREF (the 'GRAPH' keyword of GraphOrDefault
+        /// is optional, so omitting it keeps the print compact while staying re-parsable).
+        /// </summary>
+        private static string PrintCopyMoveAddOperation(string keyword, bool isSilent, Uri fromContext, Uri toContext, bool hasOperation)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (hasOperation)
+            {
+                sb.Append(keyword).Append(' ');
+
+                if (isSilent)
+                    sb.Append("SILENT ");
+
+                sb.Append(PrintGraphOrDefault(fromContext))
+                  .Append(" TO ")
+                  .Append(PrintGraphOrDefault(toContext));
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Prints a single GraphOrDefault endpoint: <c>DEFAULT</c> for a null context, otherwise a bare IRIREF.
+        /// </summary>
+        private static string PrintGraphOrDefault(Uri graphContext)
+            => graphContext != null ? $"<{graphContext}>" : "DEFAULT";
+
+        /// <summary>
         /// Prints the string representation of a SPARQL UPDATE operation set, i.e. its ordered operations rendered
         /// each by its own printer and joined by the ';' separator of the SPARQL UPDATE grammar, so the chain
         /// re-parses (via <see cref="RDFOperationSet.FromString"/>) into an equivalent set.

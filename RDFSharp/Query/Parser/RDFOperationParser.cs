@@ -167,14 +167,18 @@ namespace RDFSharp.Query
                 case "WITH":
                     throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: a WITH clause is not supported. WITH tells a SPARQL endpoint which graph to operate on, whereas RDFSharp operates over the data source you provide; target a named graph explicitly with GRAPH in the template/WHERE instead " + GetCoordinates(parserContext));
 
-                //Valid SPARQL graph-management operations that the flat model cannot represent (no matching class):
-                //reject them explicitly as non-representable rather than as a generic unexpected token
+                //SPARQL graph-management operations (CREATE/DROP/COPY/MOVE/ADD): CREATE/DROP carry a GraphRef(All),
+                //COPY/MOVE/ADD a source→destination GraphOrDefault pair
                 case "CREATE":
+                    return ParseCreateOperation(parserContext);
+
                 case "DROP":
+                    return ParseDropOperation(parserContext);
+
                 case "COPY":
                 case "MOVE":
                 case "ADD":
-                    throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: '" + operationKeyword.ToUpperInvariant() + "' is not representable by the flat model " + GetCoordinates(parserContext));
+                    return ParseCopyMoveAddOperation(parserContext, operationKeyword.ToUpperInvariant());
 
                 //Empty keyword: the input ended right where an operation keyword was expected
                 case "":

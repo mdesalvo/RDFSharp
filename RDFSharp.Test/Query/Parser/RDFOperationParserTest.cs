@@ -21,9 +21,9 @@ namespace RDFSharp.Test.Query;
 
 /// <summary>
 /// Unit tests for RDFOperationParser, the SPARQL UPDATE entry point/dispatcher: it dispatches a command string to
-/// the matching RDFOperation, rejecting not-yet-implemented forms, non-representable graph-management operations
-/// (CREATE/DROP/…), multiple ';'-separated operations, and empty input. The grammar of each operation form is
-/// exercised in the sibling partials (e.g. <c>RDFOperationParser.ClearLoadTest.cs</c>).
+/// the matching RDFOperation, dispatching the graph-management operations (CREATE/DROP/COPY/MOVE/ADD), rejecting
+/// the unsupported WITH/USING dataset clauses, multiple ';'-separated operations, and empty input. The grammar of
+/// each operation form is exercised in the sibling partials (e.g. <c>RDFOperationParser.ClearLoadTest.cs</c>).
 /// </summary>
 [TestClass]
 public partial class RDFOperationParserTest
@@ -91,14 +91,29 @@ public partial class RDFOperationParserTest
             RDFOperationParserFactory.ParseOperation("DELETE { ?s ?p ?o } USING <http://example.org/g> WHERE { ?s ?p ?o }"));
 
     [TestMethod]
-    public void ShouldThrowOnNonRepresentableCreateOperation()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
+    public void ShouldDispatchCreateOperation()
+        => Assert.IsInstanceOfType<RDFCreateOperation>(
             RDFOperationParserFactory.ParseOperation("CREATE GRAPH <http://example.org/g>"));
 
     [TestMethod]
-    public void ShouldThrowOnNonRepresentableDropOperation()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
+    public void ShouldDispatchDropOperation()
+        => Assert.IsInstanceOfType<RDFDropOperation>(
             RDFOperationParserFactory.ParseOperation("DROP GRAPH <http://example.org/g>"));
+
+    [TestMethod]
+    public void ShouldDispatchCopyOperation()
+        => Assert.IsInstanceOfType<RDFCopyOperation>(
+            RDFOperationParserFactory.ParseOperation("COPY <http://example.org/g1> TO <http://example.org/g2>"));
+
+    [TestMethod]
+    public void ShouldDispatchMoveOperation()
+        => Assert.IsInstanceOfType<RDFMoveOperation>(
+            RDFOperationParserFactory.ParseOperation("MOVE <http://example.org/g1> TO <http://example.org/g2>"));
+
+    [TestMethod]
+    public void ShouldDispatchAddOperation()
+        => Assert.IsInstanceOfType<RDFAddOperation>(
+            RDFOperationParserFactory.ParseOperation("ADD <http://example.org/g1> TO <http://example.org/g2>"));
 
     [TestMethod]
     public void ShouldThrowOnMultipleSemicolonSeparatedOperations()
@@ -152,8 +167,20 @@ public partial class RDFOperationParserTest
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; ; CLEAR DEFAULT"));
 
     [TestMethod]
+    public void ShouldParseOperationSetWithGraphManagementOperationInChain()
+    {
+        RDFOperationSet operationSet = RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; CREATE GRAPH <http://example.org/g> ; MOVE <http://example.org/g1> TO <http://example.org/g2>");
+
+        Assert.IsNotNull(operationSet);
+        Assert.HasCount(3, operationSet.Operations);
+        Assert.IsInstanceOfType<RDFClearOperation>(operationSet.Operations[0]);
+        Assert.IsInstanceOfType<RDFCreateOperation>(operationSet.Operations[1]);
+        Assert.IsInstanceOfType<RDFMoveOperation>(operationSet.Operations[2]);
+    }
+
+    [TestMethod]
     public void ShouldThrowOnParsingOperationSetWithNonRepresentableOperationInChain()
-        => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; CREATE GRAPH <http://example.org/g>"));
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; DELETE { ?s ?p ?o } USING <http://example.org/g> WHERE { ?s ?p ?o }"));
 
     [TestMethod]
     public void ShouldThrowOnParsingOperationSetWithOnlyPrologue()

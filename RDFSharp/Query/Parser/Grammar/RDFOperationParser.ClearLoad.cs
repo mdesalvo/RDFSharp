@@ -76,32 +76,11 @@ namespace RDFSharp.Query
             //'SILENT'? — hides remote errors when the operation runs against a SPARQL UPDATE endpoint
             bool isSilent = TryConsumeKeyword(parserContext, "SILENT");
 
-            //GraphRefAll ::= ('GRAPH' iri) | 'DEFAULT' | 'NAMED' | 'ALL'
-            SkipWhitespace(parserContext);
-            string graphRefKeyword = ReadKeyword(parserContext);
-            RDFClearOperation clearOperation;
-            switch (graphRefKeyword.ToUpperInvariant())
-            {
-                //Explicit graph: the IRI follows the 'GRAPH' keyword
-                case "GRAPH":
-                    clearOperation = new RDFClearOperation(ParseOperationIri(parserContext, "CLEAR graph"));
-                    break;
-
-                //Implicit flavors
-                case "DEFAULT":
-                    clearOperation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.DEFAULT);
-                    break;
-                case "NAMED":
-                    clearOperation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.NAMED);
-                    break;
-                case "ALL":
-                    clearOperation = new RDFClearOperation(RDFQueryEnums.RDFClearOperationFlavor.ALL);
-                    break;
-
-                default:
-                    throw new RDFQueryException("Cannot parse SPARQL CLEAR operation: expected 'GRAPH <iri>', 'DEFAULT', 'NAMED' or 'ALL' " + GetCoordinates(parserContext));
-            }
-
+            //GraphRefAll ::= ('GRAPH' iri) | 'DEFAULT' | 'NAMED' | 'ALL' (shared with DROP, same grammar)
+            ParseGraphRefAll(parserContext, "CLEAR", out Uri fromContext, out RDFQueryEnums.RDFClearOperationFlavor operationFlavor);
+            RDFClearOperation clearOperation = fromContext != null
+                                                ? new RDFClearOperation(fromContext)
+                                                : new RDFClearOperation(operationFlavor);
             if (isSilent)
                 clearOperation.Silent();
 

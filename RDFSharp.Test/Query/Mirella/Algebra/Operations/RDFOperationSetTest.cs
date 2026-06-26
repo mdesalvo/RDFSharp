@@ -187,8 +187,19 @@ public class RDFOperationSetTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = RDFOperationSet.FromString("PREFIX ex: <http://example.org/>"));
 
     [TestMethod]
+    public void ShouldParseOperationSetWithGraphManagementOperation()
+    {
+        RDFOperationSet operationSet = RDFOperationSet.FromString("INSERT DATA { <ex:s1> <ex:p1> <ex:o1> } ; CREATE GRAPH <ex:g> ; DROP GRAPH <ex:g>");
+
+        Assert.HasCount(3, operationSet.Operations);
+        Assert.IsInstanceOfType<RDFInsertDataOperation>(operationSet.Operations[0]);
+        Assert.IsInstanceOfType<RDFCreateOperation>(operationSet.Operations[1]);
+        Assert.IsInstanceOfType<RDFDropOperation>(operationSet.Operations[2]);
+    }
+
+    [TestMethod]
     public void ShouldThrowExceptionOnParsingOperationSetWithNonRepresentableOperation()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = RDFOperationSet.FromString("INSERT DATA { <ex:s1> <ex:p1> <ex:o1> } ; CREATE GRAPH <ex:g>"));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = RDFOperationSet.FromString("INSERT DATA { <ex:s1> <ex:p1> <ex:o1> } ; DELETE { ?s ?p ?o } USING <ex:g> WHERE { ?s ?p ?o }"));
 
     [TestMethod]
     public void ShouldStillRejectChainOnSingleOperationFromString()
