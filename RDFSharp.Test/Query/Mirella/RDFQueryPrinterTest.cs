@@ -676,9 +676,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -703,9 +703,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior= RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
+        , new RDFSPARQLEndpointQueryOptions { ErrorBehavior= RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -730,9 +730,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -760,9 +760,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
+        , new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -790,9 +790,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")))
+        )
         );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -818,9 +818,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
+        , new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
         );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -846,12 +846,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -888,9 +888,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
+        )
         .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -927,9 +927,9 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .Union(new RDFPatternGroup()
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -962,17 +962,17 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
+        )
         .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1023,18 +1023,18 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        ))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Optional())
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1082,16 +1082,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        ))
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1133,16 +1133,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        ))
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1181,18 +1181,18 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .Optional()
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        )
+        .Optional())
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Union(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("ex:org")))
         .Optional())) //Should be discarded since running under UnionWithNext semantic from the previous
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1236,9 +1236,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")))
+        )
         );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1264,9 +1264,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
+        , new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult })
         );
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1292,12 +1292,12 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .Minus(new RDFPatternGroup()
+        )
+        .Minus(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1334,9 +1334,9 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
+        )
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
@@ -1373,9 +1373,9 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .Minus(new RDFPatternGroup()
+        .Minus(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1408,17 +1408,17 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
+        )
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .Minus(new RDFPatternGroup()
+        )
+        .Minus(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1469,18 +1469,18 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        ))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Optional())
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
-        .Minus(new RDFPatternGroup()
+        )
+        .Minus(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1528,16 +1528,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        ))
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1579,16 +1579,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        ))
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1627,18 +1627,18 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .Optional()
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
+        )
+        .Optional())
       .AddBinaryQueryMember(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
         .Minus(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("ex:org")))
         .Optional())) //Should be discarded since running under MinusWithNext semantic from the previous
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org4")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org4")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1684,9 +1684,9 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1716,12 +1716,12 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res"))))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+        ))
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1754,15 +1754,15 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))))
-      .AddPatternGroup(new RDFPatternGroup()
+        )))
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1804,15 +1804,15 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+        ))
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1854,15 +1854,15 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+        ))
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .Minus(new RDFPatternGroup()
+        )
+        .Minus(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -1904,15 +1904,15 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))))
-      .AddPatternGroup(new RDFPatternGroup()
+        )))
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -1957,16 +1957,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+        ))
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
+        )
         .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -2006,17 +2006,17 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
+        )
         .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
+        )
         .Optional())
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
+        )
         .Optional());
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -2058,16 +2058,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
+        )
         .Optional())
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
+        )
         .Optional())); //this Optional will be discarded, since we are under UnionWithNext from previous
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -2112,16 +2112,16 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
+        )
         .Optional())
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))
-        .Minus(new RDFPatternGroup()
+        )
+        .Minus(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3")))
+        )
         .Optional())); //this Optional will be discarded, since we are under MinusWithNext from previous
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -2166,15 +2166,15 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1"))))
-      .AddPatternGroup(new RDFPatternGroup()
+        ))
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2"))))
-      .AddPatternGroup(new RDFPatternGroup()
+        ))
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org3")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org3"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2211,12 +2211,12 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res"))))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .Union(new RDFPatternGroup()
+        )
+        .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2258,12 +2258,12 @@ public class RDFQueryPrinterTest
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFResource("http://example.org/res"))))
-      .AddBinaryQueryMember(new RDFPatternGroup()
+      .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-        .Minus(new RDFPatternGroup()
+        )
+        .Minus(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))));
+        )));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2303,11 +2303,11 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
+      .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
         .AddValues(new RDFValues()
           .AddColumn(new RDFVariable("?V"), [new RDFResource("ex:val1")]))
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org"))));
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -2411,8 +2411,8 @@ public class RDFQueryPrinterTest
   {
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
-      .AddPatternGroup(new RDFPatternGroup()
-        .AsService(new RDFSPARQLEndpoint(RDFVocabulary.RDFS.RESOURCE.URI)));
+      .AddService(new RDFService(new RDFSPARQLEndpoint(RDFVocabulary.RDFS.RESOURCE.URI), new RDFPatternGroup()
+        ));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
       """
@@ -3313,9 +3313,9 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddSubQuery(new RDFSelectQuery()
-        .AddPatternGroup(new RDFPatternGroup()
+        .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Optional())
-          .AsService(new RDFSPARQLEndpoint(new Uri("ex:org"))))
+          ))
         .AddProjectionVariable(new RDFVariable("?S")));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -3347,12 +3347,12 @@ public class RDFQueryPrinterTest
     RDFSelectQuery query = new RDFSelectQuery()
       .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))
       .AddSubQuery(new RDFSelectQuery()
-        .AddBinaryQueryMember(new RDFPatternGroup()
+        .AddBinaryQueryMember(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")).Optional())
-          .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")))
-          .Union(new RDFPatternGroup()
+          )
+          .Union(new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
           .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, RDFVocabulary.RDFS.COMMENT).Optional())
-          .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")))))
+          )))
         .AddProjectionVariable(new RDFVariable("?S")));
     string queryString = RDFQueryPrinter.PrintSelectQuery(query, 0, false);
     const string expectedQueryString =
@@ -9807,12 +9807,12 @@ public class RDFQueryPrinterTest
   [TestMethod]
   public void ShouldPrintSelectQueryWithUnionOperatorTreeWithServicePatternGroup()
   {
-    RDFPatternGroup pgA = new RDFPatternGroup()
+    RDFService pgA = new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org1")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("label", "en")))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org1")));
-    RDFPatternGroup pgB = new RDFPatternGroup()
+        );
+    RDFService pgB = new RDFService(new RDFSPARQLEndpoint(new Uri("ex:org2")), new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDFS.COMMENT, RDFVocabulary.RDFS.CLASS))
-        .AsService(new RDFSPARQLEndpoint(new Uri("ex:org2")));
+        );
 
     RDFSelectQuery query = new RDFSelectQuery()
         .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdfs"))

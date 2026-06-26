@@ -34,7 +34,6 @@ public class RDFPatternGroupTest
         Assert.IsNotNull(pGroup);
         Assert.IsTrue(pGroup.IsEvaluable);
         Assert.IsFalse(pGroup.IsOptional);
-        Assert.IsNull(pGroup.EvaluateAsService);
         Assert.IsNotNull(pGroup.GroupMembers);
         Assert.IsEmpty(pGroup.GroupMembers);
         Assert.IsNotNull(pGroup.Variables);
@@ -56,7 +55,6 @@ public class RDFPatternGroupTest
         Assert.IsNotNull(pGroup);
         Assert.IsTrue(pGroup.IsEvaluable);
         Assert.IsTrue(pGroup.IsOptional);
-        Assert.IsFalse(pGroup.EvaluateAsService.HasValue);
         Assert.IsNotNull(pGroup.GroupMembers);
         Assert.IsEmpty(pGroup.GroupMembers);
         Assert.IsNotNull(pGroup.Variables);
@@ -67,30 +65,6 @@ public class RDFPatternGroupTest
         Assert.AreEqual(0, pGroup.GetFilters().Count());
         Assert.AreEqual(0, pGroup.GetPropertyPaths().Count());
         Assert.AreEqual(0, pGroup.GetValues().Count());
-        Assert.AreEqual(0, pGroup.GetEvaluablePatternGroupMembers().Count());
-    }
-
-    [TestMethod]
-    public void ShouldCreateServicePatternGroup()
-    {
-        RDFPatternGroup pGroup = new RDFPatternGroup().AsService(new RDFSPARQLEndpoint(new Uri("ex:org")));
-
-        Assert.IsNotNull(pGroup);
-        Assert.IsTrue(pGroup.IsEvaluable);
-        Assert.IsFalse(pGroup.IsOptional);
-        Assert.IsTrue(pGroup.EvaluateAsService.HasValue);
-        Assert.IsTrue(string.Equals(pGroup.EvaluateAsService.Value.Item1.ToString(), "ex:org", StringComparison.Ordinal));
-        Assert.IsNotNull(pGroup.GroupMembers);
-        Assert.IsEmpty(pGroup.GroupMembers);
-        Assert.IsNotNull(pGroup.Variables);
-        Assert.IsEmpty(pGroup.Variables);
-        Assert.IsTrue(pGroup.ToString().Equals(string.Concat("  SERVICE <ex:org> {", Environment.NewLine, "    {", Environment.NewLine, "    }", Environment.NewLine, "  }", Environment.NewLine), StringComparison.Ordinal));
-        Assert.IsTrue(pGroup.QueryMemberID.Equals(RDFModelUtilities.CreateHash(pGroup.QueryMemberStringID)));
-        Assert.AreEqual(0, pGroup.GetPatterns().Count());
-        Assert.AreEqual(0, pGroup.GetFilters().Count());
-        Assert.AreEqual(0, pGroup.GetPropertyPaths().Count());
-        Assert.AreEqual(0, pGroup.GetValues().Count());
-        Assert.AreEqual(0, pGroup.GetBinds().Count());
         Assert.AreEqual(0, pGroup.GetEvaluablePatternGroupMembers().Count());
     }
 

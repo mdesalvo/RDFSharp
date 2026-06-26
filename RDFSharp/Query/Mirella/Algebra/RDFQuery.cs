@@ -165,6 +165,16 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Adds the given SERVICE (federated query) member to the body of the query
+        /// </summary>
+        internal T AddService<T>(RDFService service) where T : RDFQuery
+        {
+            if (service != null)
+                QueryMembers.Add(service);
+            return (T)this;
+        }
+
+        /// <summary>
         /// Gets the query members of type: pattern group
         /// </summary>
         internal IEnumerable<RDFPatternGroup> GetPatternGroups()
@@ -181,6 +191,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal IEnumerable<RDFQuery> GetSubQueries()
             => QueryMembers.OfType<RDFQuery>();
+
+        /// <summary>
+        /// Gets the query members of type: service
+        /// </summary>
+        internal IEnumerable<RDFService> GetServices()
+            => QueryMembers.OfType<RDFService>();
 
         /// <summary>
         /// Gets the prefixes of the query, including those from subqueries

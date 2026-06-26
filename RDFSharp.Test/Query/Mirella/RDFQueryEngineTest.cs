@@ -2042,9 +2042,8 @@ public class RDFQueryEngineTest
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithServicePatternGroup/sparql"));
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint));
+            .AddService(new RDFService(endpoint, new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
         DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
 
         Assert.IsNotNull(result);
@@ -2060,6 +2059,80 @@ public class RDFQueryEngineTest
         //Proves that the pattern group has been sent as an equivalent SELECT * to the given endpoint
         Assert.IsNotNull(receivedQuery);
         Assert.IsTrue(string.Equals(HttpUtility.UrlDecode(receivedQuery), expectedQuery, StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateSelectQueryOnGraphWithVariableEndpointService()
+    {
+        const string mockedResponseXml =
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+              <head>
+                <variable name="?Y" />
+                <variable name="?X" />
+              </head>
+              <results>
+                <result>
+                  <binding name="?Y"><uri>ex:pluto</uri></binding>
+                  <binding name="?X"><uri>ex:topolino</uri></binding>
+                </result>
+              </results>
+            </sparql>
+            """;
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithVariableEndpointService/sparql")
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams.ContainsKey("query")))
+            .RespondWith(
+                Response.Create()
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithCallback(_ => new WireMock.ResponseMessage
+                    {
+                        BodyData = new BodyData { BodyAsString = mockedResponseXml, Encoding = Encoding.UTF8, DetectedBodyType = BodyType.String }
+                    })
+                    .WithStatusCode(HttpStatusCode.OK));
+
+        RDFResource endpointResource = new RDFResource(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithVariableEndpointService/sparql");
+        //A VALUES block binds the endpoint variable ?EP, which a deferred SERVICE ?EP then resolves at runtime
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?EP"), [endpointResource])))
+            .AddService(new RDFService(new RDFVariable("?EP"), new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
+        DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Rows.Count);
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        //The endpoint variable is bound, on every returned row, to the resolved endpoint IRI
+        Assert.IsTrue(string.Equals(result.Rows[0]["?EP"].ToString(), endpointResource.ToString(), StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnVariableEndpointServiceNotBoundAndNotSilent()
+    {
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddService(new RDFService(new RDFVariable("?EP"), new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
+
+        Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()));
+    }
+
+    [TestMethod]
+    public void ShouldGiveEmptyResultOnVariableEndpointServiceNotBoundAndSilent()
+    {
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddService(new RDFService(new RDFVariable("?EP"), new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))),
+                new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
+        DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(0, result.Rows.Count);
     }
 
     [TestMethod]
@@ -2141,12 +2214,11 @@ public class RDFQueryEngineTest
 
         RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithValuesInjectedIntoServicePatternGroup/sparql"));
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
+            .AddService(new RDFService(endpoint, new RDFPatternGroup()
                 .AddValues(new RDFValues()
                     .AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])
                     .AddColumn(new RDFVariable("?X"), [new RDFResource("ex:topolino")]))
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint));
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
         DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
 
         Assert.IsNotNull(result);
@@ -2233,9 +2305,8 @@ public class RDFQueryEngineTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:topolino")), new RDFVariable("?X"))))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint));
+            .AddService(new RDFService(endpoint, new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
         DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
 
         Assert.IsNotNull(result);
@@ -2363,12 +2434,10 @@ public class RDFQueryEngineTest
         RDFSPARQLEndpoint endpoint1 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithDifferentServicePatternGroupsAndCombineResults1/sparql"));
         RDFSPARQLEndpoint endpoint2 = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldEvaluateSelectQueryOnGraphWithDifferentServicePatternGroupsAndCombineResults2/sparql"));
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint1))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-                .AsService(endpoint2));
+            .AddService(new RDFService(endpoint1, new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))))
+            .AddService(new RDFService(endpoint2, new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
         DataTable result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph()).SelectResults;
 
         Assert.IsNotNull(result);

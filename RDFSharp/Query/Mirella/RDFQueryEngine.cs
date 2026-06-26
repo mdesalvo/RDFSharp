@@ -197,6 +197,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal void EvaluateQueryMembers(List<RDFQueryMember> evaluableQueryMembers, RDFDataSource datasource)
         {
+            //A variable-endpoint SERVICE (SERVICE ?ep {…}) depends on the endpoint IRI being bound by a sibling
+            //member, so it cannot be evaluated independently: it is DEFERRED and resolved in a second phase, after
+            //the binding-independent members have produced their tables.
+            List<RDFService> deferredVariableServices = new List<RDFService>();
+
+            //**Phase 1** — evaluate the binding-independent members (everything but variable-endpoint SERVICE)
             foreach (RDFQueryMember evaluableQueryMember in evaluableQueryMembers)
                 switch (evaluableQueryMember)
                 {
@@ -232,14 +238,32 @@ namespace RDFSharp.Query
                         QueryMemberResultTables[subQuery.QueryMemberID] = subQueryTable;
                         break;
 
-                    //Tree-based operator node: recursively evaluate the binary algebra tree
-                    //(Union/Minus) and store the result with the operator's own ID
-                    case RDFBinaryQueryMember operatorQueryMember:
-                        RDFTable operatorResultTable = EvaluateOperatorQueryMemberTree(operatorQueryMember, datasource);
-                        operatorResultTable.IsOptional = operatorQueryMember.IsOptional || operatorResultTable.IsOptional;
-                        QueryMemberResultTables[operatorQueryMember.QueryMemberID] = operatorResultTable;
+                    case RDFBinaryQueryMember binaryQueryMember:
+                        //Evaluate the binary algebra tree (Union/Minus)
+                        RDFTable binaryQueryMemberResultTable = EvaluateOperatorQueryMemberTree(binaryQueryMember, datasource);
+                        binaryQueryMemberResultTable.IsOptional = binaryQueryMember.IsOptional || binaryQueryMemberResultTable.IsOptional;
+                        //Save updates
+                        QueryMemberResultTables[binaryQueryMember.QueryMemberID] = binaryQueryMemberResultTable;
+                        break;
+
+                    case RDFService service:
+                        if (service.EndpointVariable != null)
+                            //Variable endpoint: defer until the sibling members have bound the endpoint variable
+                            deferredVariableServices.Add(service);
+                        else
+                            //Concrete endpoint: no binding dependency, evaluate now against its own endpoint
+                            QueryMemberResultTables[service.QueryMemberID] = RDFServiceEngine.EvaluateConcreteService(service);
                         break;
                 }
+
+            //**Phase 2** — resolve the deferred variable-endpoint SERVICE members against the bindings produced so far
+            if (deferredVariableServices.Count > 0)
+            {
+                //Combine the binding-independent tables: this is the context from which the endpoint IRIs are read
+                RDFTable contextTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
+                foreach (RDFService deferredVariableService in deferredVariableServices)
+                    QueryMemberResultTables[deferredVariableService.QueryMemberID] = RDFServiceEngine.EvaluateVariableService(deferredVariableService, contextTable);
+            }
         }
 
         /// <summary>
@@ -260,96 +284,67 @@ namespace RDFSharp.Query
             //Before starting effective evaluation, initialize the list of result tables for this patternGroup
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<RDFTable>(evaluablePGMembers.Count);
 
-            //**Service** evaluation => send it querified to SPARQL endpoint
-            if (patternGroup.EvaluateAsService.HasValue)
-            {
-                //Cleanup patternGroup in order to stringify into vanilla "SELECT *"
-                bool isOptional = patternGroup.IsOptional;
-                (RDFSPARQLEndpoint, RDFSPARQLEndpointQueryOptions)? asService = patternGroup.EvaluateAsService;
-                patternGroup.IsOptional = false;
-                patternGroup.EvaluateAsService = null;
+            //Iterate the active members of the pattern group, evaluating each into an intermediate result table
+            foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
+                switch (evaluablePGMember)
+                {
+                    case RDFPattern pattern:
+                        //Evaluate pattern on the given data source
+                        RDFTable patternResultsTable = ApplyPattern(pattern, dataSource);
+                        //Set metadata of the result table
+                        patternResultsTable.IsOptional = pattern.IsOptional;
+                        //Save the result table
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
+                        break;
 
-                //Send query to SPARQL endpoint
-                RDFSelectQueryResult serviceResults = new RDFSelectQuery()
-                                                        .AddPatternGroup(patternGroup)
-                                                        .ApplyToSPARQLEndpoint(asService.Value.Item1, asService.Value.Item2);
-                RDFTable serviceResultsTable = RDFTable.FromDataTable(serviceResults.SelectResults);
+                    case RDFPropertyPath propertyPath:
+                        //Evaluate property path on the given data source
+                        RDFTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
+                        //Set metadata of the result table
+                        pPathResultsTable.IsOptional = propertyPath.IsOptional;
+                        //Save the result table
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
+                        break;
 
-                //Restore patternGroup to its official state
-                patternGroup.IsOptional = isOptional;
-                patternGroup.EvaluateAsService = asService;
+                    case RDFValues values:
+                        //Transform SPARQL values into an equivalent filter
+                        RDFValuesFilter valuesFilter = values.GetValuesFilter();
+                        //Save the result table
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
+                        //Inject SPARQL values filter
+                        patternGroup.AddFilter(valuesFilter);
+                        break;
 
-                //Set metadata of the result table
-                serviceResultsTable.IsOptional = patternGroup.IsOptional;
+                    case RDFBind bind:
+                        //Bind operator is evaluated like an "artificial ending" of the patternGroup:
+                        // first we combine the tables collected until this moment
+                        // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
+                        // finally we drop all tables collected until this moment, except the comprehensive bind table
+                        //Populate current patternGroup result table
+                        RDFTable currentPatternGroupResultTable = RDFTableEngine.CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
+                        //Evaluate bind operator on the current patternGroup result table
+                        RDFTableEngine.ProjectBind(bind, currentPatternGroupResultTable);
+                        //Delete previous patternGroup result tables and replace them with bind operator's one
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
+                        break;
 
-                //Save the result table
-                PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(serviceResultsTable);
-            }
+                    case RDFExistsFilter existsFilter:
+                        //Evaluate exists filter's group graph pattern (SubSelect or pattern group) on the given
+                        //data source and save its result directly into the filter. Reuse the same leaf evaluator
+                        //used by binary algebra trees, so EXISTS supports any group graph pattern shape.
+                        existsFilter.PatternResults = EvaluateQueryMemberLeafOrSubtree(existsFilter.GroupGraphPattern, dataSource);
+                        break;
 
-            //**Standard** evaluation => iterate its active members
-            else
-            {
-                foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
-                    switch (evaluablePGMember)
-                    {
-                        case RDFPattern pattern:
-                            //Evaluate pattern on the given data source
-                            RDFTable patternResultsTable = ApplyPattern(pattern, dataSource);
-                            //Set metadata of the result table
-                            patternResultsTable.IsOptional = pattern.IsOptional;
-                            //Save the result table
-                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(patternResultsTable);
-                            break;
-
-                        case RDFPropertyPath propertyPath:
-                            //Evaluate property path on the given data source
-                            RDFTable pPathResultsTable = ApplyPropertyPath(propertyPath, dataSource);
-                            //Set metadata of the result table
-                            pPathResultsTable.IsOptional = propertyPath.IsOptional;
-                            //Save the result table
-                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(pPathResultsTable);
-                            break;
-
-                        case RDFValues values:
-                            //Transform SPARQL values into an equivalent filter
-                            RDFValuesFilter valuesFilter = values.GetValuesFilter();
-                            //Save the result table
-                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
-                            //Inject SPARQL values filter
-                            patternGroup.AddFilter(valuesFilter);
-                            break;
-
-                        case RDFBind bind:
-                            //Bind operator is evaluated like an "artificial ending" of the patternGroup:
-                            // first we combine the tables collected until this moment
-                            // then we evaluate the bind expression and project the bind variable, producing the comprehensive bind table
-                            // finally we drop all tables collected until this moment, except the comprehensive bind table
-                            //Populate current patternGroup result table
-                            RDFTable currentPatternGroupResultTable = RDFTableEngine.CombineTables(PatternGroupMemberResultTables[patternGroup.QueryMemberID]);
-                            //Evaluate bind operator on the current patternGroup result table
-                            RDFTableEngine.ProjectBind(bind, currentPatternGroupResultTable);
-                            //Delete previous patternGroup result tables and replace them with bind operator's one
-                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
-                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
-                            break;
-
-                        case RDFExistsFilter existsFilter:
-                            //Evaluate exists filter's group graph pattern (SubSelect or pattern group) on the given
-                            //data source and save its result directly into the filter. Reuse the same leaf evaluator
-                            //used by binary algebra trees, so EXISTS supports any group graph pattern shape.
-                            existsFilter.PatternResults = EvaluateQueryMemberLeafOrSubtree(existsFilter.GroupGraphPattern, dataSource);
-                            break;
-
-                        case RDFBinaryPatternGroupMember operatorPGMember:
-                            //Recursively evaluate the binary algebra tree (Union/Minus) at pattern-group level
-                            RDFTable operatorPGResultTable = EvaluateOperatorPatternGroupMemberTree(operatorPGMember, dataSource);
-                            //Propagate the Optional flag from the operator node to its result table
-                            operatorPGResultTable.IsOptional = operatorPGMember.IsOptional;
-                            //Save the result table into the patternGroup's intermediate results
-                            PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(operatorPGResultTable);
-                            break;
-                    }
-            }
+                    case RDFBinaryPatternGroupMember operatorPGMember:
+                        //Recursively evaluate the binary algebra tree (Union/Minus) at pattern-group level
+                        RDFTable operatorPGResultTable = EvaluateOperatorPatternGroupMemberTree(operatorPGMember, dataSource);
+                        //Propagate the Optional flag from the operator node to its result table
+                        operatorPGResultTable.IsOptional = operatorPGMember.IsOptional;
+                        //Save the result table into the patternGroup's intermediate results
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(operatorPGResultTable);
+                        break;
+                }
         }
 
         /// <summary>
@@ -1446,6 +1441,12 @@ namespace RDFSharp.Query
                 case RDFBinaryQueryMember operatorSubtree:
                     //Recurse into the operator subtree
                     return EvaluateOperatorQueryMemberTree(operatorSubtree, datasource);
+
+                case RDFService serviceLeaf when serviceLeaf.EndpointVariable == null:
+                    //Concrete-endpoint SERVICE as an isolated leaf (e.g. inside a binary tree or EXISTS): it has no
+                    //sibling context to depend on, so it can be queried directly against its own endpoint. A
+                    //variable-endpoint SERVICE in this position has no binder visible and falls through to empty.
+                    return RDFServiceEngine.EvaluateConcreteService(serviceLeaf);
 
                 default:
                     return new RDFTable();

@@ -94,6 +94,12 @@ namespace RDFSharp.Query
             => AddBinaryQueryMember<RDFSelectQuery>(binaryMember);
 
         /// <summary>
+        /// Adds the given SERVICE (federated query) member to the query
+        /// </summary>
+        public RDFSelectQuery AddService(RDFService service)
+            => AddService<RDFSelectQuery>(service);
+
+        /// <summary>
         /// Adds the given variable to the results of the query (it may come from evaluation of an expression, if specified)
         /// </summary>
         public RDFSelectQuery AddProjectionVariable(RDFVariable projectionVariable, RDFExpression projectionExpression=null)
@@ -294,6 +300,13 @@ namespace RDFSharp.Query
             => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
+        /// Creates a Union operator combining this subquery with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Union(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
+
+        /// <summary>
         /// Creates a Minus operator combining this subquery with the given pattern group
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
@@ -312,6 +325,13 @@ namespace RDFSharp.Query
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public RDFBinaryQueryMember Minus(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this subquery with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Minus(RDFService other)
             => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>

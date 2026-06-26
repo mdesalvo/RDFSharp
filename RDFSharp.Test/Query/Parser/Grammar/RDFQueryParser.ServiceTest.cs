@@ -23,9 +23,9 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query;
 
 /// <summary>
-/// Unit tests for the SERVICE half of RDFQueryParser: federated graph patterns mapped onto a single
-/// RDFPatternGroup flagged AsService, the SILENT directive, and the model-imposed failures (variable endpoint,
-/// complex inner pattern, nested SERVICE).
+/// Unit tests for the SERVICE half of RDFQueryParser: federated graph patterns mapped onto the first-class
+/// RDFService algebra node — concrete or variable endpoint, the SILENT directive, complex inner patterns
+/// (UNION/OPTIONAL/sub-select), and nested SERVICE.
 /// </summary>
 public partial class RDFQueryParserTest
 {
@@ -35,9 +35,9 @@ public partial class RDFQueryParserTest
     public void ShouldRoundTripServicePatternGroup()
     {
         RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))
-                .AsService(new RDFSPARQLEndpoint(new Uri("http://example.org/sparql"))));
+            .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("http://example.org/sparql")),
+                new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -46,10 +46,46 @@ public partial class RDFQueryParserTest
     public void ShouldRoundTripSilentServicePatternGroup()
     {
         RDFSelectQuery query = new RDFSelectQuery()
+            .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("http://example.org/sparql")),
+                new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))),
+                new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
+
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripVariableEndpointService()
+    {
+        RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))
-                .AsService(new RDFSPARQLEndpoint(new Uri("http://example.org/sparql")),
-                    new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }));
+                .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("ep"), new RDFResource("http://example.org/x"))))
+            .AddService(new RDFService(new RDFVariable("ep"),
+                new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))));
+
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripServiceWithUnionInner()
+    {
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("http://example.org/sparql")),
+                new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))
+                    .Union(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("a"), new RDFVariable("b"), new RDFVariable("c"))))));
+
+        AssertSelectQueryRoundTrips(query);
+    }
+
+    [TestMethod]
+    public void ShouldRoundTripNestedService()
+    {
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddService(new RDFService(new RDFSPARQLEndpoint(new Uri("http://example.org/a")),
+                new RDFService(new RDFSPARQLEndpoint(new Uri("http://example.org/b")),
+                    new RDFPatternGroup()
+                        .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))))));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -59,11 +95,11 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o } }");
 
-        RDFPatternGroup patternGroup = query.GetPatternGroups().Single();
-        Assert.IsTrue(patternGroup.EvaluateAsService.HasValue);
-        Assert.AreEqual("http://example.org/sparql", patternGroup.EvaluateAsService.Value.Item1.BaseAddress.ToString());
-        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, patternGroup.EvaluateAsService.Value.Item2.ErrorBehavior);
-        Assert.AreEqual(1, patternGroup.GetPatterns().Count());
+        RDFService service = query.GetServices().Single();
+        Assert.IsNull(service.EndpointVariable);
+        Assert.AreEqual("http://example.org/sparql", service.Endpoint.BaseAddress.ToString());
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, service.QueryOptions.ErrorBehavior);
+        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFPatternGroup));
     }
 
     [TestMethod]
@@ -71,9 +107,8 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE SILENT <http://example.org/sparql> { ?s ?p ?o } }");
 
-        RDFPatternGroup patternGroup = query.GetPatternGroups().Single();
-        Assert.IsTrue(patternGroup.EvaluateAsService.HasValue);
-        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, patternGroup.EvaluateAsService.Value.Item2.ErrorBehavior);
+        RDFService service = query.GetServices().Single();
+        Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult, service.QueryOptions.ErrorBehavior);
     }
 
     [TestMethod]
@@ -81,7 +116,7 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("PREFIX ex: <http://example.org/> SELECT * WHERE { SERVICE ex:sparql { ?s ?p ?o } }");
 
-        Assert.AreEqual("http://example.org/sparql", query.GetPatternGroups().Single().EvaluateAsService.Value.Item1.BaseAddress.ToString());
+        Assert.AreEqual("http://example.org/sparql", query.GetServices().Single().Endpoint.BaseAddress.ToString());
     }
 
     [TestMethod]
@@ -89,35 +124,53 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o . ?o ?q ?z } }");
 
-        RDFPatternGroup patternGroup = query.GetPatternGroups().Single();
-        Assert.IsTrue(patternGroup.EvaluateAsService.HasValue);
-        Assert.AreEqual(2, patternGroup.GetPatterns().Count());
+        RDFService service = query.GetServices().Single();
+        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFPatternGroup));
+        Assert.AreEqual(2, ((RDFPatternGroup)service.InnerPattern).GetPatterns().Count());
     }
 
     [TestMethod]
-    public void ShouldThrowOnServiceWithVariableEndpoint()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { SERVICE ?ep { ?s ?p ?o } }"));
+    public void ShouldParseServiceWithVariableEndpoint()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE ?ep { ?s ?p ?o } }");
+
+        RDFService service = query.GetServices().Single();
+        Assert.IsNotNull(service.EndpointVariable);
+        Assert.AreEqual("?EP", service.EndpointVariable.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldParseServiceWithUnionInner()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { { ?s ?p ?o } UNION { ?a ?b ?c } } }");
+
+        RDFService service = query.GetServices().Single();
+        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFBinaryQueryMember));
+    }
+
+    [TestMethod]
+    public void ShouldParseServiceWithOptionalInner()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o OPTIONAL { ?o ?q ?z } } }");
+
+        Assert.IsNotNull(query.GetServices().Single().InnerPattern);
+    }
+
+    [TestMethod]
+    public void ShouldParseNestedService()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/a> { SERVICE <http://example.org/b> { ?s ?p ?o } } }");
+
+        RDFService service = query.GetServices().Single();
+        Assert.AreEqual("http://example.org/a", service.Endpoint.BaseAddress.ToString());
+        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFService));
+        Assert.AreEqual("http://example.org/b", ((RDFService)service.InnerPattern).Endpoint.BaseAddress.ToString());
+    }
 
     [TestMethod]
     public void ShouldThrowOnServiceWithLiteralEndpoint()
         => Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString("SELECT * WHERE { SERVICE \"endpoint\" { ?s ?p ?o } }"));
-
-    [TestMethod]
-    public void ShouldThrowOnServiceWithUnionInner()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { { ?s ?p ?o } UNION { ?a ?b ?c } } }"));
-
-    [TestMethod]
-    public void ShouldThrowOnServiceWithOptionalInner()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o OPTIONAL { ?o ?q ?z } } }"));
-
-    [TestMethod]
-    public void ShouldThrowOnNestedService()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/a> { SERVICE <http://example.org/b> { ?s ?p ?o } } }"));
 
     #endregion
 }

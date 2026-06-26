@@ -22,10 +22,8 @@ namespace RDFSharp.Query
 {
     /// <summary>
     /// SERVICE half of the SPARQL parser: a <c>ServiceGraphPattern</c> delegates the evaluation of an inner
-    /// group graph pattern to a remote SPARQL endpoint (federated query). It maps onto the flat Mirella model as
-    /// a single <see cref="RDFPatternGroup"/> flagged via <see cref="RDFPatternGroup.AsService"/> — SERVICE is NOT
-    /// an algebra-tree node, it is a per-group decoration (the symmetric counterpart of GRAPH's per-pattern
-    /// context decoration).
+    /// group graph pattern to a remote SPARQL endpoint (federated query). It maps onto the first-class algebra
+    /// node <see cref="RDFService"/>, modeling the grammar in full.
     /// <para>
     /// SPARQL grammar:
     /// <code>
@@ -34,11 +32,9 @@ namespace RDFSharp.Query
     /// </code>
     /// </para>
     /// <para>
-    /// Model-imposed limits (<see cref="RDFPatternGroup.AsService"/> needs a CONCRETE endpoint and only flags a
-    /// single flat pattern group): a variable endpoint (<c>SERVICE ?ep {…}</c>), an inner pattern that collapses
-    /// to anything other than one <see cref="RDFPatternGroup"/> (UNION/OPTIONAL/multiple groups/sub-SELECT are
-    /// wrapped into a <c>SELECT *</c> subquery), and a nested SERVICE are all NOT representable and raise an
-    /// explicit <see cref="RDFQueryException"/>. <c>SILENT</c> maps to the endpoint's
+    /// All three forms are representable: a concrete IRI endpoint or a variable endpoint (<c>SERVICE ?ep {…}</c>,
+    /// resolved at runtime from the surrounding bindings), an inner pattern of any shape (pattern group, sub-select,
+    /// UNION/OPTIONAL/MINUS tree), and a nested SERVICE. <c>SILENT</c> maps to the endpoint's
     /// <see cref="RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult"/> error behavior.
     /// </para>
     /// </summary>
@@ -47,53 +43,50 @@ namespace RDFSharp.Query
         #region Service
         /// <summary>
         /// Parses a SERVICE graph pattern (the <c>SERVICE</c> keyword has already been consumed by the
-        /// dispatcher): the optional <c>SILENT</c> directive, the endpoint specifier, and the inner group graph
-        /// pattern. Returns the inner pattern group flagged <see cref="RDFPatternGroup.AsService"/> so the engine
-        /// dispatches its evaluation to the remote endpoint.
+        /// dispatcher): the optional <c>SILENT</c> directive, the endpoint specifier (a concrete IRI or a
+        /// variable), and the inner group graph pattern (any shape). Returns the resulting <see cref="RDFService"/>
+        /// algebra node so the engine dispatches its evaluation to the remote endpoint.
         /// </summary>
-        /// <exception cref="RDFQueryException">When the endpoint is a variable/literal, or the inner pattern is not representable as a single (non-SERVICE) pattern group.</exception>
+        /// <exception cref="RDFQueryException">When the endpoint specifier is a literal/blank node or not a valid endpoint IRI.</exception>
         private static RDFQueryMember ParseServiceGraphPattern(RDFQueryParserContext parserContext)
         {
             //Optional SILENT directive: suppresses remote errors by yielding an empty result instead of throwing
             bool isSilent = TryConsumeKeyword(parserContext, "SILENT");
 
-            //The endpoint specifier: a concrete IRI (a variable endpoint is not representable by the flat model)
-            RDFSPARQLEndpoint sparqlEndpoint = ParseServiceEndpoint(parserContext);
+            //The endpoint specifier (VarOrIri): a concrete IRI or a variable bound at runtime
+            RDFPatternMember endpointSpecifier = ParseServiceEndpoint(parserContext);
 
-            //The inner GroupGraphPattern. It collapses (CollapseToSingle) to a single algebra member: only a bare
-            //RDFPatternGroup can carry the SERVICE flag — a complex body becomes a SELECT * subquery instead.
-            RDFQueryMember serviceScopeMember = ParseGroupGraphPattern(parserContext);
-            if (!(serviceScopeMember is RDFPatternGroup serviceGroup))
-                throw new RDFQueryException("Cannot parse SPARQL SERVICE clause: its inner pattern must be a single basic group pattern (UNION/OPTIONAL/nested groups/subqueries are not representable as a SERVICE-flagged pattern group) " + GetCoordinates(parserContext));
+            //The inner GroupGraphPattern, of ANY shape: ParseGroupGraphPattern returns it as-is (a pattern group,
+            //a SELECT * subquery wrapping a compound body, a binary tree, or a nested SERVICE)
+            RDFQueryMember innerPattern = ParseGroupGraphPattern(parserContext);
 
-            //A nested SERVICE would require flagging the same pattern group with two endpoints: not representable
-            if (serviceGroup.EvaluateAsService.HasValue)
-                throw new RDFQueryException("Cannot parse SPARQL SERVICE clause: a nested SERVICE is not representable " + GetCoordinates(parserContext));
-
-            //Flag the pattern group for remote evaluation. SILENT selects the empty-result error behavior; a
-            //non-silent SERVICE keeps AsService's default options (which throw on remote errors).
-            serviceGroup.AsService(sparqlEndpoint, isSilent
+            //SILENT selects the empty-result error behavior; otherwise the default options (which throw on errors)
+            RDFSPARQLEndpointQueryOptions queryOptions = isSilent
                 ? new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult }
-                : null);
+                : null;
 
-            return serviceGroup;
+            //Build the SERVICE node: a variable specifier yields the variable ctor, an IRI yields the concrete ctor
+            return endpointSpecifier is RDFVariable endpointVariable
+                ? new RDFService(endpointVariable, innerPattern, queryOptions)
+                : new RDFService(BuildServiceEndpoint((RDFResource)endpointSpecifier, parserContext), innerPattern, queryOptions);
         }
 
         /// <summary>
         /// Parses the endpoint specifier of a SERVICE clause — the <c>VarOrIri</c> between the keyword and the
-        /// inner group's opening brace — into the concrete <see cref="RDFSPARQLEndpoint"/> the engine will query.
+        /// inner group's opening brace — into either an <see cref="RDFVariable"/> (variable endpoint) or an
+        /// <see cref="RDFResource"/> (concrete IRI endpoint).
         /// <para>
-        /// SPARQL grammar: <c>VarOrIri ::= Var | iri</c>. A variable endpoint is spec-legal but NOT representable
-        /// (the model needs a concrete endpoint URL), and a literal/blank node is invalid: both are rejected.
+        /// SPARQL grammar: <c>VarOrIri ::= Var | iri</c>. A literal or a blank node in this position is invalid
+        /// and is rejected.
         /// </para>
         /// </summary>
-        /// <exception cref="RDFQueryException">When the specifier is a variable, a literal, a blank node, or not a valid endpoint IRI.</exception>
-        private static RDFSPARQLEndpoint ParseServiceEndpoint(RDFQueryParserContext parserContext)
+        /// <exception cref="RDFQueryException">When the specifier is a literal or a blank node.</exception>
+        private static RDFPatternMember ParseServiceEndpoint(RDFQueryParserContext parserContext)
         {
-            //A '?' or '$' sigil starts a variable endpoint: the flat model cannot defer to a runtime-bound endpoint
+            //A '?' or '$' sigil starts a variable endpoint: bound, at runtime, from the surrounding solutions
             int nextSignificantCodePoint = SkipWhitespace(parserContext);
             if (nextSignificantCodePoint == '?' || nextSignificantCodePoint == '$')
-                throw new RDFQueryException("Cannot parse SPARQL SERVICE clause: a variable endpoint is not representable (a concrete endpoint IRI is required) " + GetCoordinates(parserContext));
+                return ParseVariable(parserContext);
 
             //Otherwise the specifier must be an IRI (IRIREF or prefixed name): parse it through the shared
             //term-reader so prologue BASE/PREFIX resolution applies, then validate it is a usable endpoint IRI.
@@ -102,10 +95,17 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot parse SPARQL SERVICE clause: the endpoint must be a variable or an IRI, but a literal was found " + GetCoordinates(parserContext));
             if (endpointResource.IsBlank)
                 throw new RDFQueryException("Cannot parse SPARQL SERVICE clause: the endpoint must be a variable or an IRI, but a blank node was found " + GetCoordinates(parserContext));
+            return endpointResource;
+        }
 
+        /// <summary>
+        /// Promotes a concrete endpoint IRI resource to the <see cref="RDFSPARQLEndpoint"/> the engine will query.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the IRI is not a usable absolute endpoint URL.</exception>
+        private static RDFSPARQLEndpoint BuildServiceEndpoint(RDFResource endpointResource, RDFQueryParserContext parserContext)
+        {
             try
             {
-                //Promote the IRI resource to the concrete remote endpoint
                 return new RDFSPARQLEndpoint(new Uri(endpointResource.ToString()));
             }
             catch (Exception endpointException) when (endpointException is UriFormatException || endpointException is ArgumentException)

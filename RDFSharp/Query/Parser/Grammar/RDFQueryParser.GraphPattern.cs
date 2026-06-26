@@ -766,6 +766,8 @@ namespace RDFSharp.Query
                 subQuery.IsOptional = true;
             else if (algebraMember is RDFBinaryQueryMember operatorNode)
                 operatorNode.IsOptional = true;
+            else if (algebraMember is RDFService service)
+                service.IsOptional = true;
         }
 
         /// <summary>
@@ -783,6 +785,8 @@ namespace RDFSharp.Query
         ///   <see cref="RDFSelectQuery.AddSubQuery"/>.</item>
         /// <item><see cref="RDFBinaryQueryMember"/> — a binary algebra tree node (Union / Minus /
         ///   Optional-operator); added via <see cref="RDFSelectQuery.AddBinaryQueryMember"/>.</item>
+        /// <item><see cref="RDFService"/> — a SERVICE (federated query) member; added via
+        ///   <see cref="RDFSelectQuery.AddService"/>.</item>
         /// </list>
         /// </para>
         /// </summary>
@@ -794,6 +798,8 @@ namespace RDFSharp.Query
                 targetQuery.AddSubQuery<TQuery>(subQuery);
             else if (memberToAdd is RDFBinaryQueryMember operatorNode)
                 targetQuery.AddBinaryQueryMember<TQuery>(operatorNode);
+            else if (memberToAdd is RDFService service)
+                targetQuery.AddService<TQuery>(service);
         }
         #endregion
     }

@@ -56,10 +56,10 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"left\" parameter is null.");
             if (right == null)
                 throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"right\" parameter is null.");
-            if (!(left is RDFPatternGroup || left is RDFSelectQuery || left is RDFBinaryQueryMember))
-                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"left\" parameter is not a pattern group, select query, or operator node.");
-            if (!(right is RDFPatternGroup || right is RDFSelectQuery || right is RDFBinaryQueryMember))
-                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"right\" parameter is not a pattern group, select query, or operator node.");
+            if (!(left is RDFPatternGroup || left is RDFSelectQuery || left is RDFBinaryQueryMember || left is RDFService))
+                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"left\" parameter is not a pattern group, select query, operator node, or service.");
+            if (!(right is RDFPatternGroup || right is RDFSelectQuery || right is RDFBinaryQueryMember || right is RDFService))
+                throw new RDFQueryException("Cannot create RDFBinaryQueryMember because given \"right\" parameter is not a pattern group, select query, operator node, or service.");
             if (ReferenceEquals(left, right))
                 throw new RDFQueryException("Cannot create RDFBinaryQueryMember because \"left\" and \"right\" are the same instance (self-reference would cause redundant evaluation).");
             #endregion
@@ -94,6 +94,13 @@ namespace RDFSharp.Query
             => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
+        /// Creates a Union operator combining this node with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Union(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
+
+        /// <summary>
         /// Creates a Minus operator combining this node with the given query member
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
@@ -112,6 +119,13 @@ namespace RDFSharp.Query
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public RDFBinaryQueryMember Minus(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this node with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Minus(RDFService other)
             => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>

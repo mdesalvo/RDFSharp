@@ -32,11 +32,6 @@ namespace RDFSharp.Query
         internal bool IsOptional { get; set; }
 
         /// <summary>
-        /// Tuple indicating that the pattern group should be evaluated according to SPARQL SERVICE
-        /// </summary>
-        internal (RDFSPARQLEndpoint,RDFSPARQLEndpointQueryOptions)? EvaluateAsService { get; set; }
-
-        /// <summary>
         /// List of members carried by the pattern group
         /// </summary>
         internal List<RDFPatternGroupMember> GroupMembers { get; set; }
@@ -211,6 +206,13 @@ namespace RDFSharp.Query
             => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
+        /// Creates a Union operator combining this pattern group with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Union(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
+
+        /// <summary>
         /// Creates a Minus operator combining this pattern group with the given query member
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
@@ -232,6 +234,13 @@ namespace RDFSharp.Query
             => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
+        /// Creates a Minus operator combining this pattern group with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Minus(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
+
+        /// <summary>
         /// Adds the given operator tree to the pattern group
         /// </summary>
         public RDFPatternGroup AddBinaryPatternGroupMember(RDFBinaryPatternGroupMember binaryMember)
@@ -244,16 +253,6 @@ namespace RDFSharp.Query
                     if (!Variables.Any(v => v.Equals(variable)))
                         Variables.Add(variable);
             }
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the pattern group to be evaluated according to SPARQL SERVICE
-        /// </summary>
-        public RDFPatternGroup AsService(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-        {
-            if (sparqlEndpoint != null)
-                EvaluateAsService = (sparqlEndpoint, sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
             return this;
         }
 

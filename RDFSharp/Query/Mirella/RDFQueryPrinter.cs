@@ -349,22 +349,85 @@ namespace RDFSharp.Query
             string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
         {
             foreach (RDFQueryMember queryMember in query.GetEvaluableQueryMembers())
-                switch (queryMember)
-                {
-                    case RDFPatternGroup pgQueryMember:
-                        sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
-                        break;
+                PrintWhereClauseMember(queryMember, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+        }
 
-                    case RDFSelectQuery sqQueryMember:
-                        prefixes.ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
-                        sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), false));
-                        break;
+        /// <summary>
+        /// Prints a single WHERE-clause query member (pattern group, inline sub-select, binary algebra tree, or
+        /// SERVICE), dispatching on its concrete type. Shared by the WHERE-clause printer and the SERVICE printer
+        /// (whose inner group graph pattern is itself a query member of any shape).
+        /// </summary>
+        private static void PrintWhereClauseMember(RDFQueryMember queryMember, StringBuilder sb, List<RDFNamespace> prefixes,
+            string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus)
+        {
+            switch (queryMember)
+            {
+                case RDFPatternGroup pgQueryMember:
+                    sb.Append(PrintPatternGroup(pgQueryMember, subqueryBodySpaces.Length, false, prefixes));
+                    break;
 
-                    case RDFBinaryQueryMember opQueryMember:
-                        PrintOperatorQueryMemberTree(opQueryMember, sb, prefixes,
-                            subqueryBodySpaces, indentLevel, fromUnionOrMinus);
-                        break;
-                }
+                case RDFSelectQuery sqQueryMember:
+                    prefixes.ForEach(pf1 => sqQueryMember.AddPrefix(pf1));
+                    sb.Append(PrintSelectQuery(sqQueryMember, indentLevel + 1 + (fromUnionOrMinus ? 0.5 : 0), false));
+                    break;
+
+                case RDFBinaryQueryMember opQueryMember:
+                    PrintOperatorQueryMemberTree(opQueryMember, sb, prefixes,
+                        subqueryBodySpaces, indentLevel, fromUnionOrMinus);
+                    break;
+
+                case RDFService svcQueryMember:
+                    PrintServiceInto(svcQueryMember, sb, prefixes, subqueryBodySpaces, indentLevel, fromUnionOrMinus, false);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Gives the string representation of a SERVICE clause (used by <see cref="RDFService.ToString()"/>).
+        /// </summary>
+        internal static string PrintService(RDFService service, List<RDFNamespace> prefixes)
+        {
+            StringBuilder sb = new StringBuilder();
+            PrintServiceInto(service, sb, prefixes, string.Empty, 0, false, false);
+            return sb.ToString().Trim();
+        }
+
+        /// <summary>
+        /// Prints a SERVICE clause into the given builder: the optional OPTIONAL wrapping (unless skipped, as when
+        /// the SERVICE is an operand of a binary tree), the <c>SERVICE [SILENT]</c> header with the endpoint
+        /// specifier (a variable <c>?ep</c> or a concrete <c>&lt;iri&gt;</c>), the inner group graph pattern (any
+        /// shape, rendered one indentation level deeper), and the closing brace.
+        /// </summary>
+        private static void PrintServiceInto(RDFService service, StringBuilder sb, List<RDFNamespace> prefixes,
+            string subqueryBodySpaces, double indentLevel, bool fromUnionOrMinus, bool skipOptional)
+        {
+            //OPTIONAL wrapping: open bracket before the SERVICE content
+            if (service.IsOptional && !skipOptional)
+            {
+                sb.AppendLine(string.Concat(subqueryBodySpaces, "  OPTIONAL {"));
+                subqueryBodySpaces = $"{subqueryBodySpaces}  ";
+            }
+
+            //SERVICE header: SILENT directive (if any) and the endpoint specifier (variable or concrete IRI)
+            string silent = service.IsSilent ? "SILENT " : string.Empty;
+            string endpoint = service.EndpointVariable != null
+                ? service.EndpointVariable.ToString()
+                : string.Concat("<", service.Endpoint.BaseAddress.ToString(), ">");
+            sb.AppendLine(string.Concat(subqueryBodySpaces, "  SERVICE ", silent, endpoint, " {"));
+
+            //Inner group graph pattern (pattern group, sub-select, binary tree, or nested SERVICE)
+            PrintWhereClauseMember(service.InnerPattern, sb, prefixes, $"{subqueryBodySpaces}  ", indentLevel + 1, fromUnionOrMinus);
+
+            //Close the SERVICE bracket
+            sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+
+            //OPTIONAL wrapping: close the outer OPTIONAL bracket
+            if (service.IsOptional && !skipOptional)
+            {
+                if (subqueryBodySpaces.Length >= 2)
+                    subqueryBodySpaces = new string(' ', subqueryBodySpaces.Length - 2);
+                sb.AppendLine(string.Concat(subqueryBodySpaces, "  }"));
+            }
         }
 
         /// <summary>
@@ -452,15 +515,6 @@ namespace RDFSharp.Query
                 spaces = $"{spaces}  ";
             }
 
-            //SERVICE
-            if (patternGroup.EvaluateAsService.HasValue)
-            {
-                bool isSilent = patternGroup.EvaluateAsService.Value.Item2.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult;
-                string service = $"SERVICE {(isSilent ? "SILENT " : string.Empty)}";
-                result.AppendLine(string.Concat("  ", spaces, service, "<", patternGroup.EvaluateAsService.Value.Item1 , "> {"));
-                spaces = $"{spaces}  ";
-            }
-
             //OPEN-BRACKET
             result.AppendLine(string.Concat(spaces, "  {"));
 
@@ -473,14 +527,6 @@ namespace RDFSharp.Query
 
             //CLOSE-BRACKET
             result.AppendLine(string.Concat(spaces, "  }"));
-
-            //SERVICE
-            if (patternGroup.EvaluateAsService.HasValue)
-            {
-                result.AppendLine(string.Concat(spaces, "}"));
-                if (spaces.Length > 2)
-                    spaces = spaces.Substring(2);
-            }
 
             //OPTIONAL
             if (patternGroup.IsOptional && !skipOptional)
@@ -776,19 +822,10 @@ namespace RDFSharp.Query
         {
             switch (operand)
             {
-                //Leaf: pattern group (may have SERVICE wrapping)
+                //Leaf: pattern group
                 case RDFPatternGroup patternGroup:
                 {
-                    if (patternGroup.EvaluateAsService.HasValue)
-                    {
-                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
-                        sb.Append(PrintPatternGroup(patternGroup, subqueryBodySpaces.Length + 4, true, prefixes));
-                        sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
-                    }
-                    else
-                    {
-                        sb.Append(PrintPatternGroup(patternGroup, subqueryBodySpaces.Length + 2, true, prefixes));
-                    }
+                    sb.Append(PrintPatternGroup(patternGroup, subqueryBodySpaces.Length + 2, true, prefixes));
                     break;
                 }
 
@@ -806,6 +843,16 @@ namespace RDFSharp.Query
                 {
                     PrintOperatorQueryMemberTree(innerOperator, sb, prefixes,
                         $"{subqueryBodySpaces}  ", indentLevel, fromUnionOrMinus);
+                    break;
+                }
+
+                //Leaf: SERVICE (federated query), wrapped in its own group braces as a binary operand
+                //(its own OPTIONAL is skipped, exactly as for a pattern-group operand)
+                case RDFService service:
+                {
+                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    {"));
+                    PrintServiceInto(service, sb, prefixes, $"{subqueryBodySpaces}    ", indentLevel, fromUnionOrMinus, true);
+                    sb.AppendLine(string.Concat(subqueryBodySpaces, "    }"));
                     break;
                 }
             }

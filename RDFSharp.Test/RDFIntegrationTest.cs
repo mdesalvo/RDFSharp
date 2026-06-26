@@ -19,9 +19,16 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
+using WireMock.Types;
+using WireMock.Util;
 
 namespace RDFSharp.Test;
 
@@ -34,6 +41,19 @@ namespace RDFSharp.Test;
 [TestClass]
 public class RDFIntegrationTest
 {
+    #region SERVICE mock endpoint
+    /// <summary>
+    /// In-process SPARQL endpoint used by the federated (SERVICE) integration test
+    /// </summary>
+    private WireMockServer serviceEndpointServer;
+
+    [TestInitialize]
+    public void StartServiceEndpoint() => serviceEndpointServer = WireMockServer.Start();
+
+    [TestCleanup]
+    public void StopServiceEndpoint() => serviceEndpointServer?.Stop();
+    #endregion
+
     #region Test data
     /// <summary>
     /// Base namespace of the university test dataset (same one used by the benchmark suite)
@@ -859,6 +879,81 @@ WHERE {
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual($"{UniversityNamespace}student1", result.SelectResults.Rows[0]["?S"].ToString());
         Assert.AreEqual(26, GetNumericValue(result.SelectResults.Rows[0]["?A"]));
+    }
+
+    /// <summary>
+    /// Federated query stress test: a VALUES block binds the OUTER endpoint variable and a BIND adds a constant
+    /// annotation column; a deferred variable-endpoint SERVICE (?EP) then wraps an inner concrete-endpoint
+    /// SERVICE, so the engine must (1) resolve ?EP from the VALUES binding, (2) serialize the nested SERVICE into
+    /// the remote query sent to the outer endpoint, and (3) cross-join the remote solutions with the VALUES+BIND
+    /// context. The outer (mock) endpoint returns canned solutions; the assertions verify how VALUES, BIND and the
+    /// two nested SERVICE layers interact.
+    /// </summary>
+    [TestMethod]
+    public void ShouldEvaluateNestedVariableAndConcreteServiceWithValuesAndBind()
+    {
+        const string mockedResponseXml =
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+              <head>
+                <variable name="?Y" />
+                <variable name="?X" />
+              </head>
+              <results>
+                <result>
+                  <binding name="?Y"><uri>http://uni.org/prof0</uri></binding>
+                  <binding name="?X"><uri>http://uni.org/building0</uri></binding>
+                </result>
+              </results>
+            </sparql>
+            """;
+        string receivedQuery = null;
+        serviceEndpointServer
+            .Given(
+                Request.Create()
+                    .WithPath("/outer/sparql")
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams.ContainsKey("query")))
+            .RespondWith(
+                Response.Create()
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithCallback(req =>
+                    {
+                        receivedQuery = req.RawQuery;
+                        return new WireMock.ResponseMessage
+                        {
+                            BodyData = new BodyData { BodyAsString = mockedResponseXml, Encoding = Encoding.UTF8, DetectedBodyType = BodyType.String }
+                        };
+                    })
+                    .WithStatusCode(HttpStatusCode.OK));
+
+        RDFResource outerEndpoint = new RDFResource(serviceEndpointServer.Url + "/outer/sparql");
+        RDFSPARQLEndpoint innerEndpoint = new RDFSPARQLEndpoint(new Uri("http://example.org/inner/sparql"));
+
+        //VALUES binds the outer endpoint variable ?EP; BIND adds a constant ?TAG annotation
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?EP"), [outerEndpoint]))
+                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("http://uni.org/federated")), new RDFVariable("?TAG"))))
+            //Outer SERVICE with VARIABLE endpoint, wrapping an inner SERVICE with a CONCRETE endpoint
+            .AddService(new RDFService(new RDFVariable("?EP"),
+                new RDFService(innerEndpoint, new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("http://uni.org/worksIn"), new RDFVariable("?X"))))));
+
+        DataTable result = query.ApplyToGraph(new RDFGraph()).SelectResults;
+
+        //The single remote solution is cross-joined with the VALUES(?EP)+BIND(?TAG) context
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Rows.Count);
+        Assert.AreEqual("http://uni.org/prof0", result.Rows[0]["?Y"].ToString());
+        Assert.AreEqual("http://uni.org/building0", result.Rows[0]["?X"].ToString());
+        Assert.AreEqual(outerEndpoint.ToString(), result.Rows[0]["?EP"].ToString());
+        Assert.AreEqual("http://uni.org/federated", result.Rows[0]["?TAG"].ToString());
+
+        //The query actually sent to the OUTER endpoint carries the serialized INNER (concrete) SERVICE
+        Assert.IsNotNull(receivedQuery);
+        Assert.Contains("SERVICE <http://example.org/inner/sparql>", System.Web.HttpUtility.UrlDecode(receivedQuery));
     }
     #endregion
 }
