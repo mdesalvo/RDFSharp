@@ -113,5 +113,55 @@ public partial class RDFOperationParserTest
     public void ShouldThrowOnUnknownOperationKeyword()
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperation("FOOBAR <http://example.org/g>"));
 
+    [TestMethod]
+    public void ShouldParseOperationSetWithMultipleOperations()
+    {
+        RDFOperationSet operationSet = RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; CLEAR DEFAULT ; LOAD <http://example.org/data>");
+
+        Assert.IsNotNull(operationSet);
+        Assert.HasCount(3, operationSet.Operations);
+        Assert.IsInstanceOfType<RDFClearOperation>(operationSet.Operations[0]);
+        Assert.IsInstanceOfType<RDFClearOperation>(operationSet.Operations[1]);
+        Assert.IsInstanceOfType<RDFLoadOperation>(operationSet.Operations[2]);
+    }
+
+    [TestMethod]
+    public void ShouldParseOperationSetWithSingleOperation()
+    {
+        RDFOperationSet operationSet = RDFOperationParserFactory.ParseOperationSet("CLEAR ALL");
+
+        Assert.IsNotNull(operationSet);
+        Assert.HasCount(1, operationSet.Operations);
+    }
+
+    [TestMethod]
+    public void ShouldParseOperationSetWithTrailingSeparator()
+    {
+        RDFOperationSet operationSet = RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; CLEAR DEFAULT ;");
+
+        Assert.IsNotNull(operationSet);
+        Assert.HasCount(2, operationSet.Operations);
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnParsingOperationSetWithMissingSeparator()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("CLEAR ALL CLEAR DEFAULT"));
+
+    [TestMethod]
+    public void ShouldThrowOnParsingOperationSetWithEmptyOperationInChain()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; ; CLEAR DEFAULT"));
+
+    [TestMethod]
+    public void ShouldThrowOnParsingOperationSetWithNonRepresentableOperationInChain()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("CLEAR ALL ; CREATE GRAPH <http://example.org/g>"));
+
+    [TestMethod]
+    public void ShouldThrowOnParsingOperationSetWithOnlyPrologue()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("PREFIX ex: <http://example.org/>"));
+
+    [TestMethod]
+    public void ShouldThrowOnEmptyOperationSet()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFOperationParserFactory.ParseOperationSet("   "));
+
     #endregion
 }

@@ -60,33 +60,106 @@ namespace RDFSharp.Query
             //operation keyword unconsumed in the reader for the dispatch below
             RDFQueryParser.ParsePrologue(parserContext);
 
-            //STEP 2 - Operation form. Read the keyword run that names the operation and dispatch on it
+            //STEP 2 - Parse exactly ONE operation off the dispatcher
+            RDFOperation parsedOperation = ParseSingleOperation(parserContext);
+
+            //A single ';'-separated operation is tolerated; a second operation is not representable on a single
+            //operation object (those who need a chain must parse into an RDFOperationSet, see ParseOperationSet)
+            RejectTrailingOperationContent(parserContext);
+
+            return parsedOperation;
+        }
+
+        /// <summary>
+        /// <para>
+        /// Parses a complete chain of <c>;</c>-separated SPARQL 1.1 UPDATE operations into an
+        /// <see cref="RDFOperationSet"/>, the only model able to represent more than one operation. This is the
+        /// multi-operation counterpart of <see cref="ParseOperation"/>: it shares the very same per-operation
+        /// dispatcher (<see cref="ParseSingleOperation"/>), looping over the <c>;</c> separators of the grammar
+        /// <c>Update ::= Prologue ( Update1 ( ';' Update )? )?</c> until end-of-input.
+        /// </para>
+        /// <para>
+        /// The prologue is (re)parsed before each operation onto the SAME parsing context, so PREFIX/BASE
+        /// declarations accumulate and stay in scope for the operations that follow them, exactly as the SPARQL
+        /// specification mandates for an operation chain. A single trailing <c>;</c> is tolerated.
+        /// </para>
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the text is empty, an operation keyword is missing/unknown/non-representable, a body is malformed, or two operations are not separated by ';'.</exception>
+        internal static RDFOperationSet ParseOperationSet(string sparqlOperationSetText)
+        {
+            //Fail fast on a missing/blank command: there is nothing to parse
+            if (string.IsNullOrWhiteSpace(sparqlOperationSetText))
+                throw new RDFQueryException("Cannot parse SPARQL UPDATE operation set because the given command text is null or empty");
+
+            //Build the per-parse state ONCE and reuse it for the whole chain, so the resolver's PREFIX/BASE
+            //declarations accumulate across the ';'-separated operations (cumulative prologue scoping per spec)
+            RDFQueryParserContext parserContext = RDFQueryParser.CreateContext(sparqlOperationSetText);
+            RDFOperationSet operationSet = new RDFOperationSet();
+
+            while (true)
+            {
+                //Prologue (shared with the query path): consume any BASE/PREFIX declarations preceding this operation
+                RDFQueryParser.ParsePrologue(parserContext);
+
+                //End-of-input after the prologue closes the chain. With at least one operation already collected
+                //this is the legal end (possibly reached right after a tolerated trailing ';'); with none it means
+                //the command carried no operation at all
+                if (SkipWhitespace(parserContext) == -1)
+                {
+                    if (operationSet.Operations.Count == 0)
+                        throw new RDFQueryException("Cannot parse SPARQL UPDATE operation set: expected an operation keyword (LOAD, CLEAR, INSERT or DELETE) " + GetCoordinates(parserContext));
+                    break;
+                }
+
+                //Parse one operation off the shared dispatcher and append it preserving the source order
+                operationSet.AddOperation(ParseSingleOperation(parserContext));
+
+                //A ';' separates this operation from the next one (or is a tolerated trailing terminator); loop
+                if (SkipWhitespace(parserContext) == ';')
+                {
+                    ReadCodePoint(parserContext);
+                    continue;
+                }
+
+                //No ';': nothing significant may follow the operation, otherwise the chain is malformed
+                if (SkipWhitespace(parserContext) != -1)
+                    throw new RDFQueryException("Cannot parse SPARQL UPDATE operation set: operations in a chain must be separated by ';' " + GetCoordinates(parserContext));
+                break;
+            }
+
+            return operationSet;
+        }
+
+        /// <summary>
+        /// Reads the keyword run that names ONE SPARQL UPDATE operation (the prologue must already have been
+        /// consumed) and dispatches on it, returning the parsed <see cref="RDFOperation"/>. This is the shared
+        /// per-operation core used both by the single-operation <see cref="ParseOperation"/> and by the
+        /// chain-aware <see cref="ParseOperationSet"/>; it does NOT enforce what (if anything) follows the
+        /// operation, leaving that policy to the caller.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the operation keyword is missing/unknown/non-representable, or the body is malformed.</exception>
+        private static RDFOperation ParseSingleOperation(RDFQueryParserContext parserContext)
+        {
+            //Read the keyword run that names the operation and dispatch on it
             SkipWhitespace(parserContext);
             string operationKeyword = ReadKeyword(parserContext);
-            RDFOperation parsedOperation;
             switch (operationKeyword.ToUpperInvariant())
             {
                 case "LOAD":
-                    parsedOperation = ParseLoadOperation(parserContext);
-                    break;
+                    return ParseLoadOperation(parserContext);
 
                 case "CLEAR":
-                    parsedOperation = ParseClearOperation(parserContext);
-                    break;
+                    return ParseClearOperation(parserContext);
 
                 case "INSERT":
-                    if (TryConsumeKeyword(parserContext, "DATA"))
-                        parsedOperation = ParseInsertDataOperation(parserContext);
-                    else
-                        parsedOperation = ParseInsertWhereOperation(parserContext);
-                    break;
+                    return TryConsumeKeyword(parserContext, "DATA")
+                        ? ParseInsertDataOperation(parserContext)
+                        : (RDFOperation)ParseInsertWhereOperation(parserContext);
 
                 case "DELETE":
-                    if (TryConsumeKeyword(parserContext, "DATA"))
-                        parsedOperation = ParseDeleteDataOperation(parserContext);
-                    else
-                        parsedOperation = ParseDeleteWhereOperation(parserContext);
-                    break;
+                    return TryConsumeKeyword(parserContext, "DATA")
+                        ? ParseDeleteDataOperation(parserContext)
+                        : ParseDeleteWhereOperation(parserContext);
 
                 //WITH <iri> opens a Modify whose DELETE/INSERT clauses act on a fixed graph: deliberately NOT
                 //supported, because WITH (like FROM/USING) tells a SPARQL endpoint which dataset to operate on,
@@ -103,7 +176,7 @@ namespace RDFSharp.Query
                 case "ADD":
                     throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: '" + operationKeyword.ToUpperInvariant() + "' is not representable by the flat model " + GetCoordinates(parserContext));
 
-                //Empty keyword: the input ended right after the prologue, so no operation keyword was present
+                //Empty keyword: the input ended right where an operation keyword was expected
                 case "":
                     throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: expected an operation keyword (LOAD, CLEAR, INSERT or DELETE) " + GetCoordinates(parserContext));
 
@@ -111,11 +184,6 @@ namespace RDFSharp.Query
                 default:
                     throw new RDFQueryException("Cannot parse SPARQL UPDATE operation: unexpected token '" + operationKeyword + "' where an operation keyword was expected " + GetCoordinates(parserContext));
             }
-
-            //A single ';'-separated operation is tolerated; a second operation is not representable (one per object)
-            RejectTrailingOperationContent(parserContext);
-
-            return parsedOperation;
         }
 
         /// <summary>
@@ -190,6 +258,14 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException">When the command string is null/empty or syntactically invalid.</exception>
         public static RDFOperation ParseOperation(string operationString)
             => RDFOperationParser.ParseOperation(operationString);
+
+        /// <summary>
+        /// Parses the given SPARQL 1.1 UPDATE command string, which may carry a chain of ';'-separated operations,
+        /// into its <see cref="RDFOperationSet"/> object-model representation.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the command string is null/empty or syntactically invalid.</exception>
+        public static RDFOperationSet ParseOperationSet(string operationSetString)
+            => RDFOperationParser.ParseOperationSet(operationSetString);
         #endregion
     }
 }

@@ -233,6 +233,31 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
         {
+            //A LOAD/CLEAR flagged SILENT must hide its failure to the application: capture that intent so the
+            //shared sender can swallow the error and report a benign "false" instead of throwing
+            bool isLoadSilent = operation is RDFLoadOperation loadOperation && loadOperation.IsSilent;
+            bool isClearSilent = operation is RDFClearOperation clearOperation && clearOperation.IsSilent;
+
+            return EvaluateSparqlUpdateCommandOnEndpoint(operation.ToString(), sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions, isLoadSilent || isClearSilent);
+        }
+
+        /// <summary>
+        /// Sends a whole <see cref="RDFOperationSet"/> — its ';'-separated operations serialized together — to the
+        /// given SPARQL UPDATE endpoint in a SINGLE request, so the endpoint applies the chain as one command.
+        /// Because the chain executes server-side as a unit, the per-operation SILENT semantics cannot be honored
+        /// individually here: any failure of the combined command surfaces as an exception.
+        /// </summary>
+        internal bool EvaluateOperationSetOnSPARQLUpdateEndpoint(RDFOperationSet operationSet, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
+            => EvaluateSparqlUpdateCommandOnEndpoint(operationSet.ToString(), sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions, false);
+
+        /// <summary>
+        /// Shared core that POSTs an already-serialized SPARQL UPDATE command string to the given endpoint, applying
+        /// the chosen content-type and the endpoint's query parameters and authorization. When the command fails,
+        /// <paramref name="swallowFailureAsSilent"/> decides whether to report a benign "false" (SILENT) or to
+        /// propagate the error as an <see cref="RDFQueryException"/>.
+        /// </summary>
+        private bool EvaluateSparqlUpdateCommandOnEndpoint(string operationString, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions, bool swallowFailureAsSilent)
+        {
             //Initialize operation options if not provided
             if (sparqlUpdateEndpointOperationOptions == null)
                 sparqlUpdateEndpointOperationOptions = new RDFSPARQLEndpointOperationOptions();
@@ -245,7 +270,6 @@ namespace RDFSharp.Query
                 string namedGraphUri = sparqlUpdateEndpoint.QueryParams.Get("named-graph-uri");
 
                 //Insert request headers
-                string operationString = operation.ToString();
                 switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
                 {
                     //update via POST with URL-encoded body
@@ -285,9 +309,7 @@ namespace RDFSharp.Query
                 catch (Exception ex)
                 {
                     //Silent operations can hide errors to the application
-                    bool isLoadSilent = operation is RDFLoadOperation loadOperation && loadOperation.IsSilent;
-                    bool isClearSilent = operation is RDFClearOperation clearOperation && clearOperation.IsSilent;
-                    if (isLoadSilent || isClearSilent)
+                    if (swallowFailureAsSilent)
                         return false;
 
                     throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}; Endpoint's response was: {sparqlUpdateResponse}", ex);

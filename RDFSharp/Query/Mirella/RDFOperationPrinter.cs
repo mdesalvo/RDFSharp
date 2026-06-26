@@ -198,6 +198,29 @@ namespace RDFSharp.Query
 
             return sb.ToString();
         }
+        /// <summary>
+        /// Prints the string representation of a SPARQL UPDATE operation set, i.e. its ordered operations rendered
+        /// each by its own printer and joined by the ';' separator of the SPARQL UPDATE grammar, so the chain
+        /// re-parses (via <see cref="RDFOperationSet.FromString"/>) into an equivalent set.
+        /// </summary>
+        internal static string PrintOperationSet(RDFOperationSet operationSet)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (operationSet != null)
+            {
+                //Render each operation through its own ToString() and join them with the ';' separator on its own
+                //line, so the chain stays readable and round-trips stably through the parser
+                for (int operationIndex = 0; operationIndex < operationSet.Operations.Count; operationIndex++)
+                {
+                    if (operationIndex > 0)
+                        sb.AppendLine().Append(';').AppendLine();
+                    sb.Append(operationSet.Operations[operationIndex].ToString());
+                }
+            }
+
+            return sb.ToString();
+        }
         #endregion
 
         #region Utilities
