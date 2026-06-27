@@ -51,5 +51,23 @@ public class RDFTableColumnTest
 
         Assert.AreEqual(5, column.Ordinal);
     }
+
+    //IP3.2 — synthetic column tagging
+
+    [TestMethod]
+    public void ShouldCreateNonSyntheticColumnByDefault()
+    {
+        RDFTableColumn column = new RDFTableColumn("?SUBJECT", 0);
+
+        Assert.IsFalse(column.IsSynthetic);
+    }
+
+    [TestMethod]
+    public void ShouldCreateSyntheticColumn()
+    {
+        RDFTableColumn column = new RDFTableColumn("?__GROUPEXPR_0", 0, isSynthetic: true);
+
+        Assert.IsTrue(column.IsSynthetic);
+    }
     #endregion
 }

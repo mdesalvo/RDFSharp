@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
 */
 
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
@@ -27,19 +28,29 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Start position of the substring search (1 => first char)
+        /// Start position of the substring search (1 => first char), when given as a fixed integer
         /// </summary>
         public int Start { get; internal set; }
 
         /// <summary>
-        /// Eventual length of the substring search
+        /// Eventual length of the substring search, when given as a fixed integer
         /// </summary>
         public int? Length { get; internal set; }
+
+        /// <summary>
+        /// Start position of the substring search, when given as a per-row expression (overrides Start)
+        /// </summary>
+        public RDFExpression StartExpression { get; internal set; }
+
+        /// <summary>
+        /// Eventual length of the substring search, when given as a per-row expression (overrides Length)
+        /// </summary>
+        public RDFExpression LengthExpression { get; internal set; }
         #endregion
 
         #region Ctors
         /// <summary>
-        /// Builds a substring function with given arguments
+        /// Builds a substring function with given (fixed) start/length arguments
         /// </summary>
         public RDFSubstringExpression(RDFExpression leftArgument, int start, int? length=null)
             : base(leftArgument, null as RDFExpression)
@@ -49,13 +60,33 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a substring function with given arguments
+        /// Builds a substring function with given (fixed) start/length arguments
         /// </summary>
         public RDFSubstringExpression(RDFVariable leftArgument, int start, int? length=null)
             : base(leftArgument, null as RDFExpression)
         {
             Start = start;
             Length = length;
+        }
+
+        /// <summary>
+        /// Builds a substring function with given (per-row) start/length expressions
+        /// </summary>
+        public RDFSubstringExpression(RDFExpression leftArgument, RDFExpression startExpression, RDFExpression lengthExpression=null)
+            : base(leftArgument, null as RDFExpression)
+        {
+            StartExpression = startExpression ?? throw new RDFQueryException("Cannot create RDFSubstringExpression because given \"startExpression\" parameter is null.");
+            LengthExpression = lengthExpression;
+        }
+
+        /// <summary>
+        /// Builds a substring function with given (per-row) start/length expressions
+        /// </summary>
+        public RDFSubstringExpression(RDFVariable leftArgument, RDFExpression startExpression, RDFExpression lengthExpression=null)
+            : base(leftArgument, null as RDFExpression)
+        {
+            StartExpression = startExpression ?? throw new RDFQueryException("Cannot create RDFSubstringExpression because given \"startExpression\" parameter is null.");
+            LengthExpression = lengthExpression;
         }
         #endregion
 
@@ -69,15 +100,18 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(SUBSTRING(L,START[,LENGTH]))
-            sb.Append("(SUBSTRING(");
+            //(SUBSTR(L,START[,LENGTH]))
+            sb.Append("(SUBSTR(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append($", {Start}");
-            if (Length.HasValue)
-                sb.Append($", {Length}");
+            sb.Append(", ");
+            sb.Append(StartExpression != null ? StartExpression.ToString(prefixes) : Start.ToString(CultureInfo.InvariantCulture));
+            if (LengthExpression != null)
+                sb.Append($", {LengthExpression.ToString(prefixes)}");
+            else if (Length.HasValue)
+                sb.Append($", {Length.Value.ToString(CultureInfo.InvariantCulture)}");
             sb.Append("))");
 
             return sb.ToString();
@@ -106,6 +140,14 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
+
+                //Resolve the effective start/length (fixed integers, or evaluated per-row expressions)
+                if (!TryResolveInteger(StartExpression, Start, row, out int start))
+                    return null;
+                bool hasLength = LengthExpression != null || Length.HasValue;
+                int length = 0;
+                if (hasLength && !TryResolveInteger(LengthExpression, Length ?? 0, row, out length))
+                    return null;
                 #endregion
 
                 #region Calculate Result
@@ -132,27 +174,45 @@ namespace RDFSharp.Query
 
                 //Calculate substring on the working plain literal
                 RDFPlainLiteral workingPLit = (RDFPlainLiteral)leftArgumentPMember;
-                int start = Start <= 1 ? 0 : Start-1;
-                if (Length.HasValue)
+                int startIndex = start <= 1 ? 0 : start-1;
+                if (hasLength)
                 {
-                    int length = Length.Value < 0 ? 0 : Length.Value;
-                    if (length == 0 || start >= workingPLit.Value.Length)
+                    int effectiveLength = length < 0 ? 0 : length;
+                    if (effectiveLength == 0 || startIndex >= workingPLit.Value.Length)
                         expressionResult = new RDFPlainLiteral(string.Empty, workingPLit.Language);
-                    else if (length >= workingPLit.Value.Length)
+                    else if (effectiveLength >= workingPLit.Value.Length)
                         expressionResult = workingPLit;
                     else
-                        expressionResult = new RDFPlainLiteral(workingPLit.Value.Substring(start, length), workingPLit.Language);
+                        expressionResult = new RDFPlainLiteral(workingPLit.Value.Substring(startIndex, effectiveLength), workingPLit.Language);
                 }
                 else
                 {
-                    expressionResult = start >= workingPLit.Value.Length ? new RDFPlainLiteral(string.Empty, workingPLit.Language)
-                                                                         : new RDFPlainLiteral(workingPLit.Value.Substring(start), workingPLit.Language);
+                    expressionResult = startIndex >= workingPLit.Value.Length ? new RDFPlainLiteral(string.Empty, workingPLit.Language)
+                                                                              : new RDFPlainLiteral(workingPLit.Value.Substring(startIndex), workingPLit.Language);
                 }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
             return expressionResult;
+        }
+
+        /// <summary>
+        /// Resolves an integer argument: when the per-row expression is given it is evaluated and parsed, otherwise the
+        /// fixed fallback value is returned. Returns false when a given expression does not evaluate to an integer.
+        /// </summary>
+        private static bool TryResolveInteger(RDFExpression expression, int fixedValue, RDFTableRow row, out int value)
+        {
+            if (expression == null)
+            {
+                value = fixedValue;
+                return true;
+            }
+
+            value = 0;
+            return expression.ApplyExpression(row) is RDFTypedLiteral evaluatedLiteral
+                    && evaluatedLiteral.HasDecimalDatatype()
+                    && int.TryParse(evaluatedLiteral.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
         }
         #endregion
     }

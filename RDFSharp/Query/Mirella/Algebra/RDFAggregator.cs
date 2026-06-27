@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using RDFSharp.Model;
 
 namespace RDFSharp.Query
@@ -30,32 +29,20 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Variable on which the aggregator is applied
+        /// The aggregator's metadata: the aggregated argument (variable or expression), the projection target, and the
+        /// distinct/hidden flags. Grouped into one descriptor so the aggregator class itself stays focused on behavior
+        /// (partition/projection execution) rather than carrying a flat bag of definition fields. See
+        /// <see cref="RDFAggregatorMetadata"/>.
         /// </summary>
-        public RDFVariable AggregatorVariable { get; internal set; }
+        internal RDFAggregatorMetadata Metadata { get; }
 
         /// <summary>
-        /// Variable used for projection of aggregator results
+        /// The context for keeping track of aggregator's evaluation    
         /// </summary>
-        public RDFVariable ProjectionVariable { get; internal set; }
+        internal RDFAggregatorContext Context { get; set; }
 
         /// <summary>
-        /// Flag indicating that the aggregator discards duplicates
-        /// </summary>
-        public bool IsDistinct { get; internal set; }
-
-        /// <summary>
-        /// Tuple indicating that the aggregator is also an having-clause
-        /// </summary>
-        public (bool, RDFQueryEnums.RDFComparisonFlavors, RDFPatternMember) HavingClause { get; internal set; }
-
-        /// <summary>
-        /// Context for keeping track of aggregator's execution
-        /// </summary>
-        internal RDFAggregatorContext AggregatorContext { get; set; }
-
-        /// <summary>
-        /// Delimiter separating one partition-variable chunk from the next inside a partition key
+        /// Delimiter separating a partition-variable chunk from the next inside a partition key
         /// </summary>
         internal const string ProjectionKeyPlaceholder = "§PK§";
         internal static readonly string[] ProjectionKeyPlaceholders = { ProjectionKeyPlaceholder };
@@ -74,29 +61,57 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         internal RDFAggregator(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
         {
-            AggregatorVariable = aggregatorVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
-            ProjectionVariable = projectionVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
-            HavingClause = (false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null);
-            AggregatorContext = new RDFAggregatorContext();
+            Metadata = new RDFAggregatorMetadata(aggregatorVariable, projectionVariable);
+            Context = new RDFAggregatorContext();
         }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the aggregator function
+        /// The aggregate function as it appears in SPARQL — e.g. "COUNT(?e)", "AVG(DISTINCT ?g)",
+        /// "GROUP_CONCAT(?x; SEPARATOR=\",\")", "COUNT(*)" — WITHOUT the surrounding "(... AS ?proj)". Each concrete
+        /// value-aggregator provides its own; the base (and the partition aggregator) has none.
+        /// </summary>
+        protected virtual string AggregatorFunction => string.Empty;
+
+        /// <summary>
+        /// Gives the string representation of the aggregator function: "(call AS ?proj)", or the empty string when the
+        /// aggregator has no call form (the partition aggregator).
         /// </summary>
         public override string ToString()
-            => string.Empty;
+            => AggregatorFunction.Length == 0 ? string.Empty : $"({AggregatorFunction} AS {Metadata.ProjectionVariable})";
         #endregion
 
         #region Methods
+        /// <summary>
+        /// The printed form of the aggregated argument: the original expression when the aggregator was built over an
+        /// expression (SUM(?x + ?y)), otherwise the bare aggregated variable. Used by every aggregator's ToString.
+        /// </summary>
+        protected string AggregatorArgument
+            => Metadata.AggregatorExpression != null ? Metadata.AggregatorExpression.ToString() : Metadata.AggregatorVariable.ToString();
+
+        /// <summary>
+        /// Builds the (synthetic) aggregator variable backing an aggregate-over-expression (e.g. SUM(?x + ?y)): a
+        /// reserved name derived from the projection variable, into which the GroupBy modifier materializes the
+        /// expression's per-row values so the aggregation machinery keeps operating over a single column.
+        /// </summary>
+        internal static RDFVariable MakeExpressionVariable(RDFVariable projectionVariable)
+            => new RDFVariable("?__AGGEXPR_" + (projectionVariable ?? throw new RDFQueryException("Cannot create aggregator because given \"projectionVariable\" parameter is null.")).VariableName.TrimStart('?', '$'));
+
+        /// <summary>
+        /// The aggregate function call (e.g. "COUNT(?e)") used to re-print an aggregate referenced inside a composite
+        /// expression (HAVING / projection) without leaking the synthetic projection-column name.
+        /// </summary>
+        internal string GetAggregateCallString()
+            => AggregatorFunction;
+
         /// <summary>
         /// Resets the aggregator's execution context, so that the same aggregator (and the
         /// query owning it) can be safely re-executed without carrying over state from a
         /// previous run (which would otherwise corrupt sums, counters and caches)
         /// </summary>
         internal void ResetContext()
-            => AggregatorContext = new RDFAggregatorContext();
+            => Context = new RDFAggregatorContext();
 
         /// <summary>
         /// Executes the partition on the given table row
@@ -120,15 +135,15 @@ namespace RDFSharp.Query
         {
             try
             {
-                if (tableRow.IsBound(AggregatorVariable.VariableName))
+                if (tableRow.IsBound(Metadata.AggregatorVariable.VariableName))
                 {
-                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[AggregatorVariable.VariableName]);
+                    RDFPatternMember rowAggregatorValue = RDFQueryUtilities.ParseRDFPatternMember(tableRow[Metadata.AggregatorVariable.VariableName]);
                     //Only numeric typedliterals are suitable for processing
                     if (rowAggregatorValue is RDFTypedLiteral rowAggregatorValueTLit && rowAggregatorValueTLit.HasDecimalDatatype())
                     {
                         //owl:rational needs parsing and evaluation before being compared
                         if (rowAggregatorValueTLit.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                            return Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(rowAggregatorValueTLit), CultureInfo.InvariantCulture);
+                            return Convert.ToDouble(RDFArithmeticEngine.ComputeOWLRationalValue(rowAggregatorValueTLit), CultureInfo.InvariantCulture);
                         if (double.TryParse(rowAggregatorValueTLit.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
                             return result;
                     }
@@ -139,14 +154,42 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Gets the aggregated variable's value on the given row as a NUMERIC typed literal, preserving its original
+        /// datatype (so MIN/MAX/SUM can keep/promote the genuine type). Returns null when the cell is unbound or its
+        /// value is not a numeric typed literal.
+        /// </summary>
+        internal RDFTypedLiteral GetRowValueAsTypedLiteral(RDFTableRow tableRow)
+        {
+            try
+            {
+                if (tableRow.IsBound(Metadata.AggregatorVariable.VariableName)
+                     && RDFQueryUtilities.ParseRDFPatternMember(tableRow[Metadata.AggregatorVariable.VariableName]) is RDFTypedLiteral rowAggregatorValueTLit
+                     && rowAggregatorValueTLit.HasDecimalDatatype())
+                {
+                    return rowAggregatorValueTLit;
+                }
+                return null;
+            }
+            catch { return null; }
+        }
+
+        /// <summary>
+        /// Parses a numeric typed literal to double for ordering comparisons (owl:rational is evaluated first)
+        /// </summary>
+        internal static double ParseTypedLiteralAsDouble(RDFTypedLiteral typedLiteral)
+            => typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
+                ? Convert.ToDouble(RDFArithmeticEngine.ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture)
+                : double.Parse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+
+        /// <summary>
         /// Gets the row value for the aggregator as string
         /// </summary>
         internal string GetRowValueAsString(RDFTableRow tableRow)
         {
             try
             {
-                return tableRow.IsBound(AggregatorVariable.VariableName)
-                    ? tableRow[AggregatorVariable.VariableName]
+                return tableRow.IsBound(Metadata.AggregatorVariable.VariableName)
+                    ? tableRow[Metadata.AggregatorVariable.VariableName]
                     : string.Empty;
             }
             catch { return string.Empty; }
@@ -164,63 +207,70 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Prints the having-clause of the aggregator
-        /// </summary>
-        internal string PrintHavingClause(List<RDFNamespace> prefixes)
-        {
-            if (HavingClause.Item1)
-            {
-                StringBuilder result = new StringBuilder();
-                result.Append('(');
-                result.Append(ToString(), 1, ToString().LastIndexOf(" AS ?", StringComparison.Ordinal));
-                switch (HavingClause.Item2)
-                {
-                    case RDFQueryEnums.RDFComparisonFlavors.LessThan:
-                        result.Append("< ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan:
-                        result.Append("<= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.EqualTo:
-                        result.Append("= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.NotEqualTo:
-                        result.Append("!= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan:
-                        result.Append(">= ");
-                        break;
-                    case RDFQueryEnums.RDFComparisonFlavors.GreaterThan:
-                        result.Append("> ");
-                        break;
-                }
-                result.Append(RDFQueryPrinter.PrintPatternMember(HavingClause.Item3, prefixes));
-                result.Append(')');
-                return result.ToString();
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
         /// Sets the aggregator to discard duplicates
         /// </summary>
         public RDFAggregator Distinct()
         {
-            IsDistinct = true;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the aggregator to also represent an having-clause
-        /// </summary>
-        public RDFAggregator SetHavingClause(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor, RDFPatternMember comparisonValue)
-        {
-            if (comparisonValue != null)
-                HavingClause = (true, comparisonFlavor, comparisonValue);
+            Metadata.IsDistinct = true;
             return this;
         }
         #endregion
     }
+
+    #region RDFAggregatorMetadata
+    /// <summary>
+    /// RDFAggregatorMetadata bundles the DEFINITION of an aggregator (what it aggregates, where it projects, and its
+    /// distinct/hidden flags), keeping it together as one descriptor instead of a flat bag of fields scattered on
+    /// <see cref="RDFAggregator"/>. It carries data only — polymorphic behavior (e.g. the aggregate function) and
+    /// execution state (the Context) stay on the aggregator.
+    /// </summary>
+    internal sealed class RDFAggregatorMetadata
+    {
+        #region Properties
+        /// <summary>
+        /// Variable aggregated by the aggregator, when the argument is a bare variable (e.g. SUM(?x)). For an
+        /// expression argument it is the (synthetic) column the expression is materialized into.
+        /// </summary>
+        internal RDFVariable AggregatorVariable { get; set; }
+
+        /// <summary>
+        /// Expression aggregated by the aggregator, when the argument is not a bare variable (e.g. SUM(?x + ?y)). When
+        /// set, the GroupBy modifier materializes it into the (synthetic) <see cref="AggregatorVariable"/> column
+        /// before partitioning, and the printer re-emits the original expression instead of the synthetic variable.
+        /// </summary>
+        internal RDFExpression AggregatorExpression { get; set; }
+
+        /// <summary>
+        /// Variable used for projection of the aggregator's results.
+        /// </summary>
+        internal RDFVariable ProjectionVariable { get; set; }
+
+        /// <summary>
+        /// Whether the aggregator discards duplicates (DISTINCT).
+        /// </summary>
+        internal bool IsDistinct { get; set; }
+
+        /// <summary>
+        /// Whether the aggregator exists ONLY to feed a composite expression (a free HAVING condition, or a projection
+        /// like '?x + COUNT(?y)') rather than to be projected as a query result column. The GroupBy modifier still
+        /// computes its value into a (synthetic) column, but the engine keeps it out of the output projection.
+        /// </summary>
+        internal bool IsHidden { get; set; }
+        #endregion
+
+        #region Ctor
+        /// <summary>
+        /// Builds the metadata for an aggregator on the given aggregated variable and projection name.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When either variable is null.</exception>
+        internal RDFAggregatorMetadata(RDFVariable aggregatorVariable, RDFVariable projectionVariable)
+        {
+            AggregatorVariable = aggregatorVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"aggregatorVariable\" parameter is null.");
+            ProjectionVariable = projectionVariable ?? throw new RDFQueryException("Cannot create RDFAggregator because given \"projectionVariable\" parameter is null.");
+        }
+        #endregion
+    }
+    #endregion
 
     #region RDFAggregatorContext
     /// <summary>
@@ -242,6 +292,12 @@ namespace RDFSharp.Query
         /// Number of rows folded into this partition so far (used e.g. by AVG). A plain double, never boxed.
         /// </summary>
         internal double ExecutionCounter { get; set; }
+
+        /// <summary>
+        /// Whether this partition is arithmetically POISONED: a non-numeric row (or a numeric overflow) was encountered
+        /// while aggregating numbers, so the result is undefined and the partition projects an unbound value.
+        /// </summary>
+        internal bool IsArithmeticallyPoisoned { get; set; }
 
         /// <summary>
         /// Builds the partition state seeded with the given initial result (counter starts at zero)
@@ -321,6 +377,25 @@ namespace RDFSharp.Query
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(string partitionKey)
             => ExecutionRegistry[partitionKey].ExecutionCounter++;
+
+        /// <summary>
+        /// Marks the given partition key as arithmetically poisoned (creating its state if absent)
+        /// </summary>
+        internal void MarkPartitionKeyAsPoisoned(string partitionKey)
+        {
+            if (!ExecutionRegistry.TryGetValue(partitionKey, out RDFAggregatorPartitionState partitionState))
+            {
+                partitionState = new RDFAggregatorPartitionState(null);
+                ExecutionRegistry.Add(partitionKey, partitionState);
+            }
+            partitionState.IsArithmeticallyPoisoned = true;
+        }
+
+        /// <summary>
+        /// Checks whether the given partition key has been marked as arithmetically poisoned
+        /// </summary>
+        internal bool IsPartitionKeyPoisoned(string partitionKey)
+            => ExecutionRegistry.TryGetValue(partitionKey, out RDFAggregatorPartitionState partitionState) && partitionState.IsArithmeticallyPoisoned;
 
         /// <summary>
         /// Checks for presence of the given value in given partitionkey's cache

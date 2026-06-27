@@ -60,6 +60,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL string into an RDFDescribeQuery.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid DESCRIBE query.</exception>
+        public static RDFDescribeQuery FromString(string describeQuery)
+        {
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(describeQuery);
+
+            //The factory dispatches on the query form: enforce that the parsed query is indeed a DESCRIBE
+            if (parsedQuery is RDFDescribeQuery parsedDescribeQuery)
+                return parsedDescribeQuery;
+
+            throw new RDFQueryException("Cannot parse DESCRIBE query because the given command represents a different SPARQL query form (" + parsedQuery.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given resource to the describe terms of the query
         /// </summary>
         public RDFDescribeQuery AddDescribeTerm(RDFResource describeTerm)
@@ -94,26 +109,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the query
         /// </summary>
-        public RDFDescribeQuery AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFDescribeQuery>(operatorMember);
+        public RDFDescribeQuery AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFDescribeQuery>(binaryMember);
 
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFDescribeQuery AddModifier(RDFDistinctModifier modifier)
-            => AddModifier<RDFDescribeQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFDescribeQuery AddModifier(RDFLimitModifier modifier)
-            => AddModifier<RDFDescribeQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFDescribeQuery AddModifier(RDFOffsetModifier modifier)
-            => AddModifier<RDFDescribeQuery>(modifier);
+        public RDFDescribeQuery AddModifier(RDFModifier modifier)
+        {
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: false))
+                QueryMembers.Add(modifier);
+            return this;
+        }
 
         /// <summary>
         /// Adds the given prefix declaration to the query
@@ -126,6 +133,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDescribeQuery AddSubQuery(RDFSelectQuery subQuery)
             => AddSubQuery<RDFDescribeQuery>(subQuery);
+
+        /// <summary>
+        /// Sets the trailing query-level inline-data block
+        /// </summary>
+        public RDFDescribeQuery SetValues(RDFValues values)
+            => SetValues<RDFDescribeQuery>(values);
 
         /// <summary>
         /// Applies the query to the given graph

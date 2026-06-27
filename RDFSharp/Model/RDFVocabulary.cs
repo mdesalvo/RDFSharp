@@ -2512,6 +2512,16 @@ namespace RDFSharp.Model
             public static readonly RDFResource TARGET_SUBJECTS_OF = new RDFResource($"{BASE_URI}targetSubjectsOf");
 
             /// <summary>
+            /// sh:target
+            /// </summary>
+            public static readonly RDFResource TARGET = new RDFResource($"{BASE_URI}target");
+
+            /// <summary>
+            /// sh:SPARQLTarget
+            /// </summary>
+            public static readonly RDFResource SPARQL_TARGET = new RDFResource($"{BASE_URI}SPARQLTarget");
+
+            /// <summary>
             /// sh:BlankNode
             /// </summary>
             public static readonly RDFResource BLANK_NODE = new RDFResource($"{BASE_URI}BlankNode");
@@ -4589,6 +4599,11 @@ namespace RDFSharp.Model
             /// xsd:duration
             /// </summary>
             public static readonly RDFResource DURATION = new RDFResource($"{BASE_URI}duration");
+
+            /// <summary>
+            /// xsd:dayTimeDuration
+            /// </summary>
+            public static readonly RDFResource DAY_TIME_DURATION = new RDFResource($"{BASE_URI}dayTimeDuration");
 
             /// <summary>
             /// xsd:dateTime

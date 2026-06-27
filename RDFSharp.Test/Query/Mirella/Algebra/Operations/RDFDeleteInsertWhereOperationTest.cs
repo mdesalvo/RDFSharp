@@ -202,40 +202,6 @@ public class RDFDeleteInsertWhereOperationTest
     }
 
     [TestMethod]
-    public void ShouldAddServicePatternGroup()
-    {
-        RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-            .AsService(new RDFSPARQLEndpoint(new Uri("ex:org")), new RDFSPARQLEndpointQueryOptions { ErrorBehavior = RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult});
-        RDFDeleteInsertWhereOperation operation = new RDFDeleteInsertWhereOperation();
-        operation.AddPatternGroup(patternGroup);
-        operation.AddPatternGroup(patternGroup); //Will be discarded, since duplicate patternGroups are not allowed
-
-        Assert.IsEmpty(operation.InsertTemplates);
-        Assert.IsEmpty(operation.DeleteTemplates);
-        Assert.IsEmpty(operation.Variables);
-        Assert.IsEmpty(operation.Prefixes);
-        Assert.HasCount(1, operation.QueryMembers);
-
-        string operationString = operation.ToString();
-
-        Assert.IsTrue(string.Equals(RDFTestUtilities.NormalizeEOL(operationString),
-            RDFTestUtilities.NormalizeEOL("""
-            DELETE {
-            }
-            INSERT {
-            }
-            WHERE {
-              SERVICE SILENT <ex:org> {
-                {
-                  ?Y <ex:dogOf> ?X .
-                }
-              }
-            }
-            """), StringComparison.Ordinal));
-    }
-
-    [TestMethod]
     public void ShouldThrowExceptionOnAddingPatternGroupBecauseNullPatternGroup()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFDeleteInsertWhereOperation().AddPatternGroup(null));
 

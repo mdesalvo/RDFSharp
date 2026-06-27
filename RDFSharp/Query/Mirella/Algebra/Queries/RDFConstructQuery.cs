@@ -61,6 +61,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL string into an RDFConstructQuery.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid CONSTRUCT query.</exception>
+        public static RDFConstructQuery FromString(string constructQuery)
+        {
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(constructQuery);
+
+            //The factory dispatches on the query form: enforce that the parsed query is indeed a CONSTRUCT
+            if (parsedQuery is RDFConstructQuery parsedConstructQuery)
+                return parsedConstructQuery;
+
+            throw new RDFQueryException("Cannot parse CONSTRUCT query because the given command represents a different SPARQL query form (" + parsedQuery.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given pattern to the templates of the query
         /// </summary>
         public RDFConstructQuery AddTemplate(RDFPattern template)
@@ -98,26 +113,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the query
         /// </summary>
-        public RDFConstructQuery AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFConstructQuery>(operatorMember);
+        public RDFConstructQuery AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFConstructQuery>(binaryMember);
 
         /// <summary>
         /// Adds the given modifier to the query
         /// </summary>
-        public RDFConstructQuery AddModifier(RDFDistinctModifier modifier)
-            => AddModifier<RDFConstructQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFConstructQuery AddModifier(RDFLimitModifier modifier)
-            => AddModifier<RDFConstructQuery>(modifier);
-
-        /// <summary>
-        /// Adds the given modifier to the query
-        /// </summary>
-        public RDFConstructQuery AddModifier(RDFOffsetModifier modifier)
-            => AddModifier<RDFConstructQuery>(modifier);
+        public RDFConstructQuery AddModifier(RDFModifier modifier)
+        {
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: false))
+                QueryMembers.Add(modifier);
+            return this;
+        }
 
         /// <summary>
         /// Adds the given prefix declaration to the query
@@ -130,6 +137,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFConstructQuery AddSubQuery(RDFSelectQuery subQuery)
             => AddSubQuery<RDFConstructQuery>(subQuery);
+
+        /// <summary>
+        /// Sets the trailing query-level inline-data block
+        /// </summary>
+        public RDFConstructQuery SetValues(RDFValues values)
+            => SetValues<RDFConstructQuery>(values);
 
         /// <summary>
         /// Applies the query to the given graph

@@ -34,13 +34,13 @@ public class RDFGroupByModifierTest
         RDFGroupByModifier modifier = new RDFGroupByModifier(partitionVariables);
 
         Assert.IsNotNull(modifier);
-        Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.HasCount(1, modifier.PartitionVariables);
-        Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable));
+        Assert.IsNotNull(modifier.PartitionConditions);
+        Assert.HasCount(1, modifier.PartitionConditions);
+        Assert.IsTrue(modifier.PartitionConditions[0].Variable.Equals(variable));
         Assert.IsNotNull(modifier.Aggregators);
         Assert.HasCount(1, modifier.Aggregators);
-        Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable));
-        Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.ProjectionVariable.Equals(variable));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.AggregatorVariable.Equals(variable));
         Assert.IsTrue(modifier.IsEvaluable);
         Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);
@@ -74,15 +74,15 @@ public class RDFGroupByModifierTest
         modifier.AddAggregator(null); //Will be discarded, since null aggregators are not allowed
 
         Assert.IsNotNull(modifier);
-        Assert.IsNotNull(modifier.PartitionVariables);
-        Assert.HasCount(1, modifier.PartitionVariables);
-        Assert.IsTrue(modifier.PartitionVariables[0].Equals(variable1));
+        Assert.IsNotNull(modifier.PartitionConditions);
+        Assert.HasCount(1, modifier.PartitionConditions);
+        Assert.IsTrue(modifier.PartitionConditions[0].Variable.Equals(variable1));
         Assert.IsNotNull(modifier.Aggregators);
         Assert.HasCount(2, modifier.Aggregators);
-        Assert.IsTrue(modifier.Aggregators[0].AggregatorVariable.Equals(variable1));
-        Assert.IsTrue(modifier.Aggregators[0].ProjectionVariable.Equals(variable1));
-        Assert.IsTrue(modifier.Aggregators[1].AggregatorVariable.Equals(variable2));
-        Assert.IsTrue(modifier.Aggregators[1].ProjectionVariable.Equals(variable3));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.AggregatorVariable.Equals(variable1));
+        Assert.IsTrue(modifier.Aggregators[0].Metadata.ProjectionVariable.Equals(variable1));
+        Assert.IsTrue(modifier.Aggregators[1].Metadata.AggregatorVariable.Equals(variable2));
+        Assert.IsTrue(modifier.Aggregators[1].Metadata.ProjectionVariable.Equals(variable3));
         Assert.IsTrue(modifier.IsEvaluable);
         Assert.IsTrue(modifier.ToString().Equals("GROUP BY ?VAR1", StringComparison.Ordinal));
         Assert.IsNotNull(modifier.QueryMemberStringID);
@@ -273,8 +273,11 @@ public class RDFGroupByModifierTest
         });
 
         //This will behave like a partition aggregator on column "?C" with an having clause "?C = ex:value0"
-        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        modifier.Aggregators[0].SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFResource("ex:value0"));
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")])
+            .SetHavingExpression(new RDFComparisonExpression(
+                RDFQueryEnums.RDFComparisonFlavors.EqualTo,
+                new RDFVariableExpression(new RDFVariable("?C")),
+                new RDFConstantExpression(new RDFResource("ex:value0"))));
         RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
@@ -282,6 +285,44 @@ public class RDFGroupByModifierTest
         Assert.AreEqual("?C", result.Columns[0].Name);
         Assert.AreEqual(1, result.RowsCount);
         Assert.IsTrue(result.Rows[0]["?C"].Equals("ex:value0", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldSetHavingExpression()
+    {
+        RDFComparisonExpression havingExpression = new RDFComparisonExpression(
+            RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+            new RDFVariableExpression(new RDFVariable("?CNT")),
+            new RDFConstantExpression(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")])
+            .SetHavingExpression(havingExpression);
+
+        Assert.AreSame(havingExpression, modifier.HavingExpression);
+    }
+
+    [TestMethod]
+    public void ShouldApplyModifierWithFreeHavingExpression()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?C");
+        table.AddColumn("?X");
+        table.AddRow(new Dictionary<string, string> { ["?C"] = new RDFResource("ex:c1").ToString(), ["?X"] = new RDFPlainLiteral("x").ToString() });
+        table.AddRow(new Dictionary<string, string> { ["?C"] = new RDFResource("ex:c1").ToString(), ["?X"] = new RDFPlainLiteral("y").ToString() });
+        table.AddRow(new Dictionary<string, string> { ["?C"] = new RDFResource("ex:c2").ToString(), ["?X"] = new RDFPlainLiteral("z").ToString() });
+
+        //Group by ?C, COUNT(?X) AS ?CNT, keeping only the groups whose count is >= 2 (so ex:c1 survives, ex:c2 is dropped)
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")])
+            .AddAggregator(new RDFCountAggregator(new RDFVariable("?X"), new RDFVariable("?CNT")))
+            .SetHavingExpression(new RDFComparisonExpression(
+                RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                new RDFVariableExpression(new RDFVariable("?CNT")),
+                new RDFConstantExpression(new RDFTypedLiteral("2", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?C"].Equals("ex:c1", StringComparison.Ordinal));
     }
 
     //The following two tests guard against a regression where the aggregators' execution
@@ -315,8 +356,8 @@ public class RDFGroupByModifierTest
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?S")));
 
-        string expectedSum0 = new RDFTypedLiteral("51", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        string expectedSum1 = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+        string expectedSum0 = new RDFTypedLiteral("51", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString();
+        string expectedSum1 = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString();
 
         //First application
         RDFTable firstResult = modifier.ApplyModifier(table);
@@ -358,9 +399,11 @@ public class RDFGroupByModifierTest
 
         //GROUP BY ?C with AVG(?A) AS ?AVG HAVING (?AVG >= 28) : ex:value0 -> 25.5 (dropped), ex:value1 -> 30 (kept)
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVG"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
-                             new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+        modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVG")))
+            .SetHavingExpression(new RDFComparisonExpression(
+                RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                new RDFVariableExpression(new RDFVariable("?AVG")),
+                new RDFConstantExpression(new RDFTypedLiteral("28", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))));
 
         //First application : only ex:value1 survives the HAVING clause
         RDFTable firstResult = modifier.ApplyModifier(table);
@@ -375,6 +418,53 @@ public class RDFGroupByModifierTest
         Assert.IsNotNull(secondResult);
         Assert.AreEqual(1, secondResult.RowsCount);
         Assert.IsTrue(secondResult.Rows[0]["?C"].Equals("ex:value1", StringComparison.Ordinal));
+    }
+
+    //IP3.1 — implicit grouping (no partition variables = single group over the whole result set)
+
+    [TestMethod]
+    public void ShouldCreateImplicitGroupByModifier()
+    {
+        RDFGroupByModifier modifier = new RDFGroupByModifier();
+
+        Assert.IsNotNull(modifier);
+        Assert.AreEqual(0, modifier.PartitionConditions.Count);
+        Assert.AreEqual(0, modifier.Aggregators.Count);
+        Assert.IsTrue(modifier.IsEvaluable);
+    }
+
+    [TestMethod]
+    public void ShouldApplyImplicitGroupByModifierWithCountAll()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?C"] = new RDFResource("ex:value0").ToString()
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            ["?A"] = new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString(),
+            ["?C"] = new RDFResource("ex:value1").ToString()
+        });
+
+        //Implicit grouping: all 3 rows fall into one group => COUNT(*) = 3 in a single result row
+        RDFGroupByModifier modifier = new RDFGroupByModifier();
+        modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?CNT")));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.ColumnsCount);
+        Assert.AreEqual("?CNT", result.Columns[0].Name);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?CNT"].Equals($"3^^{RDFVocabulary.XSD.INTEGER}", StringComparison.Ordinal));
     }
     #endregion
 }

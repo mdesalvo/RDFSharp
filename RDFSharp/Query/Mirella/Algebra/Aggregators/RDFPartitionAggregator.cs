@@ -32,10 +32,10 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the PARTITION aggregator
+        /// The partition aggregator is internal grouping scratch and never appears in a printed query, so it has no
+        /// function: its ToString is therefore the empty string.
         /// </summary>
-        public override string ToString()
-            => string.Empty;
+        protected override string AggregatorFunction => string.Empty;
         #endregion
 
         #region Methods
@@ -45,10 +45,10 @@ namespace RDFSharp.Query
         internal override void ExecutePartition(string partitionKey, RDFTableRow tableRow)
         {
             //Get aggregator value
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (partition)
             if (string.IsNullOrEmpty(aggregatorValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, partitionKey);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, partitionKey);
         }
 
         /// <summary>
@@ -61,10 +61,10 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
@@ -82,8 +82,8 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            if (!bindings.ContainsKey(ProjectionVariable.VariableName))
-                bindings.Add(ProjectionVariable.VariableName, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty));
+            if (!bindings.ContainsKey(Metadata.ProjectionVariable.VariableName))
+                bindings.Add(Metadata.ProjectionVariable.VariableName, Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty));
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

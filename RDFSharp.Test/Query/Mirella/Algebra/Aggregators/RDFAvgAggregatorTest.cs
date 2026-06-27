@@ -31,19 +31,18 @@ public class RDFAvgAggregatorTest
         RDFAvgAggregator aggregator = new RDFAvgAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(AVG(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
-        Assert.IsNotNull(aggregator.AggregatorContext);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        Assert.IsNotNull(aggregator.Context);
+        Assert.IsNotNull(aggregator.Context.ExecutionCache);
+        Assert.IsNotNull(aggregator.Context.ExecutionRegistry);
     }
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAvgAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAvgAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAvgAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAvgAggregatorBecauseNullPartitionVariable()
@@ -56,14 +55,13 @@ public class RDFAvgAggregatorTest
             .Distinct() as RDFAvgAggregator;
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(AVG(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
-        Assert.IsNotNull(aggregator.AggregatorContext);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        Assert.IsNotNull(aggregator.Context);
+        Assert.IsNotNull(aggregator.Context.ExecutionCache);
+        Assert.IsNotNull(aggregator.Context.ExecutionRegistry);
     }
 
     [TestMethod]
@@ -102,9 +100,9 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?AVGPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -143,9 +141,9 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?AVGPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"27^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -175,9 +173,12 @@ public class RDFAvgAggregatorTest
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        RDFAvgAggregator aggregator = new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVGPROJ"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan, new RDFTypedLiteral("25.99", RDFModelEnums.RDFDatatypes.XSD_FLOAT)) as RDFAvgAggregator;
+        RDFAvgAggregator aggregator = new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?AVGPROJ"));
         modifier.AddAggregator(aggregator);
+        modifier.SetHavingExpression(new RDFComparisonExpression(
+            RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+            new RDFVariableExpression(new RDFVariable("?AVGPROJ")),
+            new RDFConstantExpression(new RDFTypedLiteral("25.99", RDFModelEnums.RDFDatatypes.XSD_FLOAT))));
         RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
@@ -186,9 +187,9 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?AVGPROJ", result.Columns[1].Name);
         Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(AVG(?A) >= \"25.99\"^^<{RDFVocabulary.XSD.FLOAT}>)", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(AVG(?A) >= \"25.99\"^^xsd:float)", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.5^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
+        //RDFConstantExpression prints a decimal-category typed literal by its bare value, so the HAVING reads "25.99"
+        Assert.IsTrue(modifier.HavingExpression.ToString().Equals("(?AVGPROJ >= 25.99)", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -233,11 +234,28 @@ public class RDFAvgAggregatorTest
         Assert.AreEqual("?AVGPROJ", result.Columns[1].Name);
         Assert.AreEqual(3, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.85^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?AVGPROJ"].ToString().Equals($"26.85^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?AVGPROJ"].ToString().Equals($"25^^{RDFVocabulary.XSD.FLOAT}", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[2]["?C"].ToString().Equals("ex:value2", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[2]["?AVGPROJ"].ToString().Equals(string.Empty, System.StringComparison.Ordinal)); //Projection for NaN
     }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateAvgAggregatorOverExpression()
+    {
+        RDFAvgAggregator aggregator = new RDFAvgAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsNotNull(aggregator.Metadata.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(AVG((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingAvgAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAvgAggregator(null as RDFExpression, new RDFVariable("?PROJVAR")));
     #endregion
 }

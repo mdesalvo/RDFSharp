@@ -38,8 +38,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE((?V1 + ?V2), \"^hello$\", (?V1 + ?V2), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE((?V1 + ?V2), \"^hello$\", (?V1 + ?V2), \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -54,8 +54,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE((?V1 + ?V2), \"^hello$\", (?V1 + ?V2)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE((?V1 + ?V2), \"^hello$\", (?V1 + ?V2)))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -70,8 +70,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE((?V1 + ?V2), \"^hello$\", ?V1, \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE((?V1 + ?V2), \"^hello$\", ?V1, \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -86,8 +86,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR((?V1 + ?V2)), \"^hello$\", STR(?V1)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE((?V1 + ?V2), \"^hello$\", ?V1))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE((?V1 + ?V2), \"^hello$\", ?V1))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -102,8 +102,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2)), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(?V1, \"^hello$\", (?V1 + ?V2), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(?V1, \"^hello$\", (?V1 + ?V2), \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -118,8 +118,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR((?V1 + ?V2))))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(?V1, \"^hello$\", (?V1 + ?V2)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(?V1, \"^hello$\", (?V1 + ?V2)))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -134,8 +134,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2), \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(?V1, \"^hello$\", ?V2, \"ismx\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(?V1, \"^hello$\", ?V2, \"ismx\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -150,8 +150,8 @@ public class RDFReplaceExpressionTest
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
         Assert.IsNotNull(expression.RegEx);
-        Assert.IsTrue(expression.ToString().Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2)))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(STR(?V1), \"^hello$\", STR(?V2)))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(?V1, \"^hello$\", ?V2))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(REPLACE(?V1, \"^hello$\", ?V2))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -817,6 +817,114 @@ public class RDFReplaceExpressionTest
             new RDFVariable("?A"),
             new RDFVariable("?Q"),
             new Regex("http://example.org/"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNull(expressionResult);
+    }
+
+    // dynamic (per-row) pattern/flags
+
+    [TestMethod]
+    public void ShouldCreateReplaceExpressionWithDynamicPattern()
+    {
+        RDFReplaceExpression expression = new RDFReplaceExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?R")),
+            new RDFVariableExpression(new RDFVariable("?P")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsNull(expression.RegEx);
+        Assert.IsNotNull(expression.PatternExpression);
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(?A, ?P, ?R))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldCreateReplaceExpressionWithDynamicPatternAndFlags()
+    {
+        RDFReplaceExpression expression = new RDFReplaceExpression(
+            new RDFVariable("?A"),
+            new RDFVariableExpression(new RDFVariable("?R")),
+            new RDFVariableExpression(new RDFVariable("?P")),
+            new RDFVariableExpression(new RDFVariable("?F")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsTrue(expression.ToString().Equals("(REPLACE(?A, ?P, ?R, ?F))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingReplaceExpressionBecauseNullPatternExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(
+            new RDFVariable("?A"), new RDFVariableExpression(new RDFVariable("?R")), null as RDFExpression));
+
+    [TestMethod]
+    public void ShouldApplyReplaceExpressionWithDynamicPattern()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?P");
+        table.AddColumn("?R");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?P", new RDFPlainLiteral("l").ToString() },
+            { "?R", new RDFPlainLiteral("L").ToString() }
+        });
+
+        RDFReplaceExpression expression = new RDFReplaceExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?R")),
+            new RDFVariableExpression(new RDFVariable("?P")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("heLLo")));
+    }
+
+    [TestMethod]
+    public void ShouldApplyReplaceExpressionWithDynamicPatternAndFlags()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?P");
+        table.AddColumn("?R");
+        table.AddColumn("?F");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("HELLO").ToString() },
+            { "?P", new RDFPlainLiteral("l").ToString() },
+            { "?R", new RDFPlainLiteral("x").ToString() },
+            { "?F", new RDFPlainLiteral("i").ToString() }
+        });
+
+        RDFReplaceExpression expression = new RDFReplaceExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?R")),
+            new RDFVariableExpression(new RDFVariable("?P")),
+            new RDFVariableExpression(new RDFVariable("?F")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("HExxO")));
+    }
+
+    [TestMethod]
+    public void ShouldApplyReplaceExpressionWithDynamicPatternAndNotCalculateResultBecauseInvalidPattern()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?P");
+        table.AddColumn("?R");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?P", new RDFPlainLiteral("(unclosed").ToString() },
+            { "?R", new RDFPlainLiteral("x").ToString() }
+        });
+
+        RDFReplaceExpression expression = new RDFReplaceExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?R")),
+            new RDFVariableExpression(new RDFVariable("?P")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);

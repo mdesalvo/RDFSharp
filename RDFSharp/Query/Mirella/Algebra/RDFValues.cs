@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Model;
@@ -27,14 +28,20 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Dictionary of bindings representing the SPARQL values
+        /// Dictionary of bindings representing the SPARQL values (one entry per declared variable, mapping it
+        /// to its column of values; a null entry in a column is the special UNDEF binding). It is EMPTY for the
+        /// degenerate NIL data block (<c>VALUES () { ... }</c>), which declares no variable at all.
         /// </summary>
         internal Dictionary<string, List<RDFPatternMember>> Bindings { get; set; }
 
         /// <summary>
-        /// Flag indicating that the SPARQL values has been injected by Mirella
+        /// Number of empty-domain rows of a NIL data block (<c>VALUES () { () () }</c>): with zero declared
+        /// variables the row cardinality cannot be derived from any column, so it is carried explicitly here.
+        /// It is meaningful ONLY when <see cref="Bindings"/> is empty (otherwise the row count is the column
+        /// length). Each such row is an identity solution mapping: 0 rows annihilate the join (zero solutions),
+        /// 1 row is the identity (no-op), N rows duplicate every solution N-fold (multiset semantics).
         /// </summary>
-        internal bool IsInjected { get; set; }
+        internal int NilRowsCount { get; set; }
         #endregion
 
         #region Ctors
@@ -45,7 +52,6 @@ namespace RDFSharp.Query
         {
             Bindings = new Dictionary<string, List<RDFPatternMember>>();
             IsEvaluable = false;
-            IsInjected = false;
         }
         #endregion
 
@@ -73,14 +79,14 @@ namespace RDFSharp.Query
                 if (!Bindings.ContainsKey(variableString))
                     Bindings.Add(variableString, new List<RDFPatternMember>());
 
-                //Populate bindings of the given variable
-                //(null indicates the special UNDEF binding)
+                //Populate bindings of the given variable: each concrete term becomes a row of this column,
+                //anything else (including the explicit UNDEF placeholder) becomes a null row. An EMPTY column
+                //is left empty (zero rows): it represents the empty data block 'VALUES ?v { }', whose meaning
+                //is "zero solutions" — it must NOT be coerced into a single all-UNDEF row.
                 if (bindings?.Count > 0)
                     bindings.ForEach(b => Bindings[variableString].Add(b is RDFResource || b is RDFLiteral ? b : null));
-                else
-                    Bindings[variableString].Add(null);
 
-                //Mark the SPARQL values as evaluable
+                //Mark the SPARQL values as evaluable (the column has been declared, even if it has no rows)
                 IsEvaluable = true;
             }
             return this;
@@ -96,6 +102,17 @@ namespace RDFSharp.Query
             //Create the columns of the SPARQL values
             foreach (string bindingKey in Bindings.Keys)
                 result.AddColumn(bindingKey);
+
+            //NIL data block ('VALUES () { ... }'): zero columns, NilRowsCount empty-domain rows. Each row is an
+            //empty cells array; the existing join then yields the correct multiset on its own (0 -> annihilate /
+            //zero solutions, 1 -> identity, N -> N-fold duplication). No column means no UNDEF, so it is never
+            //optional. This is the single place that recognizes the NIL shape (no special branch in the engine).
+            if (Bindings.Count == 0)
+            {
+                for (int i = 0; i < NilRowsCount; i++)
+                    result.AddRow(Array.Empty<string>());
+                return result;
+            }
 
             //Create the rows of the SPARQL values
             bool containsNullBindings = false;
@@ -119,10 +136,11 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Gets the current max length of the bindings
+        /// Gets the current row count of the SPARQL values: the longest column when at least one variable is
+        /// declared, otherwise the explicit NIL row count (the variable-less data block has no column to count).
         /// </summary>
         internal int MaxBindingsLength()
-            => Bindings?.Count > 0 ? Bindings.Max(x => x.Value.Count) : 0;
+            => Bindings?.Count > 0 ? Bindings.Max(x => x.Value.Count) : NilRowsCount;
 
         /// <summary>
         /// Gets the filter representation of the SPARQL values

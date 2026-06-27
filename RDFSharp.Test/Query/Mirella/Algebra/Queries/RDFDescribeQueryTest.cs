@@ -86,7 +86,6 @@ public class RDFDescribeQueryTest
                         .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?P")));
-        query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
@@ -97,7 +96,7 @@ public class RDFDescribeQueryTest
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
 
@@ -122,7 +121,6 @@ public class RDFDescribeQueryTest
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?P"))
                 .Optional());
-        query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
@@ -134,7 +132,7 @@ public class RDFDescribeQueryTest
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().First() is RDFSelectQuery { IsOptional: true });
-        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
 
@@ -157,8 +155,7 @@ public class RDFDescribeQueryTest
         query.AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"));
         query.AddDescribeTerm(new RDFVariable("?S"));
         query.AddDescribeTerm(new RDFResource("ex:flower"));
-        query.AddOperator(pg.Union(subQuery));
-        query.AddModifier(new RDFDistinctModifier());
+        query.AddBinaryQueryMember(pg.Union(subQuery));
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
@@ -169,7 +166,7 @@ public class RDFDescribeQueryTest
         Assert.AreEqual(1, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(0, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
 
@@ -184,7 +181,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -216,7 +213,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [new RDFResource("ex:flower")])))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -245,8 +242,8 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?S"), RDFVocabulary.RDFS.CLASS)
-                    .AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE))))
-            .AddModifier(new RDFDistinctModifier());
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE))))
+;
         RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -275,7 +272,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("ex:flower")), new RDFVariable("?S"))))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -416,7 +413,7 @@ public class RDFDescribeQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -522,7 +519,7 @@ public class RDFDescribeQueryTest
             .AddDescribeTerm(new RDFVariable("?S"))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToGraph(null);
 
         Assert.IsNotNull(result);
@@ -542,7 +539,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToStore(store);
 
         Assert.IsNotNull(result);
@@ -736,7 +733,7 @@ public class RDFDescribeQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToStore(store);
 
         Assert.IsNotNull(result);
@@ -857,7 +854,7 @@ public class RDFDescribeQueryTest
             .AddDescribeTerm(new RDFVariable("?S"))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToStore(null);
 
         Assert.IsNotNull(result);
@@ -888,7 +885,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
         Assert.IsNotNull(result);
@@ -1148,7 +1145,7 @@ public class RDFDescribeQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS))
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
         Assert.IsNotNull(result);
@@ -1269,7 +1266,7 @@ public class RDFDescribeQueryTest
             .AddDescribeTerm(new RDFVariable("?S"))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToFederation(null);
 
         Assert.IsNotNull(result);
@@ -1286,7 +1283,7 @@ public class RDFDescribeQueryTest
             .AddDescribeTerm(new RDFVariable("?S"))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = query.ApplyToFederation(new RDFFederation().AddFederation(new RDFFederation()));
 
         Assert.IsNotNull(result);
@@ -1726,7 +1723,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = await query.ApplyToGraphAsync(graph);
 
         Assert.IsNotNull(result);
@@ -1780,7 +1777,7 @@ public class RDFDescribeQueryTest
             .AddDescribeTerm(new RDFVariable("?S"))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = await query.ApplyToGraphAsync(null);
 
         Assert.IsNotNull(result);
@@ -1800,7 +1797,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = await query.ApplyToStoreAsync(store);
 
         Assert.IsNotNull(result);
@@ -1859,7 +1856,7 @@ public class RDFDescribeQueryTest
             .AddDescribeTerm(new RDFVariable("?S"))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = await query.ApplyToStoreAsync(null);
 
         Assert.IsNotNull(result);
@@ -1884,7 +1881,7 @@ public class RDFDescribeQueryTest
             .AddPrefix(RDFNamespaceRegister.GetByPrefix(RDFVocabulary.RDF.PREFIX))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = await query.ApplyToFederationAsync(federation);
 
         Assert.IsNotNull(result);
@@ -1949,7 +1946,7 @@ public class RDFDescribeQueryTest
             .AddDescribeTerm(new RDFVariable("?S"))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDFS.CLASS)))
-            .AddModifier(new RDFDistinctModifier());
+;
         RDFDescribeQueryResult result = await query.ApplyToFederationAsync(null);
 
         Assert.IsNotNull(result);

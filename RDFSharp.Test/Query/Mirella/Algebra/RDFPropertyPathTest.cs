@@ -39,9 +39,7 @@ public class RDFPropertyPathTest
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.IsEmpty(propertyPath.Steps);
-        Assert.AreEqual(0, propertyPath.Depth);
+        Assert.AreEqual(0, propertyPath.SequenceUnits.Count);
         Assert.IsFalse(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START  <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START  rdf:type", System.StringComparison.Ordinal));
@@ -67,27 +65,25 @@ public class RDFPropertyPathTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullSequenceStep()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddSequenceStep(null));
+            .AddSequenceStep((RDFPropertyPathExpression)null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInSequenceStep()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddSequenceStep(new RDFPropertyPathStep(null)));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(null)));
 
     [TestMethod]
     public void ShouldAddSingleSequenceStep()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT));
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(1, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(1, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt rdf:type", System.StringComparison.Ordinal));
@@ -98,16 +94,14 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleSequenceInverseStep()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse());
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT).Inverse());
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(1, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(1, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START ^rdf:Alt rdf:type", System.StringComparison.Ordinal));
@@ -118,17 +112,15 @@ public class RDFPropertyPathTest
     public void ShouldAddMultipleSequenceSteps()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.BAG));
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT));
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG));
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt/rdf:Bag rdf:type", System.StringComparison.Ordinal));
@@ -139,17 +131,15 @@ public class RDFPropertyPathTest
     public void ShouldAddMultipleSequenceStepsWithInverseFirst()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse());
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.BAG));
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT).Inverse());
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG));
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}>/<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START ^rdf:Alt/rdf:Bag rdf:type", System.StringComparison.Ordinal));
@@ -160,17 +150,15 @@ public class RDFPropertyPathTest
     public void ShouldAddMultipleSequenceStepsWithInverseLast()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.BAG).Inverse());
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT));
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG).Inverse());
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/^<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt/^rdf:Bag rdf:type", System.StringComparison.Ordinal));
@@ -181,17 +169,15 @@ public class RDFPropertyPathTest
     public void ShouldAddMultipleSequenceStepsWithInverseBoth()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse());
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.BAG).Inverse());
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT).Inverse());
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG).Inverse());
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}>/^<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START ^rdf:Alt/^rdf:Bag rdf:type", System.StringComparison.Ordinal));
@@ -202,20 +188,18 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeSteps()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) ]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG) ]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(1, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
-        Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
-        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (rdf:Alt|rdf:Bag) rdf:type", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt|rdf:Bag rdf:type", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
     }
 
@@ -223,20 +207,18 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeStepsWithInverseFirst()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse(),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) ]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT).Inverse(),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG) ]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(1, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
-        Assert.IsTrue(propertyPath.ToString().Equals($"?START (^<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
-        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (^rdf:Alt|rdf:Bag) rdf:type", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START ^rdf:Alt|rdf:Bag rdf:type", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
     }
 
@@ -244,20 +226,18 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeStepsWithInverseLast()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.BAG).Inverse() ]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG).Inverse() ]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(1, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
-        Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|^<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
-        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (rdf:Alt|^rdf:Bag) rdf:type", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>|^<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt|^rdf:Bag rdf:type", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
     }
 
@@ -265,20 +245,18 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeStepsWithInverseBoth()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse(),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.BAG).Inverse() ]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT).Inverse(),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG).Inverse() ]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(1, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
-        Assert.IsTrue(propertyPath.ToString().Equals($"?START (^<{RDFVocabulary.RDF.ALT}>|^<{RDFVocabulary.RDF.BAG}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
-        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (^rdf:Alt|^rdf:Bag) rdf:type", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString().Equals($"?START ^<{RDFVocabulary.RDF.ALT}>|^<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START ^rdf:Alt|^rdf:Bag rdf:type", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
     }
 
@@ -286,16 +264,14 @@ public class RDFPropertyPathTest
     public void ShouldAddSingleAlternativeStepsBecomingSequenceStepBecauseSingle()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.ALT)]);
+        propertyPath.AddAlternativeSteps([RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT)]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(1, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(1, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt rdf:type", System.StringComparison.Ordinal));
@@ -306,17 +282,15 @@ public class RDFPropertyPathTest
     public void ShouldAddMultipleAlternativeStepsBecomingSequenceStepBecauseSingle()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.ALT)]);
-        propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.BAG)]);
+        propertyPath.AddAlternativeSteps([RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT)]);
+        propertyPath.AddAlternativeSteps([RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG)]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(2, propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/<{RDFVocabulary.RDF.BAG}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt/rdf:Bag rdf:type", System.StringComparison.Ordinal));
@@ -324,25 +298,25 @@ public class RDFPropertyPathTest
     }
 
     [TestMethod]
-    public void ShouldAddMultipleAlternativeStepsAndMerge()
+    public void ShouldAddTwoDistinctAlternativeUnitsInSequence()
     {
+        //Two alternative units stay distinct sequence units (a|b)/(b|c) — the flat model used to wrongly collapse
+        //them into a single 4-way alternative; the tree model keeps them separate.
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.ALT),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.BAG) ]);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG) ]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.SEQ) ]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(4, propertyPath.Steps);
-        Assert.AreEqual(1, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
-        Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
-        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (rdf:Alt|rdf:Bag|rdf:Bag|rdf:Seq) rdf:type", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.ALT}>|<{RDFVocabulary.RDF.BAG}>)/(<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
+        Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (rdf:Alt|rdf:Bag)/(rdf:Bag|rdf:Seq) rdf:type", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.PatternGroupMemberID.Equals(RDFModelUtilities.CreateHash(propertyPath.PatternGroupMemberStringID)));
     }
 
@@ -350,18 +324,16 @@ public class RDFPropertyPathTest
     public void ShouldAddMixedStepsSequentialAlternatives()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT));
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.SEQ)]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(3, propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START <{RDFVocabulary.RDF.ALT}>/(<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START rdf:Alt/(rdf:Bag|rdf:Seq) rdf:type", System.StringComparison.Ordinal));
@@ -372,18 +344,16 @@ public class RDFPropertyPathTest
     public void ShouldAddMixedStepsAlternativesSequential()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.SEQ)]);
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT));
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(3, propertyPath.Steps);
-        Assert.AreEqual(2, propertyPath.Depth);
+        Assert.AreEqual(2, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>)/<{RDFVocabulary.RDF.ALT}> <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (rdf:Bag|rdf:Seq)/rdf:Alt rdf:type", System.StringComparison.Ordinal));
@@ -394,20 +364,18 @@ public class RDFPropertyPathTest
     public void ShouldAddMixedStepsAlternativesSequentialAlternatives()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.SEQ)]);
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT));
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.SEQ)]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(5, propertyPath.Steps);
-        Assert.AreEqual(3, propertyPath.Depth);
+        Assert.AreEqual(3, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>)/<{RDFVocabulary.RDF.ALT}>/(<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (rdf:Bag|rdf:Seq)/rdf:Alt/(rdf:Bag|rdf:Seq) rdf:type", System.StringComparison.Ordinal));
@@ -418,20 +386,18 @@ public class RDFPropertyPathTest
     public void ShouldAddMixedStepsAlternativesInverseSequentialAlternatives()
     {
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), RDFVocabulary.RDF.TYPE);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.ALT).Inverse());
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ)]);
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.SEQ)]);
+        propertyPath.AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.ALT).Inverse());
+        propertyPath.AddAlternativeSteps([ RDFPropertyPathExpression.Link(RDFVocabulary.RDF.BAG),
+            RDFPropertyPathExpression.Link(RDFVocabulary.RDF.SEQ)]);
 
         Assert.IsNotNull(propertyPath);
         Assert.IsNotNull(propertyPath.Start);
         Assert.IsTrue(propertyPath.Start.Equals(new RDFVariable("?START")));
         Assert.IsNotNull(propertyPath.End);
         Assert.IsTrue(propertyPath.End.Equals(RDFVocabulary.RDF.TYPE));
-        Assert.IsNotNull(propertyPath.Steps);
-        Assert.HasCount(5, propertyPath.Steps);
-        Assert.AreEqual(3, propertyPath.Depth);
+        Assert.AreEqual(3, propertyPath.SequenceUnits.Count);
         Assert.IsTrue(propertyPath.IsEvaluable);
         Assert.IsTrue(propertyPath.ToString().Equals($"?START (<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>)/^<{RDFVocabulary.RDF.ALT}>/(<{RDFVocabulary.RDF.BAG}>|<{RDFVocabulary.RDF.SEQ}>) <{RDFVocabulary.RDF.TYPE}>", System.StringComparison.Ordinal));
         Assert.IsTrue(propertyPath.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("?START (rdf:Bag|rdf:Seq)/^rdf:Alt/(rdf:Bag|rdf:Seq) rdf:type", System.StringComparison.Ordinal));
@@ -441,205 +407,18 @@ public class RDFPropertyPathTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullAlternativeStep()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddAlternativeSteps(null));
+            .AddAlternativeSteps((List<RDFPropertyPathExpression>)null));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseEmptyAlternativeStep()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddAlternativeSteps([]));
+            .AddAlternativeSteps(new List<RDFPropertyPathExpression>()));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingPropertyPathBecauseNullPropertyPathStepInAlternativeSteps()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddAlternativeSteps([null]));
+            .AddAlternativeSteps(new List<RDFPropertyPathExpression> { null }));
 
-    [TestMethod]
-    public void ShouldGetPatternListFromEmptyPropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.IsEmpty(patternEntries);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromUniqueSequencePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE));
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(1, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[0].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromUniqueSequenceInversePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE).Inverse());
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(1, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?END")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?START"))&& !patternEntries[0].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromUniqueAlternativePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE)]);
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(1, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[0].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromUniqueAlternativeInversePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE).Inverse()]);
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(1, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?END")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?START")) && !patternEntries[0].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromMultipleSequencePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.LI));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.REST));
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(3, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?__PP0")) && !patternEntries[0].MergeWithNext);
-        Assert.IsTrue(patternEntries[1].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[1].Pattern.Predicate.Equals(RDFVocabulary.RDF.LI) && patternEntries[1].Pattern.Object.Equals(new RDFVariable("?__PP1")) && !patternEntries[1].MergeWithNext);
-        Assert.IsTrue(patternEntries[2].Pattern.Subject.Equals(new RDFVariable("?__PP1")) && patternEntries[2].Pattern.Predicate.Equals(RDFVocabulary.RDF.REST) && patternEntries[2].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[2].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromMultipleSequenceInversePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE).Inverse());
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.LI));
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.REST));
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(3, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?START")) && !patternEntries[0].MergeWithNext);
-        Assert.IsTrue(patternEntries[1].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[1].Pattern.Predicate.Equals(RDFVocabulary.RDF.LI) && patternEntries[1].Pattern.Object.Equals(new RDFVariable("?__PP1")) && !patternEntries[1].MergeWithNext);
-        Assert.IsTrue(patternEntries[2].Pattern.Subject.Equals(new RDFVariable("?__PP1")) && patternEntries[2].Pattern.Predicate.Equals(RDFVocabulary.RDF.REST) && patternEntries[2].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[2].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromSingleAlternativePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(3, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[0].MergeWithNext);
-        Assert.IsTrue(patternEntries[1].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[1].Pattern.Predicate.Equals(RDFVocabulary.RDF.LI) && patternEntries[1].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[1].MergeWithNext);
-        Assert.IsTrue(patternEntries[2].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[2].Pattern.Predicate.Equals(RDFVocabulary.RDF.REST) && patternEntries[2].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[2].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromMultipleAlternativePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(5, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[0].MergeWithNext);
-        Assert.IsTrue(patternEntries[1].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[1].Pattern.Predicate.Equals(RDFVocabulary.RDF.LI) && patternEntries[1].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[1].MergeWithNext);
-        Assert.IsTrue(patternEntries[2].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[2].Pattern.Predicate.Equals(RDFVocabulary.RDF.REST) && patternEntries[2].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[2].MergeWithNext);
-        Assert.IsTrue(patternEntries[3].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[3].Pattern.Predicate.Equals(RDFVocabulary.RDF.BAG) && patternEntries[3].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[3].MergeWithNext);
-        Assert.IsTrue(patternEntries[4].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[4].Pattern.Predicate.Equals(RDFVocabulary.RDF.SEQ) && patternEntries[4].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[4].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromMultipleAlternativeAndSequenceMiddlePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.HTML));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(6, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?__PP0")) && patternEntries[0].MergeWithNext);
-        Assert.IsTrue(patternEntries[1].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[1].Pattern.Predicate.Equals(RDFVocabulary.RDF.LI) && patternEntries[1].Pattern.Object.Equals(new RDFVariable("?__PP0")) && patternEntries[1].MergeWithNext);
-        Assert.IsTrue(patternEntries[2].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[2].Pattern.Predicate.Equals(RDFVocabulary.RDF.REST) && patternEntries[2].Pattern.Object.Equals(new RDFVariable("?__PP0")) && !patternEntries[2].MergeWithNext);
-        Assert.IsTrue(patternEntries[3].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[3].Pattern.Predicate.Equals(RDFVocabulary.RDF.HTML) && patternEntries[3].Pattern.Object.Equals(new RDFVariable("?__PP3")) && !patternEntries[3].MergeWithNext);
-        Assert.IsTrue(patternEntries[4].Pattern.Subject.Equals(new RDFVariable("?__PP3")) && patternEntries[4].Pattern.Predicate.Equals(RDFVocabulary.RDF.BAG) && patternEntries[4].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[4].MergeWithNext);
-        Assert.IsTrue(patternEntries[5].Pattern.Subject.Equals(new RDFVariable("?__PP3")) && patternEntries[5].Pattern.Predicate.Equals(RDFVocabulary.RDF.SEQ) && patternEntries[5].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[5].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromMultipleAlternativeAndSequenceMiddleAndInversePropertyPath()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.LI).Inverse(),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.REST).Inverse() ]);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.HTML));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.BAG),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.SEQ) ]);
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(6, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?__PP0")) && patternEntries[0].MergeWithNext);
-        Assert.IsTrue(patternEntries[1].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[1].Pattern.Predicate.Equals(RDFVocabulary.RDF.LI) && patternEntries[1].Pattern.Object.Equals(new RDFVariable("?START")) && patternEntries[1].MergeWithNext);
-        Assert.IsTrue(patternEntries[2].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[2].Pattern.Predicate.Equals(RDFVocabulary.RDF.REST) && patternEntries[2].Pattern.Object.Equals(new RDFVariable("?START")) && !patternEntries[2].MergeWithNext);
-        Assert.IsTrue(patternEntries[3].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[3].Pattern.Predicate.Equals(RDFVocabulary.RDF.HTML) && patternEntries[3].Pattern.Object.Equals(new RDFVariable("?__PP3")) && !patternEntries[3].MergeWithNext);
-        Assert.IsTrue(patternEntries[4].Pattern.Subject.Equals(new RDFVariable("?__PP3")) && patternEntries[4].Pattern.Predicate.Equals(RDFVocabulary.RDF.BAG) && patternEntries[4].Pattern.Object.Equals(new RDFVariable("?END")) && patternEntries[4].MergeWithNext);
-        Assert.IsTrue(patternEntries[5].Pattern.Subject.Equals(new RDFVariable("?__PP3")) && patternEntries[5].Pattern.Predicate.Equals(RDFVocabulary.RDF.SEQ) && patternEntries[5].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[5].MergeWithNext);
-    }
-
-    [TestMethod]
-    public void ShouldGetPatternListFromMultipleAlternativePropertyPathEndingWithSequence()
-    {
-        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
-        propertyPath.AddAlternativeSteps([ new RDFPropertyPathStep(RDFVocabulary.RDF.TYPE),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.LI),
-            new RDFPropertyPathStep(RDFVocabulary.RDF.REST) ]);
-        propertyPath.AddSequenceStep(new RDFPropertyPathStep(RDFVocabulary.RDF.HTML));
-        var patternEntries = propertyPath.GetPatternList();
-
-        Assert.IsNotNull(patternEntries);
-        Assert.HasCount(4, patternEntries);
-        Assert.IsTrue(patternEntries[0].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[0].Pattern.Predicate.Equals(RDFVocabulary.RDF.TYPE) && patternEntries[0].Pattern.Object.Equals(new RDFVariable("?__PP0")) && patternEntries[0].MergeWithNext);
-        Assert.IsTrue(patternEntries[1].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[1].Pattern.Predicate.Equals(RDFVocabulary.RDF.LI) && patternEntries[1].Pattern.Object.Equals(new RDFVariable("?__PP0")) && patternEntries[1].MergeWithNext);
-        Assert.IsTrue(patternEntries[2].Pattern.Subject.Equals(new RDFVariable("?START")) && patternEntries[2].Pattern.Predicate.Equals(RDFVocabulary.RDF.REST) && patternEntries[2].Pattern.Object.Equals(new RDFVariable("?__PP0")) && !patternEntries[2].MergeWithNext);
-        Assert.IsTrue(patternEntries[3].Pattern.Subject.Equals(new RDFVariable("?__PP0")) && patternEntries[3].Pattern.Predicate.Equals(RDFVocabulary.RDF.HTML) && patternEntries[3].Pattern.Object.Equals(new RDFVariable("?END")) && !patternEntries[3].MergeWithNext);
-    }
     #endregion
 
     #region Tests (Algebric)
@@ -681,94 +460,49 @@ public class RDFPropertyPathTest
     [TestMethod]
     public void StepCardinality_Default_IsExactlyOne()
     {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne, step.StepCardinality);
-        Assert.AreEqual(1, step.MinCardinality);
-        Assert.AreEqual(1, step.MaxCardinality);
+        RDFPropertyPathExpression step = RDFPropertyPathExpression.Link(Knows);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne, step.Cardinality);
     }
 
     [TestMethod]
     public void StepCardinality_ZeroOrOne_Fluent()
     {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).ZeroOrOne();
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne, step.StepCardinality);
-        Assert.AreEqual(0, step.MinCardinality);
-        Assert.AreEqual(1, step.MaxCardinality);
+        RDFPropertyPathExpression step = RDFPropertyPathExpression.Link(Knows).ZeroOrOne();
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne, step.Cardinality);
     }
 
     [TestMethod]
     public void StepCardinality_OneOrMore_Fluent()
     {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).OneOrMore();
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, step.StepCardinality);
-        Assert.AreEqual(1, step.MinCardinality);
-        Assert.AreEqual(-1, step.MaxCardinality);
+        RDFPropertyPathExpression step = RDFPropertyPathExpression.Link(Knows).OneOrMore();
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, step.Cardinality);
     }
 
     [TestMethod]
     public void StepCardinality_ZeroOrMore_Fluent()
     {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).ZeroOrMore();
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore, step.StepCardinality);
-        Assert.AreEqual(0, step.MinCardinality);
-        Assert.AreEqual(-1, step.MaxCardinality);
+        RDFPropertyPathExpression step = RDFPropertyPathExpression.Link(Knows).ZeroOrMore();
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore, step.Cardinality);
     }
-
-    [TestMethod]
-    public void StepCardinality_BoundedRange_Fluent()
-    {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).BoundedRange(2, 4);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.BoundedRange, step.StepCardinality);
-        Assert.AreEqual(2, step.MinCardinality);
-        Assert.AreEqual(4, step.MaxCardinality);
-    }
-
-    [TestMethod]
-    public void StepCardinality_Repeat_NegativeMin_Throws()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).BoundedRange(-1, 2));
-
-    [TestMethod]
-    public void StepCardinality_Repeat_MaxLessThanMin_Throws()
-        => Assert.ThrowsExactly<RDFQueryException>(() => new RDFPropertyPathStep(Knows).BoundedRange(3, 1));
 
     [TestMethod]
     public void StepCardinality_InverseCombines_WithCardinality()
     {
-        RDFPropertyPathStep step = new RDFPropertyPathStep(Knows).Inverse().OneOrMore();
-        Assert.IsTrue(step.IsInverseStep);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, step.StepCardinality);
+        RDFPropertyPathExpression step = RDFPropertyPathExpression.Link(Knows).Inverse().OneOrMore();
+        //Cardinality is applied before inverse: the cardinality wraps the inverse link in an explicit group (^P)+,
+        //so the outer node carries the cardinality and the inner (child) node carries the inverse
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, step.Cardinality);
+        Assert.IsFalse(step.IsInverse);
+        Assert.IsTrue(step.Children[0].IsInverse && step.Children[0].Property.Equals(Knows));
     }
 
-    [TestMethod]
-    public void PropertyPath_HasTransitiveSteps_FalseByDefault()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows));
-        Assert.IsFalse(path.HasTransitiveSteps);
-    }
-
-    [TestMethod]
-    public void PropertyPath_HasTransitiveSteps_TrueForOneOrMore()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
-        Assert.IsTrue(path.HasTransitiveSteps);
-    }
-
-    [TestMethod]
-    public void PropertyPath_HasTransitiveSteps_TrueForZeroOrMore()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
-        Assert.IsTrue(path.HasTransitiveSteps);
-    }
 
     [TestMethod]
     public void PropertyPath_IsEvaluable_TrueForTransitiveSingleStepWithConcreteEnds()
     {
         // A transitive step with concrete start/end and Depth=1 should still be evaluable
         RDFPropertyPath path = new RDFPropertyPath(Alice, Bob)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
         Assert.IsTrue(path.IsEvaluable);
     }
 
@@ -781,7 +515,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -800,7 +534,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -819,7 +553,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, Dave)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -831,7 +565,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(Dave, Alice)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -844,7 +578,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildTestGraph();
         // dave ^knows+ ?e  => alice, bob, carol reachable via reverse knows
         RDFPropertyPath path = new RDFPropertyPath(Dave, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).Inverse().OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -862,7 +596,7 @@ public class RDFPropertyPathTest
         // linear chain: no cycles
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -882,7 +616,7 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -903,7 +637,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -919,7 +653,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -940,7 +674,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -957,7 +691,7 @@ public class RDFPropertyPathTest
     {
         RDFGraph graph = BuildTestGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -978,7 +712,7 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -1000,7 +734,7 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Bob,   Knows, Alice));
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -1023,7 +757,7 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Carol, Knows, Alice));
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -1047,7 +781,7 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Carol, Knows, Alice));
 
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -1060,78 +794,6 @@ public class RDFPropertyPathTest
         Assert.IsTrue(rows.Any(p => p.s == Alice.ToString() && p.e == Alice.ToString()), "alice reaches itself");
         Assert.IsTrue(rows.Any(p => p.s == Bob.ToString()   && p.e == Alice.ToString()), "bob reaches alice via cycle");
         Assert.IsTrue(rows.Any(p => p.s == Carol.ToString() && p.e == Bob.ToString()),   "carol reaches bob via cycle");
-    }
-
-    #endregion
-
-    #region Engine — BoundedRange (prop{n,m})
-
-    [TestMethod]
-    public void Engine_BoundedRange_Exact2()
-    {
-        RDFGraph graph = BuildTestGraph();
-        // alice knows{2} ?e  => carol (exactly 2 hops)
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.Contains(Carol.ToString(), ends);
-        Assert.DoesNotContain(Bob.ToString(), ends,  "1-hop not expected");
-        Assert.DoesNotContain(Dave.ToString(), ends, "3-hop not expected");
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_1To3()
-    {
-        RDFGraph graph = BuildTestGraph();
-        // alice knows{1,3} ?e  => bob, carol, dave
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 3));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.Contains(Bob.ToString(), ends);
-        Assert.Contains(Carol.ToString(), ends);
-        Assert.Contains(Dave.ToString(), ends);
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_ZeroMin_IncludesSelf()
-    {
-        RDFGraph graph = BuildTestGraph();
-        // alice knows{0,2} ?e  => alice, bob, carol
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(0, 2));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.Contains(Alice.ToString(), ends, "0 hops => self");
-        Assert.Contains(Bob.ToString(), ends);
-        Assert.Contains(Carol.ToString(), ends);
-        Assert.DoesNotContain(Dave.ToString(), ends, "3-hop exceeds max=2");
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_EmptyResult_TooFewEdges()
-    {
-        RDFGraph graph = BuildTestGraph(); // chain length = 3 hops max
-        // alice knows{5,7} ?e  => no results (chain too short)
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(5, 7));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, graph);
-        Assert.AreEqual(0, result.RowsCount);
     }
 
     #endregion
@@ -1149,8 +811,8 @@ public class RDFPropertyPathTest
 
         // alice parent/knows+ ?e  => all nodes reachable from carol via knows+
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Parent))
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Parent))
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -1174,8 +836,8 @@ public class RDFPropertyPathTest
 
         // ?s knows+/parent ?e
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())
-            .AddSequenceStep(new RDFPropertyPathStep(Parent));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Parent));
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, graph);
@@ -1204,8 +866,8 @@ public class RDFPropertyPathTest
         // alice (knows+|parent+) ?e  =  knows+ from alice UNION parent+ from alice
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
             .AddAlternativeSteps([
-                new RDFPropertyPathStep(Knows).OneOrMore(),
-                new RDFPropertyPathStep(Parent).OneOrMore()
+                RDFPropertyPathExpression.Link(Knows).OneOrMore(),
+                RDFPropertyPathExpression.Link(Parent).OneOrMore()
             ]);
 
         RDFQueryEngine engine = new RDFQueryEngine();
@@ -1232,7 +894,7 @@ public class RDFPropertyPathTest
         store.AddQuadruple(new RDFQuadruple(ctx, Bob,   Knows, Carol));
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, store);
@@ -1251,7 +913,7 @@ public class RDFPropertyPathTest
         store.AddQuadruple(new RDFQuadruple(ctx, Alice, Knows, Bob));
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, store);
@@ -1283,7 +945,7 @@ public class RDFPropertyPathTest
             .AddGraph(graph2);
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, federation);
@@ -1313,7 +975,7 @@ public class RDFPropertyPathTest
             .AddStore(store);
 
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, federation);
@@ -1323,38 +985,6 @@ public class RDFPropertyPathTest
         Assert.Contains(Alice.ToString(), ends, "alice — zero hops (self)");
         Assert.Contains(Bob.ToString(), ends,   "bob — from graph source");
         Assert.Contains(Carol.ToString(), ends, "carol — from store source");
-    }
-
-    [TestMethod]
-    public void Engine_BoundedRange_Federation_NestedFederation_ExactHops()
-    {
-        // Bounded range {2,3}: only nodes reachable in 2 or 3 hops must appear.
-        // Data is nested inside a sub-federation to exercise the nested-federation code path.
-        // Chain: alice→bob(1)→carol(2)→dave(3)→eve(4)
-        RDFGraph innerGraph = new RDFGraph();
-        innerGraph.AddTriple(new RDFTriple(Alice, Knows, Bob));
-        innerGraph.AddTriple(new RDFTriple(Bob,   Knows, Carol));
-
-        RDFGraph outerGraph = new RDFGraph();
-        outerGraph.AddTriple(new RDFTriple(Carol, Knows, Dave));
-        outerGraph.AddTriple(new RDFTriple(Dave,  Knows, Eve));
-
-        RDFFederation federation = new RDFFederation()
-            .AddFederation(new RDFFederation().AddGraph(innerGraph))
-            .AddGraph(outerGraph);
-
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 3));
-
-        RDFQueryEngine engine = new RDFQueryEngine();
-        RDFTable result = engine.ApplyPropertyPath(path, federation);
-
-        HashSet<string> ends = result.Rows
-            .Select(r => r["?E"].ToString()).ToHashSet();
-        Assert.DoesNotContain(Bob.ToString(), ends,  "bob — 1 hop, below range");
-        Assert.Contains(Carol.ToString(), ends, "carol — 2 hops, in range");
-        Assert.Contains(Dave.ToString(), ends,  "dave — 3 hops, in range");
-        Assert.DoesNotContain(Eve.ToString(), ends,  "eve — 4 hops, above range");
     }
 
     [TestMethod]
@@ -1374,7 +1004,7 @@ public class RDFPropertyPathTest
             .AddGraph(graph2);
 
         RDFPropertyPath path = new RDFPropertyPath(Dave, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).Inverse().OneOrMore());
 
         RDFQueryEngine engine = new RDFQueryEngine();
         RDFTable result = engine.ApplyPropertyPath(path, federation);
@@ -1395,7 +1025,7 @@ public class RDFPropertyPathTest
     public void Printer_SingleStep_ZeroOrOne()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne());
         string printed = path.ToString();
         Assert.IsTrue(printed.Contains("knows>?") || printed.Contains("knows?"), $"Printed: {printed}");
     }
@@ -1404,7 +1034,7 @@ public class RDFPropertyPathTest
     public void Printer_SingleStep_OneOrMore()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore());
         string printed = path.ToString();
         Assert.IsTrue(printed.Contains("knows>+") || printed.Contains("knows+"), $"Printed: {printed}");
     }
@@ -1413,43 +1043,26 @@ public class RDFPropertyPathTest
     public void Printer_SingleStep_ZeroOrMore()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore());
         string printed = path.ToString();
         Assert.IsTrue(printed.Contains("knows>*") || printed.Contains("knows*"), $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_BoundedRange()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 4));
-        string printed = path.ToString();
-        Assert.Contains("{2,4}", printed, $"Printed: {printed}");
-    }
-
-    [TestMethod]
-    public void Printer_SingleStep_BoundedRange_ExactCount()
-    {
-        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(3, 3));
-        string printed = path.ToString();
-        Assert.Contains("{3}", printed, $"Printed: {printed}");
     }
 
     [TestMethod]
     public void Printer_InverseStep_OneOrMore()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).Inverse().OneOrMore());
         string printed = path.ToString();
-        Assert.IsTrue(printed.Contains('^') && (printed.Contains("knows>+") || printed.Contains("knows+")), $"Printed: {printed}");
+        //Cardinality-before-inverse renders as an explicit group: (^<...knows>)+
+        Assert.IsTrue(printed.Contains('^') && printed.Contains(")+"), $"Printed: {printed}");
     }
 
     [TestMethod]
     public void Printer_Optional_SetsFlags()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows))
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows))
             .Optional();
         Assert.IsTrue(path.IsOptional);
     }
@@ -1458,7 +1071,7 @@ public class RDFPropertyPathTest
     public void Printer_Optional_WrapsOutputWithOptional()
     {
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())
             .Optional();
         string printed = path.ToString();
         Assert.IsTrue(printed.StartsWith("OPTIONAL {", StringComparison.Ordinal), $"Expected OPTIONAL prefix, got: {printed}");
@@ -1477,7 +1090,7 @@ public class RDFPropertyPathTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         Assert.IsGreaterThanOrEqualTo(3, result.SelectResultsCount);
@@ -1490,7 +1103,7 @@ public class RDFPropertyPathTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore())));
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         HashSet<string> ends = result.SelectResults.Rows.Cast<DataRow>()
@@ -1505,24 +1118,11 @@ public class RDFPropertyPathTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(VarS, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne())));
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         // Self-pairs included + direct knows pairs
         Assert.IsGreaterThan(3, result.SelectResultsCount);
-    }
-
-    [TestMethod]
-    public void SelectQuery_BoundedRange_Exact()
-    {
-        RDFGraph graph = BuildTestGraph();
-        RDFSelectQuery query = new RDFSelectQuery()
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
-
-        RDFSelectQueryResult result = query.ApplyToGraph(graph);
-        Assert.AreEqual(1, result.SelectResultsCount); // only carol
     }
 
     [TestMethod]
@@ -1532,7 +1132,7 @@ public class RDFPropertyPathTest
         RDFAskQuery query = new RDFAskQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, Dave)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         RDFAskQueryResult result = query.ApplyToGraph(graph);
         Assert.IsTrue(result.AskResult);
@@ -1545,7 +1145,7 @@ public class RDFPropertyPathTest
         RDFAskQuery query = new RDFAskQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Dave, Alice)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         RDFAskQueryResult result = query.ApplyToGraph(graph);
         Assert.IsFalse(result.AskResult);
@@ -1558,7 +1158,7 @@ public class RDFPropertyPathTest
         RDFAskQuery query = new RDFAskQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, Alice)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore())));
 
         RDFAskQueryResult result = query.ApplyToGraph(graph);
         Assert.IsTrue(result.AskResult); // zero hops: alice -> alice
@@ -1576,7 +1176,7 @@ public class RDFPropertyPathTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(VarS, Type, Person))
                 .AddPropertyPath(new RDFPropertyPath(VarS, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         RDFSelectQueryResult result = query.ApplyToGraph(graph);
         // alice's reachable: bob, carol, dave; bob's reachable: carol, dave
@@ -1600,7 +1200,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Reached, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1620,7 +1220,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(VarS, Ancestor, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(VarS, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1640,7 +1240,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Related, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1658,49 +1258,13 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne())));
 
         op.ApplyToGraph(graph);
 
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Alice))); // 0 hops
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));   // 1 hop
         Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));// no 2-hops
-    }
-
-    [TestMethod]
-    public void InsertWhere_BoundedRange_Exact2()
-    {
-        // WHERE { alice ex:knows{2,2} ?e } INSERT { alice ex:tag ?e }
-        RDFGraph graph = BuildTestGraph();
-        RDFInsertWhereOperation op = new RDFInsertWhereOperation()
-            .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Dave)));
-    }
-
-    [TestMethod]
-    public void InsertWhere_BoundedRange_1To2()
-    {
-        // WHERE { alice ex:knows{1,2} ?e } INSERT { alice ex:tag ?e }
-        RDFGraph graph = BuildTestGraph();
-        RDFInsertWhereOperation op = new RDFInsertWhereOperation()
-            .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Dave)));
     }
 
     [TestMethod]
@@ -1712,7 +1276,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Dave, Ancestor, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Dave, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).Inverse().OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1731,7 +1295,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Dave, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Dave, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
         Assert.AreEqual(before, graph.TriplesCount);
@@ -1755,7 +1319,7 @@ public class RDFPropertyPathTest
             .AddDeleteTemplate(new RDFPattern(Alice, Reached, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1778,7 +1342,7 @@ public class RDFPropertyPathTest
             .AddDeleteTemplate(new RDFPattern(Alice, Related, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1799,34 +1363,13 @@ public class RDFPropertyPathTest
             .AddDeleteTemplate(new RDFPattern(Alice, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne())));
 
         op.ApplyToGraph(graph);
 
         Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Alice)));
         Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol))); // not matched (2 hops)
-    }
-
-    [TestMethod]
-    public void DeleteWhere_BoundedRange_Exact2()
-    {
-        RDFGraph graph = BuildTestGraph();
-        graph.AddTriple(new RDFTriple(Alice, Tag, Bob));
-        graph.AddTriple(new RDFTriple(Alice, Tag, Carol));
-        graph.AddTriple(new RDFTriple(Alice, Tag, Dave));
-
-        RDFDeleteWhereOperation op = new RDFDeleteWhereOperation()
-            .AddDeleteTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(2, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));   // 1-hop, not deleted
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));// 2-hop, deleted
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Dave)));  // 3-hop, not deleted
     }
 
     [TestMethod]
@@ -1841,7 +1384,7 @@ public class RDFPropertyPathTest
             .AddDeleteTemplate(new RDFPattern(Dave, Ancestor, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Dave, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).Inverse().OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1860,7 +1403,7 @@ public class RDFPropertyPathTest
             .AddDeleteTemplate(new RDFPattern(Eve, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Eve, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
         Assert.AreEqual(before, graph.TriplesCount);
@@ -1882,7 +1425,7 @@ public class RDFPropertyPathTest
             .AddDeleteTemplate(new RDFPattern(VarS, Ancestor, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(VarS, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1907,7 +1450,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Tagged, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1927,7 +1470,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Related, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -1944,39 +1487,13 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrOne())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrOne())));
 
         op.ApplyToGraph(graph);
 
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Alice)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
         Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));
-    }
-
-    [TestMethod]
-    public void DeleteInsertWhere_BoundedRange_DeleteOnlyInRange()
-    {
-        RDFGraph graph = BuildTestGraph();
-        graph.AddTriple(new RDFTriple(Alice, Reached, Bob));
-        graph.AddTriple(new RDFTriple(Alice, Reached, Carol));
-        graph.AddTriple(new RDFTriple(Alice, Reached, Dave));
-
-        // DELETE { alice reached ?e } INSERT { alice tagged ?e } WHERE { alice knows{1,2} ?e }
-        RDFDeleteInsertWhereOperation op = new RDFDeleteInsertWhereOperation()
-            .AddDeleteTemplate(new RDFPattern(Alice, Reached, VarE))
-            .AddInsertTemplate(new RDFPattern(Alice, Tagged, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(1, 2))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Reached, Bob)));   // in {1,2} → deleted
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Reached, Carol))); // in {1,2} → deleted
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Reached, Dave)));   // out of {1,2} → kept
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tagged, Bob)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tagged, Carol)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tagged, Dave)));
     }
 
     [TestMethod]
@@ -1991,7 +1508,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Reached, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToStore(store);
 
@@ -2020,7 +1537,7 @@ public class RDFPropertyPathTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(VarS, Parent, VarX))
                 .AddPropertyPath(new RDFPropertyPath(VarX, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -2045,7 +1562,7 @@ public class RDFPropertyPathTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(VarS, Parent, VarX))
                 .AddPropertyPath(new RDFPropertyPath(VarX, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -2063,7 +1580,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Reached, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(VarS, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()))
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()))
                 .AddFilter(new RDFExpressionFilter(
                     new RDFComparisonExpression(
                         RDFQueryEnums.RDFComparisonFlavors.EqualTo,
@@ -2074,23 +1591,6 @@ public class RDFPropertyPathTest
 
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Reached, Bob)));
         Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Reached, Dave)));
-    }
-
-    [TestMethod]
-    public void InsertWhere_BoundedRange_ZeroMin_IncludesSelf()
-    {
-        RDFGraph graph = BuildTestGraph();
-        RDFInsertWhereOperation op = new RDFInsertWhereOperation()
-            .AddInsertTemplate(new RDFPattern(Alice, Tag, VarE))
-            .AddPatternGroup(new RDFPatternGroup()
-                .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).BoundedRange(0, 1))));
-
-        op.ApplyToGraph(graph);
-
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Alice)));
-        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(Alice, Tag, Bob)));
-        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(Alice, Tag, Carol)));
     }
 
     [TestMethod]
@@ -2105,7 +1605,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Reached, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -2132,7 +1632,7 @@ public class RDFPropertyPathTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(VarS, Parent, VarX))
                 .AddPropertyPath(new RDFPropertyPath(VarX, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore())));
 
         op.ApplyToGraph(graph);
 
@@ -2155,7 +1655,7 @@ public class RDFPropertyPathTest
             .AddInsertTemplate(new RDFPattern(Alice, Reached, VarE))
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Alice, VarE)
-                    .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore())));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore())));
 
         op.ApplyToGraph(graph); // should terminate, not loop
 
@@ -2269,8 +1769,8 @@ public class RDFPropertyPathTest
         // ZeroOrMore includes Person itself at 0 hops, then climbs to Thing at hop 15.
         RDFGraph graph = BuildSubsumptionGraph();
         RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Type))
-            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Type))
+            .AddSequenceStep(RDFPropertyPathExpression.Link(SubClassOf).ZeroOrMore());
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
@@ -2303,48 +1803,6 @@ public class RDFPropertyPathTest
 
     // ── Test 2 ───────────────────────────────────────────────────────────────
     // Bounded range: only the 6 classes sitting at hops 5–10 from Person.
-    [TestMethod]
-    public void Subsumption_BoundedRange_TypeSubClassOf_5to10_MidHierarchy()
-    {
-        // alice rdf:type/rdfs:subClassOf{5,10} ?class
-        // type lands on Person (L0); subClassOf{5,10} then selects exactly
-        // hops 5 (Primate) … 10 (Organism), skipping both the shallow top
-        // of the human clade and the deep metazoan root.
-        RDFGraph graph = BuildSubsumptionGraph();
-        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Type))
-            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).BoundedRange(5, 10));
-
-        HashSet<string> classes = new RDFQueryEngine()
-            .ApplyPropertyPath(path, graph)
-            .Rows
-            .Select(r => r["?E"].ToString())
-            .ToHashSet();
-
-        // Inside window [5,10]
-        Assert.Contains("ex:Primate", classes,     "L5  Primate  — hop 5 (lower bound)");
-        Assert.Contains("ex:Mammal", classes,      "L6  Mammal   — hop 6");
-        Assert.Contains("ex:Vertebrate", classes,  "L7  Vertebrate — hop 7");
-        Assert.Contains("ex:Chordate", classes,    "L8  Chordate — hop 8");
-        Assert.Contains("ex:Animal", classes,      "L9  Animal   — hop 9");
-        Assert.Contains("ex:Organism", classes,    "L10 Organism — hop 10 (upper bound)");
-
-        // Too shallow (hops 0–4)
-        Assert.DoesNotContain("ex:Person", classes,         "L0 hop 0 — below range");
-        Assert.DoesNotContain("ex:CognitiveAgent", classes, "L1 hop 1 — below range");
-        Assert.DoesNotContain("ex:ModernHuman", classes,    "L2 hop 2 — below range");
-        Assert.DoesNotContain("ex:HomoSapiens", classes,    "L3 hop 3 — below range");
-        Assert.DoesNotContain("ex:Hominid", classes,        "L4 hop 4 — below range");
-
-        // Too deep (hops 11–15)
-        Assert.DoesNotContain("ex:LivingThing", classes,    "L11 hop 11 — above range");
-        Assert.DoesNotContain("ex:PhysicalObject", classes, "L12 hop 12 — above range");
-        Assert.DoesNotContain("ex:Object", classes,         "L13 hop 13 — above range");
-        Assert.DoesNotContain("ex:Entity", classes,         "L14 hop 14 — above range");
-        Assert.DoesNotContain("ex:Thing", classes,          "L15 hop 15 — above range");
-
-        Assert.HasCount(6, classes, "Exactly 6 classes in window [5,10]");
-    }
 
     // ── Test 3 ───────────────────────────────────────────────────────────────
     // Inverse step: ^subClassOf* navigates DOWN the hierarchy from Mammal.
@@ -2357,7 +1815,7 @@ public class RDFPropertyPathTest
         // Classes above Mammal (Vertebrate … Thing) must not appear.
         RDFGraph graph = BuildSubsumptionGraph();
         RDFPropertyPath path = new RDFPropertyPath(new RDFResource("ex:Mammal"), VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).Inverse().ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(SubClassOf).Inverse().ZeroOrMore());
 
         HashSet<string> subs = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
@@ -2398,9 +1856,9 @@ public class RDFPropertyPathTest
         // step before entering the 16-level transitive closure.
         RDFGraph graph = BuildSubsumptionGraph();
         RDFPropertyPath path = new RDFPropertyPath(Dave, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Type))
-            .AddSequenceStep(new RDFPropertyPathStep(EquivClass))
-            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrMore());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Type))
+            .AddSequenceStep(RDFPropertyPathExpression.Link(EquivClass))
+            .AddSequenceStep(RDFPropertyPathExpression.Link(SubClassOf).ZeroOrMore());
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
@@ -2437,8 +1895,8 @@ public class RDFPropertyPathTest
         // Everything at L5 and above must be absent.
         RDFGraph graph = BuildSubsumptionGraph();
         RDFPropertyPath path = new RDFPropertyPath(Carol, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Type))
-            .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrOne());
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Type))
+            .AddSequenceStep(RDFPropertyPathExpression.Link(SubClassOf).ZeroOrOne());
 
         HashSet<string> classes = new RDFQueryEngine()
             .ApplyPropertyPath(path, graph)
@@ -2481,8 +1939,8 @@ public class RDFPropertyPathTest
         RDFSelectQueryResult result = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(VarS, cMammal)
-                    .AddSequenceStep(new RDFPropertyPathStep(Type))
-                    .AddSequenceStep(new RDFPropertyPathStep(SubClassOf).ZeroOrMore())))
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(Type))
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(SubClassOf).ZeroOrMore())))
             .ApplyToGraph(graph);
 
         HashSet<string> instances = result.SelectResults.Rows.Cast<DataRow>()
@@ -2561,7 +2019,7 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Carol, Knows, Dave));
 
         HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()));
 
         // alice -> b,c,d ; bob -> d ; carol -> d  => 5 distinct pairs, dave reaches nothing
         Assert.HasCount(5, pairs.ToList());
@@ -2582,7 +2040,7 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Carol, Knows, Dave));
 
         HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()));
 
         // Every node of the cycle reaches all cycle members (incl. itself) plus dave
         foreach (RDFResource n in new[] { Alice, Bob, Carol })
@@ -2601,13 +2059,13 @@ public class RDFPropertyPathTest
         graph.AddTriple(new RDFTriple(Alice, Knows, Alice));
 
         HashSet<(string, string)> plus = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()));
         Assert.Contains((Alice.ToString(), Alice.ToString()), plus);
         Assert.HasCount(1, plus.ToList());
 
         // ZeroOrMore must not duplicate the self pair
         HashSet<(string, string)> star = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore()));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore()));
         Assert.Contains((Alice.ToString(), Alice.ToString()), star);
         Assert.HasCount(1, star.ToList());
     }
@@ -2618,7 +2076,7 @@ public class RDFPropertyPathTest
         // Seed pruning must not introduce identity (x,x) rows for an acyclic chain under "+"
         RDFGraph graph = BuildTestGraph(); // alice->bob->carol->dave
         HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()));
 
         Assert.IsFalse(pairs.Any(p => p.Item1 == p.Item2), "Acyclic chain must yield no identity pairs under +");
         Assert.HasCount(6, pairs.ToList()); // (a,b)(a,c)(a,d)(b,c)(b,d)(c,d)
@@ -2631,7 +2089,7 @@ public class RDFPropertyPathTest
         // This guards against the seed pruning wrongly excluding sink nodes for the reflexive case.
         RDFGraph graph = BuildTestGraph();
         HashSet<(string, string)> pairs = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).ZeroOrMore()));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).ZeroOrMore()));
 
         Assert.Contains((Dave.ToString(),  Dave.ToString()),  pairs, "sink-only node keeps its * identity");
         Assert.Contains((Alice.ToString(), Alice.ToString()), pairs);
@@ -2645,7 +2103,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildTestGraph();
         RDFTable result = new RDFQueryEngine().ApplyPropertyPath(
             new RDFPropertyPath(VarS, Dave)
-                .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()), graph);
+                .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()), graph);
 
         HashSet<string> starts = result.Rows.Select(r => r["?S"].ToString()).ToHashSet();
         Assert.Contains(Alice.ToString(), starts);
@@ -2662,7 +2120,7 @@ public class RDFPropertyPathTest
         RDFGraph graph = BuildTestGraph();
         RDFTable result = new RDFQueryEngine().ApplyPropertyPath(
             new RDFPropertyPath(VarS, Alice)
-                .AddSequenceStep(new RDFPropertyPathStep(Knows).Inverse().OneOrMore()), graph);
+                .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).Inverse().OneOrMore()), graph);
 
         // ?s (^knows)+ alice  => nodes reachable from alice following knows forward: bob, carol, dave
         HashSet<string> starts = result.Rows.Select(r => r["?S"].ToString()).ToHashSet();
@@ -2691,7 +2149,7 @@ public class RDFPropertyPathTest
             .ToHashSet();
 
         HashSet<(string, string)> actual = EnginePairs(graph, new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()));
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()));
 
         Assert.IsTrue(expected.SetEquals(actual),
             $"SCC closure diverges from brute force.\nExpected\\Actual: {string.Join(",", expected.Except(actual))}\nActual\\Expected: {string.Join(",", actual.Except(expected))}");
@@ -2711,11 +2169,180 @@ public class RDFPropertyPathTest
             graph.AddTriple(new RDFTriple(nodes[i], Knows, nodes[i + 1]));
 
         RDFTable result = new RDFQueryEngine().ApplyPropertyPath(new RDFPropertyPath(VarS, VarE)
-            .AddSequenceStep(new RDFPropertyPathStep(Knows).OneOrMore()), graph);
+            .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()), graph);
 
         Assert.AreEqual((long)n * (n + 1) / 2, result.RowsCount);
     }
 
+    #endregion
+
+    #endregion
+
+    #region Tests (IP5.3 — recursive forms: negated set, group cardinality, group inverse, composite alternative)
+
+    #region Shared data
+    private static readonly RDFResource Likes = new RDFResource("ex:likes");
+    private static readonly RDFResource Step1 = new RDFResource("ex:step1");
+    private static readonly RDFResource Step2 = new RDFResource("ex:step2");
+
+    //alice -knows-> bob -knows-> carol -knows-> alice (cycle); alice -parent-> bob -parent-> carol; alice -likes-> dave
+    private static RDFGraph BuildSocialGraph()
+    {
+        RDFGraph g = new RDFGraph();
+        g.AddTriple(new RDFTriple(Alice, Knows, Bob));
+        g.AddTriple(new RDFTriple(Bob,   Knows, Carol));
+        g.AddTriple(new RDFTriple(Carol, Knows, Alice));
+        g.AddTriple(new RDFTriple(Alice, Parent, Bob));
+        g.AddTriple(new RDFTriple(Bob,   Parent, Carol));
+        g.AddTriple(new RDFTriple(Alice, Likes, Dave));
+        return g;
+    }
+
+    //A composite 3-cycle: the relation (step1/step2) is { a->b, b->c, c->a } through intermediate nodes
+    private static RDFGraph BuildCompositeCycleGraph()
+    {
+        RDFGraph g = new RDFGraph();
+        g.AddTriple(new RDFTriple(Alice, Step1, new RDFResource("ex:mAB"))); g.AddTriple(new RDFTriple(new RDFResource("ex:mAB"), Step2, Bob));
+        g.AddTriple(new RDFTriple(Bob,   Step1, new RDFResource("ex:mBC"))); g.AddTriple(new RDFTriple(new RDFResource("ex:mBC"), Step2, Carol));
+        g.AddTriple(new RDFTriple(Carol, Step1, new RDFResource("ex:mCA"))); g.AddTriple(new RDFTriple(new RDFResource("ex:mCA"), Step2, Alice));
+        return g;
+    }
+
+    //The set of "?S->?E" pairs (both variable) of a result table
+    private static HashSet<string> StartEndPairs(RDFTable table)
+        => table.Rows.Select(r => $"{r["?S"]}->{r["?E"]}").ToHashSet();
+
+    //The set of "?E" values (concrete start, variable end) of a result table
+    private static HashSet<string> EndValues(RDFTable table)
+        => table.Rows.Select(r => r["?E"].ToString()).ToHashSet();
+    #endregion
+
+    [TestMethod]
+    public void Engine_NegatedPropertySet_ForwardExcludesOnlyTheMember()
+    {
+        //?s !knows ?o -> every forward edge whose predicate is NOT knows (parent and likes edges), no reverse
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(RDFPropertyPathExpression.NegatedPropertySet([(Knows, false)]));
+
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, BuildSocialGraph());
+
+        CollectionAssert.AreEquivalent(
+            new[] { "ex:alice->ex:bob", "ex:bob->ex:carol", "ex:alice->ex:dave" },
+            StartEndPairs(result).ToList());
+    }
+
+    [TestMethod]
+    public void Engine_NegatedPropertySet_InverseMemberTraversesOnlyBackwards()
+    {
+        //?s !^knows ?o -> reverse edges over any predicate but knows; no forward direction
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(RDFPropertyPathExpression.NegatedPropertySet([(Knows, true)]));
+
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, BuildSocialGraph());
+
+        //Reverse of parent {a->b,b->c} and likes {a->d}: {b->a, c->b, d->a}
+        CollectionAssert.AreEquivalent(
+            new[] { "ex:bob->ex:alice", "ex:carol->ex:bob", "ex:dave->ex:alice" },
+            StartEndPairs(result).ToList());
+    }
+
+    [TestMethod]
+    public void Engine_GroupCardinality_TransitiveClosureOverCompositeRelation()
+    {
+        //(step1/step2)+ from alice over the composite 3-cycle reaches every node (cyclic): alice, bob, carol
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(RDFPropertyPathExpression.Sequence([
+                RDFPropertyPathExpression.Link(Step1), RDFPropertyPathExpression.Link(Step2)]).OneOrMore());
+
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, BuildCompositeCycleGraph());
+
+        CollectionAssert.AreEquivalent(
+            new[] { "ex:alice", "ex:bob", "ex:carol" },
+            EndValues(result).ToList());
+    }
+
+    [TestMethod]
+    public void Engine_InverseGroup_ReversesTheWholeAlternative()
+    {
+        //^(knows|parent): reverse of the union knows ∪ parent
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(RDFPropertyPathExpression.Alternative([
+                RDFPropertyPathExpression.Link(Knows), RDFPropertyPathExpression.Link(Parent)]).Inverse());
+
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, BuildSocialGraph());
+
+        //Forward knows∪parent = {a->b,b->c,c->a}; reversed and deduped = {b->a, c->b, a->c}
+        CollectionAssert.AreEquivalent(
+            new[] { "ex:bob->ex:alice", "ex:carol->ex:bob", "ex:alice->ex:carol" },
+            StartEndPairs(result).ToList());
+    }
+
+    [TestMethod]
+    public void Engine_CompositeAlternative_SequenceAsAlternativeBranch()
+    {
+        //(knows/parent)|likes : union of a composite sequence relation and a plain link
+        RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
+            .AddSequenceStep(RDFPropertyPathExpression.Alternative([
+                RDFPropertyPathExpression.Sequence([RDFPropertyPathExpression.Link(Knows), RDFPropertyPathExpression.Link(Parent)]),
+                RDFPropertyPathExpression.Link(Likes)]));
+
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, BuildSocialGraph());
+
+        //knows/parent = {a->c (a knows b, b parent c), c->b (c knows a, a parent b)}; likes = {a->d}
+        CollectionAssert.AreEquivalent(
+            new[] { "ex:alice->ex:carol", "ex:carol->ex:bob", "ex:alice->ex:dave" },
+            StartEndPairs(result).ToList());
+    }
+
+    [TestMethod]
+    public void Engine_GroupCardinality_SelfLoopReachesItself()
+    {
+        //Anti-loop guard: a node with a composite self-loop must terminate and reach itself under '+'
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(Alice, Step1, new RDFResource("ex:mid")));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:mid"), Step2, Alice)); // (step1/step2): alice->alice
+
+        RDFPropertyPath path = new RDFPropertyPath(Alice, VarE)
+            .AddSequenceStep(RDFPropertyPathExpression.Sequence([
+                RDFPropertyPathExpression.Link(Step1), RDFPropertyPathExpression.Link(Step2)]).OneOrMore());
+
+        RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, graph);
+
+        CollectionAssert.AreEquivalent(new[] { "ex:alice" }, EndValues(result).ToList());
+    }
+
+    #region Iso gate (API ⇄ SPARQL) for the recursive forms
+    private static RDFSelectQuery PathQuery(RDFPropertyPathExpression expression)
+        => new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup()
+            .AddPropertyPath(new RDFPropertyPath(VarS, VarE).AddSequenceStep(expression)));
+
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateNegatedPropertySetIso()
+        => RDFTestUtilities.AssertIso(
+            PathQuery(RDFPropertyPathExpression.NegatedPropertySet([(Knows, false), (Parent, true)])),
+            BuildSocialGraph());
+
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateGroupCardinalityIso()
+        => RDFTestUtilities.AssertIso(
+            PathQuery(RDFPropertyPathExpression.Sequence([
+                RDFPropertyPathExpression.Link(Step1), RDFPropertyPathExpression.Link(Step2)]).OneOrMore()),
+            BuildCompositeCycleGraph());
+
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateInverseGroupIso()
+        => RDFTestUtilities.AssertIso(
+            PathQuery(RDFPropertyPathExpression.Alternative([
+                RDFPropertyPathExpression.Link(Knows), RDFPropertyPathExpression.Link(Parent)]).Inverse()),
+            BuildSocialGraph());
+
+    [TestMethod]
+    public void ShouldRoundTripAndEvaluateCompositeAlternativeIso()
+        => RDFTestUtilities.AssertIso(
+            PathQuery(RDFPropertyPathExpression.Alternative([
+                RDFPropertyPathExpression.Sequence([RDFPropertyPathExpression.Link(Knows), RDFPropertyPathExpression.Link(Parent)]),
+                RDFPropertyPathExpression.Link(Likes)])),
+            BuildSocialGraph());
     #endregion
 
     #endregion

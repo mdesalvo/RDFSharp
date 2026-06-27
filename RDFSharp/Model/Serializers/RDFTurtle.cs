@@ -85,7 +85,12 @@ namespace RDFSharp.Model
         internal static RDFGraph Deserialize(Stream inputStream, Uri graphContext)
         {
             RDFGraph result = new RDFGraph().SetContext(graphContext);
-            RDFTurtleContext turtleContext = new RDFTurtleContext();
+            RDFTurtleContext turtleContext = new RDFTurtleContext
+            {
+                //Term-level parsers resolve base IRI and prefixes through this graph-backed resolver, which
+                //reads the graph LIVE so that @base/@prefix directives parsed mid-document are honored
+                Resolver = new RDFGraphTermResolver(result)
+            };
 
             try
             {
@@ -131,6 +136,12 @@ namespace RDFSharp.Model
             /// Pull-style reader over the Turtle input
             /// </summary>
             internal RDFPushbackReader Reader { get; set; }
+
+            /// <summary>
+            /// Supplies base IRI and prefix-to-namespace resolution to the term-level parsers, decoupling
+            /// them from RDFGraph so the very same parsers can be reused by the SPARQL parser.
+            /// </summary>
+            internal RDFTermResolver Resolver { get; set; }
 
             /// <summary>
             /// Indicates the current subject
@@ -456,7 +467,7 @@ namespace RDFSharp.Model
                     break;
                 default:
                     {
-                        object value = ParseValue(turtleContext, result);
+                        object value = ParseValue(turtleContext);
                         switch (value)
                         {
                             case Uri _:
@@ -498,7 +509,7 @@ namespace RDFSharp.Model
             UnreadCodePoint(turtleContext, bufChar1);
 
             // Predicate is a normal resource
-            object predicate = ParseValue(turtleContext, result);
+            object predicate = ParseValue(turtleContext);
             switch (predicate)
             {
                 case Uri _:
@@ -569,7 +580,7 @@ namespace RDFSharp.Model
                     turtleContext.Object = ParseImplicitBlank(turtleContext, result);
                     break;
                 default:
-                    object value = ParseValue(turtleContext, result); //Uri or RDFPatternMember
+                    object value = ParseValue(turtleContext); //Uri or RDFPatternMember
                     switch (value)
                     {
                         case Uri _:
@@ -718,11 +729,14 @@ namespace RDFSharp.Model
             SkipWhitespace(turtleContext);
 
             // Read the namespace URI
-            Uri nspace = ParseURI(turtleContext, result);
+            Uri nspace = ParseURI(turtleContext);
 
             // Store and report this namespace mapping
             string prefixStr = prefixID.ToString();
             string namespaceStr = nspace.ToString();
+            // Record the declaration on the resolver so this prefix always resolves while parsing THIS document,
+            // even if AddNamespace below cannot store it (e.g. its IRI collides with an already-registered namespace)
+            (turtleContext.Resolver as RDFGraphTermResolver)?.RegisterDeclaredPrefix(prefixStr, namespaceStr);
             // If prefix is empty it must be considered default context of the graph
             if (string.IsNullOrEmpty(prefixStr))
             {
@@ -747,14 +761,14 @@ namespace RDFSharp.Model
         internal static void ParseBase(RDFTurtleContext turtleContext, RDFGraph result)
         {
             SkipWhitespace(turtleContext);
-            Uri baseURI = ParseURI(turtleContext, result);
+            Uri baseURI = ParseURI(turtleContext);
             result.SetContext(baseURI);
         }
 
         /// <summary>
         /// Parses the Turtle data in order to detect a valid Uri
         /// </summary>
-        internal static Uri ParseURI(RDFTurtleContext turtleContext, RDFGraph result)
+        internal static Uri ParseURI(RDFTurtleContext turtleContext)
         {
             StringBuilder uriBuf = new StringBuilder();
 
@@ -796,12 +810,12 @@ namespace RDFSharp.Model
             //Absolute: use as found
             if (Uri.IsWellFormedUriString(uriString, UriKind.Absolute))
                 return new Uri(uriString);
-            //Relative: append to graph context
+            //Relative: append to base IRI
             if (Uri.IsWellFormedUriString(uriString, UriKind.Relative))
-                return new Uri(string.Concat(result.ToString(), uriString));
-            //PureFragment: append to graph context
+                return new Uri(string.Concat(turtleContext.Resolver.BaseUri, uriString));
+            //PureFragment: append to base IRI
             return uriString.Equals("#")
-                ? new Uri(string.Concat(result.ToString().TrimEnd('#'), uriString))
+                ? new Uri(string.Concat(turtleContext.Resolver.BaseUri.TrimEnd('#'), uriString))
                 //Error: not well-formed, so throw exception
                 : throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
         }
@@ -810,13 +824,13 @@ namespace RDFSharp.Model
         /// Parses an RDF value. This method parses uriref, qname, node ID, quoted
         /// literal, integer, double and boolean.
         /// </summary>
-        internal static object ParseValue(RDFTurtleContext turtleContext, RDFGraph result)
+        internal static object ParseValue(RDFTurtleContext turtleContext)
         {
             int bufChar = PeekCodePoint(turtleContext);
             if (bufChar == '<')
-                return ParseURI(turtleContext, result); // uriref, e.g. <foo://bar>
+                return ParseURI(turtleContext); // uriref, e.g. <foo://bar>
             if (bufChar == ':' || IsPrefixStartChar(bufChar))
-                return ParseQNameOrBoolean(turtleContext, result); // qname or boolean
+                return ParseQNameOrBoolean(turtleContext); // qname or boolean
 
             switch (bufChar)
             {
@@ -824,7 +838,7 @@ namespace RDFSharp.Model
                     return ParseNodeID(turtleContext); // node ID, e.g. _:n1
                 case '"':
                 case '\'':
-                    return ParseQuotedLiteral(turtleContext, result); // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
+                    return ParseQuotedLiteral(turtleContext); // quoted literal, e.g. "foo" or """foo""" or 'foo' or '''foo'''
             }
             if (IsNumber(bufChar) || bufChar == '.' || bufChar == '+' || bufChar == '-')
                 return ParseNumber(turtleContext); // integer or double, e.g. 123 or 1.2e3
@@ -979,7 +993,7 @@ namespace RDFSharp.Model
         /// <summary>
         /// Parses qnames and boolean values, which have equivalent starting characters
         /// </summary>
-        internal static object ParseQNameOrBoolean(RDFTurtleContext turtleContext, RDFGraph result)
+        internal static object ParseQNameOrBoolean(RDFTurtleContext turtleContext)
         {
             // First character should be a ':' or a letter
             int bufChar = ReadCodePoint(turtleContext);
@@ -990,10 +1004,12 @@ namespace RDFSharp.Model
 
             int previousChar;
             string nspace;
+            // The qname's prefix label (empty for the default ':local' form), kept for a precise error message when it cannot be resolved
+            string prefixLabel = string.Empty;
             if (bufChar == ':')
             {
-                // qname using default namespace
-                nspace = result.Context.ToString();
+                // qname using default namespace (empty prefix label resolves to the default namespace)
+                nspace = turtleContext.Resolver.ResolveNamespace(string.Empty);
             }
             else
             {
@@ -1039,7 +1055,8 @@ namespace RDFSharp.Model
 
                 VerifyCharacterOrFail(turtleContext, bufChar, ":");
 
-                nspace = RDFNamespaceRegister.GetByPrefix(prefix.ToString())?.ToString();
+                prefixLabel = prefix.ToString();
+                nspace = turtleContext.Resolver.ResolveNamespace(prefixLabel);
             }
 
             // bufChar == ':', read optional local name
@@ -1080,18 +1097,26 @@ namespace RDFSharp.Model
                 UnreadCodePoint(turtleContext, bufChar);
             }
 
+            // An unresolved namespace must NOT silently fall back to the default namespace: doing so would turn an
+            // undeclared prefix (e.g. 'nope:x' with a declared default ':') into a wrong-but-silent IRI. An undeclared
+            // prefix is illegal in both Turtle and SPARQL, so surface it as an explicit parse error.
+            if (nspace == null)
+                throw new RDFModelException((prefixLabel.Length == 0
+                    ? "Cannot resolve qname using the default namespace because it was never declared"
+                    : "Cannot resolve qname because its namespace prefix '" + prefixLabel + "' was never declared") + GetTurtleContextCoordinates(turtleContext));
+
             string localNameString = localName.ToString();
             return localNameString.Where((t, i) => t == '%' && (i > localNameString.Length - 3
                                                                 || !Uri.IsHexDigit(localNameString[i + 1])
                                                                 || !Uri.IsHexDigit(localNameString[i + 2]))).Any()
                 ? throw new RDFModelException("Found incomplete percent-encoded sequence: " + localNameString + GetTurtleContextCoordinates(turtleContext))
-                : new Uri(string.Concat(nspace ?? result.Context.ToString(), localNameString));
+                : new Uri(string.Concat(nspace, localNameString));
         }
 
         /// <summary>
         /// Parses a quoted string, optionally followed by a language tag or datatype.
         /// </summary>
-        internal static RDFLiteral ParseQuotedLiteral(RDFTurtleContext turtleContext, RDFGraph result)
+        internal static RDFLiteral ParseQuotedLiteral(RDFTurtleContext turtleContext)
         {
             string label = ParseQuotedString(turtleContext);
 
@@ -1140,7 +1165,7 @@ namespace RDFSharp.Model
                         SkipWhitespace(turtleContext);
 
                         // Read datatype
-                        object datatype = ParseValue(turtleContext, result);
+                        object datatype = ParseValue(turtleContext);
                         if (datatype is Uri datatypeUri)
                             return new RDFTypedLiteral(label, RDFDatatypeRegister.GetDatatype(datatypeUri.ToString()));
 
@@ -1728,6 +1753,71 @@ namespace RDFSharp.Model
 
         #endregion
 
+        #endregion
+    }
+
+    /// <summary>
+    /// RDFGraphTermResolver is the graph-backed implementation of RDFTermResolver used while deserializing
+    /// Turtle/TriG data into an RDFGraph. It reads from the wrapped graph LIVE (at call time): this is
+    /// required because Turtle "@base"/"@prefix" directives mutate the graph context and the global
+    /// namespace register WHILE the document is being parsed, and subsequent relative IRIs and prefixed
+    /// names must resolve against the most recent state.
+    /// </summary>
+    internal sealed class RDFGraphTermResolver : RDFTermResolver
+    {
+        #region Properties
+        /// <summary>
+        /// The graph being populated during deserialization, queried live for base/default-namespace.
+        /// </summary>
+        private readonly RDFGraph graph;
+
+        /// <summary>
+        /// Per-document prefix declarations (prefix label → namespace IRI), recorded as the document's @prefix/PREFIX
+        /// directives are parsed and consulted BEFORE the global namespace register. This guarantees that a prefix
+        /// declared in THIS document always resolves — even when it could not be added to the register (e.g. its IRI
+        /// collides with an already-registered/reserved namespace), which would otherwise make a legitimately-declared
+        /// prefix look undeclared and be wrongly rejected.
+        /// </summary>
+        private readonly Dictionary<string, string> declaredPrefixes = new Dictionary<string, string>();
+        #endregion
+
+        #region Ctors
+        /// <summary>
+        /// Builds a graph-backed term resolver wrapping the given graph.
+        /// </summary>
+        internal RDFGraphTermResolver(RDFGraph graph)
+            => this.graph = graph;
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// The base IRI is the graph's current context.
+        /// </summary>
+        internal override string BaseUri
+            => graph.ToString();
+
+        /// <summary>
+        /// Records a prefix declaration found in the document being deserialized, so it resolves regardless of
+        /// whether it could also be added to the global namespace register.
+        /// </summary>
+        internal void RegisterDeclaredPrefix(string prefixLabel, string namespaceUri)
+            => declaredPrefixes[prefixLabel ?? string.Empty] = namespaceUri;
+
+        /// <summary>
+        /// Resolves a prefix label. An empty prefix maps to the graph's default context (base). A non-empty prefix
+        /// is resolved first against THIS document's own declarations (so a declared prefix always wins), then
+        /// against the global namespace register's well-known prefixes; it returns null when the label was neither
+        /// declared in the document nor registered — the caller then raises an explicit parse error.
+        /// </summary>
+        internal override string ResolveNamespace(string prefixLabel)
+        {
+            string label = prefixLabel ?? string.Empty;
+            if (label.Length == 0)
+                return graph.Context.ToString();
+            if (declaredPrefixes.TryGetValue(label, out string declaredNamespace))
+                return declaredNamespace;
+            return RDFNamespaceRegister.GetByPrefix(label)?.ToString();
+        }
         #endregion
     }
 }

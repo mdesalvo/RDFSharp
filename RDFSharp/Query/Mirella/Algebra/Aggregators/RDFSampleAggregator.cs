@@ -28,15 +28,21 @@ namespace RDFSharp.Query
         /// Builds a SAMPLE aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFSampleAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+
+        /// <summary>
+        /// Builds a SAMPLE aggregator on the given expression and with the given projection name. The expression is
+        /// materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFSampleAggregator(RDFExpression aggrExpression, RDFVariable projVariable) : base(MakeExpressionVariable(projVariable), projVariable)
+            => Metadata.AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFSampleAggregator because given \"aggrExpression\" parameter is null.");
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the SAMPLE aggregator
+        /// The SAMPLE function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(SAMPLE(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(SAMPLE({AggregatorVariable}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => Metadata.IsDistinct ? $"SAMPLE(DISTINCT {AggregatorArgument})" : $"SAMPLE({AggregatorArgument})";
         #endregion
 
         #region Methods
@@ -47,19 +53,19 @@ namespace RDFSharp.Query
         {
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
-            if (IsDistinct)
+            if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty) ?? string.Empty;
             //Update aggregator context (sample)
             if (string.IsNullOrEmpty(aggregatorValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
         }
 
         /// <summary>
@@ -72,10 +78,10 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
@@ -93,8 +99,8 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
-            bindings.Add(ProjectionVariable.VariableName, aggregatorValue);
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
+            bindings.Add(Metadata.ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

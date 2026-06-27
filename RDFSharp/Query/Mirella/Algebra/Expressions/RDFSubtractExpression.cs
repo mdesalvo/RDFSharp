@@ -54,5 +54,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSubtractExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// The arithmetic operator of a subtraction expression ('-')
+        /// </summary>
+        protected override char ArithmeticOperator => '-';
+        #endregion
     }
 }

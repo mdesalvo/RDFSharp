@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -812,6 +811,16 @@ namespace RDFSharp.Model
                         return (true, literalValue);
                     }
                     catch { return (false, literalValue); }
+
+                case RDFModelEnums.RDFDatatypes.XSD_DAYTIMEDURATION:
+                    if (!RDFShims.DayTimeDurationRegex.Value.IsMatch(literalValue))
+                        return (false, literalValue);
+                    try
+                    {
+                        _ = XmlConvert.ToTimeSpan(literalValue);
+                        return (true, literalValue);
+                    }
+                    catch { return (false, literalValue); }
                 #endregion
 
                 #region NUMERIC CATEGORY
@@ -910,15 +919,6 @@ namespace RDFSharp.Model
 
                 default: return (true, literalValue);
             }
-        }
-
-        /// <summary>
-        /// Gets the numeric value of the given owl:rational typed literal
-        /// </summary>
-        internal static decimal ComputeOWLRationalValue(RDFTypedLiteral typedLiteral)
-        {
-            string[] owlRationalParts = typedLiteral.Value.Split('/');
-            return decimal.Parse(owlRationalParts[0]) / decimal.Parse(owlRationalParts[1]);
         }
 
         /// <summary>

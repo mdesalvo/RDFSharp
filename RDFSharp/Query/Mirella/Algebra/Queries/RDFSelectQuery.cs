@@ -62,6 +62,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL string into an RDFSelectQuery.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid SELECT query.</exception>
+        public static RDFSelectQuery FromString(string selectQuery)
+        {
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(selectQuery);
+
+            //The factory dispatches on the query form: enforce that the parsed query is indeed a SELECT
+            if (parsedQuery is RDFSelectQuery parsedSelectQuery)
+                return parsedSelectQuery;
+
+            throw new RDFQueryException("Cannot parse SELECT query because the given command represents a different SPARQL query form (" + parsedQuery.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given pattern group to the query
         /// </summary>
         public RDFSelectQuery AddPatternGroup(RDFPatternGroup patternGroup)
@@ -70,8 +85,14 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the query
         /// </summary>
-        public RDFSelectQuery AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFSelectQuery>(operatorMember);
+        public RDFSelectQuery AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFSelectQuery>(binaryMember);
+
+        /// <summary>
+        /// Adds the given SERVICE (federated query) member to the query
+        /// </summary>
+        public RDFSelectQuery AddService(RDFService service)
+            => AddService<RDFSelectQuery>(service);
 
         /// <summary>
         /// Adds the given variable to the results of the query (it may come from evaluation of an expression, if specified)
@@ -88,30 +109,22 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFSelectQuery AddModifier(RDFModifier modifier)
         {
-            if (modifier != null)
-            {
-                List<RDFModifier> modifiers = GetModifiers().ToList();
-
-                switch (modifier)
-                {
-                    //Ensure to have only one groupby modifier in the query
-                    case RDFGroupByModifier _ when modifiers.Any(m => m is RDFGroupByModifier):
-                    //Ensure to have only one distinct modifier in the query
-                    case RDFDistinctModifier _ when modifiers.Any(m => m is RDFDistinctModifier):
-                    //Ensure to have only one limit modifier in the query
-                    case RDFLimitModifier _ when modifiers.Any(m => m is RDFLimitModifier):
-                    //Ensure to have only one offset modifier in the query
-                    case RDFOffsetModifier _ when modifiers.Any(m => m is RDFOffsetModifier):
-                    //Ensure to have only one orderby modifier per variable in the query
-                    case RDFOrderByModifier obm when modifiers.Any(m => m is RDFOrderByModifier om && om.Variable.Equals(obm.Variable)):
-                        return this;
-                    default:
-                        QueryMembers.Add(modifier);
-                        break;
-                }
-            }
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: true))
+                QueryMembers.Add(modifier);
             return this;
         }
+
+        /// <summary>
+        /// Adds the given filter at the scope of the whole WHERE clause
+        /// </summary>
+        public RDFSelectQuery AddFilter(RDFFilter filter)
+            => AddQueryFilter<RDFSelectQuery>(filter);
+
+        /// <summary>
+        /// Sets the trailing query-level inline-data block
+        /// </summary>
+        public RDFSelectQuery SetValues(RDFValues values)
+            => SetValues<RDFSelectQuery>(values);
 
         /// <summary>
         /// Adds the given prefix declaration to the query
@@ -259,43 +272,57 @@ namespace RDFSharp.Query
         /// Creates a Union operator combining this subquery with the given pattern group
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFPatternGroup other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFPatternGroup other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Union operator combining this subquery with the given subquery
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFSelectQuery other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFSelectQuery other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Union operator combining this subquery with the given operator tree
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFOperatorQueryMember other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this subquery with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Union(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this subquery with the given pattern group
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFPatternGroup other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFPatternGroup other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this subquery with the given subquery
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFSelectQuery other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFSelectQuery other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this subquery with the given operator tree
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFOperatorQueryMember other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this subquery with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Minus(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Sets the query as a subquery

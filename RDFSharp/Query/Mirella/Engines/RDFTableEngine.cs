@@ -48,8 +48,6 @@ namespace RDFSharp.Query
             bool rowAdded = false;
 
             DataRow resultRow = table.NewRow();
-            //Plain iteration over the bindings avoids the per-row LINQ Where() iterator/closure
-            //allocation, and the KeyValuePair access avoids re-looking-up the value by key
             foreach (KeyValuePair<string, string> binding in bindings)
             {
                 if (table.Columns.Contains(binding.Key))
@@ -91,6 +89,10 @@ namespace RDFSharp.Query
                     cells[colO] = triple.Object.ToString();
                 resultTable.AddRow(cells);
             }
+
+            //Every row binds all pattern variables (the table's columns ARE the pattern variables), so the result
+            //carries no UNBOUND cell: raise the safe hint enabling the pure-inner fast-path in CombineTables.
+            resultTable.IsFullyBound = true;
         }
 
         /// <summary>
@@ -126,6 +128,10 @@ namespace RDFSharp.Query
                     cells[colO] = quadruple.Object.ToString();
                 resultTable.AddRow(cells);
             }
+
+            //Every row binds all pattern variables (the table's columns ARE the pattern variables), so the result
+            //carries no UNBOUND cell: raise the safe hint enabling the pure-inner fast-path in CombineTables.
+            resultTable.IsFullyBound = true;
         }
 
         /// <summary>
@@ -135,12 +141,14 @@ namespace RDFSharp.Query
         private static string BuildJoinKey(RDFTableRow row, int[] commonOrdinals)
         {
             StringBuilder keyBuilder = new StringBuilder();
-            for (int i = 0; i < commonOrdinals.Length; i++)
+            foreach (int ordinal in commonOrdinals)
             {
-                string cell = row[commonOrdinals[i]];
+                string cell = row[ordinal];
                 if (cell == null)
                     return null;
-                keyBuilder.Append(cell.Length).Append(':').Append(cell);
+                keyBuilder.Append(cell.Length)
+                          .Append(':')
+                          .Append(cell);
             }
             return keyBuilder.ToString();
         }
@@ -178,6 +186,10 @@ namespace RDFSharp.Query
         internal static RDFTable InnerJoinTables(RDFTable leftTable, RDFTable rightTable)
         {
             RDFTable joinTable = new RDFTable();
+            //An inner-join only copies existing cells (common columns taken from left, never synthesized), so the
+            //result has no UNBOUND cell exactly when both inputs are fully bound. Computed once here and stamped on
+            //every return, so a fully-bound BGP combine keeps the hint and the fast-path propagates upward.
+            bool resultIsFullyBound = leftTable.IsFullyBound && rightTable.IsFullyBound;
             List<string> commonNames = CommonColumnNames(leftTable, rightTable);
 
             //PRODUCT-JOIN (no common columns): full cartesian product, left-major
@@ -200,6 +212,7 @@ namespace RDFSharp.Query
                             cells[leftWidth + i] = rightRow[i];
                         joinTable.AddRow(cells);
                     }
+                joinTable.IsFullyBound = resultIsFullyBound;
                 return joinTable;
             }
 
@@ -250,6 +263,7 @@ namespace RDFSharp.Query
                     joinTable.AddRow(cells);
                 }
             }
+            joinTable.IsFullyBound = resultIsFullyBound;
             return joinTable;
         }
 
@@ -349,11 +363,12 @@ namespace RDFSharp.Query
             //Left wildcard row => scan all right rows, stopping at the first compatible one
             if (leftKey == null)
             {
-                for (int rightRowIndex = 0; rightRowIndex < rightRows.Count; rightRowIndex++)
+                foreach (RDFTableRow rightRow in rightRows)
                 {
-                    if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRows[rightRowIndex], rightCommonOrdinals))
+                    if (AreJoinCompatible(leftRow, leftCommonOrdinals, rightRow, rightCommonOrdinals))
                         return true;
                 }
+
                 return false;
             }
 
@@ -513,7 +528,11 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Combines the given tables by joining them (using outer-join when any table is Optional)
+        /// Combines the given tables by joining them. Each step uses the cheaper strict inner-join when the join
+        /// is provably pure-inner (the right table is non-optional and BOTH operands are fully bound, so there is
+        /// no UNBOUND cell in the common columns); otherwise it falls back to the safe outer-join, which honors
+        /// OPTIONAL and the compatible-mappings semantics (UNBOUND in a common column joins as a wildcard). The
+        /// two produce identical results (same rows, same order) under that guard, so this is a pure fast-path.
         /// </summary>
         internal static RDFTable CombineTables(List<RDFTable> dataTables)
         {
@@ -525,7 +544,12 @@ namespace RDFSharp.Query
 
             RDFTable finalTable = dataTables[0];
             for (int i = 1; i < dataTables.Count; i++)
-                finalTable = OuterJoinTables(finalTable, dataTables[i]);
+            {
+                RDFTable rightTable = dataTables[i];
+                finalTable = !rightTable.IsOptional && finalTable.IsFullyBound && rightTable.IsFullyBound
+                    ? InnerJoinTables(finalTable, rightTable)
+                    : OuterJoinTables(finalTable, rightTable);
+            }
             return finalTable;
         }
 
@@ -559,7 +583,7 @@ namespace RDFSharp.Query
 
             RDFTable sortedTable = new RDFTable();
             foreach (RDFTableColumn column in table.Columns)
-                sortedTable.AddColumn(column.Name);
+                sortedTable.AddColumn(column.Name, isSynthetic: column.IsSynthetic);
 
             //Snapshot rows as cell arrays so they can be reordered
             int width = table.ColumnsCount;
@@ -598,6 +622,9 @@ namespace RDFSharp.Query
 
             foreach (string[] cells in rows)
                 sortedTable.AddRow(cells);
+
+            //Sorting only reorders rows (same columns, same cells), so it preserves the fully-bound hint
+            sortedTable.IsFullyBound = table.IsFullyBound;
             return sortedTable;
         }
 
@@ -631,32 +658,20 @@ namespace RDFSharp.Query
                 if (seenKeys.Add(keyBuilder.ToString()))
                     distinctTable.AddRow(cells);
             }
+
+            //Dedup only drops duplicate rows (same columns, same cells), so it preserves the fully-bound hint
+            distinctTable.IsFullyBound = table.IsFullyBound;
             return distinctTable;
         }
 
         /// <summary>
-        /// Applies the projection operator on the given table, based on the given query's projection variables
+        /// Applies the projection operator: rebuilds the table keeping only the query's projection variables in
+        /// their target ordinal order (values taken from the matching source column when present, otherwise UNBOUND)
         /// </summary>
-        internal static RDFTable ProjectTable(RDFSelectQuery query, RDFTable table)
+        internal static RDFTable ProjectColumns(RDFSelectQuery query, RDFTable table)
         {
-            //Projection expression variables
-            ProjectExpressions(query, table);
-
-            //Execute configured sort modifiers (stable Ordinal sort via RDFTable, UNBOUND sorts smallest)
-            RDFOrderByModifier[] orderByModifiers = query.GetModifiers().OfType<RDFOrderByModifier>().ToArray();
-            if (orderByModifiers.Length > 0)
-            {
-                List<(string, bool)> sortKeys = orderByModifiers
-                    .Select(m => (m.Variable.ToString(), m.OrderByFlavor == RDFQueryEnums.RDFOrderByFlavors.DESC))
-                    .ToList();
-                table = SortTable(table, sortKeys);
-            }
-
-            //Execute projection algorithm
             if (query.ProjectionVars.Count > 0)
             {
-                //BuildTransitiveClosureIndex the projected table with the projection variables, ordered by their target ordinal:
-                //values are taken from the matching source column when present, otherwise the column stays UNBOUND
                 List<KeyValuePair<RDFVariable, (int, RDFExpression)>> orderedProjections = query.ProjectionVars
                     .OrderBy(pv => pv.Value.Item1)
                     .ToList();
@@ -678,6 +693,10 @@ namespace RDFSharp.Query
                         cells[i] = sourceOrdinals[i] >= 0 ? sourceRow[sourceOrdinals[i]] : null;
                     projectedTable.AddRow(cells);
                 }
+
+                //The projection only copies existing cells: the result stays fully bound iff the source was AND
+                //every projected variable resolved to a real source column (an unresolved one would be all-UNBOUND).
+                projectedTable.IsFullyBound = table.IsFullyBound && Array.TrueForAll(sourceOrdinals, ordinal => ordinal >= 0);
                 table = projectedTable;
             }
             return table;
@@ -700,15 +719,17 @@ namespace RDFSharp.Query
             => EvaluateExpression(bind.Expression, bind.Variable, table);
 
         /// <summary>
-        /// Evaluates the given expression on the given table and projects the given variable
+        /// Evaluates the given expression on the given table and projects the given variable. When
+        /// <paramref name="isSynthetic"/> is true the projected column is flagged synthetic (internal scratch
+        /// not meant to surface in the results), e.g. for ORDER BY over a non-variable expression.
         /// </summary>
-        internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, RDFTable table)
+        internal static void EvaluateExpression(RDFExpression expression, RDFVariable variable, RDFTable table, bool isSynthetic = false)
         {
             string bindVariable = variable.ToString();
             if (!table.HasColumn(bindVariable))
             {
                 //Project bind column
-                table.AddColumn(bindVariable);
+                table.AddColumn(bindVariable, isSynthetic: isSynthetic);
                 int bindOrdinal = table.OrdinalOf(bindVariable);
 
                 //Valorize bind column

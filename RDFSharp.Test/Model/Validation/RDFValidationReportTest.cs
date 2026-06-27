@@ -58,7 +58,7 @@ public class RDFValidationReportTest
             new RDFNodeShape(new RDFResource("ex:sourceShape")),
             constraint,
             new RDFResource("ex:focusNode"),
-            new RDFResource("ex:resultPath"),
+            RDFTestUtilities.ShaclPath(new RDFResource("ex:resultPath")),
             new RDFPlainLiteral("resultValue"),
             [new RDFPlainLiteral("resultMessage")]
         );
@@ -94,7 +94,7 @@ public class RDFValidationReportTest
             new RDFNodeShape(new RDFResource("ex:sourceShape")),
             constraint,
             new RDFResource("ex:focusNode"),
-            new RDFResource("ex:resultPath"),
+            RDFTestUtilities.ShaclPath(new RDFResource("ex:resultPath")),
             new RDFPlainLiteral("resultValue"),
             [new RDFPlainLiteral("resultMessage")]
         );
@@ -126,7 +126,7 @@ public class RDFValidationReportTest
             new RDFNodeShape(new RDFResource("ex:sourceShape")),
             constraint,
             new RDFResource("ex:focusNode"),
-            new RDFResource("ex:resultPath"),
+            RDFTestUtilities.ShaclPath(new RDFResource("ex:resultPath")),
             new RDFPlainLiteral("resultValue"),
             [new RDFPlainLiteral("resultMessage")]
         );
@@ -158,7 +158,7 @@ public class RDFValidationReportTest
             new RDFNodeShape(new RDFResource("ex:sourceShape")),
             constraint,
             new RDFResource("ex:focusNode"),
-            new RDFResource("ex:resultPath"),
+            RDFTestUtilities.ShaclPath(new RDFResource("ex:resultPath")),
             new RDFPlainLiteral("resultValue"),
             [new RDFPlainLiteral("resultMessage")]
         );

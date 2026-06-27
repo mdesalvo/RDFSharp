@@ -324,21 +324,21 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
             .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFPatternGroup()
-                    .AddOperator(
+                    .AddBinaryPatternGroupMember(
                         new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                             .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X"))))
                 .Union(
                     new RDFPatternGroup()
                         .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))))
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
                             .AddAlternativeSteps([
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)])))
+                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.LABEL),
+                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.COMMENT)])))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                 .Union(
                     new RDFSelectQuery()
@@ -375,7 +375,7 @@ public class RDFInsertWhereOperationTest
                   SELECT ?Y
                   WHERE {
                     {
-                      ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                      ?Y <http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment> ?X .
                     }
                   }
                 }
@@ -400,10 +400,10 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
             .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND3")))
-                    .AddOperator(
+                    .AddBinaryPatternGroupMember(
                         new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                             .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X"))))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
@@ -412,16 +412,16 @@ public class RDFInsertWhereOperationTest
                     new RDFPatternGroup()
                         .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND2")))
-                        .AddOperator(
+                        .AddBinaryPatternGroupMember(
                             new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                                 .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X"))))))
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
                             .AddAlternativeSteps([
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)])))
+                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.LABEL),
+                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.COMMENT)])))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                 .Union(
                     new RDFSelectQuery()
@@ -465,7 +465,7 @@ public class RDFInsertWhereOperationTest
                   SELECT ?Y
                   WHERE {
                     {
-                      ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                      ?Y <http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment> ?X .
                     }
                   }
                 }
@@ -490,10 +490,10 @@ public class RDFInsertWhereOperationTest
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation()
             .AddPrefix(RDFNamespaceRegister.GetByPrefix("rdf"))
             .AddInsertTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")).Optional())
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFPatternGroup()
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND3")))
-                    .AddOperator(
+                    .AddBinaryPatternGroupMember(
                         new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                             .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X"))))
                     .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND")))
@@ -502,16 +502,16 @@ public class RDFInsertWhereOperationTest
                     new RDFPatternGroup()
                         .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDogOf"), new RDFVariable("?X")))
                         .AddBind(new RDFBind(new RDFVariableExpression(new RDFVariable("?Y")), new RDFVariable("?YBIND2")))
-                        .AddOperator(
+                        .AddBinaryPatternGroupMember(
                             new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))
                                 .Union(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:isDoggyOf"), new RDFVariable("?X"))))))
-            .AddOperator(
+            .AddBinaryQueryMember(
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
                             .AddAlternativeSteps([
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.LABEL),
-                                new RDFPropertyPathStep(RDFVocabulary.RDFS.COMMENT)])))
+                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.LABEL),
+                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.COMMENT)])))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                 .Union(
                     new RDFSelectQuery()
@@ -555,7 +555,7 @@ public class RDFInsertWhereOperationTest
                   SELECT ?Y
                   WHERE {
                     {
-                      ?Y (<http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment>) ?X .
+                      ?Y <http://www.w3.org/2000/01/rdf-schema#label>|<http://www.w3.org/2000/01/rdf-schema#comment> ?X .
                     }
                   }
                 }
@@ -726,10 +726,10 @@ public class RDFInsertWhereOperationTest
         Assert.IsNotNull(result.InsertResultsCount == 2);
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.FOAF.AGE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), $"170^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), $"170^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:paperino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.FOAF.AGE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"166^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"166.0^^{RDFVocabulary.XSD.DECIMAL}", StringComparison.Ordinal));
         Assert.IsNotNull(result.DeleteResults);
         Assert.AreEqual(0, result.DeleteResults.Columns.Count);
         Assert.AreEqual(0, result.DeleteResultsCount);
@@ -774,10 +774,10 @@ public class RDFInsertWhereOperationTest
         Assert.IsNotNull(result.InsertResultsCount == 4);
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?SUBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?PREDICATE"].ToString(), $"{RDFVocabulary.FOAF.AGE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), $"170^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[0]["?OBJECT"].ToString(), $"170^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?SUBJECT"].ToString(), "ex:paperino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?PREDICATE"].ToString(), $"{RDFVocabulary.FOAF.AGE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"166^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.InsertResults.Rows[1]["?OBJECT"].ToString(), $"166.0^^{RDFVocabulary.XSD.DECIMAL}", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?SUBJECT"].ToString(), "ex:topolinoAA", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?PREDICATE"].ToString(), "ex:derivedFrom", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.InsertResults.Rows[2]["?OBJECT"].ToString(), "ex:topolino", StringComparison.Ordinal));

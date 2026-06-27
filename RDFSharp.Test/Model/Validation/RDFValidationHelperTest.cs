@@ -76,7 +76,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithoutTargets()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.AGE);
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
         Assert.IsNotNull(focusNodes);
@@ -97,7 +97,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetClass()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -119,7 +119,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetClassAndReasoning()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -141,7 +141,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetClassNoInstances()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:Guy")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -163,7 +163,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetClassUnexisting()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:People")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -185,7 +185,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetNode()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -207,7 +207,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetSubjectsOf()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.AGE));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -229,7 +229,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetSubjectsOfUnexisting()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.BASED_NEAR));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -251,7 +251,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetObjectsOf()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.AGE)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE))
             .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
 
@@ -273,9 +273,49 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetFocusNodesOfPropertyShapeWithTargetObjectsOfUnexisting()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.MBOX));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
+
+        Assert.IsNotNull(focusNodes);
+        Assert.IsEmpty(focusNodes);
+    }
+
+    [TestMethod]
+    public void ShouldGetFocusNodesOfNodeShapeWithTargetSPARQL()
+    {
+        RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
+            .AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(
+                "SELECT ?THIS WHERE { ?THIS <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Person> }")));
+        List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
+
+        Assert.IsNotNull(focusNodes);
+        Assert.HasCount(3, focusNodes);
+        Assert.IsTrue(focusNodes.Contains(new RDFResource("ex:Alice")));
+        Assert.IsTrue(focusNodes.Contains(new RDFResource("ex:Bob")));
+        Assert.IsTrue(focusNodes.Contains(new RDFResource("ex:Jane")));
+    }
+
+    [TestMethod]
+    public void ShouldGetFocusNodesOfNodeShapeWithTargetSPARQLDiscardingLiterals()
+    {
+        //The "?this" binding may legally hit a literal (foaf:name), which is not a legal focus node and must be discarded
+        RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
+            .AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(
+                "SELECT ?THIS WHERE { ?S <http://xmlns.com/foaf/0.1/name> ?THIS }")));
+        List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
+
+        Assert.IsNotNull(focusNodes);
+        Assert.IsEmpty(focusNodes);
+    }
+
+    [TestMethod]
+    public void ShouldGetFocusNodesOfNodeShapeWithTargetSPARQLNoMatches()
+    {
+        RDFShape nShape = new RDFNodeShape(new RDFResource("ex:nodeShape"))
+            .AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(
+                "SELECT ?THIS WHERE { ?THIS <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Alien> }")));
+        List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(nShape);
 
         Assert.IsNotNull(focusNodes);
         Assert.IsEmpty(focusNodes);
@@ -315,7 +355,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithoutTargets()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.AGE);
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
         focusNodes.ForEach(focusNode => valueNodes.AddRange(dataGraph.GetValueNodesOf(pShape, focusNode)));
@@ -340,7 +380,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetClass()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -366,7 +406,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetClassAndReasoning()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -392,7 +432,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetClassNoInstances()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:Guy")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -418,7 +458,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetClassUnexisting()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetClass(new RDFResource("ex:People")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -444,7 +484,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetNode()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -470,7 +510,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetSubjectsOf()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.AGE));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -496,7 +536,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetSubjectsOfUnexisting()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.BASED_NEAR));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -522,7 +562,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetObjectsOf()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.AGE)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE))
             .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -548,7 +588,7 @@ public class RDFValidationHelperTest
     [TestMethod]
     public void ShouldGetValueNodesOfPropertyShapeWithTargetObjectsOfUnexisting()
     {
-        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS)
+        RDFShape pShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS))
             .AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.MBOX));
         List<RDFPatternMember> focusNodes = dataGraph.GetFocusNodesOf(pShape);
         List<RDFPatternMember> valueNodes = [];
@@ -855,7 +895,7 @@ public class RDFValidationHelperTest
     [DataRow(RDFValidationEnums.RDFShapeSeverity.Info, RDFValidationEnums.RDFNodeKinds.Literal)]
     public void ShouldParsePropertyShapeFromGraph(RDFValidationEnums.RDFShapeSeverity severity, RDFValidationEnums.RDFNodeKinds nodeKind)
     {
-        RDFPropertyShape shape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape shape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
 
         //Attributes
         shape.SetSeverity(severity);
@@ -1075,17 +1115,91 @@ public class RDFValidationHelperTest
 
         RDFPropertyShape propertyShape = shapesGraph.SelectShape("ex:propertyShape") as RDFPropertyShape;
         Assert.IsNotNull(propertyShape);
-        Assert.IsTrue(propertyShape.Path.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(propertyShape.Path.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.AreEqual(1, propertyShape.ConstraintsCount);
         Assert.IsTrue(propertyShape.Constraints[0] is RDFPropertyConstraint propertyShapeConstraint
                       && propertyShapeConstraint.PropertyShapeUri.Equals(new RDFResource("bnode:inlinePropertyShape")));
 
         RDFPropertyShape inlinePropertyShape = shapesGraph.SelectShape("bnode:inlinePropertyShape") as RDFPropertyShape;
         Assert.IsNotNull(inlinePropertyShape);
-        Assert.IsTrue(inlinePropertyShape.Path.Equals(RDFVocabulary.FOAF.AGE));
+        Assert.IsTrue(inlinePropertyShape.Path.AsSinglePredicate().Equals(RDFVocabulary.FOAF.AGE));
         Assert.AreEqual(1, inlinePropertyShape.ConstraintsCount);
         Assert.IsTrue(inlinePropertyShape.Constraints[0] is RDFClassConstraint classConstraint
                       && classConstraint.ClassType.Equals(new RDFResource("ex:Class")));
+    }
+
+    [TestMethod]
+    public void ShouldDetectSPARQLTarget()
+    {
+        RDFSelectQuery selectQuery = RDFSelectQuery.FromString(
+            "SELECT ?THIS WHERE { ?THIS <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Person> }");
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        nodeShape.AddTarget(new RDFTargetSPARQL(selectQuery));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(nodeShape.ToRDFGraph());
+
+        Assert.IsNotNull(shapesGraph);
+        Assert.AreEqual(1, shapesGraph.ShapesCount);
+
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(1, detectedShape.TargetsCount);
+        RDFTargetSPARQL detectedTarget = detectedShape.Targets[0] as RDFTargetSPARQL;
+        Assert.IsNotNull(detectedTarget);
+        //Round-trip: the parsed query must re-stringify identically to the original
+        Assert.AreEqual(selectQuery.ToString(), detectedTarget.SelectQuery.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldNotDetectSPARQLTargetBecauseMissingType()
+    {
+        //sh:target object without "a sh:SPARQLTarget" must be ignored (no focus-node contribution)
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.TARGET, new RDFResource("bnode:t")));
+        graph.AddTriple(new RDFTriple(new RDFResource("bnode:t"), RDFVocabulary.SHACL.SELECT, new RDFTypedLiteral("SELECT ?THIS WHERE { ?THIS ?P ?O }", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(graph);
+
+        Assert.IsNotNull(shapesGraph);
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(0, detectedShape.TargetsCount);
+    }
+
+    [TestMethod]
+    public void ShouldDetectSPARQLConstraint()
+    {
+        RDFSelectQuery selectQuery = RDFSelectQuery.FromString(
+            "PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?this ?value WHERE { ?this foaf:age ?value . FILTER(?value < 18) }");
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:nodeShape"));
+        nodeShape.AddConstraint(new RDFSPARQLConstraint(selectQuery));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(nodeShape.ToRDFGraph());
+
+        Assert.IsNotNull(shapesGraph);
+        Assert.AreEqual(1, shapesGraph.ShapesCount);
+
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(1, detectedShape.ConstraintsCount);
+        RDFSPARQLConstraint detectedConstraint = detectedShape.Constraints[0] as RDFSPARQLConstraint;
+        Assert.IsNotNull(detectedConstraint);
+        //Round-trip: the parsed query must re-stringify identically to the original
+        Assert.AreEqual(selectQuery.ToString(), detectedConstraint.SelectQuery.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldNotDetectSPARQLConstraintBecauseMissingType()
+    {
+        //sh:sparql object without "a sh:SPARQLConstraint" must be ignored (no constraint contribution)
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.NODE_SHAPE));
+        graph.AddTriple(new RDFTriple(new RDFResource("ex:nodeShape"), RDFVocabulary.SHACL.SPARQL, new RDFResource("bnode:c")));
+        graph.AddTriple(new RDFTriple(new RDFResource("bnode:c"), RDFVocabulary.SHACL.SELECT, new RDFTypedLiteral("SELECT ?THIS WHERE { ?THIS ?P ?O }", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        RDFShapesGraph shapesGraph = RDFValidationHelper.FromRDFGraph(graph);
+
+        Assert.IsNotNull(shapesGraph);
+        RDFNodeShape detectedShape = shapesGraph.SelectShape("ex:nodeShape") as RDFNodeShape;
+        Assert.IsNotNull(detectedShape);
+        Assert.AreEqual(0, detectedShape.ConstraintsCount);
     }
     #endregion
 }

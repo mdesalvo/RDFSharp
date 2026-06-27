@@ -97,7 +97,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(6));
         shapesGraph.AddShape(qvShape);
 
@@ -127,7 +127,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(6));
 
         //Validate
@@ -156,7 +156,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(6));
         shapesGraph.AddShape(qvShape);
 
@@ -186,7 +186,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(6));
         shapesGraph.AddShape(qvShape);
 
@@ -216,7 +216,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(6));
         shapesGraph.AddShape(qvShape);
 
@@ -245,11 +245,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, 2));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(6));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -275,11 +275,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, 2));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(6));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -305,11 +305,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), null, 2));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(6));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -336,11 +336,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, null));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.RDF.TYPE);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.RDF.TYPE));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -373,7 +373,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(7));
         shapesGraph.AddShape(qvShape);
 
@@ -412,7 +412,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(7));
         shapesGraph.AddShape(qvShape);
 
@@ -451,7 +451,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(7));
         shapesGraph.AddShape(qvShape);
 
@@ -490,7 +490,7 @@ public class RDFQualifiedValueShapeConstraintTest
         nodeShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShape"), 1, 2));
         nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QVShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShape.AddConstraint(new RDFMinLengthConstraint(9));
         shapesGraph.AddShape(qvShape);
 
@@ -528,11 +528,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), null, 2));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(9));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -546,7 +546,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a maximum of 2 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -568,11 +568,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 4, null));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(9));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -586,7 +586,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 4 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -607,11 +607,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, 1));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -625,7 +625,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 1 and a maximum of 1 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.QUALIFIED_MAX_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -646,11 +646,11 @@ public class RDFQualifiedValueShapeConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QVShapeConstraint"), 1, null));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape qvShapeConstraint = new RDFPropertyShape(new RDFResource("ex:QVShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         qvShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(qvShapeConstraint);
 
@@ -665,7 +665,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 1 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Steve")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
         Assert.AreEqual(RDFValidationEnums.RDFShapeSeverity.Violation, validationReport.Results[1].Severity);
@@ -673,7 +673,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsTrue(validationReport.Results[1].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 1 conforming values for the shape <ex:QVShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[1].FocusNode.Equals(new RDFResource("ex:Larry")));
         Assert.IsNull(validationReport.Results[1].ResultValue);
-        Assert.IsTrue(validationReport.Results[1].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[1].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[1].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[1].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -695,11 +695,11 @@ public class RDFQualifiedValueShapeConstraintTest
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:QualifiedValueShapeExampleShape"));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Brittany")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropShape")));
-        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:parent"));
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:parent")));
         propShape.AddConstraint(new RDFMinCountConstraint(2));
         propShape.AddConstraint(new RDFMaxCountConstraint(2));
         propShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QualifiedValueShapeConstraint"), 1, null));
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QualifiedValueShapeConstraint"), new RDFResource("ex:gender"));
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QualifiedValueShapeConstraint"), RDFTestUtilities.ShaclPath(new RDFResource("ex:gender")));
         qvShape.AddConstraint(new RDFHasValueConstraint(new RDFResource("ex:female")));
         shapesGraph.AddShape(nodeShape);
         shapesGraph.AddShape(propShape);
@@ -729,11 +729,11 @@ public class RDFQualifiedValueShapeConstraintTest
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:QualifiedValueShapeExampleShape"));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Brittany")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropShape")));
-        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:parent"));
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:parent")));
         propShape.AddConstraint(new RDFMinCountConstraint(2));
         propShape.AddConstraint(new RDFMaxCountConstraint(2));
         propShape.AddConstraint(new RDFQualifiedValueShapeConstraint(new RDFResource("ex:QualifiedValueShapeConstraint"), 2, null));
-        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QualifiedValueShapeConstraint"), new RDFResource("ex:gender"));
+        RDFPropertyShape qvShape = new RDFPropertyShape(new RDFResource("ex:QualifiedValueShapeConstraint"), RDFTestUtilities.ShaclPath(new RDFResource("ex:gender")));
         qvShape.AddConstraint(new RDFHasValueConstraint(new RDFResource("ex:female")));
         shapesGraph.AddShape(nodeShape);
         shapesGraph.AddShape(propShape);
@@ -750,7 +750,7 @@ public class RDFQualifiedValueShapeConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum of 2 conforming values for the shape <ex:QualifiedValueShapeConstraint>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Brittany")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:parent")));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(new RDFResource("ex:parent")));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.QUALIFIED_MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
     }

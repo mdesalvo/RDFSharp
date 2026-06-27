@@ -58,10 +58,46 @@ namespace RDFSharp.Query
         public RDFExpressionFilter(RDFComparisonExpression expression) : this(expression, true) { }
 
         /// <summary>
+        /// Builds a filter on the given Contains expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFContainsExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given StrStarts expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFStrStartsExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given StrEnds expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFStrEndsExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given HasLang expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFHasLangExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given HasLangDir expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFHasLangDirExpression expression) : this(expression, true) { }
+
+        /// <summary>
         /// Builds a filter on the given In expression
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public RDFExpressionFilter(RDFInExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given logical negation (NOT) expression
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFNotExpression expression) : this(expression, true) { }
 
         /// <summary>
         /// Builds a filter on the given IsBlank expression

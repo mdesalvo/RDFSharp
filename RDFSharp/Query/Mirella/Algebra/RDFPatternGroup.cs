@@ -32,11 +32,6 @@ namespace RDFSharp.Query
         internal bool IsOptional { get; set; }
 
         /// <summary>
-        /// Tuple indicating that the pattern group should be evaluated according to SPARQL SERVICE
-        /// </summary>
-        internal (RDFSPARQLEndpoint,RDFSPARQLEndpointQueryOptions)? EvaluateAsService { get; set; }
-
-        /// <summary>
         /// List of members carried by the pattern group
         /// </summary>
         internal List<RDFPatternGroupMember> GroupMembers { get; set; }
@@ -193,67 +188,71 @@ namespace RDFSharp.Query
         /// Creates a Union operator combining this pattern group with the given query member
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFPatternGroup other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFPatternGroup other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Union operator combining this pattern group with the given subquery
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFSelectQuery other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFSelectQuery other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Union operator combining this pattern group with the given operator tree
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Union(RDFOperatorQueryMember other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Union, this, other);
+        public RDFBinaryQueryMember Union(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
+
+        /// <summary>
+        /// Creates a Union operator combining this pattern group with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Union(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Union, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this pattern group with the given query member
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFPatternGroup other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFPatternGroup other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this pattern group with the given subquery
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFSelectQuery other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFSelectQuery other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Creates a Minus operator combining this pattern group with the given operator tree
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFOperatorQueryMember Minus(RDFOperatorQueryMember other)
-            => new RDFOperatorQueryMember(RDFQueryEnums.RDFQueryOperatorType.Minus, this, other);
+        public RDFBinaryQueryMember Minus(RDFBinaryQueryMember other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
+
+        /// <summary>
+        /// Creates a Minus operator combining this pattern group with the given service
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFBinaryQueryMember Minus(RDFService other)
+            => new RDFBinaryQueryMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
         /// Adds the given operator tree to the pattern group
         /// </summary>
-        public RDFPatternGroup AddOperator(RDFOperatorPatternGroupMember operatorMember)
+        public RDFPatternGroup AddBinaryPatternGroupMember(RDFBinaryPatternGroupMember binaryMember)
         {
-            if (operatorMember != null)
+            if (binaryMember != null)
             {
-                GroupMembers.Add(operatorMember);
+                GroupMembers.Add(binaryMember);
 
-                foreach (RDFVariable variable in operatorMember.GetVariables())
+                foreach (RDFVariable variable in binaryMember.GetVariables())
                     if (!Variables.Any(v => v.Equals(variable)))
                         Variables.Add(variable);
             }
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the pattern group to be evaluated according to SPARQL SERVICE
-        /// </summary>
-        public RDFPatternGroup AsService(RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions=null)
-        {
-            if (sparqlEndpoint != null)
-                EvaluateAsService = (sparqlEndpoint, sparqlEndpointQueryOptions ?? new RDFSPARQLEndpointQueryOptions());
             return this;
         }
 

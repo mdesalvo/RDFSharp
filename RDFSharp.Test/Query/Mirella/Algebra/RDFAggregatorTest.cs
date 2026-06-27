@@ -32,14 +32,13 @@ public class RDFAggregatorTest
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
-        Assert.IsNotNull(aggregator.AggregatorContext);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        Assert.IsNotNull(aggregator.Context);
+        Assert.IsNotNull(aggregator.Context.ExecutionCache);
+        Assert.IsNotNull(aggregator.Context.ExecutionRegistry);
     }
 
     [TestMethod]
@@ -57,38 +56,47 @@ public class RDFAggregatorTest
         aggregator.Distinct();
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
-        Assert.IsNotNull(aggregator.AggregatorContext);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        Assert.IsNotNull(aggregator.Context);
+        Assert.IsNotNull(aggregator.Context.ExecutionCache);
+        Assert.IsNotNull(aggregator.Context.ExecutionRegistry);
     }
 
     [TestMethod]
-    [DataRow(RDFQueryEnums.RDFComparisonFlavors.LessThan)]
-    [DataRow(RDFQueryEnums.RDFComparisonFlavors.LessOrEqualThan)]
-    [DataRow(RDFQueryEnums.RDFComparisonFlavors.EqualTo)]
-    [DataRow(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo)]
-    [DataRow(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan)]
-    [DataRow(RDFQueryEnums.RDFComparisonFlavors.GreaterThan)]
-    public void ShouldSetHavingClause(RDFQueryEnums.RDFComparisonFlavors comparisonFlavor)
+    public void ShouldSetHiddenFlag()
     {
         RDFAggregator aggregator = new RDFAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
-        aggregator.SetHavingClause(comparisonFlavor, new RDFVariable("?X"));
-        aggregator.SetHavingClause(comparisonFlavor, null); //Will not set the having clause, since null values are not allowed
+        Assert.IsFalse(aggregator.Metadata.IsHidden);
 
-        Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((true, comparisonFlavor, new RDFVariable("?X"))));
-        Assert.IsFalse(aggregator.IsDistinct);
-        Assert.IsTrue(aggregator.ToString().Equals(string.Empty, StringComparison.Ordinal));
-        Assert.IsNotNull(aggregator.AggregatorContext);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        aggregator.Metadata.IsHidden = true;
+        Assert.IsTrue(aggregator.Metadata.IsHidden);
+    }
+
+    [TestMethod]
+    public void ShouldGetAggregateCallStringForPlainAggregate()
+    {
+        //'(COUNT(?E) AS ?CNT)' → 'COUNT(?E)' (strip the leading '(' and the ' AS ?proj)' suffix)
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?E"), new RDFVariable("?CNT"));
+        Assert.AreEqual("COUNT(?E)", aggregator.GetAggregateCallString());
+    }
+
+    [TestMethod]
+    public void ShouldGetAggregateCallStringForDistinctAggregate()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?E"), new RDFVariable("?CNT"));
+        aggregator.Distinct();
+        Assert.AreEqual("COUNT(DISTINCT ?E)", aggregator.GetAggregateCallString());
+    }
+
+    [TestMethod]
+    public void ShouldGetAggregateCallStringForCountAll()
+    {
+        //COUNT(*) has no aggregated variable but still re-prints faithfully
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?CNT"));
+        Assert.AreEqual("COUNT(*)", aggregator.GetAggregateCallString());
     }
 
     [TestMethod]
@@ -203,7 +211,7 @@ public class RDFAggregatorTest
         aggregator.UpdateProjectionTable(null, null); //Just no-op
     }
 
-    //AggregatorContext
+    //Context
 
     [TestMethod]
     public void ShouldAddPartitionKeyToAggregatorContext()

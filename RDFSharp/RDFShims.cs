@@ -53,6 +53,7 @@ namespace RDFSharp
         internal const string TimeGeneralDayPattern = "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
         internal const string TimeGeneralMonthPattern = "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
         internal const string TimeGeneralYearPattern = "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
+        internal const string DayTimeDurationPattern = @"^-?P(([0-9]+D(T([0-9]+H([0-9]+M([0-9]+(\.[0-9]+)?S)?)?|[0-9]+M([0-9]+(\.[0-9]+)?S)?|[0-9]+(\.[0-9]+)?S))?)|T([0-9]+H([0-9]+M([0-9]+(\.[0-9]+)?S)?)?|[0-9]+M([0-9]+(\.[0-9]+)?S)?|[0-9]+(\.[0-9]+)?S))$";
         internal const string GeoRelatesPattern = "^[012TF\\*]{9}$";
         /*NTriples*/
         internal const string SPBPattern  = @"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$";
@@ -175,6 +176,13 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> TimeGeneralYearRegex = new Lazy<Regex>(GeneratedTimeGeneralYearRegex);
         [GeneratedRegex(TimeGeneralYearPattern)]
         private static partial Regex GeneratedTimeGeneralYearRegex();
+
+        /// <summary>
+        /// Regex to catch xsd:dayTimeDuration typed literals (no year/month fields)
+        /// </summary>
+        internal static readonly Lazy<Regex> DayTimeDurationRegex = new Lazy<Regex>(GeneratedDayTimeDurationRegex);
+        [GeneratedRegex(DayTimeDurationPattern)]
+        private static partial Regex GeneratedDayTimeDurationRegex();
 
         /// <summary>
         /// Regex to validates geof:sfRelate arguments
@@ -392,6 +400,11 @@ namespace RDFSharp
         /// Regex to catch time:generalYear typed literals
         /// </summary>
         internal static readonly Lazy<Regex> TimeGeneralYearRegex = new Lazy<Regex>(() => new Regex(TimeGeneralYearPattern, RegexOptions.Compiled));
+
+        /// <summary>
+        /// Regex to catch xsd:dayTimeDuration typed literals (no year/month fields)
+        /// </summary>
+        internal static readonly Lazy<Regex> DayTimeDurationRegex = new Lazy<Regex>(() => new Regex(DayTimeDurationPattern, RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to validates geof:sfRelate arguments

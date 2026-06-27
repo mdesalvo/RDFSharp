@@ -53,6 +53,16 @@ namespace RDFSharp.Query
                     return EvaluateLoadOperation(loadOperation, datasource);
                 case RDFClearOperation clearOperation:
                     return EvaluateClearOperation(clearOperation, datasource);
+                case RDFCreateOperation createOperation:
+                    return EvaluateCreateOperation(createOperation, datasource);
+                case RDFDropOperation dropOperation:
+                    return EvaluateDropOperation(dropOperation, datasource);
+                case RDFAddOperation addOperation:
+                    return EvaluateCopyMoveAddOperation("ADD", addOperation.IsSilent, addOperation.FromContext, addOperation.ToContext, false, false, datasource);
+                case RDFCopyOperation copyOperation:
+                    return EvaluateCopyMoveAddOperation("COPY", copyOperation.IsSilent, copyOperation.FromContext, copyOperation.ToContext, true, false, datasource);
+                case RDFMoveOperation moveOperation:
+                    return EvaluateCopyMoveAddOperation("MOVE", moveOperation.IsSilent, moveOperation.FromContext, moveOperation.ToContext, true, true, datasource);
             }
             return new RDFOperationResult();
         }
@@ -228,10 +238,149 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Evaluates the given SPARQL CREATE operation on the given RDF datasource. Since RDFSharp does not record
+        /// empty graphs, declaring a (still empty) named graph has no observable effect here: it is a spec-legal
+        /// no-op locally, and is only meaningful once forwarded to a SPARQL UPDATE endpoint that records empty graphs.
+        /// </summary>
+        internal RDFOperationResult EvaluateCreateOperation(RDFCreateOperation createOperation, RDFDataSource datasource)
+            => new RDFOperationResult();
+
+        /// <summary>
+        /// Evaluates the given SPARQL DROP operation on the given RDF datasource. Because RDFSharp does not record
+        /// empty graphs, DROP is equivalent to CLEAR (removing the referenced triples/quadruples leaves no
+        /// distinguishable empty graph behind): it is proxied onto an equivalent CLEAR operation.
+        /// </summary>
+        internal RDFOperationResult EvaluateDropOperation(RDFDropOperation dropOperation, RDFDataSource datasource)
+        {
+            //Build the CLEAR operation equivalent to this DROP (same graph reference and SILENT flag)
+            RDFClearOperation clearOperation = dropOperation.FromContext != null
+                                                ? new RDFClearOperation(dropOperation.FromContext)
+                                                : new RDFClearOperation(dropOperation.OperationFlavor);
+            if (dropOperation.IsSilent)
+                clearOperation.Silent();
+
+            return EvaluateClearOperation(clearOperation, datasource);
+        }
+
+        /// <summary>
+        /// Evaluates a source→destination graph-management operation (ADD/COPY/MOVE) on the given RDF datasource.
+        /// These are two-graph operations: they are expressed as a SEQUENCE of existing UPDATE steps and run, in
+        /// order, against the same store via <see cref="RDFOperationSet"/> — no bespoke mutation logic.
+        /// <list type="bullet">
+        /// <item>ADD  (clearDestination=false, dropSource=false): INSERT the source triples into the destination.</item>
+        /// <item>COPY (clearDestination=true,  dropSource=false): clear the destination, then INSERT the source triples.</item>
+        /// <item>MOVE (clearDestination=true,  dropSource=true):  clear the destination, INSERT the source triples, then clear the source.</item>
+        /// </list>
+        /// A null context denotes the DEFAULT graph. Source equal to destination is a no-op. A contextless graph
+        /// datasource cannot represent these two-graph operations, so it raises an error (suppressed when SILENT).
+        /// </summary>
+        /// <exception cref="RDFQueryException">When applied to a graph (non-SILENT): these operations require a context-aware store.</exception>
+        internal RDFOperationResult EvaluateCopyMoveAddOperation(string operationName, bool isSilent, Uri fromContext, Uri toContext, bool clearDestination, bool dropSource, RDFDataSource datasource)
+        {
+            RDFOperationResult operationResult = new RDFOperationResult();
+
+            try
+            {
+                //A contextless graph cannot represent a two-graph operation: surface it explicitly (endpoint-vs-engine)
+                if (datasource.IsGraph())
+                    throw new RDFQueryException($"SPARQL {operationName} makes no sense on an RDFGraph: it moves data between two named graphs, but an RDFGraph is a single contextless graph (there is no source/destination graph to tell apart). Apply this {operationName} to an RDFStore (whose quadruples carry a context) instead; or, if you really mean to work within a single graph, use a GRAPH-scoped INSERT/DELETE WHERE operation.");
+
+                //Resolve the source/destination contexts (a null Uri denotes the DEFAULT graph)
+                RDFContext sourceContext = fromContext != null ? new RDFContext(fromContext) : new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
+                RDFContext destinationContext = toContext != null ? new RDFContext(toContext) : new RDFContext(RDFNamespaceRegister.DefaultNamespace.NamespaceUri);
+
+                //Source equal to destination => no-op (SPARQL 1.1 §3.2.3-5)
+                if (sourceContext.Equals(destinationContext))
+                    return operationResult;
+
+                //Express the operation as a sequence of existing UPDATE steps and run them, in order, on the store
+                RDFOperationSet operationSet = new RDFOperationSet();
+                if (clearDestination)
+                    operationSet.AddOperation(BuildContextClearOperation(destinationContext));
+                operationSet.AddOperation(BuildContextCopyOperation(sourceContext, destinationContext));
+                if (dropSource)
+                    operationSet.AddOperation(BuildContextClearOperation(sourceContext));
+
+                //Fold the per-step results (positionally aligned with the steps) into a single operation result
+                foreach (RDFOperationResult stepResult in operationSet.ApplyToStore((RDFStore)datasource))
+                {
+                    operationResult.DeleteResults.Merge(stepResult.DeleteResults);
+                    operationResult.InsertResults.Merge(stepResult.InsertResults);
+                }
+            }
+            catch when (isSilent)
+            {
+                //In case the operation is silent, the exception must be suppressed
+            }
+
+            return operationResult;
+        }
+
+        /// <summary>
+        /// Builds the DELETE WHERE operation that clears all the quadruples of the given context (the same
+        /// context-scoped delete used to evaluate an explicit CLEAR/DROP).
+        /// </summary>
+        private static RDFDeleteWhereOperation BuildContextClearOperation(RDFContext context)
+            => new RDFDeleteWhereOperation()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(context, new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
+                .AddDeleteTemplate(new RDFPattern(context, new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+
+        /// <summary>
+        /// Builds the INSERT WHERE operation that copies every quadruple of the source context into the destination
+        /// context (the triples are re-contextualized to the destination on insertion).
+        /// </summary>
+        private static RDFInsertWhereOperation BuildContextCopyOperation(RDFContext sourceContext, RDFContext destinationContext)
+            => new RDFInsertWhereOperation()
+                .AddPatternGroup(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(sourceContext, new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O"))))
+                .AddInsertTemplate(new RDFPattern(destinationContext, new RDFVariable("S"), new RDFVariable("P"), new RDFVariable("O")));
+
+        /// <summary>
         /// Evaluates the given operation on the given SPARQL UPDATE endpoint
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         internal bool EvaluateOperationOnSPARQLUpdateEndpoint(RDFOperation operation, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
+            //A SILENT-flagged operation must hide its failure to the application: capture that intent so the shared
+            //sender can swallow the error and report a benign "false" instead of throwing
+            => EvaluateSparqlUpdateCommandOnEndpoint(operation.ToString(), sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions, OperationIsSilent(operation));
+
+        /// <summary>
+        /// Tells whether the given operation carries the SILENT flag (the LOAD/CLEAR/CREATE/DROP/ADD/COPY/MOVE
+        /// forms that may suppress remote failures). The triple-template forms (INSERT/DELETE DATA/WHERE) have no
+        /// SILENT flag and are therefore never silent.
+        /// </summary>
+        private static bool OperationIsSilent(RDFOperation operation)
+        {
+            switch (operation)
+            {
+                case RDFLoadOperation loadOperation: return loadOperation.IsSilent;
+                case RDFClearOperation clearOperation: return clearOperation.IsSilent;
+                case RDFCreateOperation createOperation: return createOperation.IsSilent;
+                case RDFDropOperation dropOperation: return dropOperation.IsSilent;
+                case RDFAddOperation addOperation: return addOperation.IsSilent;
+                case RDFCopyOperation copyOperation: return copyOperation.IsSilent;
+                case RDFMoveOperation moveOperation: return moveOperation.IsSilent;
+                default: return false;
+            }
+        }
+
+        /// <summary>
+        /// Sends a whole <see cref="RDFOperationSet"/> — its ';'-separated operations serialized together — to the
+        /// given SPARQL UPDATE endpoint in a SINGLE request, so the endpoint applies the chain as one command.
+        /// Because the chain executes server-side as a unit, the per-operation SILENT semantics cannot be honored
+        /// individually here: any failure of the combined command surfaces as an exception.
+        /// </summary>
+        internal bool EvaluateOperationSetOnSPARQLUpdateEndpoint(RDFOperationSet operationSet, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions)
+            => EvaluateSparqlUpdateCommandOnEndpoint(operationSet.ToString(), sparqlUpdateEndpoint, sparqlUpdateEndpointOperationOptions, false);
+
+        /// <summary>
+        /// Shared core that POSTs an already-serialized SPARQL UPDATE command string to the given endpoint, applying
+        /// the chosen content-type and the endpoint's query parameters and authorization. When the command fails,
+        /// <paramref name="swallowFailureAsSilent"/> decides whether to report a benign "false" (SILENT) or to
+        /// propagate the error as an <see cref="RDFQueryException"/>.
+        /// </summary>
+        private bool EvaluateSparqlUpdateCommandOnEndpoint(string operationString, RDFSPARQLEndpoint sparqlUpdateEndpoint, RDFSPARQLEndpointOperationOptions sparqlUpdateEndpointOperationOptions, bool swallowFailureAsSilent)
         {
             //Initialize operation options if not provided
             if (sparqlUpdateEndpointOperationOptions == null)
@@ -245,7 +394,6 @@ namespace RDFSharp.Query
                 string namedGraphUri = sparqlUpdateEndpoint.QueryParams.Get("named-graph-uri");
 
                 //Insert request headers
-                string operationString = operation.ToString();
                 switch (sparqlUpdateEndpointOperationOptions.RequestContentType)
                 {
                     //update via POST with URL-encoded body
@@ -285,9 +433,7 @@ namespace RDFSharp.Query
                 catch (Exception ex)
                 {
                     //Silent operations can hide errors to the application
-                    bool isLoadSilent = operation is RDFLoadOperation loadOperation && loadOperation.IsSilent;
-                    bool isClearSilent = operation is RDFClearOperation clearOperation && clearOperation.IsSilent;
-                    if (isLoadSilent || isClearSilent)
+                    if (swallowFailureAsSilent)
                         return false;
 
                     throw new RDFQueryException($"Operation on SPARQL UPDATE endpoint {sparqlUpdateEndpoint.BaseAddress} failed because: {ex.Message}; Endpoint's response was: {sparqlUpdateResponse}", ex);

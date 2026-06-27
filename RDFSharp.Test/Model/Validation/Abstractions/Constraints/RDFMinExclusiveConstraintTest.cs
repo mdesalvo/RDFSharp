@@ -204,7 +204,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Alibe")));
         shapesGraph.AddShape(propertyShape);
@@ -231,7 +231,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Alibe")));
         shapesGraph.AddShape(propertyShape);
@@ -258,7 +258,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Alibe")));
         shapesGraph.AddShape(propertyShape);
@@ -285,7 +285,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Alibe")));
         shapesGraph.AddShape(propertyShape);
@@ -460,7 +460,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Barry")));
         shapesGraph.AddShape(propertyShape);
@@ -476,7 +476,7 @@ public class RDFMinExclusiveConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values greater than <ex:Barry>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -496,7 +496,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Barry")));
         shapesGraph.AddShape(propertyShape);
@@ -512,7 +512,7 @@ public class RDFMinExclusiveConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values greater than <ex:Barry>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -532,7 +532,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Barry")));
         shapesGraph.AddShape(propertyShape);
@@ -548,7 +548,7 @@ public class RDFMinExclusiveConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values greater than <ex:Barry>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -568,7 +568,7 @@ public class RDFMinExclusiveConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFResource("ex:Barry")));
         shapesGraph.AddShape(propertyShape);
@@ -584,7 +584,7 @@ public class RDFMinExclusiveConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values greater than <ex:Barry>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Alice")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -604,7 +604,7 @@ public class RDFMinExclusiveConstraintTest
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:BeforeMillennialsShape"));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
-        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:birthDate"));
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:birthDate")));
         propShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFTypedLiteral("1998-01-01", RDFModelEnums.RDFDatatypes.XSD_DATE)));
         nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
         shapesGraph.AddShape(nodeShape);
@@ -632,7 +632,7 @@ public class RDFMinExclusiveConstraintTest
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:BeforeMillennialsShape"));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
-        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:birthDate"));
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:birthDate")));
         propShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFTypedLiteral("1999-01-01", RDFModelEnums.RDFDatatypes.XSD_DATE)));
         nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
         shapesGraph.AddShape(nodeShape);
@@ -649,7 +649,7 @@ public class RDFMinExclusiveConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values greater than <1999-01-01Z^^http://www.w3.org/2001/XMLSchema#date>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("1998-07-30", RDFModelEnums.RDFDatatypes.XSD_DATE)));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:birthDate")));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(new RDFResource("ex:birthDate")));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
     }

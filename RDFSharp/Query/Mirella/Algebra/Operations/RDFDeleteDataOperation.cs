@@ -33,6 +33,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL UPDATE string into an RDFDeleteDataOperation.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid DELETE DATA operation.</exception>
+        public static RDFDeleteDataOperation FromString(string deleteDataOperation)
+        {
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(deleteDataOperation);
+
+            //The factory dispatches on the operation form: enforce that the parsed operation is indeed a DELETE DATA
+            if (parsedOperation is RDFDeleteDataOperation parsedDeleteDataOperation)
+                return parsedDeleteDataOperation;
+
+            throw new RDFQueryException("Cannot parse DELETE DATA operation because the given command represents a different SPARQL UPDATE operation (" + parsedOperation.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given ground pattern to the templates of the operation
         /// </summary>
         public RDFDeleteDataOperation AddDeleteTemplate(RDFPattern template)

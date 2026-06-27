@@ -39,6 +39,32 @@ public class RDFConstructQueryTest
 
     #region Tests
     [TestMethod]
+    public void ShouldApplyConstructWithLimitToSolutionsBeforeTemplate()
+    {
+        //Per SPARQL 1.1, the solution modifiers (here LIMIT) apply to the WHERE solution sequence BEFORE the
+        //template is instantiated: LIMIT 1 keeps 1 solution, and a 2-triple template then yields 2 triples
+        //(NOT 1 triple — which is what a post-template LIMIT would have wrongly produced).
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino")),
+            new RDFTriple(new RDFResource("ex:fido"), new RDFResource("ex:dogOf"), new RDFResource("ex:paperino"))
+        ]);
+
+        RDFConstructQuery query = new RDFConstructQuery()
+            .AddTemplate(new RDFPattern(new RDFVariable("?Y"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:dog")))
+            .AddTemplate(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:hasOwner"), new RDFVariable("?X")))
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))))
+            .AddModifier(new RDFOrderByModifier(new RDFVariable("?Y"), RDFQueryEnums.RDFOrderByFlavors.ASC))
+            .AddModifier(new RDFLimitModifier(1));
+        RDFConstructQueryResult result = query.ApplyToGraph(graph);
+
+        //1 solution (ex:fido, ordered ASC before ex:pluto) instantiates the 2-triple template => 2 triples
+        Assert.AreEqual(2, result.ConstructResultsCount);
+        Assert.IsTrue(string.Equals(result.ConstructResults.Rows[0]["?SUBJECT"].ToString(), "ex:fido", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
     public void ShouldCreateConstructQuery()
     {
         RDFConstructQuery query = new RDFConstructQuery();
@@ -84,7 +110,6 @@ public class RDFConstructQueryTest
                         .AddValues(new RDFValues().AddColumn(new RDFVariable("?S"), [RDFVocabulary.RDFS.CLASS])))
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?P")));
-        query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
@@ -95,7 +120,7 @@ public class RDFConstructQueryTest
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
-        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
 
@@ -120,7 +145,6 @@ public class RDFConstructQueryTest
                 .AddProjectionVariable(new RDFVariable("?S"))
                 .AddProjectionVariable(new RDFVariable("?P"))
                 .Optional());
-        query.AddModifier(new RDFDistinctModifier());
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
@@ -132,7 +156,7 @@ public class RDFConstructQueryTest
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(1, query.GetSubQueries().Count());
         Assert.IsTrue(query.GetSubQueries().First() is RDFSelectQuery { IsOptional: true });
-        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
 
@@ -164,8 +188,7 @@ public class RDFConstructQueryTest
             new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
                 .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S")))));
-        query.AddOperator(subQuery1.Union(subQuery2));
-        query.AddModifier(new RDFDistinctModifier());
+        query.AddBinaryQueryMember(subQuery1.Union(subQuery2));
         query.AddModifier(new RDFLimitModifier(100));
         query.AddModifier(new RDFOffsetModifier(20));
 
@@ -176,7 +199,7 @@ public class RDFConstructQueryTest
         Assert.AreEqual(2, query.GetEvaluableQueryMembers().Count());
         Assert.AreEqual(1, query.GetPatternGroups().Count());
         Assert.AreEqual(0, query.GetSubQueries().Count());
-        Assert.AreEqual(3, query.GetModifiers().Count());
+        Assert.AreEqual(2, query.GetModifiers().Count());
         Assert.HasCount(2, query.GetPrefixes());
     }
 

@@ -39,15 +39,24 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFMinAggregator(RDFVariable aggrVariable, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(aggrVariable, projVariable)
             => AggregatorFlavor = aggregatorFlavor;
+
+        /// <summary>
+        /// Builds a MIN aggregator on the given expression, with the given projection name and given flavor. The
+        /// expression is materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFMinAggregator(RDFExpression aggrExpression, RDFVariable projVariable, RDFQueryEnums.RDFMinMaxAggregatorFlavors aggregatorFlavor) : base(MakeExpressionVariable(projVariable), projVariable)
+        {
+            AggregatorFlavor = aggregatorFlavor;
+            Metadata.AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFMinAggregator because given \"aggrExpression\" parameter is null.");
+        }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the MIN aggregator
+        /// The MIN function (without the surrounding "(... AS ?proj)"), honoring DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(MIN(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(MIN({AggregatorVariable}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+            => Metadata.IsDistinct ? $"MIN(DISTINCT {AggregatorArgument})" : $"MIN({AggregatorArgument})";
         #endregion
 
         #region Methods
@@ -71,24 +80,31 @@ namespace RDFSharp.Query
         /// </summary>
         private void ExecutePartitionNumeric(string partitionKey, RDFTableRow tableRow)
         {
-            //Get row value
-            double rowValue = GetRowValueAsNumber(tableRow);
-            if (IsDistinct)
+            //Get row value (numeric typed literal, or null when unbound/non-numeric)
+            RDFTypedLiteral rowValue = GetRowValueAsTypedLiteral(tableRow);
+            if (Metadata.IsDistinct)
             {
+                string distinctKey = rowValue?.ToString() ?? string.Empty;
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, distinctKey))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, distinctKey);
             }
-            //Get aggregator value
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
-            //In case of non-numeric values, consider partitioning failed
-            double newAggregatorValue = double.NaN;
-            if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
-                newAggregatorValue = Math.Min(rowValue, aggregatorValue);
-            //Update aggregator context (min)
-            AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
+            //An already-poisoned partition stays poisoned
+            if (Context.IsPartitionKeyPoisoned(partitionKey))
+                return;
+            //A non-numeric row poisons the partition
+            if (rowValue == null)
+            {
+                Context.MarkPartitionKeyAsPoisoned(partitionKey);
+                return;
+            }
+            //Keep the smaller value as the winner, preserving its original typed literal (and thus its datatype);
+            //a null current value means no numeric row has been seen yet
+            RDFTypedLiteral aggregatorValue = Context.GetPartitionKeyExecutionResult<RDFTypedLiteral>(partitionKey, null);
+            if (aggregatorValue == null || ParseTypedLiteralAsDouble(rowValue) < ParseTypedLiteralAsDouble(aggregatorValue))
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
         }
         /// <summary>
         /// Executes the partition on the given tablerow (STRING)
@@ -97,21 +113,21 @@ namespace RDFSharp.Query
         {
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
-            if (IsDistinct)
+            if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Get aggregator value
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult<string>(partitionKey, null);
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult<string>(partitionKey, null);
             //Update aggregator context (min)
             if (aggregatorValue == null)
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
             else
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, string.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == -1 ? rowValue : aggregatorValue);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, string.Compare(rowValue, aggregatorValue, false, CultureInfo.InvariantCulture) == -1 ? rowValue : aggregatorValue);
         }
 
         /// <summary>
@@ -124,10 +140,10 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
@@ -159,12 +175,12 @@ namespace RDFSharp.Query
             //Get bindings from context
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
-            //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
-            bindings.Add(ProjectionVariable.VariableName,
-                aggregatorValue.Equals(double.NaN)
+            //Add aggregator value to bindings (no numeric row / poisoned partition projects an unbound value)
+            RDFTypedLiteral aggregatorValue = Context.GetPartitionKeyExecutionResult<RDFTypedLiteral>(partitionKey, null);
+            bindings.Add(Metadata.ProjectionVariable.VariableName,
+                aggregatorValue == null || Context.IsPartitionKeyPoisoned(partitionKey)
                     ? string.Empty
-                    : new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture),RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
+                    : aggregatorValue.ToString());
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);
@@ -178,8 +194,8 @@ namespace RDFSharp.Query
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
             //Add aggregator value to bindings
-            string aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
-            bindings.Add(ProjectionVariable.VariableName, aggregatorValue);
+            string aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, string.Empty);
+            bindings.Add(Metadata.ProjectionVariable.VariableName, aggregatorValue);
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

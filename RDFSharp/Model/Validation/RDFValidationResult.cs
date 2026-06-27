@@ -46,9 +46,9 @@ namespace RDFSharp.Model
         public RDFPatternMember FocusNode { get; internal set; }
 
         /// <summary>
-        /// Indicates the property which caused the validation result (sh:resultPath)
+        /// Indicates the path which caused the validation result (sh:resultPath)
         /// </summary>
-        public RDFResource ResultPath { get; internal set; }
+        public RDFPropertyPath ResultPath { get; internal set; }
 
         /// <summary>
         /// Indicates the value which caused the validation result (sh:value)
@@ -68,7 +68,7 @@ namespace RDFSharp.Model
         internal RDFValidationResult(RDFResource sourceShape,
                                      RDFResource sourceConstraintComponent,
                                      RDFPatternMember focusNode,
-                                     RDFResource resultPath,
+                                     RDFPropertyPath resultPath,
                                      RDFPatternMember resultValue,
                                      List<RDFLiteral> resultMessages,
                                      RDFValidationEnums.RDFShapeSeverity severity = RDFValidationEnums.RDFShapeSeverity.Violation)
@@ -122,7 +122,7 @@ namespace RDFSharp.Model
 
             //ResultPath
             if (ResultPath != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, ResultPath));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, RDFValidationHelper.SerializeShapePath(result, ResultPath.Expression)));
 
             //Value
             if (ResultValue != null)

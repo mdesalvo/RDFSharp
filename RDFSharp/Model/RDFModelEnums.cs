@@ -182,145 +182,150 @@ namespace RDFSharp.Model
             [Description("http://www.w3.org/2001/XMLSchema#duration")]
             XSD_DURATION = 22,
             /// <summary>
+            /// http://www.w3.org/2001/XMLSchema#dayTimeDuration
+            /// </summary>
+            [Description("http://www.w3.org/2001/XMLSchema#dayTimeDuration")]
+            XSD_DAYTIMEDURATION = 23,
+            /// <summary>
             /// http://www.w3.org/2001/XMLSchema#dateTime
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#dateTime")]
-            XSD_DATETIME = 23,
+            XSD_DATETIME = 24,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#dateTimeStamp
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#dateTimeStamp")]
-            XSD_DATETIMESTAMP = 24,
+            XSD_DATETIMESTAMP = 25,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#date
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#date")]
-            XSD_DATE = 25,
+            XSD_DATE = 26,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#time
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#time")]
-            XSD_TIME = 26,
+            XSD_TIME = 27,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYear
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#gYear")]
-            XSD_GYEAR = 27,
+            XSD_GYEAR = 28,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonth
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#gMonth")]
-            XSD_GMONTH = 28,
+            XSD_GMONTH = 29,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gDay
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#gDay")]
-            XSD_GDAY = 29,
+            XSD_GDAY = 30,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gYearMonth
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#gYearMonth")]
-            XSD_GYEARMONTH = 30,
+            XSD_GYEARMONTH = 31,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#gMonthDay
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#gMonthDay")]
-            XSD_GMONTHDAY = 31,
+            XSD_GMONTHDAY = 32,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#hexBinary
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#hexBinary")]
-            XSD_HEXBINARY = 32,
+            XSD_HEXBINARY = 33,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#base64Binary
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#base64Binary")]
-            XSD_BASE64BINARY = 33,
+            XSD_BASE64BINARY = 34,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#anyURI
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#anyURI")]
-            XSD_ANYURI = 34,
+            XSD_ANYURI = 35,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#QName
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#QName")]
-            XSD_QNAME = 35,
+            XSD_QNAME = 36,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NOTATION
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#NOTATION")]
-            XSD_NOTATION = 36,
+            XSD_NOTATION = 37,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#language
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#language")]
-            XSD_LANGUAGE = 37,
+            XSD_LANGUAGE = 38,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#normalizedString
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#normalizedString")]
-            XSD_NORMALIZEDSTRING = 38,
+            XSD_NORMALIZEDSTRING = 39,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#token
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#token")]
-            XSD_TOKEN = 39,
+            XSD_TOKEN = 40,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NMToken
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#NMToken")]
-            XSD_NMTOKEN = 40,
+            XSD_NMTOKEN = 41,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#Name
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#Name")]
-            XSD_NAME = 41,
+            XSD_NAME = 42,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#NCName
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#NCName")]
-            XSD_NCNAME = 42,
+            XSD_NCNAME = 43,
             /// <summary>
             /// http://www.w3.org/2001/XMLSchema#ID
             /// </summary>
             [Description("http://www.w3.org/2001/XMLSchema#ID")]
-            XSD_ID = 43,
+            XSD_ID = 44,
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#wktLiteral
             /// </summary>
             [Description("http://www.opengis.net/ont/geosparql#wktLiteral")]
-            GEOSPARQL_WKT = 44,
+            GEOSPARQL_WKT = 45,
             /// <summary>
             /// http://www.opengis.net/ont/geosparql#gmlLiteral
             /// </summary>
             [Description("http://www.opengis.net/ont/geosparql#gmlLiteral")]
-            GEOSPARQL_GML = 45,
+            GEOSPARQL_GML = 46,
             /// <summary>
             /// http://www.w3.org/2006/time#generalDay
             /// </summary>
             [Description("http://www.w3.org/2006/time#generalDay")]
-            TIME_GENERALDAY = 46,
+            TIME_GENERALDAY = 47,
             /// <summary>
             /// http://www.w3.org/2006/time#generalMonth
             /// </summary>
             [Description("http://www.w3.org/2006/time#generalMonth")]
-            TIME_GENERALMONTH = 47,
+            TIME_GENERALMONTH = 48,
             /// <summary>
             /// http://www.w3.org/2006/time#generalYear
             /// </summary>
             [Description("http://www.w3.org/2006/time#generalYear")]
-            TIME_GENERALYEAR = 48,
+            TIME_GENERALYEAR = 49,
             /// <summary>
             /// http://www.w3.org/2002/07/owl#real
             /// </summary>
             [Description("http://www.w3.org/2002/07/owl#real")]
-            OWL_REAL = 49,
+            OWL_REAL = 50,
             /// <summary>
             /// http://www.w3.org/2002/07/owl#rational
             /// </summary>
             [Description("http://www.w3.org/2002/07/owl#rational")]
-            OWL_RATIONAL = 50
+            OWL_RATIONAL = 51
         }
 
         /// <summary>

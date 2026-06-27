@@ -42,6 +42,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL string into an RDFAskQuery.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid ASK query.</exception>
+        public static RDFAskQuery FromString(string askQuery)
+        {
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(askQuery);
+
+            //The factory dispatches on the query form: enforce that the parsed query is indeed an ASK
+            if (parsedQuery is RDFAskQuery parsedAskQuery)
+                return parsedAskQuery;
+
+            throw new RDFQueryException("Cannot parse ASK query because the given command represents a different SPARQL query form (" + parsedQuery.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given pattern group to the query
         /// </summary>
         public RDFAskQuery AddPatternGroup(RDFPatternGroup patternGroup)
@@ -50,8 +65,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the query
         /// </summary>
-        public RDFAskQuery AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFAskQuery>(operatorMember);
+        public RDFAskQuery AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFAskQuery>(binaryMember);
 
         /// <summary>
         /// Adds the given prefix declaration to the query
@@ -64,6 +79,22 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFAskQuery AddSubQuery(RDFSelectQuery subQuery)
             => AddSubQuery<RDFAskQuery>(subQuery);
+
+        /// <summary>
+        /// Adds the given solution modifier to the query
+        /// </summary>
+        public RDFAskQuery AddModifier(RDFModifier modifier)
+        {
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: false))
+                QueryMembers.Add(modifier);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the trailing query-level inline-data block
+        /// </summary>
+        public RDFAskQuery SetValues(RDFValues values)
+            => SetValues<RDFAskQuery>(values);
 
         /// <summary>
         /// Applies the query to the given graph

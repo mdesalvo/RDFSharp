@@ -73,7 +73,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -103,7 +103,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
 
         //Validate
@@ -132,7 +132,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
@@ -163,7 +163,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -193,7 +193,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -223,7 +223,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -251,11 +251,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -281,11 +281,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
@@ -312,11 +312,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -342,11 +342,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -372,11 +372,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(5));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -408,7 +408,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(7));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -422,7 +422,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 7 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }
@@ -446,7 +446,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(7));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -460,7 +460,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 7 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }
@@ -484,7 +484,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(7));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -498,7 +498,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 7 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Bob")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }
@@ -522,7 +522,7 @@ public class RDFPropertyConstraintTest
         nodeShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         nodeShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(nodeShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -536,7 +536,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 10 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }
@@ -558,11 +558,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -576,7 +576,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 10 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }
@@ -596,11 +596,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -614,7 +614,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 10 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }
@@ -634,11 +634,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -652,7 +652,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 10 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }
@@ -672,11 +672,11 @@ public class RDFPropertyConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFPropertyConstraint(new RDFResource("ex:PropertyShapeConstraint")));
         shapesGraph.AddShape(propertyShape);
-        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFVocabulary.RDF.TYPE);
+        RDFPropertyShape propertyShapeConstraint = new RDFPropertyShape(new RDFResource("ex:PropertyShapeConstraint"), RDFTestUtilities.ShaclPath(RDFVocabulary.RDF.TYPE));
         propertyShapeConstraint.AddConstraint(new RDFMinLengthConstraint(10));
         shapesGraph.AddShape(propertyShapeConstraint);
 
@@ -690,7 +690,7 @@ public class RDFPropertyConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have a minimum length of 10 characters and can't be a blank node")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Steve")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Man")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.RDF.TYPE));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.RDF.TYPE));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_LENGTH_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShapeConstraint")));
     }

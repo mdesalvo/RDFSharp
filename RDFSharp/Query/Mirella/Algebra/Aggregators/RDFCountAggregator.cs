@@ -26,20 +26,48 @@ namespace RDFSharp.Query
     /// </summary>
     public sealed class RDFCountAggregator : RDFAggregator
     {
+        #region Properties
+        /// <summary>
+        /// Whether this is a COUNT(*): it counts the solutions of the group (each row) instead of the bound values
+        /// of a single variable, so it reads no column from the working table.
+        /// </summary>
+        public bool IsCountAll { get; internal set; }
+        #endregion
+
         #region Ctors
         /// <summary>
         /// Builds a COUNT aggregator on the given variable and with the given projection name
         /// </summary>
         public RDFCountAggregator(RDFVariable aggrVariable, RDFVariable projVariable) : base(aggrVariable, projVariable) { }
+
+        /// <summary>
+        /// Builds a COUNT aggregator on the given expression and with the given projection name. The expression is
+        /// materialized into a synthetic column before partitioning, the aggregator then operating on it.
+        /// </summary>
+        public RDFCountAggregator(RDFExpression aggrExpression, RDFVariable projVariable) : base(MakeExpressionVariable(projVariable), projVariable)
+            => Metadata.AggregatorExpression = aggrExpression ?? throw new RDFQueryException("Cannot create RDFCountAggregator because given \"aggrExpression\" parameter is null.");
+
+        /// <summary>
+        /// Builds a COUNT(*) aggregator with the given projection name: it counts the group's solutions (rows). The
+        /// aggregator variable is set to the projection variable as a harmless placeholder (it is never read).
+        /// </summary>
+        public RDFCountAggregator(RDFVariable projVariable) : base(projVariable, projVariable)
+            => IsCountAll = true;
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gets the string representation of the COUNT aggregator
+        /// The COUNT function (without the surrounding "(... AS ?proj)"), honoring COUNT(*) and DISTINCT.
         /// </summary>
-        public override string ToString()
-            => IsDistinct ? $"(COUNT(DISTINCT {AggregatorVariable}) AS {ProjectionVariable})"
-                          : $"(COUNT({AggregatorVariable}) AS {ProjectionVariable})";
+        protected override string AggregatorFunction
+        {
+            get
+            {
+                if (IsCountAll)
+                    return Metadata.IsDistinct ? "COUNT(DISTINCT *)" : "COUNT(*)";
+                return Metadata.IsDistinct ? $"COUNT(DISTINCT {AggregatorArgument})" : $"COUNT({AggregatorArgument})";
+            }
+        }
         #endregion
 
         #region Methods
@@ -48,19 +76,35 @@ namespace RDFSharp.Query
         /// </summary>
         internal override void ExecutePartition(string partitionKey, RDFTableRow tableRow)
         {
+            //COUNT(*): count the group's solutions (each row), honoring DISTINCT over the whole solution
+            if (IsCountAll)
+            {
+                if (Metadata.IsDistinct)
+                {
+                    string rowSignature = tableRow.Signature;
+                    //Cache-Hit: distinctness failed
+                    if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowSignature))
+                        return;
+                    //Cache-Miss: distinctness passed
+                    Context.UpdatePartitionKeyRowValueCache(partitionKey, rowSignature);
+                }
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, Context.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
+                return;
+            }
+
             //Get row value
             string rowValue = GetRowValueAsString(tableRow);
-            if (IsDistinct)
+            if (Metadata.IsDistinct)
             {
                 //Cache-Hit: distinctness failed
-                if (AggregatorContext.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
                     return;
                 //Cache-Miss: distinctness passed
-                AggregatorContext.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
             }
             //Update aggregator context (count)
             if (!string.IsNullOrEmpty(rowValue))
-                AggregatorContext.UpdatePartitionKeyExecutionResult(partitionKey, AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, Context.GetPartitionKeyExecutionResult(partitionKey, 0d) + 1d);
         }
 
         /// <summary>
@@ -73,10 +117,10 @@ namespace RDFSharp.Query
             //Initialization
             partitionVariables.ForEach(pv =>
                 projFuncTable.AddColumn(pv.VariableName));
-            projFuncTable.AddColumn(ProjectionVariable.VariableName);
+            projFuncTable.AddColumn(Metadata.ProjectionVariable.VariableName);
 
             //Finalization
-            foreach (string partitionKey in AggregatorContext.ExecutionRegistry.Keys)
+            foreach (string partitionKey in Context.ExecutionRegistry.Keys)
             {
                 //Update result's table
                 UpdateProjectionTable(partitionKey, projFuncTable);
@@ -93,9 +137,9 @@ namespace RDFSharp.Query
             //Get bindings from context
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
-            //Add aggregator value to bindings
-            double aggregatorValue = AggregatorContext.GetPartitionKeyExecutionResult(partitionKey, 0d);
-            bindings.Add(ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
+            //Add aggregator value to bindings (COUNT yields xsd:integer per the SPARQL spec)
+            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
+            bindings.Add(Metadata.ProjectionVariable.VariableName, new RDFTypedLiteral(((long)aggregatorValue).ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString());
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

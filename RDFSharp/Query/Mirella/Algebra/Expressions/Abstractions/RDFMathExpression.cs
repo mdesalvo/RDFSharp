@@ -14,9 +14,7 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
@@ -121,21 +119,7 @@ namespace RDFSharp.Query
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            switch (this)
-            {
-                case RDFAddExpression _:
-                    sb.Append(" + ");
-                    break;
-                case RDFSubtractExpression _:
-                    sb.Append(" - ");
-                    break;
-                case RDFMultiplyExpression _:
-                    sb.Append(" * ");
-                    break;
-                case RDFDivideExpression _:
-                    sb.Append(" / ");
-                    break;
-            }
+            sb.Append(' ').Append(ArithmeticOperator).Append(' ');
             switch (RightArgument)
             {
                 case RDFExpression expRightArgument:
@@ -198,28 +182,13 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
+                //Delegate to the shared SPARQL numeric-arithmetic primitive, which applies the type-promotion lattice
+                //(integer<decimal<float<double), computes integer/decimal exactly and returns null on type errors,
+                //division by zero, overflow or non-finite results (treated by the caller as "no binding")
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                     && leftArgumentTypedLiteral.HasDecimalDatatype()
-                     && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral
-                     && rightArgumentTypedLiteral.HasDecimalDatatype())
+                     && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral)
                 {
-                    double? leftArgumentNumericValueFinal = null;
-                    double? rightArgumentNumericValueFinal = null;
-
-                    //owl:rational needs parsing and evaluation before being compared (LEFT)
-                    if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        leftArgumentNumericValueFinal = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(leftArgumentTypedLiteral), CultureInfo.InvariantCulture);
-                    //owl:rational needs parsing and evaluation before being compared (RIGHT)
-                    if (rightArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                        rightArgumentNumericValueFinal = Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(rightArgumentTypedLiteral), CultureInfo.InvariantCulture);
-
-                    //Compute the arithmetical expression if we have valid double values from the arguments
-                    if (!leftArgumentNumericValueFinal.HasValue && double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
-                        leftArgumentNumericValueFinal = leftArgumentNumericValue;
-                    if (!rightArgumentNumericValueFinal.HasValue && double.TryParse(rightArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double rightArgumentNumericValue))
-                        rightArgumentNumericValueFinal = rightArgumentNumericValue;
-                    if (leftArgumentNumericValueFinal.HasValue && rightArgumentNumericValueFinal.HasValue)
-                        expressionResult = EvaluateMathExpression(leftArgumentNumericValueFinal.Value, rightArgumentNumericValueFinal.Value);
+                    expressionResult = RDFArithmeticEngine.EvaluateNumericLattice(leftArgumentTypedLiteral, rightArgumentTypedLiteral, ArithmeticOperator);
                 }
                 #endregion
             }
@@ -229,25 +198,10 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Compute the arithmetical expression on the given numeric parameters
+        /// The arithmetic operator carried by this expression ('+', '-', '*' or '/'): supplied by each concrete
+        /// subclass and consumed by both the printer (ToString) and the shared numeric-arithmetic engine
         /// </summary>
-        private RDFTypedLiteral EvaluateMathExpression(double leftArgumentNumericValue, double rightArgumentNumericValue)
-        {
-            switch (this)
-            {
-                case RDFAddExpression _:
-                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue + rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                case RDFSubtractExpression _:
-                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue - rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                case RDFMultiplyExpression _:
-                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue * rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                case RDFDivideExpression _ when rightArgumentNumericValue != 0d:
-                    return new RDFTypedLiteral(Convert.ToString(leftArgumentNumericValue / rightArgumentNumericValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                default:
-                    //Just to keep the compiler happy...
-                    return null;
-            }
-        }
+        protected abstract char ArithmeticOperator { get; }
         #endregion
     }
 }

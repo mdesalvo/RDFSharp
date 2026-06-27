@@ -16,6 +16,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
+using RDFSharp.Query;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -105,6 +106,34 @@ public class RDFValidationEngineTest
     }
 
     [TestMethod]
+    public void ShouldNotConformNodeShapeWithSPARQLTarget()
+    {
+        //DataGraph
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Human")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
+
+        //ShapesGraph: focus nodes are computed by SPARQL (sh:SPARQLTarget) instead of sh:targetClass
+        RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
+        nodeShape.AddMessage(new RDFPlainLiteral("ErrorMessage"));
+        nodeShape.AddTarget(new RDFTargetSPARQL(RDFSelectQuery.FromString(
+            "SELECT ?THIS WHERE { ?THIS <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ex:Human> }")));
+        nodeShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Person"))); //Alice will violate this
+        shapesGraph.AddShape(nodeShape);
+
+        //Validate
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        Assert.IsFalse(validationReport.Conforms);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:NodeShape")));
+    }
+
+    [TestMethod]
     public void ShouldConformPropertyShape()
     {
         //DataGraph
@@ -117,7 +146,7 @@ public class RDFValidationEngineTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGE);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
         propertyShape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         shapesGraph.AddShape(propertyShape);
@@ -142,7 +171,7 @@ public class RDFValidationEngineTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGE);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
         propertyShape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
         shapesGraph.AddShape(propertyShape);
@@ -167,7 +196,7 @@ public class RDFValidationEngineTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.AGE);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.AGE));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Human")));
         propertyShape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER))); //Bob will violate this
         shapesGraph.AddShape(propertyShape);
@@ -183,7 +212,7 @@ public class RDFValidationEngineTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values lower or equal than <20^^http://www.w3.org/2001/XMLSchema#integer>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("21", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.AGE));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.AGE));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MAX_INCLUSIVE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -267,7 +296,10 @@ public class RDFValidationEngineTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#parent1")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("http://ex.com/ns#Child.Parent")));
+        //An inverse path is not a bare predicate: its sh:resultPath is the inverse SHACL path expression
+        Assert.IsNull(validationReport.Results[0].ResultPath.AsSinglePredicate());
+        //An inverse path serializes its sh:resultPath as a blank node carrying sh:inversePath -> predicate
+        Assert.AreEqual(1, validationReport.Results[0].ToRDFGraph().SelectTriples(p: RDFVocabulary.SHACL.INVERSE_PATH, o: new RDFResource("http://ex.com/ns#Child.Parent")).Count);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Parent.Child-cardinality")));
     }
@@ -344,7 +376,8 @@ public class RDFValidationEngineTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Either mobileNumber or landLine should be present")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#person3")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsNull(validationReport.Results[0].ResultPath);
+        //An alternative path is not a bare predicate: its bare-IRI projection is null
+        Assert.IsNull(validationReport.Results[0].ResultPath.AsSinglePredicate());
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Person.mobile-landline-cardinality")));
     }
@@ -427,7 +460,8 @@ public class RDFValidationEngineTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Person should have at least one Uncle defined as: Person.Father/Person.Brother")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#person3")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsNull(validationReport.Results[0].ResultPath);
+        //A sequence path is not a bare predicate: its bare-IRI projection is null
+        Assert.IsNull(validationReport.Results[0].ResultPath.AsSinglePredicate());
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Person.Uncle-cardinality")));
     }
@@ -513,7 +547,10 @@ public class RDFValidationEngineTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://test.com/#parent1")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("http://ex.com/ns#Child.Parent")));
+        //An inverse path is not a bare predicate: its sh:resultPath is the inverse SHACL path expression
+        Assert.IsNull(validationReport.Results[0].ResultPath.AsSinglePredicate());
+        //An inverse path serializes its sh:resultPath as a blank node carrying sh:inversePath -> predicate
+        Assert.AreEqual(1, validationReport.Results[0].ToRDFGraph().SelectTriples(p: RDFVocabulary.SHACL.INVERSE_PATH, o: new RDFResource("http://ex.com/ns#Child.Parent")).Count);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Parent.Child-cardinality")));
     }
@@ -597,9 +634,290 @@ public class RDFValidationEngineTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Cardinality violation. Lower bound shall be 1. exns:Parent.Child-cardinality")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://test.com/#parent1")));
         Assert.IsNull(validationReport.Results[0].ResultValue);
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("http://ex.com/ns#Child.Parent")));
+        //An inverse path is not a bare predicate: its sh:resultPath is the inverse SHACL path expression
+        Assert.IsNull(validationReport.Results[0].ResultPath.AsSinglePredicate());
+        //An inverse path serializes its sh:resultPath as a blank node carrying sh:inversePath -> predicate
+        Assert.AreEqual(1, validationReport.Results[0].ToRDFGraph().SelectTriples(p: RDFVocabulary.SHACL.INVERSE_PATH, o: new RDFResource("http://ex.com/ns#Child.Parent")).Count);
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_COUNT_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#Parent.Child-cardinality")));
+    }
+
+    //E2E: recursive SHACL path "knows+" (sh:oneOrMorePath) evaluated as transitive closure of the value nodes
+    [TestMethod]
+    public void ShouldWorkWithRecursivePathOneOrMore()
+    {
+        //DataGraph: a knows-chain Alice -> Bob -> Carol; the transitive closure of Alice is {Bob, Carol}
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Bob")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("ex:Carol")));
+
+        //ShapesGraph: every transitively-known node must be a Person (Carol violates it)
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:Person")));
+
+        RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+        RDFPropertyPath recursivePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
+            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), recursivePath);
+        propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+        propertyShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Person")));
+        shapesGraph.AddShape(propertyShape);
+
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        Assert.IsFalse(validationReport.Conforms);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        //Carol is reached transitively (Alice knows Bob knows Carol) and is not a Person
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Alice")));
+        Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Carol")));
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
+    }
+
+    //E2E: recursive SHACL path (sh:oneOrMorePath) parsed from Turtle, then applied producing a violation
+    [TestMethod]
+    public void ShouldWorkWithRecursivePathParsedFromTurtle()
+    {
+        //ShapesGraph (Turtle): the property shape path is a recursive "knows+"
+        const string shapesData =
+            """
+
+            @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix sh:   <http://www.w3.org/ns/shacl#> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix exns: <http://ex.com/ns#> .
+
+            exns:PropertyShape  rdf:type   sh:PropertyShape ;
+                    sh:path     [ sh:oneOrMorePath foaf:knows ] ;
+                    sh:targetNode  exns:Alice ;
+                    sh:class    exns:Person .
+            """;
+        MemoryStream shapeStream = new MemoryStream();
+        using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+            shapeStreamWriter.WriteLine(shapesData);
+        RDFGraph shapesGraphObject = RDFTurtle.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+        RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+        //Sanity: the recursive path survived deserialization
+        RDFPropertyShape propertyShape = shapesGraph.SelectShape("http://ex.com/ns#PropertyShape") as RDFPropertyShape;
+        Assert.IsNotNull(propertyShape);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, propertyShape.Path.Expression.Cardinality);
+
+        //DataGraph: Alice -> Bob -> Carol; Carol is not a Person (will violate)
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Alice"), RDFVocabulary.FOAF.KNOWS, new RDFResource("http://ex.com/ns#Bob")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.FOAF.KNOWS, new RDFResource("http://ex.com/ns#Carol")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Person")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Carol"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Animal")));
+
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        Assert.IsFalse(validationReport.Conforms);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#Alice")));
+        Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("http://ex.com/ns#Carol")));
+    }
+
+    //E2E: SHACL-SPARQL target (sh:SPARQLTarget) parsed from Turtle, then applied producing a violation
+    [TestMethod]
+    public void ShouldWorkWithSPARQLTargetParsedFromTurtle()
+    {
+        //ShapesGraph (Turtle): focus nodes computed by sh:select instead of sh:targetClass
+        const string shapesData =
+            """
+
+            @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix sh:   <http://www.w3.org/ns/shacl#> .
+            @prefix exns: <http://ex.com/ns#> .
+
+            exns:HumanShape  rdf:type   sh:NodeShape ;
+                    sh:class    exns:Person ;
+                    sh:message  "Focus node must be a Person" ;
+                    sh:target   [ rdf:type   sh:SPARQLTarget ;
+                                  sh:select  "PREFIX exns: <http://ex.com/ns#> SELECT ?this WHERE { ?this a exns:Human }" ] .
+            """;
+        MemoryStream shapeStream = new MemoryStream();
+        using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+            shapeStreamWriter.WriteLine(shapesData);
+        RDFGraph shapesGraphObject = RDFTurtle.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+        RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+        //Sanity: the SPARQL target survived deserialization
+        RDFNodeShape humanShape = shapesGraph.SelectShape("http://ex.com/ns#HumanShape") as RDFNodeShape;
+        Assert.IsNotNull(humanShape);
+        Assert.AreEqual(1, humanShape.TargetsCount);
+        Assert.IsTrue(humanShape.Targets[0] is RDFTargetSPARQL);
+
+        //DataGraph: Alice is a Human but not a Person (will violate sh:class), Bob is both (conforms)
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Human")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Human")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Person")));
+
+        //Validate
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        Assert.IsFalse(validationReport.Conforms);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#Alice")));
+        Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Focus node must be a Person")));
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#HumanShape")));
+    }
+
+    //E2E: SHACL-SPARQL target (sh:SPARQLTarget) parsed from RDF/XML, then applied producing a violation
+    [TestMethod]
+    public void ShouldWorkWithSPARQLTargetParsedFromRDFXml()
+    {
+        //ShapesGraph (RDF/XML): the sh:target points to a nested sh:SPARQLTarget blank node carrying sh:select
+        const string shapesData =
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <rdf:RDF
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:sh="http://www.w3.org/ns/shacl#"
+                xmlns:exns="http://ex.com/ns#">
+                <sh:NodeShape rdf:about="http://ex.com/ns#HumanShape">
+                    <sh:class rdf:resource="http://ex.com/ns#Person" />
+                    <sh:message>Focus node must be a Person</sh:message>
+                    <sh:target>
+                        <sh:SPARQLTarget>
+                            <sh:select>PREFIX exns: &lt;http://ex.com/ns#&gt; SELECT ?this WHERE { ?this a exns:Human }</sh:select>
+                        </sh:SPARQLTarget>
+                    </sh:target>
+                </sh:NodeShape>
+            </rdf:RDF>
+            """;
+        MemoryStream shapeStream = new MemoryStream();
+        using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+            shapeStreamWriter.WriteLine(shapesData);
+        RDFGraph shapesGraphObject = RDFXml.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+        RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+        //Sanity: the SPARQL target survived deserialization
+        RDFNodeShape humanShape = shapesGraph.SelectShape("http://ex.com/ns#HumanShape") as RDFNodeShape;
+        Assert.IsNotNull(humanShape);
+        Assert.AreEqual(1, humanShape.TargetsCount);
+        Assert.IsTrue(humanShape.Targets[0] is RDFTargetSPARQL);
+
+        //DataGraph: Alice is a Human but not a Person (will violate sh:class), Bob is both (conforms)
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Human")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Human")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Person")));
+
+        //Validate
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        Assert.IsFalse(validationReport.Conforms);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#Alice")));
+        Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Focus node must be a Person")));
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.CLASS_CONSTRAINT_COMPONENT));
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#HumanShape")));
+    }
+
+    //E2E: SHACL-SPARQL constraint (sh:SPARQLConstraint) parsed from Turtle, then applied producing a violation
+    [TestMethod]
+    public void ShouldWorkWithSPARQLConstraintParsedFromTurtle()
+    {
+        //ShapesGraph (Turtle): the sh:sparql constraint flags underage persons via a SELECT projecting ?this/?value
+        const string shapesData =
+            """
+
+            @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix sh:   <http://www.w3.org/ns/shacl#> .
+            @prefix exns: <http://ex.com/ns#> .
+
+            exns:PersonShape  rdf:type      sh:NodeShape ;
+                    sh:targetClass  exns:Person ;
+                    sh:sparql       [ rdf:type   sh:SPARQLConstraint ;
+                                      sh:select  "PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?this ?value WHERE { ?this foaf:age ?value . FILTER(?value < 18) }" ] .
+            """;
+        MemoryStream shapeStream = new MemoryStream();
+        using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+            shapeStreamWriter.WriteLine(shapesData);
+        RDFGraph shapesGraphObject = RDFTurtle.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+        RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+        //Sanity: the SPARQL constraint survived deserialization
+        RDFNodeShape personShape = shapesGraph.SelectShape("http://ex.com/ns#PersonShape") as RDFNodeShape;
+        Assert.IsNotNull(personShape);
+        Assert.AreEqual(1, personShape.ConstraintsCount);
+        Assert.IsTrue(personShape.Constraints[0] is RDFSPARQLConstraint);
+
+        //DataGraph: Alice is underage (violation), Bob is an adult (conforms)
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Person")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("14", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Person")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //Validate
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        Assert.IsFalse(validationReport.Conforms);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#Alice")));
+        Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("14", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.SPARQL_CONSTRAINT_COMPONENT));
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#PersonShape")));
+    }
+
+    //E2E: SHACL-SPARQL constraint (sh:SPARQLConstraint) parsed from RDF/XML, then applied producing a violation
+    [TestMethod]
+    public void ShouldWorkWithSPARQLConstraintParsedFromRDFXml()
+    {
+        //ShapesGraph (RDF/XML): the sh:sparql points to a nested sh:SPARQLConstraint blank node carrying sh:select
+        const string shapesData =
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <rdf:RDF
+                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:sh="http://www.w3.org/ns/shacl#"
+                xmlns:exns="http://ex.com/ns#">
+                <sh:NodeShape rdf:about="http://ex.com/ns#PersonShape">
+                    <sh:targetClass rdf:resource="http://ex.com/ns#Person" />
+                    <sh:sparql>
+                        <sh:SPARQLConstraint>
+                            <sh:select>PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt; SELECT ?this ?value WHERE { ?this foaf:age ?value . FILTER(?value &lt; 18) }</sh:select>
+                        </sh:SPARQLConstraint>
+                    </sh:sparql>
+                </sh:NodeShape>
+            </rdf:RDF>
+            """;
+        MemoryStream shapeStream = new MemoryStream();
+        using (StreamWriter shapeStreamWriter = new StreamWriter(shapeStream))
+            shapeStreamWriter.WriteLine(shapesData);
+        RDFGraph shapesGraphObject = RDFXml.Deserialize(new MemoryStream(shapeStream.ToArray()), null);
+        RDFShapesGraph shapesGraph = RDFShapesGraph.FromRDFGraph(shapesGraphObject);
+
+        //Sanity: the SPARQL constraint survived deserialization
+        RDFNodeShape personShape = shapesGraph.SelectShape("http://ex.com/ns#PersonShape") as RDFNodeShape;
+        Assert.IsNotNull(personShape);
+        Assert.AreEqual(1, personShape.ConstraintsCount);
+        Assert.IsTrue(personShape.Constraints[0] is RDFSPARQLConstraint);
+
+        //DataGraph: Alice is underage (violation), Bob is an adult (conforms)
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Alice"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Person")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Alice"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("14", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.RDF.TYPE, new RDFResource("http://ex.com/ns#Person")));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("http://ex.com/ns#Bob"), RDFVocabulary.FOAF.AGE, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //Validate
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        Assert.IsFalse(validationReport.Conforms);
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("http://ex.com/ns#Alice")));
+        Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("14", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.SPARQL_CONSTRAINT_COMPONENT));
+        Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("http://ex.com/ns#PersonShape")));
     }
     #endregion
 }

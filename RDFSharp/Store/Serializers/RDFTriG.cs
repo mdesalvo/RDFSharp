@@ -112,6 +112,10 @@ namespace RDFSharp.Store
         {
             RDFTriGContext trigContext = new RDFTriGContext();
 
+            //Term-level parsers resolve base IRI and prefixes through this graph-backed resolver, wrapping
+            //the per-statement working graph exactly as the historical code passed it as the "result" argument.
+            trigContext.Resolver = new RDFGraphTermResolver(trigContext.Graph);
+
             try
             {
                 #region deserialize
@@ -259,7 +263,7 @@ namespace RDFSharp.Store
             {
                 UnreadCodePoint(trigContext, c);
 
-                object value = ParseValue(trigContext, trigContext.Graph);
+                object value = ParseValue(trigContext);
 
                 if (value is Uri || (value is RDFResource resValue && !resValue.IsBlank)) //We don't accept blank contexts
                 {

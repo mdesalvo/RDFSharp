@@ -969,5 +969,6 @@ public class RDFModelUtilitiesTest
     [DataRow(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
     public void ShouldGetEnumFromDatatype(string input, RDFModelEnums.RDFDatatypes expected)
         => Assert.AreEqual(expected, input.GetEnumFromDatatype());
+
     #endregion
 }

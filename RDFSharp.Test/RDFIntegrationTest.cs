@@ -18,21 +18,42 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
+using WireMock.Types;
+using WireMock.Util;
 
 namespace RDFSharp.Test;
 
 /// <summary>
-/// End-to-end integration tests for the Mirella query engine. The 13 queries cut across the whole
+/// End-to-end integration tests for the Mirella query engine. The 15 queries cut across the whole
 /// engine surface: BGP, multi-join, OPTIONAL, UNION, FILTER, GROUP BY/aggregation+HAVING,
 /// ORDER BY+LIMIT, DISTINCT, transitive property paths, sub-query, projection expression (BIND-like),
-/// FILTER NOT EXISTS and deeply nested Union/Minus operator trees.
+/// FILTER NOT EXISTS, FILTER (multi-pattern) EXISTS, inline VALUES and deeply nested Union/Minus operator trees.
 /// </summary>
 [TestClass]
 public class RDFIntegrationTest
 {
+    #region SERVICE mock endpoint
+    /// <summary>
+    /// In-process SPARQL endpoint used by the federated (SERVICE) integration test
+    /// </summary>
+    private WireMockServer serviceEndpointServer;
+
+    [TestInitialize]
+    public void StartServiceEndpoint() => serviceEndpointServer = WireMockServer.Start();
+
+    [TestCleanup]
+    public void StopServiceEndpoint() => serviceEndpointServer?.Stop();
+    #endregion
+
     #region Test data
     /// <summary>
     /// Base namespace of the university test dataset (same one used by the benchmark suite)
@@ -307,7 +328,7 @@ WHERE {
 }
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
-            .AddOperator(studentsPatternGroup.Union(professorsPatternGroup)));
+            .AddBinaryQueryMember(studentsPatternGroup.Union(professorsPatternGroup)));
 
         //4 students + 2 professors = 6 people
         Assert.AreEqual(6, result.SelectResultsCount);
@@ -364,7 +385,7 @@ WHERE {
   }
 }
 GROUP BY ?C
-HAVING ((AVG(?G) >= ""24""^^<http://www.w3.org/2001/XMLSchema#decimal>))
+HAVING ((?AVG >= 24))
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
@@ -373,9 +394,10 @@ HAVING ((AVG(?G) >= ""24""^^<http://www.w3.org/2001/XMLSchema#decimal>))
                 .AddPattern(new RDFPattern(Variable("?e"), UniversityResource("grade"), Variable("?g"))))
             .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { Variable("?c") })
                 .AddAggregator(new RDFCountAggregator(Variable("?e"), Variable("?cnt")))
-                .AddAggregator(new RDFAvgAggregator(Variable("?g"), Variable("?avg"))
-                    .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
-                                     new RDFTypedLiteral("24", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))));
+                .AddAggregator(new RDFAvgAggregator(Variable("?g"), Variable("?avg")))
+                .SetHavingExpression(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
+                                                                 new RDFVariableExpression(Variable("?avg")),
+                                                                 new RDFConstantExpression(new RDFTypedLiteral("24", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))));
 
         //Per-course averages are course0=25, course1=23, course2=26: HAVING avg>=24 keeps course0 and course2
         Assert.AreEqual(2, result.SelectResultsCount);
@@ -454,7 +476,7 @@ WHERE {
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(Variable("?c"), Variable("?root"))
-                    .AddSequenceStep(new RDFPropertyPathStep(UniversityResource("prerequisite")).OneOrMore()))));
+                    .AddSequenceStep(RDFPropertyPathExpression.Link(UniversityResource("prerequisite")).OneOrMore()))));
 
         //Closure of "course1->course0, course2->course1, course3->course1":
         //course1+ = {course0}; course2+ = {course1, course0}; course3+ = {course1, course0} => 5 pairs
@@ -553,14 +575,14 @@ WHERE {
 WHERE {
   {
     ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uni.org/Student> .
-    FILTER ( NOT EXISTS { ?E <http://uni.org/examStudent> ?S } ) 
+    FILTER ( NOT EXISTS { ?E <http://uni.org/examStudent> ?S . } ) 
   }
 }
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFNotExistsFilter(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s"))))));
+                .AddFilter(new RDFNotExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s")))))));
 
         //student3 is the only one who never took an exam
         Assert.AreEqual(1, result.SelectResultsCount);
@@ -630,7 +652,7 @@ WHERE {
 }
 ";
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
-            .AddOperator(studentsPatternGroup
+            .AddBinaryQueryMember(studentsPatternGroup
                 .Union(professorsPatternGroup
                     .Minus(course1EnrolleesPatternGroup
                         .Union(building0WorkersPatternGroup)))
@@ -644,6 +666,322 @@ WHERE {
         Assert.AreEqual("Student 0@EN", nameByPerson[$"{UniversityNamespace}student0"]);
         Assert.AreEqual("Student 3@EN", nameByPerson[$"{UniversityNamespace}student3"]);
         Assert.AreEqual("Professor 1@EN", nameByPerson[$"{UniversityNamespace}prof1"]);
+    }
+
+    [TestMethod]
+    public void ShouldAnswerQ14FilterExistsStudentsWithExamInProf0Course()
+    {
+        //Q14 - positive multi-pattern EXISTS (the new IP5.2 form): keep students for whom there EXISTS an exam
+        //in a course taught by prof0. The EXISTS body is a 3-triple group correlated with the outer row on ?S.
+        const string expectedQueryString = @"SELECT *
+WHERE {
+  {
+    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uni.org/Student> .
+    FILTER ( EXISTS { ?EX <http://uni.org/examStudent> ?S . ?EX <http://uni.org/examCourse> ?COURSE . ?COURSE <http://uni.org/taughtBy> <http://uni.org/prof0> . } ) 
+  }
+}
+";
+        RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
+                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course")))
+                    .AddPattern(new RDFPattern(Variable("?course"), UniversityResource("taughtBy"), UniversityResource("prof0")))))));
+
+        //student0 (exam in course0+course1, both prof0) and student1 (exam in course1, prof0) qualify;
+        //student2 only took course2 (prof1) and student3 took no exam => 2 results
+        Assert.AreEqual(2, result.SelectResultsCount);
+        List<string> keptStudents = result.SelectResults.Rows.Cast<DataRow>().Select(r => r["?S"].ToString()).OrderBy(s => s).ToList();
+        CollectionAssert.AreEqual(new List<string> { $"{UniversityNamespace}student0", $"{UniversityNamespace}student1" }, keptStudents);
+    }
+
+    [TestMethod]
+    public void ShouldAnswerQ15ValuesInlineWithMultiPatternExists()
+    {
+        //Q15 - orthogonal coverage of two seldom-exercised constructs together: an inline VALUES data block
+        //restricting ?S to {student2, student3}, plus a multi-pattern EXISTS keeping only those with an exam.
+        const string expectedQueryString = @"SELECT *
+WHERE {
+  {
+    VALUES ?S { <http://uni.org/student2> <http://uni.org/student3> } .
+    ?S <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://uni.org/Student> .
+    FILTER ( EXISTS { ?EX <http://uni.org/examStudent> ?S . ?EX <http://uni.org/examCourse> ?COURSE . } ) 
+  }
+}
+";
+        RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddValues(new RDFValues().AddColumn(Variable("?s"), new List<RDFPatternMember> { UniversityResource("student2"), UniversityResource("student3") }))
+                .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
+                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course")))))));
+
+        //Of {student2, student3}, only student2 has an exam => 1 result
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual($"{UniversityNamespace}student2", result.SelectResults.Rows[0]["?S"].ToString());
+    }
+    #endregion
+
+    #region Tests (parser end-to-end on the most recent phases F6/F7/F8.1)
+    //These three tests exercise an axis the Q01..Q13 suite never touches: instead of building the query through
+    //the fluent object model, they PARSE a raw SPARQL 1.1 string with the new RDFQueryParser and then EXECUTE it
+    //against the very same university graph, asserting on the result set. They therefore validate the newest
+    //design phases end-to-end — F6 (FILTER + built-in expressions), F7 (projection '(expr AS ?v)') and
+    //F8.1 (BIND + VALUES inline data) — through the string -> object-model -> engine pipeline, not just the model.
+
+    [TestMethod]
+    public void ShouldParseAndAnswerFilterWithRegexBuiltIn()
+    {
+        //F6 - FILTER carrying the REGEX + STR built-ins, parsed from text and evaluated by the engine.
+        //Course names are "Course 0".."Course 3"; the anchored class [13]$ keeps only those ending in 1 or 3.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?C WHERE {
+                ?C a uni:Course .
+                ?C uni:name ?N .
+                FILTER(REGEX(STR(?N), ""[13]$""))
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //Only course1 ("Course 1") and course3 ("Course 3") satisfy the regex
+        Assert.AreEqual(2, result.SelectResultsCount);
+        HashSet<string> matchedCourses = new HashSet<string>(StringComparer.Ordinal);
+        foreach (DataRow resultRow in result.SelectResults.Rows)
+            matchedCourses.Add(resultRow["?C"].ToString());
+        Assert.IsTrue(matchedCourses.Contains($"{UniversityNamespace}course1"));
+        Assert.IsTrue(matchedCourses.Contains($"{UniversityNamespace}course3"));
+    }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerProjectionExpression()
+    {
+        //F7 - a computed projection '(?CR * 2 AS ?DOUBLE)', parsed from text and evaluated by the engine.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?CR (?CR * 2 AS ?DOUBLE) WHERE {
+                ?C a uni:Course .
+                ?C uni:credits ?CR
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //One row per course (4); each carries the doubled credits in the computed column
+        Assert.AreEqual(4, result.SelectResultsCount);
+        foreach (DataRow resultRow in result.SelectResults.Rows)
+            Assert.AreEqual(GetNumericValue(resultRow["?CR"]) * 2, GetNumericValue(resultRow["?DOUBLE"]));
+    }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerValuesRestrictedBindOnAge()
+    {
+        //F8.1 - VALUES inline data restricting the subject to two named students, plus a BIND computing a
+        //derived column, both parsed from text and evaluated by the engine.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?S ?A ?BONUS WHERE {
+                VALUES ?S { uni:student0 uni:student2 }
+                ?S uni:age ?A .
+                BIND(?A * 2 AS ?BONUS)
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //VALUES keeps only student0 (age 20 => bonus 40) and student2 (age 30 => bonus 60)
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Dictionary<string, double> bonusByStudent = new Dictionary<string, double>(StringComparer.Ordinal);
+        foreach (DataRow resultRow in result.SelectResults.Rows)
+        {
+            Assert.AreEqual(GetNumericValue(resultRow["?A"]) * 2, GetNumericValue(resultRow["?BONUS"]));
+            bonusByStudent.Add(resultRow["?S"].ToString(), GetNumericValue(resultRow["?BONUS"]));
+        }
+        Assert.AreEqual(40, bonusByStudent[$"{UniversityNamespace}student0"]);
+        Assert.AreEqual(60, bonusByStudent[$"{UniversityNamespace}student2"]);
+    }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerCombinedRecentInnovations()
+    {
+        //A single query that crosses the most recent design phases end-to-end (string -> object-model -> engine),
+        //and incidentally drives the resurrected pure-inner join fast-path:
+        // - the 3-pattern BGP is fully bound and non-optional, so CombineTables takes InnerJoinTables (the fast-path);
+        // - FILTER carries a string built-in (STRSTARTS over STR()) — an IP-era expression in a bare boolean filter;
+        // - GROUP BY + COUNT/AVG with a FREE HAVING that references the aggregate AVG(?G) directly (IP3.3);
+        // - ORDER BY on the aggregate alias plus the complete CONSTRUCT/SELECT modifier handling (IP4);
+        // - a TRAILING query-level VALUES clause (IP5.1), joined with the WHERE solutions BEFORE the modifiers,
+        //   which is what actually drops course0 before grouping.
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?C (COUNT(?E) AS ?CNT) (AVG(?G) AS ?AVG) WHERE {
+                ?E a uni:Exam .
+                ?E uni:examCourse ?C .
+                ?E uni:grade ?G .
+                FILTER(STRSTARTS(STR(?C), STR(uni:course)))
+            }
+            GROUP BY ?C
+            HAVING(AVG(?G) >= 20)
+            ORDER BY DESC(?AVG)
+            VALUES ?C { uni:course1 uni:course2 }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //Exams per course: course0=[25], course1=[28,18], course2=[30,22]. The trailing VALUES restricts to
+        //course1/course2 (course0 dropped BEFORE grouping); both survive HAVING avg>=20; ORDER BY DESC(?AVG)
+        //yields course2 (avg 26) first, then course1 (avg 23).
+        Assert.AreEqual(2, result.SelectResultsCount);
+
+        Assert.AreEqual($"{UniversityNamespace}course2", result.SelectResults.Rows[0]["?C"].ToString());
+        Assert.AreEqual(2, GetNumericValue(result.SelectResults.Rows[0]["?CNT"]));
+        Assert.AreEqual(26, GetNumericValue(result.SelectResults.Rows[0]["?AVG"]));
+
+        Assert.AreEqual($"{UniversityNamespace}course1", result.SelectResults.Rows[1]["?C"].ToString());
+        Assert.AreEqual(2, GetNumericValue(result.SelectResults.Rows[1]["?CNT"]));
+        Assert.AreEqual(23, GetNumericValue(result.SelectResults.Rows[1]["?AVG"]));
+    }
+
+    [TestMethod]
+    public void ShouldParseAndAnswerNestedSubQueriesWithScopedFiltersAndExists()
+    {
+        //IP5.4 sentinel: a single query that puts FILTERs at THREE different group-graph-pattern scopes — across a
+        //sub-query NESTED INSIDE another sub-query — plus a group-level EXISTS reaching past an OPTIONAL. The result
+        //is engineered so that each filter is load-bearing: drop or mis-scope any one of them and the row set changes.
+        //
+        //  - innermost sub-query: lone BGP '?S a Student ; age ?A' with FILTER(?A >= 24) (filter on the pattern group)
+        //      students by age: student0=20, student1=26, student2=30, student3=24  =>  keeps {student1, student2, student3}
+        //  - middle sub-query: wraps the innermost group and adds FILTER(?A <= 28) at WHERE-clause scope (hoisted,
+        //      since its body is the single sub-select member)                       =>  keeps {student1(26), student3(24)}
+        //  - outer query: a COMPOUND group { <sub-query> OPTIONAL{ name } } with a group-level FILTER EXISTS{ has exam }
+        //      hoisted to WHERE-clause scope; student1 has exams, student3 has none   =>  keeps {student1}
+        RDFSelectQuery query = RDFSelectQuery.FromString(@"
+            PREFIX uni: <http://uni.org/>
+            SELECT ?S ?A WHERE {
+                {
+                    SELECT ?S ?A WHERE {
+                        {
+                            SELECT ?S ?A WHERE {
+                                ?S a uni:Student .
+                                ?S uni:age ?A .
+                                FILTER(?A >= 24)
+                            }
+                        }
+                        FILTER(?A <= 28)
+                    }
+                }
+                OPTIONAL { ?S uni:name ?NAME }
+                FILTER EXISTS { ?E uni:examStudent ?S }
+            }");
+
+        RDFSelectQueryResult result = query.ApplyToGraph(UniversityGraph);
+
+        //Only student1 (age 26) survives all three filter scopes plus the EXISTS
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual($"{UniversityNamespace}student1", result.SelectResults.Rows[0]["?S"].ToString());
+        Assert.AreEqual(26, GetNumericValue(result.SelectResults.Rows[0]["?A"]));
+    }
+
+    /// <summary>
+    /// Federated query stress test: a VALUES block binds the OUTER endpoint variable and a BIND adds a constant
+    /// annotation column; a deferred variable-endpoint SERVICE (?EP) then wraps an inner concrete-endpoint
+    /// SERVICE, so the engine must (1) resolve ?EP from the VALUES binding, (2) serialize the nested SERVICE into
+    /// the remote query sent to the outer endpoint, and (3) cross-join the remote solutions with the VALUES+BIND
+    /// context. The outer (mock) endpoint returns canned solutions; the assertions verify how VALUES, BIND and the
+    /// two nested SERVICE layers interact.
+    /// </summary>
+    [TestMethod]
+    public void ShouldEvaluateNestedVariableAndConcreteServiceWithValuesAndBind()
+    {
+        const string mockedResponseXml =
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+              <head>
+                <variable name="?Y" />
+                <variable name="?X" />
+              </head>
+              <results>
+                <result>
+                  <binding name="?Y"><uri>http://uni.org/prof0</uri></binding>
+                  <binding name="?X"><uri>http://uni.org/building0</uri></binding>
+                </result>
+              </results>
+            </sparql>
+            """;
+        string receivedQuery = null;
+        serviceEndpointServer
+            .Given(
+                Request.Create()
+                    .WithPath("/outer/sparql")
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams.ContainsKey("query")))
+            .RespondWith(
+                Response.Create()
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithCallback(req =>
+                    {
+                        receivedQuery = req.RawQuery;
+                        return new WireMock.ResponseMessage
+                        {
+                            BodyData = new BodyData { BodyAsString = mockedResponseXml, Encoding = Encoding.UTF8, DetectedBodyType = BodyType.String }
+                        };
+                    })
+                    .WithStatusCode(HttpStatusCode.OK));
+
+        RDFResource outerEndpoint = new RDFResource(serviceEndpointServer.Url + "/outer/sparql");
+        RDFSPARQLEndpoint innerEndpoint = new RDFSPARQLEndpoint(new Uri("http://example.org/inner/sparql"));
+
+        //VALUES binds the outer endpoint variable ?EP; BIND adds a constant ?TAG annotation
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddValues(new RDFValues().AddColumn(new RDFVariable("?EP"), [outerEndpoint]))
+                .AddBind(new RDFBind(new RDFConstantExpression(new RDFResource("http://uni.org/federated")), new RDFVariable("?TAG"))))
+            //Outer SERVICE with VARIABLE endpoint, wrapping an inner SERVICE with a CONCRETE endpoint
+            .AddService(new RDFService(new RDFVariable("?EP"),
+                new RDFService(innerEndpoint, new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("http://uni.org/worksIn"), new RDFVariable("?X"))))));
+
+        DataTable result = query.ApplyToGraph(new RDFGraph()).SelectResults;
+
+        //The single remote solution is cross-joined with the VALUES(?EP)+BIND(?TAG) context
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.Rows.Count);
+        Assert.AreEqual("http://uni.org/prof0", result.Rows[0]["?Y"].ToString());
+        Assert.AreEqual("http://uni.org/building0", result.Rows[0]["?X"].ToString());
+        Assert.AreEqual(outerEndpoint.ToString(), result.Rows[0]["?EP"].ToString());
+        Assert.AreEqual("http://uni.org/federated", result.Rows[0]["?TAG"].ToString());
+
+        //The query actually sent to the OUTER endpoint carries the serialized INNER (concrete) SERVICE
+        Assert.IsNotNull(receivedQuery);
+        Assert.Contains("SERVICE <http://example.org/inner/sparql>", System.Web.HttpUtility.UrlDecode(receivedQuery));
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateNumericTypePromotionEndToEnd()
+    {
+        RDFResource score = new RDFResource("http://ex.org/score");
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex.org/i1"), score, new RDFTypedLiteral("10", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex.org/i2"), score, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex.org/i3"), score, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //SUM of integers -> xsd:integer ; AVG of integers -> xsd:decimal (sum/count) ; COUNT -> xsd:integer
+        RDFSelectQuery aggQuery = RDFSelectQuery.FromString(@"
+            PREFIX ex: <http://ex.org/>
+            SELECT (SUM(?s) AS ?sum) (AVG(?s) AS ?avg) (COUNT(?s) AS ?cnt) WHERE { ?i ex:score ?s }");
+        DataTable aggResult = aggQuery.ApplyToGraph(graph).SelectResults;
+        Assert.AreEqual(1, aggResult.Rows.Count);
+        Assert.AreEqual(new RDFTypedLiteral("60", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(), aggResult.Rows[0]["?sum"].ToString());
+        Assert.AreEqual(new RDFTypedLiteral("20.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString(), aggResult.Rows[0]["?avg"].ToString());
+        Assert.AreEqual(new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(), aggResult.Rows[0]["?cnt"].ToString());
+
+        //Arithmetic on integers stays integer: (?s + ?s) on the smallest score (10) yields 20^^xsd:integer
+        RDFSelectQuery mathQuery = RDFSelectQuery.FromString(@"
+            PREFIX ex: <http://ex.org/>
+            SELECT ?s (?s + ?s AS ?dbl) WHERE { ?i ex:score ?s } ORDER BY ?s");
+        DataTable mathResult = mathQuery.ApplyToGraph(graph).SelectResults;
+        Assert.AreEqual(3, mathResult.Rows.Count);
+        Assert.AreEqual(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(), mathResult.Rows[0]["?dbl"].ToString());
     }
     #endregion
 }

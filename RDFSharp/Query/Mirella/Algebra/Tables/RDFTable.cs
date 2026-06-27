@@ -80,6 +80,18 @@ namespace RDFSharp.Query
         /// Marks this table as the result of an OPTIONAL pattern
         /// </summary>
         internal bool IsOptional;
+
+        /// <summary>
+        /// Tells (conservatively) whether EVERY cell of the table is bound, i.e. the table carries NO UNBOUND
+        /// cell anywhere. It is a SAFE-polarity hint: the default is false ("not known to be fully bound"), and
+        /// it is raised to true ONLY by producers that provably emit no nulls (a triple/quad pattern population,
+        /// and the inner-join of two fully-bound tables). Any <see cref="AddColumn"/> lowers it back to false,
+        /// because widening introduces an UNBOUND cell on existing rows (and a freshly projected column may stay
+        /// unbound). It lets <see cref="RDFTableEngine.CombineTables"/> pick the cheaper strict inner-join when a
+        /// join is provably pure-inner (no UNBOUND in the common columns, non-optional right); when in doubt it
+        /// stays false and the safe outer-join is used.
+        /// </summary>
+        internal bool IsFullyBound;
         #endregion
 
         #region Ctors
@@ -103,13 +115,17 @@ namespace RDFSharp.Query
         /// Adds a new column to the table (avoiding duplicates) and returns it. If rows already
         /// exist, they are widened with an UNBOUND cell for the new column.
         /// </summary>
-        internal RDFTableColumn AddColumn(string columnName)
+        internal RDFTableColumn AddColumn(string columnName, bool isSynthetic=false)
         {
             string normalizedName = NormalizeColumnName(columnName);
             if (_ordinals.TryGetValue(normalizedName, out int existingOrdinal))
                 return _columns[existingOrdinal];
 
-            RDFTableColumn column = new RDFTableColumn(normalizedName, _columns.Count);
+            //A new column widens existing rows with an UNBOUND cell (and a freshly projected column may stay
+            //unbound for some rows), so the table can no longer be assumed fully bound: lower the safe hint.
+            IsFullyBound = false;
+
+            RDFTableColumn column = new RDFTableColumn(normalizedName, _columns.Count, isSynthetic);
             _ordinals.Add(normalizedName, column.Ordinal);
             _columns.Add(column);
 

@@ -180,7 +180,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -209,7 +209,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -239,7 +239,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.INTEREST);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.INTEREST));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -269,7 +269,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.INTEREST);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.INTEREST));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -450,7 +450,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetClass(new RDFResource("ex:Person")));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -466,7 +466,7 @@ public class RDFLessThanOrEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than or equals to values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -488,7 +488,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Bob")));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -504,7 +504,7 @@ public class RDFLessThanOrEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than or equals to values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -526,7 +526,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetSubjectsOf(RDFVocabulary.RDF.TYPE));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -542,7 +542,7 @@ public class RDFLessThanOrEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than or equals to values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -564,7 +564,7 @@ public class RDFLessThanOrEqualsConstraintTest
 
         //ShapesGraph
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
-        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFVocabulary.FOAF.KNOWS);
+        RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), RDFTestUtilities.ShaclPath(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddTarget(new RDFTargetObjectsOf(RDFVocabulary.FOAF.KNOWS));
         propertyShape.AddConstraint(new RDFLessThanOrEqualsConstraint(RDFVocabulary.FOAF.AGENT));
         shapesGraph.AddShape(propertyShape);
@@ -580,7 +580,7 @@ public class RDFLessThanOrEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral($"Must have values less than or equals to values of property <{RDFVocabulary.FOAF.AGENT}>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Bob")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFResource("ex:Steve")));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(RDFVocabulary.FOAF.KNOWS));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropertyShape")));
     }
@@ -602,7 +602,7 @@ public class RDFLessThanOrEqualsConstraintTest
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Event1")));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Event2")));
-        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:startDate"));
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:startDate")));
         propShape.AddConstraint(new RDFLessThanOrEqualsConstraint(new RDFResource("ex:endDate")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
         shapesGraph.AddShape(nodeShape);
@@ -632,7 +632,7 @@ public class RDFLessThanOrEqualsConstraintTest
         RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:NodeShape"));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Event1")));
         nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Event2")));
-        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), new RDFResource("ex:startDate"));
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:startDate")));
         propShape.AddConstraint(new RDFLessThanOrEqualsConstraint(new RDFResource("ex:endDate")));
         nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
         shapesGraph.AddShape(nodeShape);
@@ -649,7 +649,7 @@ public class RDFLessThanOrEqualsConstraintTest
         Assert.IsTrue(validationReport.Results[0].ResultMessages[0].Equals(new RDFPlainLiteral("Must have values less than or equals to values of property <ex:endDate>")));
         Assert.IsTrue(validationReport.Results[0].FocusNode.Equals(new RDFResource("ex:Event2")));
         Assert.IsTrue(validationReport.Results[0].ResultValue.Equals(new RDFTypedLiteral("1992-01-04", RDFModelEnums.RDFDatatypes.XSD_DATE)));
-        Assert.IsTrue(validationReport.Results[0].ResultPath.Equals(new RDFResource("ex:startDate")));
+        Assert.IsTrue(validationReport.Results[0].ResultPath.AsSinglePredicate().Equals(new RDFResource("ex:startDate")));
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.LESS_THAN_OR_EQUALS_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
     }

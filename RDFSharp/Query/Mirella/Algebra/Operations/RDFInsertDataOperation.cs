@@ -33,6 +33,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL UPDATE string into an RDFInsertDataOperation.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid INSERT DATA operation.</exception>
+        public static RDFInsertDataOperation FromString(string insertDataOperation)
+        {
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(insertDataOperation);
+
+            //The factory dispatches on the operation form: enforce that the parsed operation is indeed an INSERT DATA
+            if (parsedOperation is RDFInsertDataOperation parsedInsertDataOperation)
+                return parsedInsertDataOperation;
+
+            throw new RDFQueryException("Cannot parse INSERT DATA operation because the given command represents a different SPARQL UPDATE operation (" + parsedOperation.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given ground pattern to the templates of the operation
         /// </summary>
         public RDFInsertDataOperation AddInsertTemplate(RDFPattern template)

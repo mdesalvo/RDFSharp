@@ -36,8 +36,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, \"ltr\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, \"ltr\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -51,9 +51,9 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRLANGDIR((?V1 + ?V2), 25, rtl))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), 25, \"rtl\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), 25, \"rtl\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(STRLANGDIR((?V1 + ?V2), 25, \"rtl\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -70,8 +70,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, ltr)), rtl))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, ltr)), rtl))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, \"ltr\")), \"rtl\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), (STRLANGDIR(?V3, \"hello\"@EN-US, \"ltr\")), \"rtl\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -85,8 +85,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, ltr))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR((?V1 + ?V2), ?V3, \"ltr\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR((?V1 + ?V2), ?V3, \"ltr\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -100,8 +100,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, (?V1 + ?V2), rtl))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, (?V1 + ?V2), rtl))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, (?V1 + ?V2), \"rtl\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, (?V1 + ?V2), \"rtl\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -115,8 +115,8 @@ public class RDFStrLangDirExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNotNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, ?V1, ltr))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, ?V1, ltr))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V3, ?V1, \"ltr\"))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([]).Equals("(STRLANGDIR(?V3, ?V1, \"ltr\"))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -612,6 +612,97 @@ public class RDFStrLangDirExpressionTest
             new RDFVariable("?A"),
             new RDFVariable("?Q"),
             RDFQueryEnums.RDFLanguageDirections.LTR);
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNull(expressionResult);
+    }
+
+    //IP2 — dynamic (per-row) direction
+
+    [TestMethod]
+    public void ShouldCreateStrLangDirExpressionWithDynamicDirection()
+    {
+        RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
+            new RDFVariableExpression(new RDFVariable("?V1")),
+            new RDFVariableExpression(new RDFVariable("?V2")),
+            new RDFVariableExpression(new RDFVariable("?D")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsNotNull(expression.DirectionExpression);
+        Assert.IsTrue(expression.ToString().Equals("(STRLANGDIR(?V1, ?V2, ?D))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingStrLangDirExpressionBecauseNullDirectionExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFStrLangDirExpression(
+            new RDFVariable("?V1"), new RDFVariable("?V2"), null as RDFExpression));
+
+    [TestMethod]
+    public void ShouldApplyStrLangDirExpressionWithDynamicDirectionLTR()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?D");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("en").ToString() },
+            { "?D", new RDFPlainLiteral("ltr").ToString() }
+        });
+
+        RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?B")),
+            new RDFVariableExpression(new RDFVariable("?D")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello", "en--ltr")));
+    }
+
+    [TestMethod]
+    public void ShouldApplyStrLangDirExpressionWithDynamicDirectionRTL()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?D");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("ar").ToString() },
+            { "?D", new RDFPlainLiteral("rtl").ToString() }
+        });
+
+        RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?B")),
+            new RDFVariableExpression(new RDFVariable("?D")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("hello", "ar--rtl")));
+    }
+
+    [TestMethod]
+    public void ShouldApplyStrLangDirExpressionWithDynamicDirectionAndNotCalculateResultBecauseInvalidDirection()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddColumn("?D");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("hello").ToString() },
+            { "?B", new RDFPlainLiteral("en").ToString() },
+            { "?D", new RDFPlainLiteral("sideways").ToString() }
+        });
+
+        RDFStrLangDirExpression expression = new RDFStrLangDirExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?B")),
+            new RDFVariableExpression(new RDFVariable("?D")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);

@@ -1,4 +1,4 @@
-﻿/*
+/*
    Copyright 2012-2026 Marco De Salvo
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,24 +28,52 @@ namespace RDFSharp.Query
     {
         #region Properties
         /// <summary>
-        /// Regular Expression to be filtered
+        /// Regular Expression to be filtered, when given as a fixed (build-time compiled) pattern
         /// </summary>
         public Regex RegEx { get; }
+
+        /// <summary>
+        /// Pattern to be filtered, when given as a per-row expression (overrides RegEx)
+        /// </summary>
+        public RDFExpression PatternExpression { get; }
+
+        /// <summary>
+        /// Eventual flags driving the per-row pattern, when given as a per-row expression
+        /// </summary>
+        public RDFExpression FlagsExpression { get; }
         #endregion
 
         #region Ctors
 
         /// <summary>
-        /// Builds a Regex-checking function with given arguments
+        /// Builds a Regex-checking function with given (fixed) regular expression
         /// </summary>
         public RDFRegexExpression(RDFExpression leftArgument, Regex regex) : base(leftArgument, null as RDFExpression)
             => RegEx = regex ?? throw new RDFQueryException("Cannot create RDFRegexExpression because given \"regex\" parameter is null.");
 
         /// <summary>
-        /// Builds a Regex-checking function with given arguments
+        /// Builds a Regex-checking function with given (fixed) regular expression
         /// </summary>
         public RDFRegexExpression(RDFVariable leftArgument, Regex regex) : base(leftArgument, null as RDFExpression)
             => RegEx = regex ?? throw new RDFQueryException("Cannot create RDFRegexExpression because given \"regex\" parameter is null.");
+
+        /// <summary>
+        /// Builds a Regex-checking function with given (per-row) pattern and flags expressions
+        /// </summary>
+        public RDFRegexExpression(RDFExpression leftArgument, RDFExpression patternExpression, RDFExpression flagsExpression=null) : base(leftArgument, null as RDFExpression)
+        {
+            PatternExpression = patternExpression ?? throw new RDFQueryException("Cannot create RDFRegexExpression because given \"patternExpression\" parameter is null.");
+            FlagsExpression = flagsExpression;
+        }
+
+        /// <summary>
+        /// Builds a Regex-checking function with given (per-row) pattern and flags expressions
+        /// </summary>
+        public RDFRegexExpression(RDFVariable leftArgument, RDFExpression patternExpression, RDFExpression flagsExpression=null) : base(leftArgument, null as RDFExpression)
+        {
+            PatternExpression = patternExpression ?? throw new RDFQueryException("Cannot create RDFRegexExpression because given \"patternExpression\" parameter is null.");
+            FlagsExpression = flagsExpression;
+        }
         #endregion
 
         #region Interfaces
@@ -58,26 +86,37 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //Serialize supported flags
-            StringBuilder flags = new StringBuilder();
-            if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
-                flags.Append('i');
-            if (RegEx.Options.HasFlag(RegexOptions.Singleline))
-                flags.Append('s');
-            if (RegEx.Options.HasFlag(RegexOptions.Multiline))
-                flags.Append('m');
-            if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
-                flags.Append('x');
-
-            //(REGEX(STR(L),regex,flags))
-            sb.Append("(REGEX(STR(");
+            //(REGEX(L,regex,flags))
+            sb.Append("(REGEX(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            sb.Append($"), \"{RegEx}\"");
-            if (flags.Length > 0)
-                sb.Append($", \"{flags}\"");
+
+            if (PatternExpression != null)
+            {
+                //Per-row pattern/flags: print them in expression form
+                sb.Append($", {PatternExpression.ToString(prefixes)}");
+                if (FlagsExpression != null)
+                    sb.Append($", {FlagsExpression.ToString(prefixes)}");
+            }
+            else
+            {
+                //Fixed pattern: serialize the compiled regular expression and its supported flags
+                StringBuilder flags = new StringBuilder();
+                if (RegEx.Options.HasFlag(RegexOptions.IgnoreCase))
+                    flags.Append('i');
+                if (RegEx.Options.HasFlag(RegexOptions.Singleline))
+                    flags.Append('s');
+                if (RegEx.Options.HasFlag(RegexOptions.Multiline))
+                    flags.Append('m');
+                if (RegEx.Options.HasFlag(RegexOptions.IgnorePatternWhitespace))
+                    flags.Append('x');
+
+                sb.Append($", \"{RegEx}\"");
+                if (flags.Length > 0)
+                    sb.Append($", \"{flags}\"");
+            }
             sb.Append("))");
 
             return sb.ToString();
@@ -106,16 +145,33 @@ namespace RDFSharp.Query
                     leftArgumentPMember = leftArgumentExpression.ApplyExpression(row);
                 else
                     leftArgumentPMember = RDFQueryUtilities.ParseRDFPatternMember((row[LeftArgument.ToString()] ?? string.Empty));
+
+                //Resolve the effective regular expression (fixed, or compiled per-row from evaluated pattern/flags)
+                Regex effectiveRegex = ResolveRegex(row);
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember != null)
-                    expressionResult = RegEx.IsMatch(leftArgumentPMember.ToString()) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                if (leftArgumentPMember != null && effectiveRegex != null)
+                    expressionResult = effectiveRegex.IsMatch(leftArgumentPMember.ToString()) ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
 
             return expressionResult;
+        }
+
+        /// <summary>
+        /// Resolves the regular expression to apply: the fixed one when given, otherwise compiled per-row from the
+        /// evaluated pattern (and flags) expressions. Returns null when the per-row compilation fails (binding error).
+        /// </summary>
+        private Regex ResolveRegex(RDFTableRow row)
+        {
+            if (PatternExpression == null)
+                return RegEx;
+
+            string pattern = (PatternExpression.ApplyExpression(row) as RDFLiteral)?.Value;
+            string flags = (FlagsExpression?.ApplyExpression(row) as RDFLiteral)?.Value ?? string.Empty;
+            return RDFQueryUtilities.CompileRegexOrNull(pattern, flags);
         }
         #endregion
     }

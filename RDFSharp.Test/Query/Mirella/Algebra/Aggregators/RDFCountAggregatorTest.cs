@@ -31,19 +31,18 @@ public class RDFCountAggregatorTest
         RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?AGGVAR"), new RDFVariable("?PROJVAR"));
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
-        Assert.IsFalse(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(COUNT(?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
-        Assert.IsNotNull(aggregator.AggregatorContext);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        Assert.IsNotNull(aggregator.Context);
+        Assert.IsNotNull(aggregator.Context.ExecutionCache);
+        Assert.IsNotNull(aggregator.Context.ExecutionRegistry);
     }
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullAggregatorVariable()
-        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(null, new RDFVariable("?PROJVAR")));
+        =>  Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(null as RDFVariable, new RDFVariable("?PROJVAR")));
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingCountAggregatorBecauseNullPartitionVariable()
@@ -56,14 +55,13 @@ public class RDFCountAggregatorTest
             .Distinct() as RDFCountAggregator;
 
         Assert.IsNotNull(aggregator);
-        Assert.IsTrue(aggregator.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
-        Assert.IsTrue(aggregator.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
-        Assert.IsTrue(aggregator.HavingClause.Equals((false, RDFQueryEnums.RDFComparisonFlavors.EqualTo, null)));
-        Assert.IsTrue(aggregator.IsDistinct);
+        Assert.IsTrue(aggregator.Metadata.AggregatorVariable.Equals(new RDFVariable("?AGGVAR")));
+        Assert.IsTrue(aggregator.Metadata.ProjectionVariable.Equals(new RDFVariable("?PROJVAR")));
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
         Assert.IsTrue(aggregator.ToString().Equals("(COUNT(DISTINCT ?AGGVAR) AS ?PROJVAR)", System.StringComparison.Ordinal));
-        Assert.IsNotNull(aggregator.AggregatorContext);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionCache);
-        Assert.IsNotNull(aggregator.AggregatorContext.ExecutionRegistry);
+        Assert.IsNotNull(aggregator.Context);
+        Assert.IsNotNull(aggregator.Context.ExecutionCache);
+        Assert.IsNotNull(aggregator.Context.ExecutionRegistry);
     }
 
     [TestMethod]
@@ -102,9 +100,9 @@ public class RDFCountAggregatorTest
         Assert.AreEqual("?COUNTPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"2^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"2^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -143,9 +141,9 @@ public class RDFCountAggregatorTest
         Assert.AreEqual("?COUNTPROJ", result.Columns[1].Name);
         Assert.AreEqual(2, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
         Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -175,9 +173,12 @@ public class RDFCountAggregatorTest
         });
 
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
-        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ"))
-            .SetHavingClause(RDFQueryEnums.RDFComparisonFlavors.LessThan, new RDFTypedLiteral("2.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT)) as RDFCountAggregator;
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?B"), new RDFVariable("?COUNTPROJ"));
         modifier.AddAggregator(aggregator);
+        modifier.SetHavingExpression(new RDFComparisonExpression(
+            RDFQueryEnums.RDFComparisonFlavors.LessThan,
+            new RDFVariableExpression(new RDFVariable("?COUNTPROJ")),
+            new RDFConstantExpression(new RDFTypedLiteral("2.0", RDFModelEnums.RDFDatatypes.XSD_FLOAT))));
         RDFTable result = modifier.ApplyModifier(table);
 
         Assert.IsNotNull(result);
@@ -186,9 +187,85 @@ public class RDFCountAggregatorTest
         Assert.AreEqual("?COUNTPROJ", result.Columns[1].Name);
         Assert.AreEqual(1, result.Rows.Count);
         Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
-        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.DECIMAL}", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause(null).Equals($"(COUNT(?B) < \"2\"^^<{RDFVocabulary.XSD.FLOAT}>)", System.StringComparison.Ordinal));
-        Assert.IsTrue(aggregator.PrintHavingClause([RDFNamespaceRegister.GetByPrefix("xsd")]).Equals("(COUNT(?B) < \"2\"^^xsd:float)", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
     }
+
+    //IP3.1 — COUNT(*)
+
+    [TestMethod]
+    public void ShouldCreateCountAllAggregator()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsTrue(aggregator.IsCountAll);
+        Assert.IsFalse(aggregator.Metadata.IsDistinct);
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(*) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldCreateDistinctCountAllAggregator()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(new RDFVariable("?PROJVAR")).Distinct() as RDFCountAggregator;
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsTrue(aggregator.IsCountAll);
+        Assert.IsTrue(aggregator.Metadata.IsDistinct);
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT(DISTINCT *) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldApplyModifierWithCountAllAggregator()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("25", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("26", RDFModelEnums.RDFDatatypes.XSD_FLOAT).ToString() },
+            { "?C", new RDFResource("ex:value1").ToString() }
+        });
+
+        //COUNT(*) counts the group's solutions (rows), even though no variable is read
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFCountAggregator(new RDFVariable("?COUNTPROJ")));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.Columns.Count);
+        Assert.AreEqual(2, result.Rows.Count);
+        Assert.IsTrue(result.Rows[0]["?C"].ToString().Equals("ex:value1", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?COUNTPROJ"].ToString().Equals($"2^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?C"].ToString().Equals("ex:value0", System.StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[1]["?COUNTPROJ"].ToString().Equals($"1^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
+    }
+
+    //IP3.2 — aggregate over expression
+
+    [TestMethod]
+    public void ShouldCreateCountAggregatorOverExpression()
+    {
+        RDFCountAggregator aggregator = new RDFCountAggregator(
+            new RDFAddExpression(new RDFVariable("?X"), new RDFVariable("?Y")), new RDFVariable("?PROJVAR"));
+
+        Assert.IsNotNull(aggregator);
+        Assert.IsFalse(aggregator.IsCountAll);
+        Assert.IsNotNull(aggregator.Metadata.AggregatorExpression);
+        Assert.IsTrue(aggregator.ToString().Equals("(COUNT((?X + ?Y)) AS ?PROJVAR)", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingCountAggregatorOverExpressionBecauseNullExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFCountAggregator(null as RDFExpression, new RDFVariable("?PROJVAR")));
     #endregion
 }

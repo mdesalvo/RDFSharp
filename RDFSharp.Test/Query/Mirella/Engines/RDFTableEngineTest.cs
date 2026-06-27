@@ -757,8 +757,8 @@ public class RDFTableEngineTest
         Assert.AreEqual(5, table.ColumnsCount);
         Assert.IsTrue(table.HasColumn("?AGEX2"));
         Assert.AreEqual(3, table.RowsCount);
-        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"], $"170^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"], $"166^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[0]["?AGEX2"], $"170^^{RDFVocabulary.XSD.INTEGER}", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(table.Rows[1]["?AGEX2"], $"166^^{RDFVocabulary.XSD.INTEGER}", StringComparison.Ordinal));
         Assert.IsTrue(table.Rows[2].IsUnbound("?AGEX2"));
     }
 
@@ -880,7 +880,7 @@ public class RDFTableEngineTest
         Assert.AreEqual(1, result.SelectResults.Columns["?AGEX2"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170.0^^http://www.w3.org/2001/XMLSchema#decimal", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
@@ -921,9 +921,9 @@ public class RDFTableEngineTest
         Assert.AreEqual(3, result.SelectResults.Columns["?AGEX4PLUS1"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4PLUS1"].ToString(), "341^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170.0^^http://www.w3.org/2001/XMLSchema#decimal", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340.0^^http://www.w3.org/2001/XMLSchema#decimal", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4PLUS1"].ToString(), "341.0^^http://www.w3.org/2001/XMLSchema#decimal", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX4"].ToString(), "332^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
@@ -955,8 +955,8 @@ public class RDFTableEngineTest
         Assert.AreEqual(2, result.SelectResults.Columns["?AGEX4"].Ordinal);
         Assert.AreEqual(1, result.SelectResults.Rows.Count);
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "2^^http://www.w3.org/2001/XMLSchema#integer", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "4^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "8^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "4^^http://www.w3.org/2001/XMLSchema#integer", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "8^^http://www.w3.org/2001/XMLSchema#integer", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -995,7 +995,7 @@ public class RDFTableEngineTest
         Assert.AreEqual(2, result.SelectResults.Columns["?X"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170.0^^http://www.w3.org/2001/XMLSchema#decimal", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
@@ -1044,8 +1044,8 @@ public class RDFTableEngineTest
         Assert.AreEqual(3, result.SelectResults.Columns["?X"].Ordinal);
         Assert.AreEqual(3, result.SelectResults.Rows.Count);
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX2"].ToString(), "170.0^^http://www.w3.org/2001/XMLSchema#decimal", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?AGEX4"].ToString(), "340.0^^http://www.w3.org/2001/XMLSchema#decimal", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
         Assert.IsTrue(string.Equals(result.SelectResults.Rows[1]["?AGEX2"].ToString(), "166^^http://www.w3.org/2001/XMLSchema#double", StringComparison.Ordinal));
@@ -1272,6 +1272,63 @@ public class RDFTableEngineTest
         Assert.AreEqual(
             "?X|?S|?O",
             RenderTable(RDFTableEngine.InnerJoinTables(BuildTable(["?X", "?S"], ["ABC", "s1"]), BuildTable(["?X", "?O"], ["abc", "o1"]))));
+    }
+
+    [TestMethod]
+    public void ShouldProduceIdenticalResultsForInnerAndOuterWhenFullyBound()
+    {
+        //The pure-inner fast-path is sound only when there is no UNBOUND in the common columns: on such fully
+        //bound data InnerJoinTables and OuterJoinTables must agree EXACTLY (rows AND order) in all three regimes.
+
+        //Equi-join with matches on the shared column ?X
+        RDFTable left = BuildTable(["?S", "?X"], ["s1", "v1"], ["s2", "v2"], ["s3", "v1"]);
+        RDFTable right = BuildTable(["?X", "?O"], ["v1", "o1"], ["v1", "o2"], ["v2", "o3"]);
+        Assert.AreEqual(RenderTable(RDFTableEngine.OuterJoinTables(left, right)),
+                        RenderTable(RDFTableEngine.InnerJoinTables(left, right)));
+
+        //Equi-join with NO matching key => empty result on both
+        RDFTable leftNoMatch = BuildTable(["?S", "?X"], ["s1", "vX"]);
+        RDFTable rightNoMatch = BuildTable(["?X", "?O"], ["vY", "o1"]);
+        Assert.AreEqual(RenderTable(RDFTableEngine.OuterJoinTables(leftNoMatch, rightNoMatch)),
+                        RenderTable(RDFTableEngine.InnerJoinTables(leftNoMatch, rightNoMatch)));
+
+        //Product (no common column) => full cartesian product on both
+        RDFTable leftProd = BuildTable(["?S"], ["a"], ["b"]);
+        RDFTable rightProd = BuildTable(["?O"], ["p1"], ["p2"]);
+        Assert.AreEqual(RenderTable(RDFTableEngine.OuterJoinTables(leftProd, rightProd)),
+                        RenderTable(RDFTableEngine.InnerJoinTables(leftProd, rightProd)));
+    }
+
+    [TestMethod]
+    public void ShouldMaintainIsFullyBoundHint()
+    {
+        //Default is the safe (pessimistic) false
+        Assert.IsFalse(new RDFTable().IsFullyBound);
+        //Adding a column lowers the hint (widening introduces an UNBOUND cell on existing/future rows)
+        Assert.IsFalse(BuildTable(["?S"], ["a"]).IsFullyBound);
+
+        //PopulateTable raises it: a pattern binds all its variables in every row
+        RDFTable populated = new RDFTable();
+        populated.AddColumn("?S");
+        populated.AddColumn("?O");
+        RDFTableEngine.PopulateTable(
+            new RDFPattern(new RDFVariable("?s"), new RDFResource("ex:p"), new RDFVariable("?o")),
+            [new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:p"), new RDFResource("ex:b"))],
+            populated);
+        Assert.IsTrue(populated.IsFullyBound);
+
+        //InnerJoin of two fully-bound tables stays fully bound; if either input is not, the result is not
+        RDFTable boundLeft = BuildTable(["?S", "?X"], ["s1", "v1"]);
+        boundLeft.IsFullyBound = true;
+        RDFTable boundRight = BuildTable(["?X", "?O"], ["v1", "o1"]);
+        boundRight.IsFullyBound = true;
+        Assert.IsTrue(RDFTableEngine.InnerJoinTables(boundLeft, boundRight).IsFullyBound);
+
+        RDFTable unboundRight = BuildTable(["?X", "?O"], ["v1", "o1"]); //IsFullyBound stays false
+        Assert.IsFalse(RDFTableEngine.InnerJoinTables(boundLeft, unboundRight).IsFullyBound);
+
+        //OuterJoin never claims fully-bound (it may synthesize UNBOUND cells via optional/coalescing)
+        Assert.IsFalse(RDFTableEngine.OuterJoinTables(boundLeft, boundRight).IsFullyBound);
     }
 
     [TestMethod]

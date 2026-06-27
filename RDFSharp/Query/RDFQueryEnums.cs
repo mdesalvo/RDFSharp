@@ -83,18 +83,26 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFPropertyPathStepFlavors represents an enumeration for possible connection types within a property path.
+        /// RDFPropertyPathExpressionKinds represents an enumeration for the node kinds of a SPARQL property path expression tree.
         /// </summary>
-        public enum RDFPropertyPathStepFlavors
+        public enum RDFPropertyPathExpressionKinds
         {
             /// <summary>
-            /// Steps within a property path are connected with AND semantic
+            /// A single predicate IRI (the atomic step)
             /// </summary>
-            Sequence = '/',
+            Link = 1,
             /// <summary>
-            /// Steps within a property path are connected with OR semantic
+            /// An ordered composition of sub-paths (SPARQL /)
             /// </summary>
-            Alternative = '|'
+            Sequence = 2,
+            /// <summary>
+            /// A union of sub-paths (SPARQL |)
+            /// </summary>
+            Alternative = 3,
+            /// <summary>
+            /// One hop over any predicate not in the given set (SPARQL !)
+            /// </summary>
+            NegatedPropertySet = 4
         }
 
         /// <summary>
@@ -117,11 +125,7 @@ namespace RDFSharp.Query
             /// <summary>
             /// The path step is traversed zero or more times — reflexive-transitive closure (SPARQL *)
             /// </summary>
-            ZeroOrMore = 4,
-            /// <summary>
-            /// The path step is traversed between MinCardinality and MaxCardinality times (SPARQL {n,m})
-            /// </summary>
-            BoundedRange = 5
+            ZeroOrMore = 4
         }
 
         /// <summary>
@@ -262,9 +266,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFQueryOperatorType represents an enumeration for supported SPARQL algebra binary operators
+        /// RDFBinaryOperatorType represents an enumeration for supported SPARQL algebra binary operators
         /// </summary>
-        public enum RDFQueryOperatorType
+        public enum RDFBinaryOperatorType
         {
             /// <summary>
             /// SPARQL UNION operator

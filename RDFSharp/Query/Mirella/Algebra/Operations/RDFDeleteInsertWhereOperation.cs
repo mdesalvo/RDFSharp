@@ -33,6 +33,21 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
+        /// Parses the given SPARQL UPDATE string into an RDFDeleteInsertWhereOperation.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the string is not a syntactically valid DELETE … INSERT … WHERE operation.</exception>
+        public static RDFDeleteInsertWhereOperation FromString(string deleteInsertWhereOperation)
+        {
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(deleteInsertWhereOperation);
+
+            //The factory dispatches on the operation form: enforce that the parsed operation is indeed a DELETE/INSERT WHERE
+            if (parsedOperation is RDFDeleteInsertWhereOperation parsedDeleteInsertWhereOperation)
+                return parsedDeleteInsertWhereOperation;
+
+            throw new RDFQueryException("Cannot parse DELETE/INSERT WHERE operation because the given command represents a different SPARQL UPDATE operation (" + parsedOperation.GetType().Name + ")");
+        }
+
+        /// <summary>
         /// Adds the given pattern to the DELETE templates of the operation
         /// </summary>
         public RDFDeleteInsertWhereOperation AddDeleteTemplate(RDFPattern template)
@@ -59,8 +74,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// Adds the given operator tree to the body of the operation
         /// </summary>
-        public RDFDeleteInsertWhereOperation AddOperator(RDFOperatorQueryMember operatorMember)
-            => AddOperator<RDFDeleteInsertWhereOperation>(operatorMember);
+        public RDFDeleteInsertWhereOperation AddBinaryQueryMember(RDFBinaryQueryMember binaryMember)
+            => AddBinaryQueryMember<RDFDeleteInsertWhereOperation>(binaryMember);
 
         /// <summary>
         /// Adds the given modifier to the operation
