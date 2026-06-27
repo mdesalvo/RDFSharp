@@ -17,7 +17,7 @@ jobs:
     - name: Build
       run: dotnet build -c Release
     - name: Test
-      run: dotnet test -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute=GeneratedCodeAttribute
+      run: dotnet test -c Release --no-build --verbosity normal --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByAttribute=GeneratedCodeAttribute
     - name: Coverage
       uses: codecov/codecov-action@v7
       with:
