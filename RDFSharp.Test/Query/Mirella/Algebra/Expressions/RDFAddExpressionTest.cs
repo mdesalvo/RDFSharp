@@ -182,8 +182,9 @@ public class RDFAddExpressionTest
             new RDFAddExpression(new RDFVariable("?A"), new RDFVariable("?B")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
+        //owl:rational (10/2) ranks as decimal and xsd:int as integer, so the result is xsd:decimal (no double involved)
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("60", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("60.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
     }
 
     [TestMethod]

@@ -356,8 +356,8 @@ public class RDFGroupByModifierTest
         RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
         modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?S")));
 
-        string expectedSum0 = new RDFTypedLiteral("51", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
-        string expectedSum1 = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString();
+        string expectedSum0 = new RDFTypedLiteral("51", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString();
+        string expectedSum1 = new RDFTypedLiteral("27", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString();
 
         //First application
         RDFTable firstResult = modifier.ApplyModifier(table);
@@ -464,7 +464,7 @@ public class RDFGroupByModifierTest
         Assert.AreEqual(1, result.ColumnsCount);
         Assert.AreEqual("?CNT", result.Columns[0].Name);
         Assert.AreEqual(1, result.RowsCount);
-        Assert.IsTrue(result.Rows[0]["?CNT"].Equals($"3^^{RDFVocabulary.XSD.DECIMAL}", StringComparison.Ordinal));
+        Assert.IsTrue(result.Rows[0]["?CNT"].Equals($"3^^{RDFVocabulary.XSD.INTEGER}", StringComparison.Ordinal));
     }
     #endregion
 }

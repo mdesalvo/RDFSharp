@@ -54,24 +54,34 @@ namespace RDFSharp.Query
         /// </summary>
         internal override void ExecutePartition(string partitionKey, RDFTableRow tableRow)
         {
-            //Get row value
-            double rowValue = GetRowValueAsNumber(tableRow);
+            //Get row value (numeric typed literal, or null when unbound/non-numeric)
+            RDFTypedLiteral rowValue = GetRowValueAsTypedLiteral(tableRow);
             if (Metadata.IsDistinct)
             {
+                string distinctKey = rowValue?.ToString() ?? string.Empty;
                 //Cache-Hit: distinctness failed
-                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, distinctKey))
                     return;
                 //Cache-Miss: distinctness passed
-                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, distinctKey);
             }
-            //Get aggregator value
-            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
-            //In case of non-numeric values, consider partitioning failed
-            double newAggregatorValue = double.NaN;
-            if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
-                newAggregatorValue = rowValue + aggregatorValue;
-            //Update aggregator context (sum)
-            Context.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
+            //An already-poisoned partition stays poisoned
+            if (Context.IsPartitionKeyPoisoned(partitionKey))
+                return;
+            //A non-numeric row poisons the partition
+            if (rowValue == null)
+            {
+                Context.MarkPartitionKeyAsPoisoned(partitionKey);
+                return;
+            }
+            //Fold the addition via the shared promotion-aware primitive (running sum starts at integer 0); an overflow
+            //(null) poisons the partition
+            RDFTypedLiteral aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, RDFTypedLiteral.Zero);
+            RDFTypedLiteral newAggregatorValue = RDFModelUtilities.ComputeNumericArithmetic(aggregatorValue, rowValue, '+');
+            if (newAggregatorValue == null)
+                Context.MarkPartitionKeyAsPoisoned(partitionKey);
+            else
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
         }
 
         /// <summary>
@@ -104,12 +114,11 @@ namespace RDFSharp.Query
             //Get bindings from context
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
-            //Add aggregator value to bindings
-            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
+            //Add aggregator value to bindings (a poisoned partition projects an unbound value)
             bindings.Add(Metadata.ProjectionVariable.VariableName,
-                aggregatorValue.Equals(double.NaN)
+                Context.IsPartitionKeyPoisoned(partitionKey)
                     ? string.Empty
-                    : new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture),RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
+                    : Context.GetPartitionKeyExecutionResult(partitionKey, RDFTypedLiteral.Zero).ToString());
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

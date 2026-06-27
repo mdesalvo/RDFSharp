@@ -154,6 +154,34 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Gets the aggregated variable's value on the given row as a NUMERIC typed literal, preserving its original
+        /// datatype (so MIN/MAX/SUM can keep/promote the genuine type). Returns null when the cell is unbound or its
+        /// value is not a numeric typed literal.
+        /// </summary>
+        internal RDFTypedLiteral GetRowValueAsTypedLiteral(RDFTableRow tableRow)
+        {
+            try
+            {
+                if (tableRow.IsBound(Metadata.AggregatorVariable.VariableName)
+                     && RDFQueryUtilities.ParseRDFPatternMember(tableRow[Metadata.AggregatorVariable.VariableName]) is RDFTypedLiteral rowAggregatorValueTLit
+                     && rowAggregatorValueTLit.HasDecimalDatatype())
+                {
+                    return rowAggregatorValueTLit;
+                }
+                return null;
+            }
+            catch { return null; }
+        }
+
+        /// <summary>
+        /// Parses a numeric typed literal to double for ordering comparisons (owl:rational is evaluated first)
+        /// </summary>
+        internal static double ParseTypedLiteralAsDouble(RDFTypedLiteral typedLiteral)
+            => typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
+                ? Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture)
+                : double.Parse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+
+        /// <summary>
         /// Gets the row value for the aggregator as string
         /// </summary>
         internal string GetRowValueAsString(RDFTableRow tableRow)
@@ -266,6 +294,12 @@ namespace RDFSharp.Query
         internal double ExecutionCounter { get; set; }
 
         /// <summary>
+        /// Whether this partition is arithmetically POISONED: a non-numeric row (or a numeric overflow) was encountered
+        /// while aggregating numbers, so the result is undefined and the partition projects an unbound value.
+        /// </summary>
+        internal bool IsArithmeticallyPoisoned { get; set; }
+
+        /// <summary>
         /// Builds the partition state seeded with the given initial result (counter starts at zero)
         /// </summary>
         internal RDFAggregatorPartitionState(object initResult)
@@ -343,6 +377,25 @@ namespace RDFSharp.Query
         /// </summary>
         internal void UpdatePartitionKeyExecutionCounter(string partitionKey)
             => ExecutionRegistry[partitionKey].ExecutionCounter++;
+
+        /// <summary>
+        /// Marks the given partition key as arithmetically poisoned (creating its state if absent)
+        /// </summary>
+        internal void MarkPartitionKeyAsPoisoned(string partitionKey)
+        {
+            if (!ExecutionRegistry.TryGetValue(partitionKey, out RDFAggregatorPartitionState partitionState))
+            {
+                partitionState = new RDFAggregatorPartitionState(null);
+                ExecutionRegistry.Add(partitionKey, partitionState);
+            }
+            partitionState.IsArithmeticallyPoisoned = true;
+        }
+
+        /// <summary>
+        /// Checks whether the given partition key has been marked as arithmetically poisoned
+        /// </summary>
+        internal bool IsPartitionKeyPoisoned(string partitionKey)
+            => ExecutionRegistry.TryGetValue(partitionKey, out RDFAggregatorPartitionState partitionState) && partitionState.IsArithmeticallyPoisoned;
 
         /// <summary>
         /// Checks for presence of the given value in given partitionkey's cache

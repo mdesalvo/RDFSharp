@@ -137,9 +137,9 @@ namespace RDFSharp.Query
             //Get bindings from context
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
-            //Add aggregator value to bindings
+            //Add aggregator value to bindings (COUNT yields xsd:integer per the SPARQL spec)
             double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, 0d);
-            bindings.Add(Metadata.ProjectionVariable.VariableName, new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString());
+            bindings.Add(Metadata.ProjectionVariable.VariableName, new RDFTypedLiteral(((long)aggregatorValue).ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString());
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);

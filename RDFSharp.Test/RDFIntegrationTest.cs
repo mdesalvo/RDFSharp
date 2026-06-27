@@ -955,5 +955,33 @@ WHERE {
         Assert.IsNotNull(receivedQuery);
         Assert.Contains("SERVICE <http://example.org/inner/sparql>", System.Web.HttpUtility.UrlDecode(receivedQuery));
     }
+
+    [TestMethod]
+    public void ShouldEvaluateNumericTypePromotionEndToEnd()
+    {
+        RDFResource score = new RDFResource("http://ex.org/score");
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex.org/i1"), score, new RDFTypedLiteral("10", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex.org/i2"), score, new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex.org/i3"), score, new RDFTypedLiteral("30", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //SUM of integers -> xsd:integer ; AVG of integers -> xsd:decimal (sum/count) ; COUNT -> xsd:integer
+        RDFSelectQuery aggQuery = RDFSelectQuery.FromString(@"
+            PREFIX ex: <http://ex.org/>
+            SELECT (SUM(?s) AS ?sum) (AVG(?s) AS ?avg) (COUNT(?s) AS ?cnt) WHERE { ?i ex:score ?s }");
+        DataTable aggResult = aggQuery.ApplyToGraph(graph).SelectResults;
+        Assert.AreEqual(1, aggResult.Rows.Count);
+        Assert.AreEqual(new RDFTypedLiteral("60", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(), aggResult.Rows[0]["?sum"].ToString());
+        Assert.AreEqual(new RDFTypedLiteral("20.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString(), aggResult.Rows[0]["?avg"].ToString());
+        Assert.AreEqual(new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(), aggResult.Rows[0]["?cnt"].ToString());
+
+        //Arithmetic on integers stays integer: (?s + ?s) on the smallest score (10) yields 20^^xsd:integer
+        RDFSelectQuery mathQuery = RDFSelectQuery.FromString(@"
+            PREFIX ex: <http://ex.org/>
+            SELECT ?s (?s + ?s AS ?dbl) WHERE { ?i ex:score ?s } ORDER BY ?s");
+        DataTable mathResult = mathQuery.ApplyToGraph(graph).SelectResults;
+        Assert.AreEqual(3, mathResult.Rows.Count);
+        Assert.AreEqual(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_INTEGER).ToString(), mathResult.Rows[0]["?dbl"].ToString());
+    }
     #endregion
 }

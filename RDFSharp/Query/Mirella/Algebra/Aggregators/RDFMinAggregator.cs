@@ -80,24 +80,31 @@ namespace RDFSharp.Query
         /// </summary>
         private void ExecutePartitionNumeric(string partitionKey, RDFTableRow tableRow)
         {
-            //Get row value
-            double rowValue = GetRowValueAsNumber(tableRow);
+            //Get row value (numeric typed literal, or null when unbound/non-numeric)
+            RDFTypedLiteral rowValue = GetRowValueAsTypedLiteral(tableRow);
             if (Metadata.IsDistinct)
             {
+                string distinctKey = rowValue?.ToString() ?? string.Empty;
                 //Cache-Hit: distinctness failed
-                if (Context.CheckPartitionKeyRowValueCache(partitionKey, rowValue))
+                if (Context.CheckPartitionKeyRowValueCache(partitionKey, distinctKey))
                     return;
                 //Cache-Miss: distinctness passed
-                Context.UpdatePartitionKeyRowValueCache(partitionKey, rowValue);
+                Context.UpdatePartitionKeyRowValueCache(partitionKey, distinctKey);
             }
-            //Get aggregator value
-            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
-            //In case of non-numeric values, consider partitioning failed
-            double newAggregatorValue = double.NaN;
-            if (!aggregatorValue.Equals(double.NaN) && !rowValue.Equals(double.NaN))
-                newAggregatorValue = Math.Min(rowValue, aggregatorValue);
-            //Update aggregator context (min)
-            Context.UpdatePartitionKeyExecutionResult(partitionKey, newAggregatorValue);
+            //An already-poisoned partition stays poisoned
+            if (Context.IsPartitionKeyPoisoned(partitionKey))
+                return;
+            //A non-numeric row poisons the partition
+            if (rowValue == null)
+            {
+                Context.MarkPartitionKeyAsPoisoned(partitionKey);
+                return;
+            }
+            //Keep the smaller value as the winner, preserving its original typed literal (and thus its datatype);
+            //a null current value means no numeric row has been seen yet
+            RDFTypedLiteral aggregatorValue = Context.GetPartitionKeyExecutionResult<RDFTypedLiteral>(partitionKey, null);
+            if (aggregatorValue == null || ParseTypedLiteralAsDouble(rowValue) < ParseTypedLiteralAsDouble(aggregatorValue))
+                Context.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
         }
         /// <summary>
         /// Executes the partition on the given tablerow (STRING)
@@ -168,12 +175,12 @@ namespace RDFSharp.Query
             //Get bindings from context
             Dictionary<string, string> bindings = GetProjectionBindings(partitionKey);
 
-            //Add aggregator value to bindings
-            double aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, double.PositiveInfinity);
+            //Add aggregator value to bindings (no numeric row / poisoned partition projects an unbound value)
+            RDFTypedLiteral aggregatorValue = Context.GetPartitionKeyExecutionResult<RDFTypedLiteral>(partitionKey, null);
             bindings.Add(Metadata.ProjectionVariable.VariableName,
-                aggregatorValue.Equals(double.NaN)
+                aggregatorValue == null || Context.IsPartitionKeyPoisoned(partitionKey)
                     ? string.Empty
-                    : new RDFTypedLiteral(Convert.ToString(aggregatorValue, CultureInfo.InvariantCulture),RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString());
+                    : aggregatorValue.ToString());
 
             //Add bindings to result's table
             projFuncTable.AddRow(bindings);
