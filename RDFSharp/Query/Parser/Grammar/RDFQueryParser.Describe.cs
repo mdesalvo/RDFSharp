@@ -72,6 +72,11 @@ namespace RDFSharp.Query
             //on a DESCRIBE (empty pendingAggregators); aggregates may only appear inside HAVING as hidden ones.
             ParseSolutionModifiers(parserContext, modifier => describeQuery.AddModifier(modifier), new List<RDFAggregator>());
 
+            //Trailing ValuesClause (Query ::= ... DescribeQuery ValuesClause): a query-level VALUES joined with the
+            //whole WHERE solution sequence before the resources are described
+            if (TryConsumeKeyword(parserContext, "VALUES"))
+                describeQuery.SetValues(ParseDataBlock(parserContext));
+
             return describeQuery;
         }
 

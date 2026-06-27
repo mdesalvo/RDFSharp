@@ -90,10 +90,6 @@ namespace RDFSharp.Query
             //Evaluate the body of the query
             RDFTable queryResultTable = EvaluateQuery(selectQuery, datasource);
 
-            //Evaluate trailing query-level VALUES
-            if (selectQuery.QueryValues?.IsEvaluable == true)
-                queryResultTable = RDFTableEngine.OuterJoinTables(queryResultTable, selectQuery.QueryValues.GetRDFTable());
-
             //Evaluate the modifiers of the query
             return ApplyModifiers(selectQuery, queryResultTable);
         }
@@ -152,8 +148,8 @@ namespace RDFSharp.Query
         /// </summary>
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
-            //Evaluate the body of the query
-            RDFTable queryResultTable = EvaluateQuery(askQuery, datasource);
+            //Evaluate the body of the query, then apply the solution modifiers
+            RDFTable queryResultTable = ApplyModifiers(askQuery, EvaluateQuery(askQuery, datasource));
 
             //Expose the result of the query
             return new RDFAskQueryResult
@@ -188,6 +184,12 @@ namespace RDFSharp.Query
             //Apply the WHERE-clause-scoped filters (those ranging over the whole top-level group graph pattern) AFTER
             //joining all query members, so they see variables bound by sibling members regardless of textual position
             queryResultTable = FilterTable(queryResultTable, query.QueryFilters);
+
+            //Trailing query-level VALUES (… WHERE { … } VALUES …): joined with the whole solution sequence before the
+            //modifiers run. Living here (the shared core) gives it to every query form — SELECT/CONSTRUCT/DESCRIBE/ASK
+            //and any subquery — uniformly (SPARQL [4] ValuesClause).
+            if (query.QueryValues?.IsEvaluable == true)
+                queryResultTable = RDFTableEngine.OuterJoinTables(queryResultTable, query.QueryValues.GetRDFTable());
 
             return queryResultTable;
         }

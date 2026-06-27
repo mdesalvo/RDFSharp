@@ -139,6 +139,12 @@ namespace RDFSharp.Query
             => AddSubQuery<RDFConstructQuery>(subQuery);
 
         /// <summary>
+        /// Sets the trailing query-level inline-data block
+        /// </summary>
+        public RDFConstructQuery SetValues(RDFValues values)
+            => SetValues<RDFConstructQuery>(values);
+
+        /// <summary>
         /// Applies the query to the given graph
         /// </summary>
         public RDFConstructQueryResult ApplyToGraph(RDFGraph graph)

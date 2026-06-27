@@ -15,22 +15,24 @@
 */
 
 using System;
+using System.Collections.Generic;
 using static RDFSharp.Query.RDFQueryLexer;
 
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// ASK-form half of the SPARQL parser: the body of an ASK query — its WHERE clause — assembled into an
-    /// <see cref="RDFAskQuery"/> once the 'ASK' keyword has been dispatched. ASK asks whether the pattern has at
-    /// least one solution, so the model carries no projection and no solution modifiers: it is just the prologue
-    /// prefixes plus the WHERE graph pattern.
+    /// ASK-form half of the SPARQL parser: the body of an ASK query — its WHERE clause plus any trailing solution
+    /// modifiers and inline data — assembled into an <see cref="RDFAskQuery"/> once the 'ASK' keyword has been
+    /// dispatched. ASK asks whether the (modified) solution sequence has at least one solution.
     /// <para>
-    /// SPARQL grammar: <c>AskQuery ::= 'ASK' DatasetClause* WhereClause SolutionModifier</c>.
+    /// SPARQL grammar: <c>AskQuery ::= 'ASK' DatasetClause* WhereClause SolutionModifier</c>, followed by the
+    /// query-level <c>ValuesClause</c> ([4] Query). The solution modifiers do affect the boolean answer (e.g.
+    /// <c>LIMIT 0</c>, an OFFSET past the last row, or a HAVING that drops every group all make ASK false), so they
+    /// are parsed and applied rather than rejected.
     /// </para>
     /// <para>
-    /// Model-imposed limits (the flat <see cref="RDFAskQuery"/> has no dataset and no modifier slots): a
-    /// <c>DatasetClause</c> (FROM / FROM NAMED) and a trailing <c>SolutionModifier</c> (GROUP BY / HAVING /
-    /// ORDER BY / LIMIT / OFFSET) are spec-legal but NOT representable, so each raises an explicit
+    /// Model-imposed limit: a <c>DatasetClause</c> (FROM / FROM NAMED) is spec-legal but NOT representable (RDFSharp
+    /// is an evaluation engine over a given data source, not an endpoint), so it raises an explicit
     /// <see cref="RDFQueryException"/> rather than being silently dropped.
     /// </para>
     /// </summary>
@@ -39,11 +41,11 @@ namespace RDFSharp.Query
         #region AskQuery
         /// <summary>
         /// Parses the body of an ASK query (the 'ASK' keyword has already been consumed by the dispatcher): the
-        /// optional dataset clauses (rejected as non-representable), the WHERE clause, and any trailing solution
-        /// modifier (also rejected). The prologue's declared prefixes are re-attached so the query re-serializes
-        /// its prologue identically.
+        /// optional dataset clauses (rejected as non-representable), the WHERE clause, the trailing solution modifiers
+        /// (GROUP BY / HAVING / ORDER BY / LIMIT / OFFSET) and the trailing query-level VALUES. The prologue's
+        /// declared prefixes are re-attached so the query re-serializes its prologue identically.
         /// </summary>
-        /// <exception cref="RDFQueryException">When a DatasetClause or a SolutionModifier is present, or the WHERE clause is malformed.</exception>
+        /// <exception cref="RDFQueryException">When a DatasetClause is present, the WHERE clause is malformed, or unexpected content trails the query.</exception>
         private static RDFAskQuery ParseAskQuery(RDFQueryParserContext parserContext)
         {
             RDFAskQuery askQuery = new RDFAskQuery();
@@ -57,8 +59,18 @@ namespace RDFSharp.Query
             //WHERE clause (the keyword itself is optional in SPARQL)
             ParseWhereClause(parserContext, askQuery);
 
-            //Nothing representable can follow an ASK's WHERE clause (a SolutionModifier or a trailing VALUES are
-            //both non-representable), so require end-of-input rather than silently dropping whatever trails
+            //SolutionModifier: GROUP BY / HAVING / ORDER BY / LIMIT / OFFSET. ASK has no projection, so there are no
+            //pending projection aggregates (HAVING may still introduce hidden ones); they shape the solution sequence
+            //before the existence check.
+            ParseSolutionModifiers(parserContext, modifier => askQuery.AddModifier(modifier), new List<RDFAggregator>());
+
+            //Trailing ValuesClause (Query ::= ... AskQuery ValuesClause): a query-level VALUES joined with the whole
+            //WHERE solution sequence
+            if (TryConsumeKeyword(parserContext, "VALUES"))
+                askQuery.SetValues(ParseDataBlock(parserContext));
+
+            //Require end-of-input: anything left over (after modifiers and VALUES were consumed) is genuinely
+            //unexpected, and ParseQuery does not enforce end-of-input itself, so reject it rather than drop it silently
             RejectTrailingContent(parserContext);
 
             return askQuery;
@@ -83,17 +95,15 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Requires end-of-input after an ASK's WHERE clause. Whatever could legally follow it — a
-        /// <c>SolutionModifier</c> (GROUP BY / HAVING / ORDER BY / LIMIT / OFFSET) or a trailing
-        /// <c>ValuesClause</c> — is not representable by the flat model; rejecting any leftover content (rather
-        /// than relying on a fixed keyword list) also avoids silently dropping it, since <see cref="ParseQuery"/>
-        /// does not enforce end-of-input itself.
+        /// Requires end-of-input after an ASK query's WHERE clause, solution modifiers and trailing VALUES have all
+        /// been consumed. Anything still left is genuinely unexpected; rejecting it (rather than relying on a fixed
+        /// keyword list) avoids silently dropping it, since <see cref="ParseQuery"/> does not enforce end-of-input itself.
         /// </summary>
-        /// <exception cref="RDFQueryException">When any significant content remains after the WHERE clause.</exception>
+        /// <exception cref="RDFQueryException">When any significant content remains at the end of the ASK query.</exception>
         private static void RejectTrailingContent(RDFQueryParserContext parserContext)
         {
             if (SkipWhitespace(parserContext) != -1)
-                throw new RDFQueryException("Cannot parse SPARQL ASK query: unexpected trailing content after the WHERE clause (solution modifiers and VALUES clauses are not representable on an ASK query) " + GetCoordinates(parserContext));
+                throw new RDFQueryException("Cannot parse SPARQL ASK query: unexpected trailing content at the end of the query " + GetCoordinates(parserContext));
         }
         #endregion
     }

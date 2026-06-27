@@ -42,6 +42,12 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
+    public void ShouldRoundTripConstructWithTrailingValues()
+        //Trailing query-level VALUES is now representable on CONSTRUCT too (it lives on the shared base query)
+        => AssertConstructQueryRoundTrips(RDFConstructQuery.FromString(
+            "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } VALUES ?s { <http://example.org/x> }"));
+
+    [TestMethod]
     public void ShouldRoundTripConstructWithSinglePattern()
         => AssertConstructQueryRoundTrips(new RDFConstructQuery()
             .AddTemplate(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))
@@ -135,6 +141,23 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldRoundTripConstructShortForm()
         => AssertConstructQueryRoundTrips(RDFConstructQuery.FromString("CONSTRUCT WHERE { ?s ?p ?o . ?o ?q ?z }"));
+
+    [TestMethod]
+    public void ShouldPrintConstructShortFormAsCanonicalLongForm()
+    {
+        //#8 (IP10): the SHORT form is accepted on input but RE-PRINTED in the canonical LONG form (explicit template
+        //block + WHERE). The model of the short form is indistinguishable from the equivalent long form, so both print
+        //to the very same text: the round-trip is idempotent but not byte-identical to the short input — BY DESIGN
+        //(canonical normalization, not a defect — see [[mirella-parser-known-limits]] #8).
+        string shortFormPrinted = RDFConstructQuery.FromString("CONSTRUCT WHERE { ?s ?p ?o }").ToString();
+        string longFormPrinted = RDFConstructQuery.FromString("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }").ToString();
+
+        //The short form normalizes to the explicit long form...
+        Assert.AreEqual(RDFTestUtilities.NormalizeEOL(longFormPrinted), RDFTestUtilities.NormalizeEOL(shortFormPrinted));
+        //...i.e. the printed text carries an explicit CONSTRUCT template block, never echoes the 'CONSTRUCT WHERE' sugar
+        Assert.IsTrue(shortFormPrinted.Contains("CONSTRUCT {"));
+        Assert.IsFalse(shortFormPrinted.Contains("CONSTRUCT WHERE"));
+    }
 
     [TestMethod]
     public void ShouldThrowWhenConstructFromStringFedASelectQuery()

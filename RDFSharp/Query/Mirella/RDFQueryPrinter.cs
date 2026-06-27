@@ -146,11 +146,7 @@ namespace RDFSharp.Query
             #region TRAILING VALUES
             //Query-level VALUES (SELECT ... WHERE { ... } VALUES ...): printed after the solution modifiers,
             //at the SELECT body indentation (inside the braces for a subquery, thanks to the closure below)
-            if (selectQuery.QueryValues != null)
-            {
-                sb.AppendLine();
-                sb.Append(string.Concat(subqueryBodySpaces, PrintValues(selectQuery.QueryValues, prefixes, subqueryBodySpaces)));
-            }
+            PrintTrailingValues(sb, selectQuery, prefixes, subqueryBodySpaces);
             #endregion
 
             //CLOSURE
@@ -215,6 +211,20 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Prints the trailing query-level VALUES (<c>… WHERE { … } VALUES …</c>), if any, at the given body
+        /// indentation (empty at top level, non-empty inside a nested SELECT subquery's braces). Shared by every
+        /// query form (SELECT/CONSTRUCT/DESCRIBE/ASK), since the VALUES clause is query-level in SPARQL ([4]).
+        /// </summary>
+        internal static void PrintTrailingValues(StringBuilder sb, RDFQuery query, List<RDFNamespace> prefixes, string subqueryBodySpaces)
+        {
+            if (query.QueryValues != null)
+            {
+                sb.AppendLine();
+                sb.Append(string.Concat(subqueryBodySpaces, PrintValues(query.QueryValues, prefixes, subqueryBodySpaces)));
+            }
+        }
+
+        /// <summary>
         /// Prints the string representation of a SPARQL DESCRIBE query
         /// </summary>
         internal static string PrintDescribeQuery(RDFDescribeQuery describeQuery)
@@ -242,6 +252,10 @@ namespace RDFSharp.Query
 
             #region MODIFIERS
             PrintSolutionModifiers(sb, describeQuery.GetModifiers().ToList(), describeQuery.Prefixes, string.Empty);
+            #endregion
+
+            #region TRAILING VALUES
+            PrintTrailingValues(sb, describeQuery, prefixes, string.Empty);
             #endregion
 
             return sb.ToString();
@@ -290,6 +304,10 @@ namespace RDFSharp.Query
             PrintSolutionModifiers(sb, constructQuery.GetModifiers().ToList(), constructQuery.Prefixes, string.Empty);
             #endregion
 
+            #region TRAILING VALUES
+            PrintTrailingValues(sb, constructQuery, prefixes, string.Empty);
+            #endregion
+
             return sb.ToString();
         }
 
@@ -305,6 +323,8 @@ namespace RDFSharp.Query
             List<RDFNamespace> prefixes = PrintPrefixes(askQuery, sb, true);
             sb.AppendLine("ASK");
             PrintWhereClause(askQuery, sb, prefixes, string.Empty, 0, false);
+            PrintSolutionModifiers(sb, askQuery.GetModifiers().ToList(), askQuery.Prefixes, string.Empty);
+            PrintTrailingValues(sb, askQuery, prefixes, string.Empty);
 
             return sb.ToString();
         }

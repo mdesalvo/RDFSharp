@@ -81,6 +81,22 @@ namespace RDFSharp.Query
             => AddSubQuery<RDFAskQuery>(subQuery);
 
         /// <summary>
+        /// Adds the given solution modifier to the query
+        /// </summary>
+        public RDFAskQuery AddModifier(RDFModifier modifier)
+        {
+            if (modifier != null && CheckModifierIsAcceptable(modifier, allowsDistinct: false))
+                QueryMembers.Add(modifier);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the trailing query-level inline-data block
+        /// </summary>
+        public RDFAskQuery SetValues(RDFValues values)
+            => SetValues<RDFAskQuery>(values);
+
+        /// <summary>
         /// Applies the query to the given graph
         /// </summary>
         public RDFAskQueryResult ApplyToGraph(RDFGraph graph)

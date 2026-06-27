@@ -99,14 +99,47 @@ public partial class RDFQueryParserTest
             RDFAskQuery.FromString("ASK FROM NAMED <http://example.org/g> { ?s ?p ?o }"));
 
     [TestMethod]
-    public void ShouldThrowOnAskWithLimitModifier()
-        => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFAskQuery.FromString("ASK { ?s ?p ?o } LIMIT 1"));
+    public void ShouldParseAskWithSolutionModifiers()
+    {
+        RDFAskQuery query = RDFAskQuery.FromString("ASK { ?s ?p ?o } ORDER BY ?s LIMIT 5 OFFSET 2");
+
+        //GROUP BY/HAVING/ORDER BY/LIMIT/OFFSET are now representable on an ASK query (they shape the solution
+        //sequence before the existence check), so the three modifiers above are parsed onto the query
+        Assert.AreEqual(3, query.GetModifiers().Count());
+    }
 
     [TestMethod]
-    public void ShouldThrowOnAskWithOrderByModifier()
+    public void ShouldRoundTripAskWithModifiersAndTrailingValues()
+        => AssertAskQueryRoundTrips(RDFAskQuery.FromString("ASK WHERE { ?s ?p ?o } ORDER BY ?s LIMIT 5 OFFSET 2 VALUES ?s { <http://example.org/x> }"));
+
+    [TestMethod]
+    public void ShouldEvaluateAskWithLimitZeroAsFalse()
+    {
+        RDFGraph graph = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s"), new RDFResource("http://example.org/p"), new RDFResource("http://example.org/o")));
+
+        //Without modifiers the pattern matches → true; LIMIT 0 empties the solution sequence → false; an OFFSET
+        //past the last solution likewise → false. The modifiers genuinely drive the boolean answer.
+        Assert.IsTrue(RDFAskQuery.FromString("ASK { ?s ?p ?o }").ApplyToGraph(graph).AskResult);
+        Assert.IsFalse(RDFAskQuery.FromString("ASK { ?s ?p ?o } LIMIT 0").ApplyToGraph(graph).AskResult);
+        Assert.IsFalse(RDFAskQuery.FromString("ASK { ?s ?p ?o } OFFSET 5").ApplyToGraph(graph).AskResult);
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateAskWithTrailingValues()
+    {
+        RDFGraph graph = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://example.org/s"), new RDFResource("http://example.org/p"), new RDFResource("http://example.org/o")));
+
+        //Trailing VALUES restricts the WHERE solution sequence: a matching binding keeps ASK true, a non-matching one makes it false
+        Assert.IsTrue(RDFAskQuery.FromString("ASK { ?s ?p ?o } VALUES ?s { <http://example.org/s> }").ApplyToGraph(graph).AskResult);
+        Assert.IsFalse(RDFAskQuery.FromString("ASK { ?s ?p ?o } VALUES ?s { <http://example.org/zzz> }").ApplyToGraph(graph).AskResult);
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnAskWithUnexpectedTrailingContent()
         => Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFAskQuery.FromString("ASK { ?s ?p ?o } ORDER BY ?s"));
+            RDFAskQuery.FromString("ASK { ?s ?p ?o } SELECT"));
 
     #endregion
 }

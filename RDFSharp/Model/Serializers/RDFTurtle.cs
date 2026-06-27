@@ -734,6 +734,9 @@ namespace RDFSharp.Model
             // Store and report this namespace mapping
             string prefixStr = prefixID.ToString();
             string namespaceStr = nspace.ToString();
+            // Record the declaration on the resolver so this prefix always resolves while parsing THIS document,
+            // even if AddNamespace below cannot store it (e.g. its IRI collides with an already-registered namespace)
+            (turtleContext.Resolver as RDFGraphTermResolver)?.RegisterDeclaredPrefix(prefixStr, namespaceStr);
             // If prefix is empty it must be considered default context of the graph
             if (string.IsNullOrEmpty(prefixStr))
             {
@@ -1001,6 +1004,8 @@ namespace RDFSharp.Model
 
             int previousChar;
             string nspace;
+            // The qname's prefix label (empty for the default ':local' form), kept for a precise error message when it cannot be resolved
+            string prefixLabel = string.Empty;
             if (bufChar == ':')
             {
                 // qname using default namespace (empty prefix label resolves to the default namespace)
@@ -1050,7 +1055,8 @@ namespace RDFSharp.Model
 
                 VerifyCharacterOrFail(turtleContext, bufChar, ":");
 
-                nspace = turtleContext.Resolver.ResolveNamespace(prefix.ToString());
+                prefixLabel = prefix.ToString();
+                nspace = turtleContext.Resolver.ResolveNamespace(prefixLabel);
             }
 
             // bufChar == ':', read optional local name
@@ -1091,12 +1097,20 @@ namespace RDFSharp.Model
                 UnreadCodePoint(turtleContext, bufChar);
             }
 
+            // An unresolved namespace must NOT silently fall back to the default namespace: doing so would turn an
+            // undeclared prefix (e.g. 'nope:x' with a declared default ':') into a wrong-but-silent IRI. An undeclared
+            // prefix is illegal in both Turtle and SPARQL, so surface it as an explicit parse error.
+            if (nspace == null)
+                throw new RDFModelException((prefixLabel.Length == 0
+                    ? "Cannot resolve qname using the default namespace because it was never declared"
+                    : "Cannot resolve qname because its namespace prefix '" + prefixLabel + "' was never declared") + GetTurtleContextCoordinates(turtleContext));
+
             string localNameString = localName.ToString();
             return localNameString.Where((t, i) => t == '%' && (i > localNameString.Length - 3
                                                                 || !Uri.IsHexDigit(localNameString[i + 1])
                                                                 || !Uri.IsHexDigit(localNameString[i + 2]))).Any()
                 ? throw new RDFModelException("Found incomplete percent-encoded sequence: " + localNameString + GetTurtleContextCoordinates(turtleContext))
-                : new Uri(string.Concat(nspace ?? turtleContext.Resolver.ResolveNamespace(string.Empty), localNameString));
+                : new Uri(string.Concat(nspace, localNameString));
         }
 
         /// <summary>
@@ -1756,6 +1770,15 @@ namespace RDFSharp.Model
         /// The graph being populated during deserialization, queried live for base/default-namespace.
         /// </summary>
         private readonly RDFGraph graph;
+
+        /// <summary>
+        /// Per-document prefix declarations (prefix label → namespace IRI), recorded as the document's @prefix/PREFIX
+        /// directives are parsed and consulted BEFORE the global namespace register. This guarantees that a prefix
+        /// declared in THIS document always resolves — even when it could not be added to the register (e.g. its IRI
+        /// collides with an already-registered/reserved namespace), which would otherwise make a legitimately-declared
+        /// prefix look undeclared and be wrongly rejected.
+        /// </summary>
+        private readonly Dictionary<string, string> declaredPrefixes = new Dictionary<string, string>();
         #endregion
 
         #region Ctors
@@ -1774,13 +1797,27 @@ namespace RDFSharp.Model
             => graph.ToString();
 
         /// <summary>
-        /// Resolves a prefix label: an empty prefix maps to the graph's default context, while a non-empty prefix
-        /// is looked up in the global namespace register (returning null when not registered).
+        /// Records a prefix declaration found in the document being deserialized, so it resolves regardless of
+        /// whether it could also be added to the global namespace register.
+        /// </summary>
+        internal void RegisterDeclaredPrefix(string prefixLabel, string namespaceUri)
+            => declaredPrefixes[prefixLabel ?? string.Empty] = namespaceUri;
+
+        /// <summary>
+        /// Resolves a prefix label. An empty prefix maps to the graph's default context (base). A non-empty prefix
+        /// is resolved first against THIS document's own declarations (so a declared prefix always wins), then
+        /// against the global namespace register's well-known prefixes; it returns null when the label was neither
+        /// declared in the document nor registered — the caller then raises an explicit parse error.
         /// </summary>
         internal override string ResolveNamespace(string prefixLabel)
-            => string.IsNullOrEmpty(prefixLabel)
-                ? graph.Context.ToString()
-                : RDFNamespaceRegister.GetByPrefix(prefixLabel)?.ToString();
+        {
+            string label = prefixLabel ?? string.Empty;
+            if (label.Length == 0)
+                return graph.Context.ToString();
+            if (declaredPrefixes.TryGetValue(label, out string declaredNamespace))
+                return declaredNamespace;
+            return RDFNamespaceRegister.GetByPrefix(label)?.ToString();
+        }
         #endregion
     }
 }

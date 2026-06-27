@@ -2051,6 +2051,18 @@ public class RDFTurtleTest
     }
 
     [TestMethod]
+    public void ShouldThrowOnDeserializingGraphWithUndeclaredPrefix()
+    {
+        //Regression (parser finding #2): an undeclared namespace prefix must NOT silently fall back to the default
+        //namespace — it is illegal in Turtle, so deserialization must fail rather than invent a wrong-but-silent IRI
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine("@prefix ex: <http://example.org/>.\nex:s nope:p ex:o.");
+
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+    }
+
+    [TestMethod]
     public void ShouldDeserializeGraphWithSPOTripleEvenOnBaseLongerDeclaration()
     {
         MemoryStream stream = new MemoryStream();

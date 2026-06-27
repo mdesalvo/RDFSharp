@@ -135,6 +135,12 @@ namespace RDFSharp.Query
             => AddSubQuery<RDFDescribeQuery>(subQuery);
 
         /// <summary>
+        /// Sets the trailing query-level inline-data block
+        /// </summary>
+        public RDFDescribeQuery SetValues(RDFValues values)
+            => SetValues<RDFDescribeQuery>(values);
+
+        /// <summary>
         /// Applies the query to the given graph
         /// </summary>
         public RDFDescribeQueryResult ApplyToGraph(RDFGraph graph)

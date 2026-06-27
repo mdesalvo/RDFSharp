@@ -87,6 +87,11 @@ namespace RDFSharp.Query
             //on a CONSTRUCT (empty pendingAggregators); aggregates may only appear inside HAVING as hidden ones.
             ParseSolutionModifiers(parserContext, modifier => constructQuery.AddModifier(modifier), new List<RDFAggregator>());
 
+            //Trailing ValuesClause (Query ::= ... ConstructQuery ValuesClause): a query-level VALUES joined with the
+            //whole WHERE solution sequence before the templates are instantiated
+            if (TryConsumeKeyword(parserContext, "VALUES"))
+                constructQuery.SetValues(ParseDataBlock(parserContext));
+
             return constructQuery;
         }
 

@@ -40,6 +40,11 @@ namespace RDFSharp.Query
         /// List of filters scoped to the whole query
         /// </summary>
         internal List<RDFFilter> QueryFilters { get; set; }
+
+        /// <summary>
+        /// Trailing query-level inline-data block
+        /// </summary>
+        internal RDFValues QueryValues { get; set; }
         #endregion
 
         #region Ctors
@@ -131,6 +136,17 @@ namespace RDFSharp.Query
         {
             if (filter != null && !QueryFilters.Any(f => f.Equals(filter)))
                 QueryFilters.Add(filter);
+            return (T)this;
+        }
+
+        /// <summary>
+        /// Sets the trailing query-level inline-data block (<c>… WHERE { … } VALUES …</c>): the given values are
+        /// joined with the whole WHERE solution sequence before the solution modifiers run.
+        /// </summary>
+        internal T SetValues<T>(RDFValues values) where T : RDFQuery
+        {
+            if (values != null && values.IsEvaluable)
+                QueryValues = values;
             return (T)this;
         }
 

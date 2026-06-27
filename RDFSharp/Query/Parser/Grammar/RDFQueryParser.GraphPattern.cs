@@ -304,10 +304,10 @@ namespace RDFSharp.Query
                 }
 
                 //ServiceGraphPattern ::= 'SERVICE' 'SILENT'? VarOrIri GroupGraphPattern
-                //SERVICE is NOT an algebra tree node: like GRAPH it decorates a group (here, flagging it for
-                //remote evaluation via RDFPatternGroup.AsService). The dispatcher delegates to the dedicated
+                //SERVICE is a first-class algebra node (RDFService): the dispatcher delegates to the dedicated
                 //ParseServiceGraphPattern (RDFQueryParser.Service.cs), which parses the optional SILENT, the
-                //endpoint IRI and the inner group, and appends the SERVICE-flagged pattern group as a member.
+                //endpoint (a concrete IRI or a variable) and the inner group graph pattern, and appends the
+                //resulting RDFService as a query member.
                 if (upcomingKeyword == "SERVICE")
                 {
                     ConsumeKeyword(parserContext);

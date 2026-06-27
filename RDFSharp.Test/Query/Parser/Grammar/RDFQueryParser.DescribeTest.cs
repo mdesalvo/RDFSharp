@@ -48,6 +48,12 @@ public partial class RDFQueryParserTest
                 .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o")))));
 
     [TestMethod]
+    public void ShouldRoundTripDescribeWithTrailingValues()
+        //Trailing query-level VALUES is now representable on DESCRIBE too (it lives on the shared base query)
+        => AssertDescribeQueryRoundTrips(RDFDescribeQuery.FromString(
+            "DESCRIBE ?s WHERE { ?s ?p ?o } VALUES ?s { <http://example.org/x> }"));
+
+    [TestMethod]
     public void ShouldRoundTripDescribeWithVariableTerm()
         => AssertDescribeQueryRoundTrips(new RDFDescribeQuery()
             .AddDescribeTerm(new RDFVariable("s"))

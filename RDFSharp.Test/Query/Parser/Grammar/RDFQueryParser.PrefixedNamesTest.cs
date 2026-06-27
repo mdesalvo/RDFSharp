@@ -149,6 +149,13 @@ public partial class RDFQueryParserTest
             RDFSelectQuery.FromString("SELECT * WHERE { ?s nope:p ?o }"));
 
     [TestMethod]
+    public void ShouldThrowOnUndeclaredPrefixEvenWhenDefaultNamespaceIsDeclared()
+        //Regression (parser finding #2): an undeclared named prefix must NOT silently fall back to the declared
+        //default namespace — doing so would turn 'nope:p' into '<http://default/p>' (a wrong-but-silent result)
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("PREFIX : <http://default/> SELECT * WHERE { ?s nope:p ?o }"));
+
+    [TestMethod]
     public void ShouldThrowOnNonRegisteredUndeclaredPrefix()
     {
         //'ex' is NOT a well-known registered prefix, so without a PREFIX declaration it cannot be resolved:
