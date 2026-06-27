@@ -54,5 +54,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFDivideExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// The arithmetic operator of a division expression ('/')
+        /// </summary>
+        protected override char ArithmeticOperator => '/';
+        #endregion
     }
 }

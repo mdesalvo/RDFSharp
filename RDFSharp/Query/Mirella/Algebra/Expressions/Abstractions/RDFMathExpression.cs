@@ -119,21 +119,7 @@ namespace RDFSharp.Query
                 sb.Append(expLeftArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)LeftArgument, prefixes));
-            switch (this)
-            {
-                case RDFAddExpression _:
-                    sb.Append(" + ");
-                    break;
-                case RDFSubtractExpression _:
-                    sb.Append(" - ");
-                    break;
-                case RDFMultiplyExpression _:
-                    sb.Append(" * ");
-                    break;
-                case RDFDivideExpression _:
-                    sb.Append(" / ");
-                    break;
-            }
+            sb.Append(' ').Append(ArithmeticOperator).Append(' ');
             switch (RightArgument)
             {
                 case RDFExpression expRightArgument:
@@ -202,7 +188,7 @@ namespace RDFSharp.Query
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral)
                 {
-                    expressionResult = RDFModelUtilities.ComputeNumericArithmetic(leftArgumentTypedLiteral, rightArgumentTypedLiteral, ArithmeticOperator);
+                    expressionResult = RDFArithmeticEngine.EvaluateNumericLattice(leftArgumentTypedLiteral, rightArgumentTypedLiteral, ArithmeticOperator);
                 }
                 #endregion
             }
@@ -212,26 +198,10 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// The arithmetic operator carried by this expression, dispatched on the concrete subclass
-        /// and fed to the shared numeric-arithmetic primitive
+        /// The arithmetic operator carried by this expression ('+', '-', '*' or '/'): supplied by each concrete
+        /// subclass and consumed by both the printer (ToString) and the shared numeric-arithmetic engine
         /// </summary>
-        private char ArithmeticOperator
-        {
-            get
-            {
-                switch (this)
-                {
-                    case RDFAddExpression _:
-                        return '+';
-                    case RDFSubtractExpression _:
-                        return '-';
-                    case RDFMultiplyExpression _:
-                        return '*';
-                    default:
-                        return '/';   //RDFDivideExpression
-                }
-            }
-        }
+        protected abstract char ArithmeticOperator { get; }
         #endregion
     }
 }

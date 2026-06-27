@@ -54,5 +54,12 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFMultiplyExpression(RDFVariable leftArgument, RDFTypedLiteral rightArgument) : base(leftArgument, rightArgument) { }
         #endregion
+
+        #region Interfaces
+        /// <summary>
+        /// The arithmetic operator of a multiplication expression ('*')
+        /// </summary>
+        protected override char ArithmeticOperator => '*';
+        #endregion
     }
 }

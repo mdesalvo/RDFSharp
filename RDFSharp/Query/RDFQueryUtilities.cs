@@ -145,11 +145,11 @@ namespace RDFSharp.Query
                         {
                             //owl:rational needs parsing and evaluation before being compared (LEFT)
                             decimal leftValueDecimal = ((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)left)
+                                ? RDFArithmeticEngine.ComputeOWLRationalValue((RDFTypedLiteral)left)
                                 : decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
                             //owl:rational needs parsing and evaluation before being compared (RIGHT)
                             decimal rightValueDecimal = ((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                                ? RDFModelUtilities.ComputeOWLRationalValue((RDFTypedLiteral)right)
+                                ? RDFArithmeticEngine.ComputeOWLRationalValue((RDFTypedLiteral)right)
                                 : decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
                             return leftValueDecimal.CompareTo(rightValueDecimal);
                         }

@@ -143,7 +143,7 @@ namespace RDFSharp.Query
                     {
                         //owl:rational needs parsing and evaluation before being compared
                         if (rowAggregatorValueTLit.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                            return Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(rowAggregatorValueTLit), CultureInfo.InvariantCulture);
+                            return Convert.ToDouble(RDFArithmeticEngine.ComputeOWLRationalValue(rowAggregatorValueTLit), CultureInfo.InvariantCulture);
                         if (double.TryParse(rowAggregatorValueTLit.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
                             return result;
                     }
@@ -178,7 +178,7 @@ namespace RDFSharp.Query
         /// </summary>
         internal static double ParseTypedLiteralAsDouble(RDFTypedLiteral typedLiteral)
             => typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                ? Convert.ToDouble(RDFModelUtilities.ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture)
+                ? Convert.ToDouble(RDFArithmeticEngine.ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture)
                 : double.Parse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture);
 
         /// <summary>
