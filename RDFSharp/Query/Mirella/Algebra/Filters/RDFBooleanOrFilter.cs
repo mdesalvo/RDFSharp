@@ -43,24 +43,8 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         public RDFBooleanOrFilter(RDFFilter leftFilter, RDFFilter rightFilter)
         {
-            switch (leftFilter)
-            {
-                case null:
-                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is null.");
-                case RDFExistsFilter _:
-                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is of type RDFExistsFilter: this is not supported.");
-            }
-            switch (rightFilter)
-            {
-                case null:
-                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is null.");
-                case RDFExistsFilter _:
-                    throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is of type RDFExistsFilter: this is not supported.");
-                default:
-                    LeftFilter = leftFilter;
-                    RightFilter = rightFilter;
-                    break;
-            }
+            LeftFilter = leftFilter ?? throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"leftFilter\" parameter is null.");
+            RightFilter = rightFilter ?? throw new RDFQueryException("Cannot create RDFBooleanOrFilter because given \"rightFilter\" parameter is null.");
         }
         #endregion
 

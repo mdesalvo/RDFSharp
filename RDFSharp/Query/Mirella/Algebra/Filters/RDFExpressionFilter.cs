@@ -140,6 +140,12 @@ namespace RDFSharp.Query
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public RDFExpressionFilter(RDFSameTermExpression expression) : this(expression, true) { }
+
+        /// <summary>
+        /// Builds a filter on the given EXISTS expression (FILTER ( EXISTS { … } ))
+        /// </summary>
+        /// <exception cref="RDFQueryException"></exception>
+        public RDFExpressionFilter(RDFExistsExpression expression) : this(expression, true) { }
         #endregion
 
         #region Interfaces

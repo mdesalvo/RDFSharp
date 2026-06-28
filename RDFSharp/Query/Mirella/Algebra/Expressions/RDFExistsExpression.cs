@@ -20,9 +20,11 @@ using RDFSharp.Model;
 namespace RDFSharp.Query
 {
     /// <summary>
-    /// RDFExistsFilter represents a filter for checking existence of a given group graph pattern.
+    /// RDFExistsExpression represents the SPARQL <c>EXISTS</c> built-in as a first-class value-expression: it tests
+    /// whether a given group graph pattern produces at least one solution compatible with the current row, and yields
+    /// the boolean typed literal <c>true</c>/<c>false</c>
     /// </summary>
-    public class RDFExistsFilter : RDFFilter
+    public sealed class RDFExistsExpression : RDFExpression
     {
         #region Properties
         /// <summary>
@@ -33,13 +35,15 @@ namespace RDFSharp.Query
         public RDFQueryMember GroupGraphPattern { get; internal set; }
 
         /// <summary>
-        /// Results of the group graph pattern evaluation on the RDF data source
+        /// Results of the group graph pattern evaluation on the RDF data source. Being correlation-dependent it is not
+        /// computed by the expression itself but PRE-EVALUATED once (per data source) by the query engine before the
+        /// per-row expression evaluation starts (see RDFQueryEngine.PreEvaluateNestedExistsExpressions).
         /// </summary>
         internal RDFTable PatternResults { get; set; }
 
         /// <summary>
         /// The resultset for which <see cref="PatternResultsIndex"/> was last built: lets the index be reused
-        /// across all the rows of one filter application and rebuilt when a fresh evaluation assigns a new table.
+        /// across all the rows of one expression application and rebuilt when a fresh evaluation assigns a new table.
         /// </summary>
         private RDFTable IndexedTable { get; set; }
 
@@ -52,64 +56,63 @@ namespace RDFSharp.Query
 
         #region Ctors
         /// <summary>
-        /// Builds an Exists filter on the given SubSelect group graph pattern
+        /// Builds an EXISTS expression on the given SubSelect group graph pattern
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFExistsFilter(RDFSelectQuery subSelect)
+        public RDFExistsExpression(RDFSelectQuery subSelect)
         {
             #region Guards
             if (subSelect == null)
-                throw new RDFQueryException("Cannot create RDFExistsFilter because given \"subSelect\" parameter is null.");
+                throw new RDFQueryException("Cannot create RDFExistsExpression because given \"subSelect\" parameter is null.");
             #endregion
 
             //Embedding a SELECT as an EXISTS body makes it a nested pattern (no prologue of its own), exactly like
             //attaching it through AddSubQuery: flag it so the printer renders it brace-wrapped without prefixes
             subSelect.IsSubQuery = true;
             GroupGraphPattern = subSelect;
-            IsEvaluable = true;
         }
 
         /// <summary>
-        /// Builds an Exists filter on the given pattern group graph pattern
+        /// Builds an EXISTS expression on the given pattern group graph pattern
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFExistsFilter(RDFPatternGroup patternGroup)
+        public RDFExistsExpression(RDFPatternGroup patternGroup)
         {
             #region Guards
             if (patternGroup == null)
-                throw new RDFQueryException("Cannot create RDFExistsFilter because given \"patternGroup\" parameter is null.");
+                throw new RDFQueryException("Cannot create RDFExistsExpression because given \"patternGroup\" parameter is null.");
             #endregion
 
             GroupGraphPattern = patternGroup;
-            IsEvaluable = true;
         }
         #endregion
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the filter
+        /// Gives the string representation of the EXISTS expression
         /// </summary>
         public override string ToString()
             => ToString(RDFModelUtilities.EmptyNamespaceList);
 
-        //Prefix-aware overload: renders the inner group graph pattern using the given namespaces (NOT EXISTS overrides this)
+        //Prefix-aware overload: renders the bare "EXISTS { … }" form (no FILTER wrapper); the wrapping FILTER (or the
+        //"NOT" of NOT EXISTS) is added by RDFExpressionFilter / RDFNotExpression respectively
         internal override string ToString(List<RDFNamespace> prefixes)
-            => string.Concat("FILTER ( EXISTS ", RDFQueryPrinter.PrintGroupGraphPattern(GroupGraphPattern, prefixes), " )");
+            => string.Concat("EXISTS ", RDFQueryPrinter.PrintGroupGraphPattern(GroupGraphPattern, prefixes));
         #endregion
 
         #region Methods
         /// <summary>
-        /// Applies the filter on the given datarow.
-        /// EXISTS keeps a row when the group graph pattern produced at least one result compatible with that row;
-        /// "compatible" means agreeing on every variable shared between the pattern results and the row.
-        /// Instead of rescanning (and reparsing) the whole pattern resultset for each candidate row,
-        /// we consult a hash index built once per resultset, turning each check into O(1) lookups.
+        /// Applies the EXISTS expression on the given datarow, returning the boolean typed literal <c>true</c> when the
+        /// group graph pattern produced at least one result compatible with that row, <c>false</c> otherwise.
+        /// "Compatible" means agreeing on every variable shared between the pattern results and the row. Instead of
+        /// rescanning (and reparsing) the whole pattern resultset for each candidate row, we consult a hash index built
+        /// once per resultset, turning each check into O(1) lookups.
         /// </summary>
-        internal override bool ApplyFilter(RDFTableRow row, bool applyNegation)
+        internal override RDFPatternMember ApplyExpression(RDFTableRow row)
         {
-            //EXISTS defaults to "fail": the row survives only if we can positively prove a compatible result.
+            //EXISTS defaults to "false": the result is positive only if we can prove a compatible solution.
             //A group graph pattern that produced no solution at all can never satisfy EXISTS for any row.
-            bool keepRow = false;
+            bool existsHolds = false;
 
             #region Evaluation
             if (PatternResults?.Rows.Count > 0)
@@ -122,11 +125,11 @@ namespace RDFSharp.Query
                 //No shared variable => pattern and row are disjoint, so (since the pattern has at least one result)
                 //every pattern result is compatible with the row
                 if (sharedVariables.Count == 0)
-                    keepRow = true;
+                    existsHolds = true;
                 #endregion
 
                 #region Non-Disjoint Evaluation
-                //Row is kept iff at least one pattern result agrees with the bound shared cells of the row
+                //Result is positive iff at least one pattern result agrees with the bound shared cells of the row
                 else
                 {
                     //Ensure the hash index is ready (built once, then reused for every row of this application)
@@ -148,7 +151,10 @@ namespace RDFSharp.Query
                         //pattern-result rows holding the same identity. No bucket => no compatible result at all.
                         long rowValueID = RDFQueryUtilities.ParseRDFPatternMember(row[sharedVariable] ?? string.Empty).PatternMemberID;
                         if (!PatternResultsIndex[sharedVariable].TryGetValue(rowValueID, out HashSet<int> resultRowsWithSameValue))
+                        {
+                            compatibleResultRowIndexes = null;
                             break;
+                        }
 
                         //First bound column => seed the candidate set (copy, so we never mutate the index buckets);
                         //subsequent columns => keep only the results that also match this value (logical AND)
@@ -163,19 +169,15 @@ namespace RDFSharp.Query
                     }
 
                     //When every shared cell was UNBOUND there is no constraint, so all results match; otherwise the
-                    //surviving intersection must contain at least one result (null/empty => incompatibility => drop)
+                    //surviving intersection must contain at least one result (null/empty => incompatibility => false)
                     if (!hasBoundSharedCell || compatibleResultRowIndexes?.Count > 0)
-                        keepRow = true;
+                        existsHolds = true;
                 }
                 #endregion
             }
             #endregion
 
-            //NOT EXISTS reuses this method passing applyNegation=true to invert the EXISTS outcome
-            if (applyNegation)
-                keepRow = !keepRow;
-
-            return keepRow;
+            return existsHolds ? RDFTypedLiteral.True : RDFTypedLiteral.False;
         }
 
         /// <summary>
@@ -196,7 +198,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Lazily builds (once per pattern resultset) the hash index used by ApplyFilter. For every variable
+        /// Lazily builds (once per pattern resultset) the hash index used by ApplyExpression. For every variable
         /// column of the pattern results, it maps each distinct value (by canonical member identity) to the set
         /// of pattern-result row indexes carrying that value. The index is keyed by the resultset's reference
         /// identity, so a fresh evaluation (which assigns a new PatternResults table) triggers a rebuild.
@@ -204,7 +206,7 @@ namespace RDFSharp.Query
         private void BuildPatternResultsIndex()
         {
             //The index is still valid as long as it was built for the very same resultset instance: bail out
-            //to reuse it across all the rows of one filter application (it is the whole point of the speed-up)
+            //to reuse it across all the rows of one expression application (it is the whole point of the speed-up)
             if (ReferenceEquals(IndexedTable, PatternResults))
                 return;
 
@@ -234,6 +236,56 @@ namespace RDFSharp.Query
 
             //Remember which resultset this index belongs to, so the next calls can safely reuse it
             IndexedTable = PatternResults;
+        }
+
+        /// <summary>
+        /// Walks the given expression tree and returns every <see cref="RDFExistsExpression"/> nested anywhere within
+        /// it (including the tree itself when it IS an EXISTS). This is the single point of knowledge about "how to
+        /// locate EXISTS nodes inside an expression": the base <see cref="RDFExpression"/> stays clean (no virtuals),
+        /// and the query engine relies on this to pre-evaluate every nested EXISTS before per-row evaluation.
+        /// </summary>
+        internal static List<RDFExistsExpression> FindNestedExistsExpressions(RDFExpression expressionTree)
+        {
+            List<RDFExistsExpression> foundExistsExpressions = new List<RDFExistsExpression>();
+            CollectNestedExistsExpressions(expressionTree, foundExistsExpressions);
+            return foundExistsExpressions;
+        }
+
+        /// <summary>
+        /// Recursive accumulator backing <see cref="FindNestedExistsExpressions"/>: descends the structure exposed by
+        /// the base class (LeftArgument/RightArgument, followed only when they are themselves expressions) plus the
+        /// few side containers that hold expressions outside Left/Right (RDFInExpression.InTerms, RDFIfExpression's
+        /// condition). When an EXISTS node is reached it is appended (and not descended into, being argument-less).
+        /// </summary>
+        private static void CollectNestedExistsExpressions(RDFExpression expression, List<RDFExistsExpression> foundExistsExpressions)
+        {
+            if (expression == null)
+                return;
+
+            //An EXISTS node is itself a result: accumulate it (it carries no sub-expression arguments to descend into)
+            if (expression is RDFExistsExpression existsExpression)
+            {
+                foundExistsExpressions.Add(existsExpression);
+                return;
+            }
+
+            //Descend into the two structural arguments exposed by the base class, but only where they are themselves
+            //expressions (a constant/variable pattern-member argument cannot contain a nested EXISTS)
+            if (expression.LeftArgument is RDFExpression leftExpression)
+                CollectNestedExistsExpressions(leftExpression, foundExistsExpressions);
+            if (expression.RightArgument is RDFExpression rightExpression)
+                CollectNestedExistsExpressions(rightExpression, foundExistsExpressions);
+
+            //IF carries its condition outside Left/Right (those hold the then/else branches): descend into it as well
+            if (expression is RDFIfExpression ifExpression)
+                CollectNestedExistsExpressions(ifExpression.ConditionArgument, foundExistsExpressions);
+
+            //IN keeps its candidate terms in a side list (not in Left/Right), so descend into each of them
+            if (expression is RDFInExpression inExpression)
+            {
+                foreach (RDFExpression inTerm in inExpression.InTerms)
+                    CollectNestedExistsExpressions(inTerm, foundExistsExpressions);
+            }
         }
         #endregion
     }

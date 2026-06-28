@@ -38,16 +38,7 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         public RDFBooleanNotFilter(RDFFilter filter)
         {
-            switch (filter)
-            {
-                case null:
-                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
-                case RDFExistsFilter _:
-                    throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is of type RDFExistsFilter: this is not supported.");
-                default:
-                    Filter = filter;
-                    break;
-            }
+            Filter = filter ?? throw new RDFQueryException("Cannot create RDFBooleanNotFilter because given \"filter\" parameter is null.");
         }
         #endregion
 

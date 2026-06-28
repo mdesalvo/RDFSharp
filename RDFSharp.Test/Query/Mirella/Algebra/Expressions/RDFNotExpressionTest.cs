@@ -145,4 +145,44 @@ public class RDFNotExpressionTest
         Assert.IsNull(expressionResult);
     }
     #endregion
+
+    #region Tests (NOT EXISTS special-case)
+    [TestMethod]
+    public void ShouldRenderNotExistsCanonicalForm()
+    {
+        //When the negation wraps an EXISTS expression, ToString must render the canonical "NOT EXISTS { … }" form
+        RDFNotExpression expression = new RDFNotExpression(new RDFExistsExpression(
+            new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDF.ALT))));
+
+        Assert.IsTrue(expression.ToString().Equals("NOT EXISTS { ?S ?P <" + RDFVocabulary.RDF.ALT + "> . }", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("NOT EXISTS { ?S ?P rdf:Alt . }", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldRenderGenericNotFormForNonExistsArgument()
+    {
+        //Regression: a non-EXISTS argument keeps the generic "(!(…))" rendering
+        RDFNotExpression expression = new RDFNotExpression(new RDFBoundExpression(new RDFVariable("?A")));
+
+        Assert.IsTrue(expression.ToString().Equals("(!((BOUND(?A))))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionAsNegationOfExists()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string> { { "?A", new RDFResource("ex:org").ToString() } });
+
+        //EXISTS holds (disjoint pattern with at least one solution) => NOT EXISTS must yield false
+        RDFExistsExpression existsExpression = new RDFExistsExpression(
+            new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O")))) { PatternResults = new RDFTable() };
+        existsExpression.PatternResults.AddColumn("?Z");
+        existsExpression.PatternResults.AddRow(new Dictionary<string, string> { { "?Z", new RDFResource("ex:thing").ToString() } });
+
+        RDFNotExpression notExists = new RDFNotExpression(existsExpression);
+
+        Assert.IsTrue(notExists.ApplyExpression(table.Rows[0]).Equals(RDFTypedLiteral.False));
+    }
+    #endregion
 }

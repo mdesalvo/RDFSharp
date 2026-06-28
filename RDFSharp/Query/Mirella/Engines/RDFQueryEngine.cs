@@ -91,7 +91,7 @@ namespace RDFSharp.Query
             RDFTable queryResultTable = EvaluateQuery(selectQuery, datasource);
 
             //Evaluate the modifiers of the query
-            return ApplyModifiers(selectQuery, queryResultTable);
+            return ApplyModifiers(selectQuery, queryResultTable, datasource);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace RDFSharp.Query
             //describe terms are de-duplicated: DISTINCT is not a CONSTRUCT/DESCRIBE modifier, the set semantics is inherent.
             return new RDFDescribeQueryResult
             {
-                DescribeResults = RDFTableEngine.DistinctTable(FillDescribeTerms(ApplyModifiers(describeQuery, queryResultTable))).ToDataTable()
+                DescribeResults = RDFTableEngine.DistinctTable(FillDescribeTerms(ApplyModifiers(describeQuery, queryResultTable, datasource))).ToDataTable()
             };
         }
 
@@ -139,7 +139,7 @@ namespace RDFSharp.Query
             //instantiated templates are de-duplicated: DISTINCT is not a CONSTRUCT/DESCRIBE modifier, the set semantics is inherent.
             return new RDFConstructQueryResult
             {
-                ConstructResults = RDFTableEngine.DistinctTable(FillTemplates(constructQuery.Templates, ApplyModifiers(constructQuery, queryResultTable), false)).ToDataTable()
+                ConstructResults = RDFTableEngine.DistinctTable(FillTemplates(constructQuery.Templates, ApplyModifiers(constructQuery, queryResultTable, datasource), false)).ToDataTable()
             };
         }
 
@@ -149,7 +149,7 @@ namespace RDFSharp.Query
         internal RDFAskQueryResult EvaluateAskQuery(RDFAskQuery askQuery, RDFDataSource datasource)
         {
             //Evaluate the body of the query, then apply the solution modifiers
-            RDFTable queryResultTable = ApplyModifiers(askQuery, EvaluateQuery(askQuery, datasource));
+            RDFTable queryResultTable = ApplyModifiers(askQuery, EvaluateQuery(askQuery, datasource), datasource);
 
             //Expose the result of the query
             return new RDFAskQueryResult
@@ -175,11 +175,10 @@ namespace RDFSharp.Query
                 queryResultTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
             }
 
-            //EXISTS/NOT EXISTS filters living at WHERE-clause scope need their inner group graph pattern evaluated
-            //(into PatternResults) before being applied, exactly as EvaluatePatternGroup does for pattern-group ones
-            foreach (RDFFilter queryFilter in query.QueryFilters)
-                if (queryFilter is RDFExistsFilter existsFilter)
-                    existsFilter.PatternResults = EvaluateQueryMemberLeafOrSubtree(existsFilter.GroupGraphPattern, datasource);
+            //EXISTS expressions living in WHERE-clause-scoped filters need their inner group graph pattern evaluated
+            //(into PatternResults) before being applied, exactly as EvaluatePatternGroup does for pattern-group ones.
+            //Descend the FILTER-level boolean connectives to reach the RDFExpressionFilter leaves and their EXISTS.
+            PreEvaluateExistsInFilters(query.QueryFilters, datasource);
 
             //Apply the WHERE-clause-scoped filters (those ranging over the whole top-level group graph pattern) AFTER
             //joining all query members, so they see variables bound by sibling members regardless of textual position
@@ -286,6 +285,12 @@ namespace RDFSharp.Query
             //Before starting effective evaluation, initialize the list of result tables for this patternGroup
             PatternGroupMemberResultTables[patternGroup.QueryMemberID] = new List<RDFTable>(evaluablePGMembers.Count);
 
+            //EXISTS is now a value-expression that can appear inside the group's FILTERs and BINDs: pre-evaluate the
+            //inner group graph pattern of every nested EXISTS (into its PatternResults) BEFORE the members are
+            //processed, so the later ProjectBind (BIND) and ApplyFilters (FILTER) only do per-row correlation lookups.
+            PreEvaluateExistsInFilters(patternGroup.GetFilters(), dataSource);
+            PreEvaluateNestedExistsExpressions(patternGroup.GetBinds().Select(bind => bind.Expression), dataSource);
+
             //Iterate the active members of the pattern group, evaluating each into an intermediate result table
             foreach (RDFPatternGroupMember evaluablePGMember in evaluablePGMembers)
                 switch (evaluablePGMember)
@@ -329,13 +334,6 @@ namespace RDFSharp.Query
                         //Delete previous patternGroup result tables and replace them with bind operator's one
                         PatternGroupMemberResultTables[patternGroup.QueryMemberID].Clear();
                         PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(currentPatternGroupResultTable);
-                        break;
-
-                    case RDFExistsFilter existsFilter:
-                        //Evaluate exists filter's group graph pattern (SubSelect or pattern group) on the given
-                        //data source and save its result directly into the filter. Reuse the same leaf evaluator
-                        //used by binary algebra trees, so EXISTS supports any group graph pattern shape.
-                        existsFilter.PatternResults = EvaluateQueryMemberLeafOrSubtree(existsFilter.GroupGraphPattern, dataSource);
                         break;
 
                     case RDFBinaryPatternGroupMember operatorPGMember:
@@ -431,10 +429,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Applies the query modifiers to the query result table
         /// </summary>
-        internal RDFTable ApplyModifiers(RDFQuery query, RDFTable table)
+        internal RDFTable ApplyModifiers(RDFQuery query, RDFTable table, RDFDataSource datasource)
         {
             //Save the incoming Optional flag so it can be carried onto the modified result
             bool inOptional = table.IsOptional;
+
+            //EXISTS can appear in any query-level expression (projection, ORDER BY, GROUP BY/HAVING, aggregator): its
+            //inner group graph pattern must be pre-evaluated against the data source BEFORE the modifiers run their
+            //per-row expression evaluation (which has no access to the data source).
+            PreEvaluateNestedExistsExpressions(CollectQueryLevelExpressions(query), datasource);
 
             #region GROUPBY/PROJECTION
             List<RDFModifier> modifiers = query.GetModifiers().ToList();
@@ -1452,6 +1455,90 @@ namespace RDFSharp.Query
 
                 default:
                     return new RDFTable();
+            }
+        }
+
+        /// <summary>
+        /// Pre-evaluates the inner group graph pattern of every EXISTS nested in the given expressions, storing the
+        /// result into each <see cref="RDFExistsExpression.PatternResults"/>. EXISTS lives in the value-expression
+        /// world (it can sit inside FILTER/BIND/projection/ORDER BY/GROUP BY/HAVING expressions), but the data source
+        /// is available only to the engine — not to <see cref="RDFTableEngine"/>'s per-row expression evaluation — so
+        /// the inner pattern must be evaluated ONCE here, up front, turning the later per-row work into a pure
+        /// correlation lookup. The inner pattern is evaluated via the same leaf evaluator used by EXISTS filters of old
+        /// and by binary algebra trees, so any group graph pattern shape (SubSelect, UNION/OPTIONAL/MINUS, …) works.
+        /// </summary>
+        private void PreEvaluateNestedExistsExpressions(IEnumerable<RDFExpression> expressions, RDFDataSource dataSource)
+        {
+            foreach (RDFExpression expression in expressions)
+                foreach (RDFExistsExpression existsExpression in RDFExistsExpression.FindNestedExistsExpressions(expression))
+                    existsExpression.PatternResults = EvaluateQueryMemberLeafOrSubtree(existsExpression.GroupGraphPattern, dataSource);
+        }
+
+        /// <summary>
+        /// Gathers every query-level expression that could host a nested EXISTS: the projection expressions
+        /// (<c>(expr AS ?v)</c> in SELECT), the ORDER BY keys, and the GROUP BY partition-key/aggregator-argument/HAVING
+        /// expressions. The WHERE-clause filters and BINDs are pre-evaluated separately (at pattern-group / query scope),
+        /// so they are deliberately not collected here.
+        /// </summary>
+        private static IEnumerable<RDFExpression> CollectQueryLevelExpressions(RDFQuery query)
+        {
+            //Projection expressions: '(expr AS ?v)' in the SELECT clause (only SELECT queries project expressions)
+            if (query is RDFSelectQuery selectQuery)
+                foreach (KeyValuePair<RDFVariable, (int, RDFExpression)> projectionVar in selectQuery.ProjectionVars)
+                    if (projectionVar.Value.Item2 != null)
+                        yield return projectionVar.Value.Item2;
+
+            //ORDER BY keys are full expressions (a bare variable is just an RDFVariableExpression carrying no EXISTS)
+            foreach (RDFOrderByModifier orderByModifier in query.GetModifiers().OfType<RDFOrderByModifier>())
+                yield return orderByModifier.Expression;
+
+            //GROUP BY: partition-key expressions, aggregator argument expressions and the free HAVING condition
+            RDFGroupByModifier groupByModifier = query.GetModifiers().OfType<RDFGroupByModifier>().FirstOrDefault();
+            if (groupByModifier != null)
+            {
+                foreach (RDFGroupByCondition partitionCondition in groupByModifier.PartitionConditions.Where(condition => condition.IsExpression))
+                    yield return partitionCondition.Expression;
+                foreach (RDFAggregator aggregator in groupByModifier.Aggregators.Where(ag => ag.Metadata.AggregatorExpression != null))
+                    yield return aggregator.Metadata.AggregatorExpression;
+                if (groupByModifier.HavingExpression != null)
+                    yield return groupByModifier.HavingExpression;
+            }
+        }
+
+        /// <summary>
+        /// Pre-evaluates every EXISTS nested in the given filters. Since the FILTER skeleton can combine an EXISTS-bearing
+        /// <see cref="RDFExpressionFilter"/> under the boolean connectives (e.g. <c>FILTER(EXISTS{…} &amp;&amp; ?x &gt; 5)</c>
+        /// builds an <see cref="RDFBooleanAndFilter"/>), this descends the AND/OR/NOT filter nodes down to their
+        /// expression-filter leaves and routes each leaf expression through <see cref="PreEvaluateNestedExistsExpressions"/>.
+        /// </summary>
+        private void PreEvaluateExistsInFilters(IEnumerable<RDFFilter> filters, RDFDataSource dataSource)
+        {
+            foreach (RDFFilter filter in filters)
+                PreEvaluateExistsInFilter(filter, dataSource);
+        }
+
+        /// <summary>
+        /// Recursive worker of <see cref="PreEvaluateExistsInFilters"/>: walks one filter, pre-evaluating EXISTS inside
+        /// an <see cref="RDFExpressionFilter"/>'s expression and recursing through the FILTER-level boolean connectives.
+        /// </summary>
+        private void PreEvaluateExistsInFilter(RDFFilter filter, RDFDataSource dataSource)
+        {
+            switch (filter)
+            {
+                case RDFExpressionFilter expressionFilter:
+                    PreEvaluateNestedExistsExpressions(new[] { expressionFilter.Expression }, dataSource);
+                    break;
+                case RDFBooleanAndFilter andFilter:
+                    PreEvaluateExistsInFilter(andFilter.LeftFilter, dataSource);
+                    PreEvaluateExistsInFilter(andFilter.RightFilter, dataSource);
+                    break;
+                case RDFBooleanOrFilter orFilter:
+                    PreEvaluateExistsInFilter(orFilter.LeftFilter, dataSource);
+                    PreEvaluateExistsInFilter(orFilter.RightFilter, dataSource);
+                    break;
+                case RDFBooleanNotFilter notFilter:
+                    PreEvaluateExistsInFilter(notFilter.Filter, dataSource);
+                    break;
             }
         }
 

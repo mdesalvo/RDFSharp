@@ -73,16 +73,8 @@ public class RDFBooleanAndFilterTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(null, new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR")))));
 
     [TestMethod]
-    public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseExistsLeft()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ")))), new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR")))));
-
-    [TestMethod]
     public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseNullRight()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR"))), null));
-
-    [TestMethod]
-    public void ShouldThrowExceptionOnCreatingBooleanAndFilterBecauseExistsRight()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFBooleanAndFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?VAR"))), new RDFExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFResource("ex:subj"), new RDFResource("ex:pred"), new RDFVariable("?OBJ"))))));
 
     [TestMethod]
     public void ShouldCreateBooleanAndFilterAndKeepRow()

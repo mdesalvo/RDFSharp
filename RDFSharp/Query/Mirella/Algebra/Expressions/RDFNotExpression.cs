@@ -47,6 +47,12 @@ namespace RDFSharp.Query
             => ToString(RDFModelUtilities.EmptyNamespaceList);
         internal override string ToString(List<RDFNamespace> prefixes)
         {
+            //NOT EXISTS canonical form: when this negation wraps an EXISTS expression, render the SPARQL-canonical
+            //"NOT EXISTS { … }" (rather than the generic "(!(EXISTS { … }))"), preserving round-trip identity while
+            //keeping a single object model (NOT EXISTS = !EXISTS).
+            if (LeftArgument is RDFExistsExpression existsArgument)
+                return string.Concat("NOT ", existsArgument.ToString(prefixes));
+
             StringBuilder sb = new StringBuilder();
 
             //(!(L))

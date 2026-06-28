@@ -582,7 +582,7 @@ WHERE {
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFNotExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s")))))));
+                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s")))))))));
 
         //student3 is the only one who never took an exam
         Assert.AreEqual(1, result.SelectResultsCount);
@@ -684,10 +684,10 @@ WHERE {
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
+                .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
                     .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course")))
-                    .AddPattern(new RDFPattern(Variable("?course"), UniversityResource("taughtBy"), UniversityResource("prof0")))))));
+                    .AddPattern(new RDFPattern(Variable("?course"), UniversityResource("taughtBy"), UniversityResource("prof0"))))))));
 
         //student0 (exam in course0+course1, both prof0) and student1 (exam in course1, prof0) qualify;
         //student2 only took course2 (prof1) and student3 took no exam => 2 results
@@ -714,9 +714,9 @@ WHERE {
             .AddPatternGroup(new RDFPatternGroup()
                 .AddValues(new RDFValues().AddColumn(Variable("?s"), new List<RDFPatternMember> { UniversityResource("student2"), UniversityResource("student3") }))
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
+                .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
-                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course")))))));
+                    .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course"))))))));
 
         //Of {student2, student3}, only student2 has an exam => 1 result
         Assert.AreEqual(1, result.SelectResultsCount);

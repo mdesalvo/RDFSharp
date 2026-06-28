@@ -476,7 +476,7 @@ namespace RDFSharp.Query
             //Fill the templates from the WHERE result and run the operation modifiers, then build the patterns
             //straight from the resulting table (columns ?CONTEXT?/?SUBJECT/?PREDICATE/?OBJECT)
             bool needsContext = datasource.IsStore();
-            RDFTable filledResultTable = ApplyModifiers(operation, FillTemplates(templates, resultTable, needsContext));
+            RDFTable filledResultTable = ApplyModifiers(operation, FillTemplates(templates, resultTable, needsContext), datasource);
             return BuildPatternsFromTemplateTable(filledResultTable, needsContext);
         }
 

@@ -170,9 +170,11 @@ namespace RDFSharp.Query
                     continue;
                 }
 
-                //A non-directive keyword immediately followed by '(' is a built-in/function call used as a bare
-                //condition (e.g. ORDER BY STRLEN(?x)): push the keyword back and parse the whole expression
-                if (directionKeyword.Length > 0 && SkipWhitespace(parserContext) == '(')
+                //A non-directive keyword used as a bare condition: either a built-in/function call immediately
+                //followed by '(' (e.g. ORDER BY STRLEN(?x)) or an EXISTS / NOT EXISTS graph-pattern test (whose
+                //operand is a '{ … }' group). Push the keyword back and let the expression grammar parse the whole.
+                if (directionKeyword.Length > 0
+                     && (SkipWhitespace(parserContext) == '(' || normalizedDirectionKeyword == "EXISTS" || normalizedDirectionKeyword == "NOT"))
                 {
                     UnreadString(parserContext, directionKeyword);
                     addModifier(new RDFOrderByModifier(

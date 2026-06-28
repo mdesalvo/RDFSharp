@@ -3378,27 +3378,27 @@ public class RDFQueryEngineTest
         ]);
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddFilter(new RDFExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))));
+            .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
         Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
-        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExistsFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExpressionFilter);
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().First();
-        Assert.IsNotNull(existsFilter.PatternResults);
-        Assert.IsTrue(existsFilter.PatternResults != null);
-        Assert.IsFalse((bool)existsFilter.PatternResults.IsOptional);
-        Assert.AreEqual(2, existsFilter.PatternResults.Columns.Count);
-        Assert.AreEqual(3, existsFilter.PatternResults.Rows.Count);
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
-        Assert.IsTrue(string.Equals(existsFilter.PatternResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)patternGroup.GetFilters().First()).Expression;
+        Assert.IsNotNull(existsExpression.PatternResults);
+        Assert.IsTrue(existsExpression.PatternResults != null);
+        Assert.IsFalse((bool)existsExpression.PatternResults.IsOptional);
+        Assert.AreEqual(2, existsExpression.PatternResults.Columns.Count);
+        Assert.AreEqual(3, existsExpression.PatternResults.Rows.Count);
+        Assert.IsTrue(string.Equals(existsExpression.PatternResults.Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsExpression.PatternResults.Rows[0]["?X"].ToString(), "ex:topolino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsExpression.PatternResults.Rows[1]["?Y"].ToString(), "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsExpression.PatternResults.Rows[1]["?X"].ToString(), "ex:paperino", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsExpression.PatternResults.Rows[2]["?Y"].ToString(), "ex:balto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(existsExpression.PatternResults.Rows[2]["?X"].ToString(), "ex:whoever", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -3414,21 +3414,21 @@ public class RDFQueryEngineTest
         ]);
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddFilter(new RDFExistsFilter(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))));
+            .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X"))))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
         Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
-        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExistsFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExpressionFilter);
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)patternGroup.GetFilters().First();
-        Assert.IsNotNull(existsFilter.PatternResults);
-        Assert.IsTrue(existsFilter.PatternResults != null);
-        Assert.IsFalse((bool)existsFilter.PatternResults.IsOptional);
-        Assert.AreEqual(2, existsFilter.PatternResults.Columns.Count);
-        Assert.AreEqual(0, existsFilter.PatternResults.Rows.Count);
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)patternGroup.GetFilters().First()).Expression;
+        Assert.IsNotNull(existsExpression.PatternResults);
+        Assert.IsTrue(existsExpression.PatternResults != null);
+        Assert.IsFalse((bool)existsExpression.PatternResults.IsOptional);
+        Assert.AreEqual(2, existsExpression.PatternResults.Columns.Count);
+        Assert.AreEqual(0, existsExpression.PatternResults.Rows.Count);
     }
 
     [TestMethod]
@@ -3569,7 +3569,7 @@ public class RDFQueryEngineTest
         queryEngine.EvaluatePatternGroup(query.GetPatternGroups().First(), graph); //Just to obtain real pattern tables (instead of mocking them)
         queryEngine.FinalizePatternGroup(query.GetPatternGroups().First()); //Just to obtain real pattern group table  (instead of mocking it)
         queryEngine.ApplyFilters(query.GetPatternGroups().First()); //Just to obtain real filtered table (instead of mocking it)
-        RDFTable resultTable = queryEngine.ApplyModifiers(query, queryEngine.QueryMemberResultTables.ElementAt(0).Value);
+        RDFTable resultTable = queryEngine.ApplyModifiers(query, queryEngine.QueryMemberResultTables.ElementAt(0).Value, graph);
 
         Assert.AreEqual(2, resultTable.Columns.Count);
         Assert.AreEqual(2, resultTable.Rows.Count);

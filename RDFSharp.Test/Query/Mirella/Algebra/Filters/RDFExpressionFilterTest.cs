@@ -435,5 +435,34 @@ public class RDFExpressionFilterTest
         Assert.IsFalse(keepRow);
         Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( (((STRLEN(?A)) > 8) || (STRSTARTS(?B, \"he\"^^<http://www.w3.org/2001/XMLSchema#string>))) )", System.StringComparison.Ordinal));
     }
+
+    [TestMethod]
+    public void ShouldCreateExpressionFilterFromExistsExpression()
+    {
+        RDFExpressionFilter filter = new RDFExpressionFilter(new RDFExistsExpression(
+            new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDF.ALT))));
+
+        Assert.IsNotNull(filter);
+        Assert.IsInstanceOfType(filter.Expression, typeof(RDFExistsExpression));
+        Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( EXISTS { ?S ?P <" + RDFVocabulary.RDF.ALT + "> . } )", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionFilterFromExistsExpression()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string> { { "?A", new RDFResource("ex:org").ToString() } });
+
+        //Disjoint EXISTS with at least one solution holds => filter keeps the row (and its negation drops it)
+        RDFExistsExpression existsExpression = new RDFExistsExpression(
+            new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O")))) { PatternResults = new RDFTable() };
+        existsExpression.PatternResults.AddColumn("?Z");
+        existsExpression.PatternResults.AddRow(new Dictionary<string, string> { { "?Z", new RDFResource("ex:thing").ToString() } });
+        RDFExpressionFilter filter = new RDFExpressionFilter(existsExpression);
+
+        Assert.IsTrue(filter.ApplyFilter(table.Rows[0], false));
+        Assert.IsFalse(filter.ApplyFilter(table.Rows[0], true));
+    }
     #endregion
 }

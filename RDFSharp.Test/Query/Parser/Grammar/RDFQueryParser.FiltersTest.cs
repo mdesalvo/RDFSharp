@@ -112,7 +112,9 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z } }");
 
-        Assert.IsInstanceOfType(SingleFilterOf(query), typeof(RDFExistsFilter));
+        //EXISTS is now a value-expression wrapped into a plain expression filter
+        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFExistsExpression));
     }
 
     [TestMethod]
@@ -120,7 +122,10 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER NOT EXISTS { ?s <http://ex/q> ?z } }");
 
-        Assert.IsInstanceOfType(SingleFilterOf(query), typeof(RDFNotExistsFilter));
+        //NOT EXISTS is modelled as the negation of an EXISTS expression
+        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFNotExpression notExpression = (RDFNotExpression)expressionFilter.Expression;
+        Assert.IsInstanceOfType(notExpression.LeftArgument, typeof(RDFExistsExpression));
     }
 
     [TestMethod]
@@ -173,9 +178,9 @@ public partial class RDFQueryParserTest
         //EXISTS now carries a full group graph pattern: a multi-triple body is a pattern group
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z . ?z <http://ex/r> ?w } }");
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFPatternGroup));
-        Assert.AreEqual(2, ((RDFPatternGroup)existsFilter.GroupGraphPattern).GetPatterns().Count());
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)SingleFilterOf(query)).Expression;
+        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFPatternGroup));
+        Assert.AreEqual(2, ((RDFPatternGroup)existsExpression.GroupGraphPattern).GetPatterns().Count());
     }
 
     [TestMethod]
@@ -184,8 +189,8 @@ public partial class RDFQueryParserTest
         //A UNION at the head of the EXISTS group parses to a binary tree, represented as a SubSelect
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { { ?s <http://ex/q> ?z } UNION { ?s <http://ex/r> ?z } } }");
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFSelectQuery));
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)SingleFilterOf(query)).Expression;
+        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFSelectQuery));
     }
 
     [TestMethod]
@@ -193,8 +198,8 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z . OPTIONAL { ?z <http://ex/r> ?w } } }");
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFSelectQuery));
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)SingleFilterOf(query)).Expression;
+        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFSelectQuery));
     }
 
     [TestMethod]
@@ -202,8 +207,8 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { SELECT ?s WHERE { ?s <http://ex/q> ?z } } }");
 
-        RDFExistsFilter existsFilter = (RDFExistsFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(existsFilter.GroupGraphPattern, typeof(RDFSelectQuery));
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)SingleFilterOf(query)).Expression;
+        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFSelectQuery));
     }
 
     [TestMethod]
@@ -225,8 +230,8 @@ public partial class RDFQueryParserTest
         RDFSelectQuery apiQuery = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend")))
-                .AddFilter(new RDFExistsFilter(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?friend"), age, new RDFVariable("?friendAge")))))
+                .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?friend"), age, new RDFVariable("?friendAge"))))))
                 .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend"))));
 
         RDFTestUtilities.AssertIso(apiQuery, graph);
@@ -250,12 +255,110 @@ public partial class RDFQueryParserTest
         RDFSelectQuery apiQuery = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend")))
-                .AddFilter(new RDFNotExistsFilter(new RDFPatternGroup()
-                    .AddPattern(new RDFPattern(new RDFVariable("?friend"), age, new RDFVariable("?friendAge")))))
+                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFExistsExpression(new RDFPatternGroup()
+                    .AddPattern(new RDFPattern(new RDFVariable("?friend"), age, new RDFVariable("?friendAge")))))))
                 .AddPattern(new RDFPattern(new RDFVariable("?person"), knows, new RDFVariable("?friend"))));
 
         RDFTestUtilities.AssertIso(apiQuery, graph);
     }
+
+    #region Tests (EXISTS as composable expression — IP12)
+    [TestMethod]
+    public void ShouldComposeExistsWithBooleanConnectiveInFilter()
+    {
+        //Previously rejected: EXISTS combined with another condition via '&&' (EXISTS is now an expression)
+        RDFGraph graph = BuildPeopleGraph();
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT ?s WHERE { ?s <http://ex/age> ?a FILTER(EXISTS { ?s <http://ex/name> ?n } && ?a > 18) }");
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+
+        //Only alice has both a name AND age > 18 (carol has no name, bob is under 18)
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://ex/alice", results.Rows[0]["?S"].ToString());
+        RDFTestUtilities.AssertIso(query, graph);
+    }
+
+    [TestMethod]
+    public void ShouldComposeNotExistsWithBooleanConnectiveInFilter()
+    {
+        RDFGraph graph = BuildPeopleGraph();
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT ?s WHERE { ?s <http://ex/age> ?a FILTER(NOT EXISTS { ?s <http://ex/name> ?n } && ?a > 18) }");
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+
+        //Only carol has age > 18 AND no name
+        Assert.AreEqual(1, results.Rows.Count);
+        Assert.AreEqual("http://ex/carol", results.Rows[0]["?S"].ToString());
+        RDFTestUtilities.AssertIso(query, graph);
+    }
+
+    [TestMethod]
+    public void ShouldBindExistsExpression()
+    {
+        //Previously rejected: EXISTS inside a BIND
+        RDFGraph graph = BuildPeopleGraph();
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT ?s ?hasName WHERE { ?s <http://ex/age> ?a BIND(EXISTS { ?s <http://ex/name> ?n } AS ?hasName) }");
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+
+        Assert.AreEqual(3, results.Rows.Count);
+        //carol is the only subject without a name => bound to 'false'
+        DataRow carolRow = results.Select("[?S] = 'http://ex/carol'").Single();
+        Assert.IsTrue(carolRow["?hasName"].ToString().Contains("false"));
+        RDFTestUtilities.AssertIso(query, graph);
+    }
+
+    [TestMethod]
+    public void ShouldProjectExistsExpression()
+    {
+        //Previously rejected: EXISTS inside a projection expression '(expr AS ?v)'
+        RDFGraph graph = BuildPeopleGraph();
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT ?s (EXISTS { ?s <http://ex/name> ?n } AS ?hasName) WHERE { ?s <http://ex/age> ?a }");
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+
+        Assert.AreEqual(3, results.Rows.Count);
+        DataRow aliceRow = results.Select("[?S] = 'http://ex/alice'").Single();
+        Assert.IsTrue(aliceRow["?hasName"].ToString().Contains("true"));
+        RDFTestUtilities.AssertIso(query, graph);
+    }
+
+    [TestMethod]
+    public void ShouldOrderByExistsExpression()
+    {
+        //Previously rejected: EXISTS inside an ORDER BY key
+        RDFGraph graph = BuildPeopleGraph();
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT ?s WHERE { ?s <http://ex/age> ?a } ORDER BY EXISTS { ?s <http://ex/name> ?n }");
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+
+        //Ascending boolean: the name-less subject (false) sorts first
+        Assert.AreEqual(3, results.Rows.Count);
+        Assert.AreEqual("http://ex/carol", results.Rows[0]["?S"].ToString());
+        RDFTestUtilities.AssertIso(query, graph);
+    }
+
+    [TestMethod]
+    public void ShouldUseExistsInsideHaving()
+    {
+        //Previously rejected: EXISTS inside a HAVING condition
+        RDFGraph graph = BuildPeopleGraph();
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT ?s WHERE { ?s <http://ex/age> ?a } GROUP BY ?s HAVING(EXISTS { ?s <http://ex/name> ?n })");
+
+        DataTable results = query.ApplyToGraph(graph).SelectResults;
+
+        //Only the named subjects (alice, bob) survive the HAVING
+        Assert.AreEqual(2, results.Rows.Count);
+        List<string> keptSubjects = results.Rows.Cast<DataRow>().Select(r => r["?S"].ToString()).OrderBy(s => s).ToList();
+        CollectionAssert.AreEqual(new List<string> { "http://ex/alice", "http://ex/bob" }, keptSubjects);
+    }
+    #endregion
 
     //Helper: a small graph with integer ages and string names for filter-execution tests.
     private static RDFGraph BuildPeopleGraph()

@@ -31,9 +31,9 @@ namespace RDFSharp.Query
     /// <list type="bullet">
     /// <item><b>Filter skeleton</b> (produces <see cref="RDFFilter"/>) — owns the boolean connectives that have a
     ///   FILTER-level form: <c>||</c> → <see cref="RDFBooleanOrFilter"/>, <c>&amp;&amp;</c> →
-    ///   <see cref="RDFBooleanAndFilter"/>, <c>!</c> → <see cref="RDFBooleanNotFilter"/>, plus <c>EXISTS</c> /
-    ///   <c>NOT EXISTS</c> → <see cref="RDFExistsFilter"/> / <see cref="RDFNotExistsFilter"/>. Its leaves are
-    ///   value-expressions wrapped in <see cref="RDFExpressionFilter"/>.</item>
+    ///   <see cref="RDFBooleanAndFilter"/>, <c>!</c> → <see cref="RDFBooleanNotFilter"/>. Its leaves are
+    ///   value-expressions wrapped in <see cref="RDFExpressionFilter"/> (including the <c>EXISTS</c> /
+    ///   <c>NOT EXISTS</c> graph-pattern tests, now modelled as <see cref="RDFExistsExpression"/>).</item>
     /// <item><b>Expression grammar</b> (produces <see cref="RDFExpression"/>) — the SPARQL operator-precedence ladder
     ///   <c>||</c> &gt; <c>&amp;&amp;</c> &gt; relational &gt; additive &gt; multiplicative &gt; unary &gt; primary.
     ///   Here <c>||</c>/<c>&amp;&amp;</c> become <see cref="RDFBooleanOrExpression"/>/<see cref="RDFBooleanAndExpression"/>,
@@ -50,11 +50,12 @@ namespace RDFSharp.Query
     /// and never get consumed twice.
     /// </para>
     /// <para>
-    /// MODEL LIMITATIONS (intentional, surfaced as precise RDFQueryException). The object model has no Boolean-NOT
-    /// expression and no way to embed EXISTS inside an expression, so <c>!</c> and <c>EXISTS</c> only live at the
-    /// FILTER skeleton; using them deep inside a value-expression is rejected. <see cref="RDFExistsFilter"/> carries a
-    /// full group graph pattern (a <see cref="RDFPatternGroup"/> or a <see cref="RDFSelectQuery"/> SubSelect), so EXISTS
-    /// over multi-triple / UNION / OPTIONAL groups is supported.
+    /// EXISTS COMPOSABILITY. <c>EXISTS</c> / <c>NOT EXISTS</c> are first-class value-expressions
+    /// (<see cref="RDFExistsExpression"/>, with <c>NOT EXISTS = !EXISTS</c> via <see cref="RDFNotExpression"/>), so
+    /// they compose with <c>&amp;&amp;</c>/<c>||</c>/<c>!</c> and appear anywhere an expression is expected (FILTER,
+    /// BIND, projection, ORDER BY, GROUP BY/HAVING). Each carries a full group graph pattern (a
+    /// <see cref="RDFPatternGroup"/> or a <see cref="RDFSelectQuery"/> SubSelect), so EXISTS over
+    /// multi-triple / UNION / OPTIONAL groups is supported.
     /// </para>
     /// </summary>
     internal static partial class RDFQueryParser
@@ -151,55 +152,41 @@ namespace RDFSharp.Query
         /// </summary>
         private static RDFFilter ParseFilterAtom(RDFQueryParserContext parserContext)
         {
-            //Peek for the EXISTS / NOT EXISTS built-ins, which are FILTER-level graph-pattern tests rather than
-            //value-expressions. Any other keyword (BOUND, REGEX, …) is left untouched for the expression grammar.
-            string peekedKeyword = PeekFilterKeyword(parserContext);
-            if (peekedKeyword == "EXISTS")
-            {
-                ConsumeKeyword(parserContext);
-                return ParseExistsFilter(parserContext, false);
-            }
-            if (peekedKeyword == "NOT")
-            {
-                ConsumeKeyword(parserContext);
-                if (!TryConsumeKeyword(parserContext, "EXISTS"))
-                    throw new RDFQueryException("Cannot parse SPARQL FILTER: expected 'EXISTS' after 'NOT' " + GetCoordinates(parserContext));
-                return ParseExistsFilter(parserContext, true);
-            }
-
-            //Everything else is a value-expression: parse one ValueLogical and wrap it in an expression filter,
-            //validating that the resulting expression is one the engine accepts as a boolean constraint
+            //Every constraint is a value-expression: parse one ValueLogical and wrap it in an expression filter,
+            //validating that the resulting expression is one the engine accepts as a boolean constraint. EXISTS /
+            //NOT EXISTS now flow through the expression grammar (as RDFExistsExpression / !RDFExistsExpression) and
+            //are wrapped here just like any other boolean expression.
             return WrapExpressionInFilter(parserContext, ParseRelationalExpression(parserContext));
         }
 
         /// <summary>
-        /// Parses an <c>EXISTS</c> / <c>NOT EXISTS</c> graph-pattern test (the keyword has already been consumed) into
-        /// the corresponding <see cref="RDFExistsFilter"/> / <see cref="RDFNotExistsFilter"/>.
+        /// Parses an <c>EXISTS</c> graph-pattern test (the <c>EXISTS</c> keyword has already been consumed) into an
+        /// <see cref="RDFExistsExpression"/>.
         /// <para>
         /// The operand is a full <c>GroupGraphPattern</c> (<c>'{' ( SubSelect | GroupGraphPatternSub ) '}'</c>): it is
-        /// parsed by the shared group machinery and mapped onto the filter's two constructors — a
+        /// parsed by the shared group machinery and mapped onto the expression's two constructors — a
         /// <see cref="RDFPatternGroup"/> (GroupGraphPatternSub) or a <see cref="RDFSelectQuery"/> (SubSelect). A
         /// UNION/OPTIONAL/MINUS at the head of the group parses to a binary algebra tree, which is represented as the
-        /// legal SubSelect alternative by wrapping it into a <c>SELECT *</c> subquery.
+        /// legal SubSelect alternative by wrapping it into a <c>SELECT *</c> subquery. <c>NOT EXISTS</c> is the same
+        /// expression wrapped in a <see cref="RDFNotExpression"/> by the caller.
         /// </para>
         /// </summary>
-        private static RDFFilter ParseExistsFilter(RDFQueryParserContext parserContext, bool negated)
+        private static RDFExpression ParseExistsExpression(RDFQueryParserContext parserContext)
         {
             //The operand is a GroupGraphPattern: parse it with the existing group machinery so it shares the very
             //same triple/blank-node/collection/UNION/OPTIONAL handling as ordinary group graph patterns
             RDFQueryMember existsGroupMember = ParseGroupGraphPattern(parserContext);
 
-            //Map the parsed member onto the filter's two GroupGraphPattern alternatives. A binary algebra tree
+            //Map the parsed member onto the expression's two GroupGraphPattern alternatives. A binary algebra tree
             //(UNION/OPTIONAL/MINUS in head position) becomes a SELECT * subquery: the SubSelect alternative.
             switch (existsGroupMember)
             {
                 case RDFPatternGroup patternGroup:
-                    return negated ? (RDFFilter)new RDFNotExistsFilter(patternGroup) : new RDFExistsFilter(patternGroup);
+                    return new RDFExistsExpression(patternGroup);
                 case RDFSelectQuery subSelect:
-                    return negated ? (RDFFilter)new RDFNotExistsFilter(subSelect) : new RDFExistsFilter(subSelect);
+                    return new RDFExistsExpression(subSelect);
                 default:
-                    RDFSelectQuery wrappedSubSelect = WrapIntoSubQuery(new List<RDFQueryMember> { existsGroupMember });
-                    return negated ? (RDFFilter)new RDFNotExistsFilter(wrappedSubSelect) : new RDFExistsFilter(wrappedSubSelect);
+                    return new RDFExistsExpression(WrapIntoSubQuery(new List<RDFQueryMember> { existsGroupMember }));
             }
         }
 
@@ -218,6 +205,7 @@ namespace RDFSharp.Query
                 case RDFBoundExpression boundExpression:           return new RDFExpressionFilter(boundExpression);
                 case RDFInExpression inExpression:                 return new RDFExpressionFilter(inExpression);
                 case RDFNotExpression notExpression:               return new RDFExpressionFilter(notExpression);
+                case RDFExistsExpression existsExpression:         return new RDFExpressionFilter(existsExpression);
                 case RDFIsBlankExpression isBlankExpression:       return new RDFExpressionFilter(isBlankExpression);
                 case RDFIsLiteralExpression isLiteralExpression:   return new RDFExpressionFilter(isLiteralExpression);
                 case RDFIsNumericExpression isNumericExpression:   return new RDFExpressionFilter(isNumericExpression);
@@ -428,6 +416,23 @@ namespace RDFSharp.Query
             //prefix label of a prefixed-name term/function (e.g. 'geof:distance(...)' or 'ex:thing').
             if (IsAsciiLetter(nextSignificantCodePoint))
             {
+                //EXISTS / NOT EXISTS graph-pattern tests are first-class primary expressions (SPARQL [125] BuiltInCall
+                //includes ExistsFunc/NotExistsFunc): EXISTS → RDFExistsExpression, NOT EXISTS → !EXISTS. At this primary
+                //position a leading 'NOT' can only be 'NOT EXISTS' ('NOT IN' is handled one level up, after an operand).
+                string peekedKeyword = PeekFilterKeyword(parserContext);
+                if (peekedKeyword == "EXISTS")
+                {
+                    ConsumeKeyword(parserContext);
+                    return ParseExistsExpression(parserContext);
+                }
+                if (peekedKeyword == "NOT")
+                {
+                    ConsumeKeyword(parserContext);
+                    if (!TryConsumeKeyword(parserContext, "EXISTS"))
+                        throw new RDFQueryException("Cannot parse SPARQL expression: expected 'EXISTS' after 'NOT' " + GetCoordinates(parserContext));
+                    return new RDFNotExpression(ParseExistsExpression(parserContext));
+                }
+
                 //Read the run as a built-in function NAME (letters + digits + underscore), so names like MD5,
                 //SHA256 and ENCODE_FOR_URI tokenise whole rather than being cut at the first digit/underscore.
                 string letterRun = ReadFunctionName(parserContext);
