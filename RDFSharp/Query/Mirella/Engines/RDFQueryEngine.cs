@@ -1505,40 +1505,17 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Pre-evaluates every EXISTS nested in the given filters. Since the FILTER skeleton can combine an EXISTS-bearing
-        /// <see cref="RDFExpressionFilter"/> under the boolean connectives (e.g. <c>FILTER(EXISTS{…} &amp;&amp; ?x &gt; 5)</c>
-        /// builds an <see cref="RDFBooleanAndFilter"/>), this descends the AND/OR/NOT filter nodes down to their
-        /// expression-filter leaves and routes each leaf expression through <see cref="PreEvaluateNestedExistsExpressions"/>.
+        /// Pre-evaluates every EXISTS nested in the given filters. Every FILTER is now an <see cref="RDFExpressionFilter"/>
+        /// wrapping a single boolean expression (the boolean connectives <c>&amp;&amp;</c>/<c>||</c>/<c>!</c> live inside
+        /// that expression as <see cref="RDFBooleanAndExpression"/>/<see cref="RDFBooleanOrExpression"/>/<see cref="RDFNotExpression"/>),
+        /// so each filter's expression is routed through <see cref="PreEvaluateNestedExistsExpressions"/>, which descends
+        /// the whole expression tree (including those connectives) down to every nested EXISTS.
         /// </summary>
         private void PreEvaluateExistsInFilters(IEnumerable<RDFFilter> filters, RDFDataSource dataSource)
         {
             foreach (RDFFilter filter in filters)
-                PreEvaluateExistsInFilter(filter, dataSource);
-        }
-
-        /// <summary>
-        /// Recursive worker of <see cref="PreEvaluateExistsInFilters"/>: walks one filter, pre-evaluating EXISTS inside
-        /// an <see cref="RDFExpressionFilter"/>'s expression and recursing through the FILTER-level boolean connectives.
-        /// </summary>
-        private void PreEvaluateExistsInFilter(RDFFilter filter, RDFDataSource dataSource)
-        {
-            switch (filter)
-            {
-                case RDFExpressionFilter expressionFilter:
+                if (filter is RDFExpressionFilter expressionFilter)
                     PreEvaluateNestedExistsExpressions(new[] { expressionFilter.Expression }, dataSource);
-                    break;
-                case RDFBooleanAndFilter andFilter:
-                    PreEvaluateExistsInFilter(andFilter.LeftFilter, dataSource);
-                    PreEvaluateExistsInFilter(andFilter.RightFilter, dataSource);
-                    break;
-                case RDFBooleanOrFilter orFilter:
-                    PreEvaluateExistsInFilter(orFilter.LeftFilter, dataSource);
-                    PreEvaluateExistsInFilter(orFilter.RightFilter, dataSource);
-                    break;
-                case RDFBooleanNotFilter notFilter:
-                    PreEvaluateExistsInFilter(notFilter.Filter, dataSource);
-                    break;
-            }
         }
 
         /// <summary>

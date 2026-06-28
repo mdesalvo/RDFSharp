@@ -26,28 +26,21 @@ namespace RDFSharp.Query
     /// SPARQL <c>Constraint</c> (the body of a <c>FILTER</c>) into the engine's filter/expression object model.
     /// </para>
     /// <para>
-    /// TWO COOPERATING GRAMMARS. RDFSharp models FILTER logic with a SPLIT representation, and this parser mirrors
-    /// that split with two cooperating layers:
-    /// <list type="bullet">
-    /// <item><b>Filter skeleton</b> (produces <see cref="RDFFilter"/>) — owns the boolean connectives that have a
-    ///   FILTER-level form: <c>||</c> → <see cref="RDFBooleanOrFilter"/>, <c>&amp;&amp;</c> →
-    ///   <see cref="RDFBooleanAndFilter"/>, <c>!</c> → <see cref="RDFBooleanNotFilter"/>. Its leaves are
-    ///   value-expressions wrapped in <see cref="RDFExpressionFilter"/> (including the <c>EXISTS</c> /
-    ///   <c>NOT EXISTS</c> graph-pattern tests, now modelled as <see cref="RDFExistsExpression"/>).</item>
-    /// <item><b>Expression grammar</b> (produces <see cref="RDFExpression"/>) — the SPARQL operator-precedence ladder
-    ///   <c>||</c> &gt; <c>&amp;&amp;</c> &gt; relational &gt; additive &gt; multiplicative &gt; unary &gt; primary.
-    ///   Here <c>||</c>/<c>&amp;&amp;</c> become <see cref="RDFBooleanOrExpression"/>/<see cref="RDFBooleanAndExpression"/>,
-    ///   comparisons become <see cref="RDFComparisonExpression"/>, arithmetic becomes the math expressions, and the
-    ///   leaves dispatch onto the ~50 SPARQL 1.1 built-in expression classes.</item>
-    /// </list>
+    /// ONE EXPRESSION GRAMMAR. FILTER logic is modelled with a SINGLE representation: a boolean
+    /// <see cref="RDFExpression"/> wrapped once in an <see cref="RDFExpressionFilter"/> (the only bridge from the
+    /// value-expression world to the FILTER pattern-group-member world). The boolean connectives live entirely inside
+    /// the expression world: <c>||</c> → <see cref="RDFBooleanOrExpression"/>, <c>&amp;&amp;</c> →
+    /// <see cref="RDFBooleanAndExpression"/>, <c>!</c> → <see cref="RDFNotExpression"/>. The parser is the SPARQL
+    /// operator-precedence ladder <c>||</c> &gt; <c>&amp;&amp;</c> &gt; relational &gt; additive &gt; multiplicative
+    /// &gt; unary &gt; primary: comparisons become <see cref="RDFComparisonExpression"/>, arithmetic becomes the math
+    /// expressions, and the leaves dispatch onto the ~50 SPARQL 1.1 built-in expression classes.
     /// </para>
     /// <para>
-    /// WHERE THE TWO MEET. A parenthesis switches worlds: at the FILTER skeleton the connectives are filters, but as
-    /// soon as a <c>(</c> opens, the content is parsed by the expression grammar (so <c>(?a &amp;&amp; ?b)</c> is a
-    /// boolean expression, while <c>(?x+1) &gt; 2</c> is a comparison whose left side is a bracketed arithmetic
-    /// expression). The skeleton therefore enters the expression grammar at the RELATIONAL level (a single
-    /// <c>ValueLogical</c>), never at <c>||</c>/<c>&amp;&amp;</c>, so top-level connectives stay with the skeleton
-    /// and never get consumed twice.
+    /// THE BRACKET. A bare <c>Constraint</c> is a single <c>BuiltInCall</c>/<c>FunctionCall</c> parsed at the relational
+    /// (<c>ValueLogical</c>) level, so top-level <c>||</c>/<c>&amp;&amp;</c> are NOT accepted without parentheses (as the
+    /// SPARQL grammar requires). A <c>(</c> opens a <c>BrackettedExpression</c> parsed by the full expression ladder, so
+    /// <c>(?a &amp;&amp; ?b)</c> is a boolean expression and <c>(?x+1) &gt; 2</c> is a comparison over a bracketed
+    /// arithmetic expression — both wrapped once into a single <see cref="RDFExpressionFilter"/>.
     /// </para>
     /// <para>
     /// EXISTS COMPOSABILITY. <c>EXISTS</c> / <c>NOT EXISTS</c> are first-class value-expressions
@@ -73,66 +66,19 @@ namespace RDFSharp.Query
         /// </summary>
         private static RDFFilter ParseConstraint(RDFQueryParserContext parserContext)
         {
-            //A '(' opens a BrackettedExpression: parse the whole boolean skeleton between the parentheses
+            //A '(' opens a BrackettedExpression: the whole parenthesised content is parsed by the expression grammar
+            //(so the boolean connectives ||/&&/! nest there as RDFBooleanOr/And/Not expressions), then the resulting
+            //boolean expression is wrapped ONCE in an RDFExpressionFilter
             if (SkipWhitespace(parserContext) == '(')
             {
                 ExpectChar(parserContext, '(', "FILTER constraint");
-                RDFFilter bracketedFilter = ParseFilterOr(parserContext);
+                RDFExpression bracketedExpression = ParseExpression(parserContext);
                 ExpectChar(parserContext, ')', "FILTER constraint");
-                return bracketedFilter;
+                return WrapExpressionInFilter(parserContext, bracketedExpression);
             }
 
-            //A bare constraint is a BuiltInCall or FunctionCall: EXISTS / NOT EXISTS are handled as filters, every
+            //A bare constraint is a BuiltInCall or FunctionCall: EXISTS / NOT EXISTS are handled as expressions, every
             //other built-in/function is a value-expression that must evaluate to boolean to act as a constraint
-            return ParseFilterAtom(parserContext);
-        }
-
-        /// <summary>
-        /// Filter skeleton — <c>ConditionalOrExpression</c> level. Folds <c>||</c>-separated operands left-to-right
-        /// into <see cref="RDFBooleanOrFilter"/> nodes (<c>A || B || C → Or(Or(A,B),C)</c>).
-        /// </summary>
-        private static RDFFilter ParseFilterOr(RDFQueryParserContext parserContext)
-        {
-            RDFFilter leftFilter = ParseFilterAnd(parserContext);
-            while (TryConsumeOperator(parserContext, "||"))
-                leftFilter = new RDFBooleanOrFilter(leftFilter, ParseFilterAnd(parserContext));
-            return leftFilter;
-        }
-
-        /// <summary>
-        /// Filter skeleton — <c>ConditionalAndExpression</c> level. Folds <c>&amp;&amp;</c>-separated operands
-        /// left-to-right into <see cref="RDFBooleanAndFilter"/> nodes.
-        /// </summary>
-        private static RDFFilter ParseFilterAnd(RDFQueryParserContext parserContext)
-        {
-            RDFFilter leftFilter = ParseFilterUnary(parserContext);
-            while (TryConsumeOperator(parserContext, "&&"))
-                leftFilter = new RDFBooleanAndFilter(leftFilter, ParseFilterUnary(parserContext));
-            return leftFilter;
-        }
-
-        /// <summary>
-        /// Filter skeleton — unary <c>!</c> level. A leading <c>!</c> (not the start of the <c>!=</c> operator)
-        /// negates the following unary operand into a <see cref="RDFBooleanNotFilter"/>; otherwise control passes
-        /// down to the atom.
-        /// </summary>
-        private static RDFFilter ParseFilterUnary(RDFQueryParserContext parserContext)
-        {
-            //A '!' that is NOT the first character of '!=' is the boolean NOT connective
-            if (SkipWhitespace(parserContext) == '!')
-            {
-                ReadCodePoint(parserContext);
-                if (PeekCodePoint(parserContext) == '=')
-                {
-                    //It was actually the '!=' operator with no left operand: that is malformed at this position
-                    UnreadCodePoint(parserContext, '!');
-                }
-                else
-                {
-                    return new RDFBooleanNotFilter(ParseFilterUnary(parserContext));
-                }
-            }
-
             return ParseFilterAtom(parserContext);
         }
 

@@ -499,7 +499,7 @@ public class RDFDescribeQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))).Optional()
-                .AddFilter(new RDFBooleanNotFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?L"))))));
+                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFBoundExpression(new RDFVariable("?L"))))));
         RDFDescribeQueryResult result = query.ApplyToGraph(graph);
 
         Assert.IsNotNull(result);
@@ -833,7 +833,7 @@ public class RDFDescribeQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))).Optional()
-                .AddFilter(new RDFBooleanNotFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?L"))))));
+                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFBoundExpression(new RDFVariable("?L"))))));
         RDFDescribeQueryResult result = query.ApplyToStore(store);
 
         Assert.IsNotNull(result);
@@ -1245,7 +1245,7 @@ public class RDFDescribeQueryTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS))
                 .AddPattern(new RDFPattern(new RDFVariable("?C"), new RDFVariable("?S"), new RDFResource("ex:color"), new RDFVariable("?L"))).Optional()
-                .AddFilter(new RDFBooleanNotFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?L"))))));
+                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFBoundExpression(new RDFVariable("?L"))))));
         RDFDescribeQueryResult result = query.ApplyToFederation(federation);
 
         Assert.IsNotNull(result);

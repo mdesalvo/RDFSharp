@@ -22,8 +22,8 @@ namespace RDFSharp.Query
 {
     /// <summary>
     /// RDFNotExpression represents a logical negation (boolean "NOT") expression to be applied on a query results table.
-    /// Unlike the FILTER-level RDFBooleanNotFilter, this lives inside the value-expression world, so it can be nested
-    /// anywhere an expression is expected (e.g. to model "NOT IN" as "!( … IN … )").
+    /// It lives inside the value-expression world, so it can be nested anywhere an expression is expected (e.g. to model
+    /// "NOT IN" as "!( … IN … )", "NOT EXISTS" as "!EXISTS", or a negated FILTER as "FILTER(!( … ))").
     /// </summary>
     public sealed class RDFNotExpression : RDFExpression
     {
@@ -96,7 +96,9 @@ namespace RDFSharp.Query
                 if (argumentPMember is RDFTypedLiteral argumentTypedLiteral
                      && argumentTypedLiteral.HasBooleanDatatype()
                      && bool.TryParse(argumentTypedLiteral.Value, out bool argumentBooleanValue))
+                {
                     expressionResult = argumentBooleanValue ? RDFTypedLiteral.False : RDFTypedLiteral.True;
+                }
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

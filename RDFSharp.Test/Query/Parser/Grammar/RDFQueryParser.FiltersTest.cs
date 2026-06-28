@@ -60,21 +60,23 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
-    public void ShouldParseConjunctionAsBooleanAndFilter()
+    public void ShouldParseConjunctionAsBooleanAndExpression()
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(?o > 2 && ?o < 9) }");
 
-        RDFBooleanAndFilter andFilter = (RDFBooleanAndFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(andFilter.LeftFilter, typeof(RDFExpressionFilter));
-        Assert.IsInstanceOfType(andFilter.RightFilter, typeof(RDFExpressionFilter));
+        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFBooleanAndExpression andExpression = (RDFBooleanAndExpression)expressionFilter.Expression;
+        Assert.IsInstanceOfType(andExpression.LeftArgument, typeof(RDFComparisonExpression));
+        Assert.IsInstanceOfType(andExpression.RightArgument, typeof(RDFComparisonExpression));
     }
 
     [TestMethod]
-    public void ShouldParseDisjunctionAsBooleanOrFilter()
+    public void ShouldParseDisjunctionAsBooleanOrExpression()
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(?o = 1 || ?o = 2) }");
 
-        Assert.IsInstanceOfType(SingleFilterOf(query), typeof(RDFBooleanOrFilter));
+        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFBooleanOrExpression));
     }
 
     [TestMethod]
@@ -83,19 +85,100 @@ public partial class RDFQueryParserTest
         //a || b && c parses as a || (b && c): the top node is the OR, whose right side is the AND
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(?o = 1 || ?o > 2 && ?o < 9) }");
 
-        RDFBooleanOrFilter orFilter = (RDFBooleanOrFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(orFilter.LeftFilter, typeof(RDFExpressionFilter));
-        Assert.IsInstanceOfType(orFilter.RightFilter, typeof(RDFBooleanAndFilter));
+        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFBooleanOrExpression orExpression = (RDFBooleanOrExpression)expressionFilter.Expression;
+        Assert.IsInstanceOfType(orExpression.LeftArgument, typeof(RDFComparisonExpression));
+        Assert.IsInstanceOfType(orExpression.RightArgument, typeof(RDFBooleanAndExpression));
     }
 
     [TestMethod]
-    public void ShouldParseNegationAsBooleanNotFilter()
+    public void ShouldParseNegationAsBooleanNotExpression()
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(!BOUND(?o)) }");
 
-        RDFBooleanNotFilter notFilter = (RDFBooleanNotFilter)SingleFilterOf(query);
-        RDFExpressionFilter inner = (RDFExpressionFilter)notFilter.Filter;
-        Assert.IsInstanceOfType(inner.Expression, typeof(RDFBoundExpression));
+        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFNotExpression notExpression = (RDFNotExpression)expressionFilter.Expression;
+        Assert.IsInstanceOfType(notExpression.LeftArgument, typeof(RDFBoundExpression));
+    }
+
+    [TestMethod]
+    public void ShouldParseParenFreeComplexBooleanWithCorrectOperatorPrecedence()
+    {
+        //A complex boolean with NO helping parentheses: correctness depends entirely on the parser applying SPARQL
+        //operator precedence '||' < '&&' < relational < unary '!'. The expected tree is therefore:
+        //   ( (STRLEN(?l) > 2 && STRLEN(?l) < 6)  ||  (!CONTAINS(?l,"z") && STRLEN(?l) = 10) )
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s <http://ex/label> ?l FILTER(STRLEN(?l) > 2 && STRLEN(?l) < 6 || !CONTAINS(?l, \"z\") && STRLEN(?l) = 10) }");
+
+        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+
+        //Top connective is the lowest-precedence '||'
+        RDFBooleanOrExpression orExpression = (RDFBooleanOrExpression)expressionFilter.Expression;
+
+        //Left of '||' is the first '&&' group: two comparisons
+        RDFBooleanAndExpression leftAnd = (RDFBooleanAndExpression)orExpression.LeftArgument;
+        Assert.IsInstanceOfType(leftAnd.LeftArgument, typeof(RDFComparisonExpression));
+        Assert.IsInstanceOfType(leftAnd.RightArgument, typeof(RDFComparisonExpression));
+
+        //Right of '||' is the second '&&' group: unary '!' binds tighter than '&&', so its left is NOT(CONTAINS)
+        RDFBooleanAndExpression rightAnd = (RDFBooleanAndExpression)orExpression.RightArgument;
+        RDFNotExpression notExpression = (RDFNotExpression)rightAnd.LeftArgument;
+        Assert.IsInstanceOfType(notExpression.LeftArgument, typeof(RDFContainsExpression));
+        Assert.IsInstanceOfType(rightAnd.RightArgument, typeof(RDFComparisonExpression));
+    }
+
+    [TestMethod]
+    public void ShouldParseComplexBooleanIgnoringRedundantDefensiveParentheses()
+    {
+        //The same boolean once WITHOUT parentheses (relying on precedence) and once WITH redundant defensive
+        //parentheses placed exactly where precedence already groups: a robust parser must collapse both to the
+        //identical canonical tree, so their printed forms must be byte-for-byte equal.
+        RDFSelectQuery parenFree = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s <http://ex/label> ?l FILTER(STRLEN(?l) > 2 && STRLEN(?l) < 6 || !CONTAINS(?l, \"z\") && STRLEN(?l) = 10) }");
+        RDFSelectQuery overParenthesized = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s <http://ex/label> ?l FILTER( ((STRLEN(?l) > 2) && (STRLEN(?l) < 6)) || ((!(CONTAINS(?l, \"z\"))) && (STRLEN(?l) = 10)) ) }");
+
+        Assert.AreEqual(
+            RDFTestUtilities.NormalizeEOL(parenFree.ToString()),
+            RDFTestUtilities.NormalizeEOL(overParenthesized.ToString()));
+    }
+
+    [TestMethod]
+    public void ShouldExecuteParenFreeComplexBooleanRespectingOperatorPrecedence()
+    {
+        //A row survives iff  (3 <= len <= 5)  OR  (label has no 'z' AND len = 10). The data is chosen so a naive
+        //left-to-right reading (no precedence) would yield a DIFFERENT surviving set: e.g. "abc" passes here
+        //(left disjunct true) but would FAIL a flat left-to-right fold ending in '&& STRLEN = 10'.
+        RDFResource label = new RDFResource("http://ex/label");
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex/s1"), label, new RDFPlainLiteral("abc")));        //len 3,  no z  => PASS (left)
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex/s2"), label, new RDFPlainLiteral("abcdefghij"))); //len 10, no z  => PASS (right)
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex/s3"), label, new RDFPlainLiteral("abcdefghiz"))); //len 10, has z => FAIL
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex/s4"), label, new RDFPlainLiteral("ab")));         //len 2         => FAIL
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex/s5"), label, new RDFPlainLiteral("abcde")));      //len 5,  no z  => PASS (left)
+        graph.AddTriple(new RDFTriple(new RDFResource("http://ex/s6"), label, new RDFPlainLiteral("abcdef")));     //len 6,  no z  => FAIL
+
+        const string complexFilter =
+            "SELECT ?s WHERE { ?s <http://ex/label> ?l FILTER(STRLEN(?l) > 2 && STRLEN(?l) < 6 || !CONTAINS(?l, \"z\") && STRLEN(?l) = 10) }";
+        //Defensive-parentheses variant must yield the identical result set
+        const string complexFilterWithRedundantParens =
+            "SELECT ?s WHERE { ?s <http://ex/label> ?l FILTER( ((STRLEN(?l) > 2) && (STRLEN(?l) < 6)) || ((!(CONTAINS(?l, \"z\"))) && (STRLEN(?l) = 10)) ) }";
+
+        List<string> expectedSurvivors = new List<string> { "http://ex/s1", "http://ex/s2", "http://ex/s5" };
+        CollectionAssert.AreEqual(expectedSurvivors, SurvivingSubjects(RDFSelectQuery.FromString(complexFilter), graph));
+        CollectionAssert.AreEqual(expectedSurvivors, SurvivingSubjects(RDFSelectQuery.FromString(complexFilterWithRedundantParens), graph));
+
+        RDFTestUtilities.AssertIso(RDFSelectQuery.FromString(complexFilter), graph);
+    }
+
+    //Helper: the sorted '?S' bindings surviving a SELECT executed against the given graph.
+    private static List<string> SurvivingSubjects(RDFSelectQuery query, RDFGraph graph)
+    {
+        List<string> survivors = new List<string>();
+        foreach (DataRow row in query.ApplyToGraph(graph).SelectResults.Rows)
+            survivors.Add(row["?S"].ToString());
+        survivors.Sort();
+        return survivors;
     }
 
     [TestMethod]
