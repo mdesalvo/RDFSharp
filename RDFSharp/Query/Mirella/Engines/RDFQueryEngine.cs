@@ -314,12 +314,11 @@ namespace RDFSharp.Query
                         break;
 
                     case RDFValues values:
-                        //Transform SPARQL values into an equivalent filter
-                        RDFValuesFilter valuesFilter = values.GetValuesFilter();
-                        //Save the result table
-                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(valuesFilter.ValuesTable);
-                        //Inject SPARQL values filter
-                        patternGroup.AddFilter(valuesFilter);
+                        //SPARQL VALUES is a Join with the multiset built from its data block (SPARQL [4] ValuesClause):
+                        //materialize that multiset as a table and let it participate in the pattern group's CombineTables
+                        //like any other member. The join alone enforces the binding constraint (UNDEF rows are carried as
+                        //an optional table, so they stay compatible with anything) — no dedicated filter is needed.
+                        PatternGroupMemberResultTables[patternGroup.QueryMemberID].Add(values.GetRDFTable());
                         break;
 
                     case RDFBind bind:

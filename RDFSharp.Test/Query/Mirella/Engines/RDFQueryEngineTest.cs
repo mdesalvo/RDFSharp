@@ -3276,7 +3276,8 @@ public class RDFQueryEngineTest
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"].ToString(), "ex:pluto", StringComparison.Ordinal));
-        Assert.IsTrue(patternGroup.GetFilters().First() is RDFValuesFilter);
+        //VALUES is now a pure join member: no dedicated filter is injected into the pattern group anymore
+        Assert.IsFalse(patternGroup.GetFilters().Any());
     }
 
     [TestMethod]
@@ -3304,7 +3305,8 @@ public class RDFQueryEngineTest
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"] ?? string.Empty, string.Empty, StringComparison.Ordinal));
-        Assert.IsTrue(patternGroup.GetFilters().First() is RDFValuesFilter);
+        //VALUES is now a pure join member: no dedicated filter is injected into the pattern group anymore
+        Assert.IsFalse(patternGroup.GetFilters().Any());
     }
 
     [TestMethod]

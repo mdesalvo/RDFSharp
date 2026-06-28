@@ -182,16 +182,5 @@ public class RDFValuesTest
         //No column => no UNDEF => not optional
         Assert.IsFalse(valuesTable.IsOptional);
     }
-
-    [TestMethod]
-    public void ShouldGetValuesFilter()
-    {
-        RDFValues values = new RDFValues();
-        values.AddColumn(new RDFVariable("?V1"), [new RDFResource("ex:res1")]);
-        RDFValuesFilter valuesFilter = values.GetValuesFilter();
-
-        Assert.IsNotNull(valuesFilter);
-        Assert.IsTrue(valuesFilter.Values.Equals(values));
-    }
     #endregion
 }

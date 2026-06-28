@@ -141,12 +141,6 @@ namespace RDFSharp.Query
         /// </summary>
         internal int MaxBindingsLength()
             => Bindings?.Count > 0 ? Bindings.Max(x => x.Value.Count) : NilRowsCount;
-
-        /// <summary>
-        /// Gets the filter representation of the SPARQL values
-        /// </summary>
-        internal RDFValuesFilter GetValuesFilter()
-            => new RDFValuesFilter(this);
         #endregion
     }
 }

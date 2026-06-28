@@ -362,7 +362,7 @@ namespace RDFSharp.Query
         {
             //These filters are rendered after all the group members, inside the WHERE braces: re-parsing places
             //them back at WHERE-clause scope (the parser hoists group-spanning filters), keeping the round-trip stable
-            foreach (RDFFilter queryFilter in query.QueryFilters.Where(f => !(f is RDFValuesFilter)))
+            foreach (RDFFilter queryFilter in query.QueryFilters)
                 sb.AppendLine(string.Concat(subqueryBodySpaces, "  ", queryFilter.ToString(prefixes)));
         }
         private static void PrintWhereClauseMembers(RDFQuery query, StringBuilder sb, List<RDFNamespace> prefixes,
@@ -487,7 +487,7 @@ namespace RDFSharp.Query
                     bodyParts.Add(pgMember is RDFBinaryPatternGroupMember ? renderedMember : string.Concat(renderedMember, " ."));
             }
 
-            foreach (RDFFilter filter in patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter)))
+            foreach (RDFFilter filter in patternGroup.GetFilters())
                 bodyParts.Add(filter.ToString(prefixes));
 
             return bodyParts.Count == 0 ? "{ }" : string.Concat("{ ", string.Join(" ", bodyParts), " }");
@@ -542,7 +542,7 @@ namespace RDFSharp.Query
             PrintPatternGroupMembers(patternGroup, result, spaces, prefixes);
 
             //FILTERS
-            foreach (RDFFilter filter in patternGroup.GetFilters().Where(f => !(f is RDFValuesFilter)))
+            foreach (RDFFilter filter in patternGroup.GetFilters())
                 result.AppendLine($"{spaces}    {filter.ToString(prefixes)} ");
 
             //CLOSE-BRACKET
