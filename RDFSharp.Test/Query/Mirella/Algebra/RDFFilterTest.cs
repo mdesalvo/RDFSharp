@@ -23,13 +23,13 @@ using RDFSharp.Query;
 namespace RDFSharp.Test.Query;
 
 [TestClass]
-public class RDFExpressionFilterTest
+public class RDFFilterTest
 {
     #region Tests
     [TestMethod]
     public void ShouldCreateExpressionFilterWithBooleanExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFBooleanAndExpression(
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFAddExpression(new RDFVariable("?V1"), new RDFVariable("?V2")),
@@ -47,12 +47,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullBooleanExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFBooleanExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFBooleanExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithBoundExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFBoundExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
 
         Assert.IsNotNull(filter);
@@ -64,12 +64,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullBoundExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFBoundExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFBoundExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithComparisonExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo, new RDFVariableExpression(new RDFVariable("?V1")), new RDFVariable("?V2")));
 
         Assert.IsNotNull(filter);
@@ -81,12 +81,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullComparisonExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFComparisonExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFComparisonExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithInExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFInExpression(new RDFVariableExpression(new RDFVariable("?V1")), [new RDFPlainLiteral("hello","en-US")]));
 
         Assert.IsNotNull(filter);
@@ -98,12 +98,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullInExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFInExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFInExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithIsBlankExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFIsBlankExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
 
         Assert.IsNotNull(filter);
@@ -115,12 +115,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsBlankExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsBlankExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFIsBlankExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithIsLiteralExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFIsLiteralExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
 
         Assert.IsNotNull(filter);
@@ -132,12 +132,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsLiteralExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsLiteralExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFIsLiteralExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithIsNumericExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFIsNumericExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
 
         Assert.IsNotNull(filter);
@@ -149,12 +149,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsNumericExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsNumericExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFIsNumericExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithIsUriExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFIsUriExpression(new RDFVariableExpression(new RDFVariable("?V1"))));
 
         Assert.IsNotNull(filter);
@@ -166,12 +166,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsUriExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFIsUriExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFIsUriExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithLangMatchesExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?V1")), new RDFConstantExpression(new RDFPlainLiteral("en-US"))));
 
         Assert.IsNotNull(filter);
@@ -183,12 +183,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullIsLangMatchesExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFLangMatchesExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFLangMatchesExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithRegexExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFRegexExpression(new RDFVariableExpression(new RDFVariable("?V1")), new Regex("^hello$")));
 
         Assert.IsNotNull(filter);
@@ -200,12 +200,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullRegexExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFRegexExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFRegexExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithSameTermExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFSameTermExpression(new RDFVariableExpression(new RDFVariable("?V1")), new RDFVariableExpression(new RDFVariable("?V2"))));
 
         Assert.IsNotNull(filter);
@@ -217,12 +217,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullSameTermExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFSameTermExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFSameTermExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithContainsExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFContainsExpression(new RDFVariable("?V1"), new RDFConstantExpression(new RDFPlainLiteral("hello"))));
 
         Assert.IsNotNull(filter);
@@ -234,12 +234,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullContainsExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFContainsExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFContainsExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithStrStartsExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFStrStartsExpression(new RDFVariable("?V1"), new RDFConstantExpression(new RDFPlainLiteral("he"))));
 
         Assert.IsNotNull(filter);
@@ -251,12 +251,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullStrStartsExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFStrStartsExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFStrStartsExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithStrEndsExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFStrEndsExpression(new RDFVariable("?V1"), new RDFConstantExpression(new RDFPlainLiteral("lo"))));
 
         Assert.IsNotNull(filter);
@@ -268,12 +268,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullStrEndsExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFStrEndsExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFStrEndsExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithHasLangExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFHasLangExpression(new RDFVariable("?V1")));
 
         Assert.IsNotNull(filter);
@@ -285,12 +285,12 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullHasLangExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFHasLangExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFHasLangExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterWithHasLangDirExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFHasLangDirExpression(new RDFVariable("?V1")));
 
         Assert.IsNotNull(filter);
@@ -302,7 +302,7 @@ public class RDFExpressionFilterTest
 
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingExpressionFilterBecauseNullHasLangDirExpression()
-        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFExpressionFilter(null as RDFHasLangDirExpression));
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFFilter(null as RDFHasLangDirExpression));
 
     [TestMethod]
     public void ShouldCreateExpressionFilterAndKeepRow()
@@ -316,7 +316,7 @@ public class RDFExpressionFilterTest
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
@@ -343,7 +343,7 @@ public class RDFExpressionFilterTest
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
@@ -370,7 +370,7 @@ public class RDFExpressionFilterTest
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFBooleanAndExpression(
                 new RDFIsUriExpression(new RDFVariable("?A")),
                 new RDFStrStartsExpression(
@@ -394,7 +394,7 @@ public class RDFExpressionFilterTest
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
@@ -421,7 +421,7 @@ public class RDFExpressionFilterTest
             { "?B", new RDFPlainLiteral("hello", "en-US").ToString() }
         });
 
-        RDFExpressionFilter filter = new RDFExpressionFilter(
+        RDFFilter filter = new RDFFilter(
             new RDFBooleanOrExpression(
                 new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
@@ -439,7 +439,7 @@ public class RDFExpressionFilterTest
     [TestMethod]
     public void ShouldCreateExpressionFilterFromExistsExpression()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(new RDFExistsExpression(
+        RDFFilter filter = new RDFFilter(new RDFExistsExpression(
             new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDF.ALT))));
 
         Assert.IsNotNull(filter);
@@ -459,7 +459,7 @@ public class RDFExpressionFilterTest
             new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), new RDFVariable("?O")))) { PatternResults = new RDFTable() };
         existsExpression.PatternResults.AddColumn("?Z");
         existsExpression.PatternResults.AddRow(new Dictionary<string, string> { { "?Z", new RDFResource("ex:thing").ToString() } });
-        RDFExpressionFilter filter = new RDFExpressionFilter(existsExpression);
+        RDFFilter filter = new RDFFilter(existsExpression);
 
         Assert.IsTrue(filter.ApplyFilter(table.Rows[0], false));
         Assert.IsFalse(filter.ApplyFilter(table.Rows[0], true));

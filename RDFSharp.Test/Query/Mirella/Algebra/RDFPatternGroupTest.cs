@@ -110,7 +110,7 @@ public class RDFPatternGroupTest
         RDFPattern pattern2 = new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"));
         RDFPattern pattern3 = new RDFPattern(new RDFVariable("c"), new RDFVariable("s"), RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
         RDFPattern groundPattern = new RDFPattern(RDFVocabulary.OWL.CLASS, RDFVocabulary.RDF.TYPE, RDFVocabulary.OWL.CLASS);
-        RDFExpressionFilter filter = new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("s")));
+        RDFFilter filter = new RDFFilter(new RDFIsUriExpression(new RDFVariable("s")));
         RDFPatternGroup pGroup = new RDFPatternGroup(
             [
                 pattern1,
@@ -180,7 +180,7 @@ public class RDFPatternGroupTest
     [TestMethod]
     public void ShouldAddFilter()
     {
-        RDFExpressionFilter filter = new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("s")));
+        RDFFilter filter = new RDFFilter(new RDFIsUriExpression(new RDFVariable("s")));
         RDFPatternGroup pGroup = new RDFPatternGroup();
         pGroup.AddFilter(filter);
         pGroup.AddFilter(null); //Will not be added, since null is not allowed

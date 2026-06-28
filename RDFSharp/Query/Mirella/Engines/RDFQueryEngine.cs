@@ -177,7 +177,7 @@ namespace RDFSharp.Query
 
             //EXISTS expressions living in WHERE-clause-scoped filters need their inner group graph pattern evaluated
             //(into PatternResults) before being applied, exactly as EvaluatePatternGroup does for pattern-group ones.
-            //Descend the FILTER-level boolean connectives to reach the RDFExpressionFilter leaves and their EXISTS.
+            //Descend the FILTER-level boolean connectives to reach the RDFFilter leaves and their EXISTS.
             PreEvaluateExistsInFilters(query.QueryFilters, datasource);
 
             //Apply the WHERE-clause-scoped filters (those ranging over the whole top-level group graph pattern) AFTER
@@ -1505,7 +1505,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Pre-evaluates every EXISTS nested in the given filters. Every FILTER is now an <see cref="RDFExpressionFilter"/>
+        /// Pre-evaluates every EXISTS nested in the given filters. Every FILTER is now an <see cref="RDFFilter"/>
         /// wrapping a single boolean expression (the boolean connectives <c>&amp;&amp;</c>/<c>||</c>/<c>!</c> live inside
         /// that expression as <see cref="RDFBooleanAndExpression"/>/<see cref="RDFBooleanOrExpression"/>/<see cref="RDFNotExpression"/>),
         /// so each filter's expression is routed through <see cref="PreEvaluateNestedExistsExpressions"/>, which descends
@@ -1514,7 +1514,7 @@ namespace RDFSharp.Query
         private void PreEvaluateExistsInFilters(IEnumerable<RDFFilter> filters, RDFDataSource dataSource)
         {
             foreach (RDFFilter filter in filters)
-                if (filter is RDFExpressionFilter expressionFilter)
+                if (filter is RDFFilter expressionFilter)
                     PreEvaluateNestedExistsExpressions(new[] { expressionFilter.Expression }, dataSource);
         }
 

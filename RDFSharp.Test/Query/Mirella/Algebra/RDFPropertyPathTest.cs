@@ -1581,7 +1581,7 @@ public class RDFPropertyPathTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(VarS, VarE)
                     .AddSequenceStep(RDFPropertyPathExpression.Link(Knows).OneOrMore()))
-                .AddFilter(new RDFExpressionFilter(
+                .AddFilter(new RDFFilter(
                     new RDFComparisonExpression(
                         RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                         new RDFVariableExpression(VarS),

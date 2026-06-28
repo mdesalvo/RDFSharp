@@ -66,7 +66,7 @@ public class RDFAskQueryTest
         query.AddPatternGroup(
             new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?S"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS))
-                .AddFilter(new RDFExpressionFilter(new RDFIsUriExpression(new RDFVariable("?S")))));
+                .AddFilter(new RDFFilter(new RDFIsUriExpression(new RDFVariable("?S")))));
         query.AddSubQuery(
             new RDFSelectQuery()
                 .AddPrefix(RDFNamespaceRegister.GetByPrefix("owl"))

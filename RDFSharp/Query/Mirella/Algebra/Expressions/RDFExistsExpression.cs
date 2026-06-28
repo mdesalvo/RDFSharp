@@ -95,7 +95,7 @@ namespace RDFSharp.Query
             => ToString(RDFModelUtilities.EmptyNamespaceList);
 
         //Prefix-aware overload: renders the bare "EXISTS { … }" form (no FILTER wrapper); the wrapping FILTER (or the
-        //"NOT" of NOT EXISTS) is added by RDFExpressionFilter / RDFNotExpression respectively
+        //"NOT" of NOT EXISTS) is added by RDFFilter / RDFNotExpression respectively
         internal override string ToString(List<RDFNamespace> prefixes)
             => string.Concat("EXISTS ", RDFQueryPrinter.PrintGroupGraphPattern(GroupGraphPattern, prefixes));
         #endregion

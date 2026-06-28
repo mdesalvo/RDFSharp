@@ -2960,7 +2960,7 @@ public class RDFQueryEngineTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N")))))
+                .AddFilter(new RDFFilter(new RDFBoundExpression(new RDFVariable("?N")))))
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]))))
@@ -3004,7 +3004,7 @@ public class RDFQueryEngineTest
         RDFPatternGroup pgOpUn = new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
             .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-            .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N"))))
+            .AddFilter(new RDFFilter(new RDFBoundExpression(new RDFVariable("?N"))))
             .Optional();
         RDFSelectQuery sqOpUn = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
@@ -3050,7 +3050,7 @@ public class RDFQueryEngineTest
         RDFPatternGroup pgUnOp = new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
             .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-            .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N"))));
+            .AddFilter(new RDFFilter(new RDFBoundExpression(new RDFVariable("?N"))));
         RDFSelectQuery sqUnOp = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])))
@@ -3097,7 +3097,7 @@ public class RDFQueryEngineTest
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-                .AddFilter(new RDFExpressionFilter(new RDFBoundExpression(new RDFVariable("?N")))))
+                .AddFilter(new RDFFilter(new RDFBoundExpression(new RDFVariable("?N")))))
             .AddSubQuery(new RDFSelectQuery()
                 .AddPatternGroup(new RDFPatternGroup()
                     .AddValues(new RDFValues().AddColumn(new RDFVariable("?Y"), [new RDFResource("ex:pluto")]))))
@@ -3380,16 +3380,16 @@ public class RDFQueryEngineTest
         ]);
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))))));
+            .AddFilter(new RDFFilter(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X"))))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
         Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
-        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExpressionFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFFilter);
 
-        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)patternGroup.GetFilters().First()).Expression;
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFFilter)patternGroup.GetFilters().First()).Expression;
         Assert.IsNotNull(existsExpression.PatternResults);
         Assert.IsTrue(existsExpression.PatternResults != null);
         Assert.IsFalse((bool)existsExpression.PatternResults.IsOptional);
@@ -3416,16 +3416,16 @@ public class RDFQueryEngineTest
         ]);
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
-            .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X"))))));
+            .AddFilter(new RDFFilter(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X"))))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
         Assert.IsNotNull(queryEngine.PatternGroupMemberResultTables);
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
         Assert.IsEmpty(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
-        Assert.IsTrue(patternGroup.GetFilters().First() is RDFExpressionFilter);
+        Assert.IsTrue(patternGroup.GetFilters().First() is RDFFilter);
 
-        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFExpressionFilter)patternGroup.GetFilters().First()).Expression;
+        RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFFilter)patternGroup.GetFilters().First()).Expression;
         Assert.IsNotNull(existsExpression.PatternResults);
         Assert.IsTrue(existsExpression.PatternResults != null);
         Assert.IsFalse((bool)existsExpression.PatternResults.IsOptional);
@@ -3525,8 +3525,8 @@ public class RDFQueryEngineTest
         RDFPatternGroup patternGroup = new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
             .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional())
-            .AddFilter(new RDFExpressionFilter(new RDFRegexExpression(new RDFVariable("?Y"), new Regex("^ex:[a-zA-Z]+o$"))))
-            .AddFilter(new RDFExpressionFilter(new RDFInExpression(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])));
+            .AddFilter(new RDFFilter(new RDFRegexExpression(new RDFVariable("?Y"), new Regex("^ex:[a-zA-Z]+o$"))))
+            .AddFilter(new RDFFilter(new RDFInExpression(new RDFVariable("?Y"), [new RDFResource("ex:pluto")])));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph); //Just to obtain real pattern tables (instead of mocking them)
         queryEngine.FinalizePatternGroup(patternGroup); //Just to obtain real pattern group table  (instead of mocking it)
@@ -5367,13 +5367,13 @@ public class RDFQueryEngineTest
         // Both leaf pattern groups share ?X with pgMain, ensuring a meaningful join
         RDFPatternGroup pgNamesA = new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")))
-            .AddFilter(new RDFExpressionFilter(
+            .AddFilter(new RDFFilter(
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFVariableExpression(new RDFVariable("?X")),
                     new RDFConstantExpression(new RDFResource("ex:topolino")))));
         RDFPatternGroup pgNamesB = new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")))
-            .AddFilter(new RDFExpressionFilter(
+            .AddFilter(new RDFFilter(
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
                     new RDFVariableExpression(new RDFVariable("?X")),
                     new RDFConstantExpression(new RDFResource("ex:paperino")))));
@@ -5467,7 +5467,7 @@ public class RDFQueryEngineTest
 
         RDFPatternGroup pgA = new RDFPatternGroup()
             .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
-            .AddFilter(new RDFExpressionFilter(
+            .AddFilter(new RDFFilter(
                 new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.NotEqualTo,
                     new RDFVariableExpression(new RDFVariable("?Y")),
                     new RDFConstantExpression(new RDFResource("ex:balto")))));

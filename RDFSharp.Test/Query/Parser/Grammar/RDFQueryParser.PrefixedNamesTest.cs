@@ -264,7 +264,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString(
             "SELECT * WHERE { ?s ?p ?o FILTER(SAMETERM(?o, foaf:Person)) }");
 
-        Assert.IsInstanceOfType(((RDFExpressionFilter)SingleFilterOf(query)).Expression, typeof(RDFSameTermExpression));
+        Assert.IsInstanceOfType(((RDFFilter)SingleFilterOf(query)).Expression, typeof(RDFSameTermExpression));
     }
 
     [TestMethod]

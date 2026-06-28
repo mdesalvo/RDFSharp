@@ -40,7 +40,7 @@ public partial class RDFQueryParserTest
     //Helper: the geo expression a bare geo-relation constraint desugars to (geoExpr = true → comparison's left side).
     private static RDFExpression GeoExpressionOf(RDFSelectQuery query)
     {
-        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         return (RDFExpression)((RDFComparisonExpression)expressionFilter.Expression).LeftArgument;
     }
 
@@ -85,7 +85,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString(
             "SELECT * WHERE { ?s ?p ?a . ?s ?q ?b FILTER(geof:distance(?a, ?b, <http://www.opengis.net/def/uom/OGC/1.0/metre>) < 100) }");
 
-        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFComparisonExpression comparison = (RDFComparisonExpression)expressionFilter.Expression;
         Assert.IsInstanceOfType(comparison.LeftArgument, typeof(RDFGeoDistanceExpression));
     }

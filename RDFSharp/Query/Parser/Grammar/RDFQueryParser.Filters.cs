@@ -27,7 +27,7 @@ namespace RDFSharp.Query
     /// </para>
     /// <para>
     /// ONE EXPRESSION GRAMMAR. FILTER logic is modelled with a SINGLE representation: a boolean
-    /// <see cref="RDFExpression"/> wrapped once in an <see cref="RDFExpressionFilter"/> (the only bridge from the
+    /// <see cref="RDFExpression"/> wrapped once in an <see cref="RDFFilter"/> (the only bridge from the
     /// value-expression world to the FILTER pattern-group-member world). The boolean connectives live entirely inside
     /// the expression world: <c>||</c> → <see cref="RDFBooleanOrExpression"/>, <c>&amp;&amp;</c> →
     /// <see cref="RDFBooleanAndExpression"/>, <c>!</c> → <see cref="RDFNotExpression"/>. The parser is the SPARQL
@@ -40,7 +40,7 @@ namespace RDFSharp.Query
     /// (<c>ValueLogical</c>) level, so top-level <c>||</c>/<c>&amp;&amp;</c> are NOT accepted without parentheses (as the
     /// SPARQL grammar requires). A <c>(</c> opens a <c>BrackettedExpression</c> parsed by the full expression ladder, so
     /// <c>(?a &amp;&amp; ?b)</c> is a boolean expression and <c>(?x+1) &gt; 2</c> is a comparison over a bracketed
-    /// arithmetic expression — both wrapped once into a single <see cref="RDFExpressionFilter"/>.
+    /// arithmetic expression — both wrapped once into a single <see cref="RDFFilter"/>.
     /// </para>
     /// <para>
     /// EXISTS COMPOSABILITY. <c>EXISTS</c> / <c>NOT EXISTS</c> are first-class value-expressions
@@ -57,18 +57,18 @@ namespace RDFSharp.Query
         /// <summary>
         /// Parses a single FILTER <c>Constraint</c> into the <see cref="RDFFilter"/> it denotes.
         /// <list type="bullet">
-        /// <item>A <c>(</c> opens a <c>BrackettedExpression</c>: the parenthesised content is the full boolean
-        ///   skeleton (so <c>||</c>/<c>&amp;&amp;</c>/<c>!</c> nest as filters there).</item>
+        /// <item>A <c>(</c> opens a <c>BrackettedExpression</c>: the parenthesised content is parsed by the full
+        ///   expression ladder (so <c>||</c>/<c>&amp;&amp;</c>/<c>!</c> nest there as boolean expressions).</item>
         /// <item>Otherwise the constraint is a bare <c>BuiltInCall</c> or <c>FunctionCall</c> — including the
         ///   <c>EXISTS</c> / <c>NOT EXISTS</c> built-ins — which is parsed and (when it is a value-expression)
-        ///   wrapped in an <see cref="RDFExpressionFilter"/>.</item>
+        ///   wrapped in an <see cref="RDFFilter"/>.</item>
         /// </list>
         /// </summary>
         private static RDFFilter ParseConstraint(RDFQueryParserContext parserContext)
         {
             //A '(' opens a BrackettedExpression: the whole parenthesised content is parsed by the expression grammar
             //(so the boolean connectives ||/&&/! nest there as RDFBooleanOr/And/Not expressions), then the resulting
-            //boolean expression is wrapped ONCE in an RDFExpressionFilter
+            //boolean expression is wrapped ONCE in an RDFFilter
             if (SkipWhitespace(parserContext) == '(')
             {
                 ExpectChar(parserContext, '(', "FILTER constraint");
@@ -83,25 +83,19 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Filter skeleton — atom level. An atom is either
-        /// <list type="bullet">
-        /// <item>an <c>EXISTS { … }</c> / <c>NOT EXISTS { … }</c> graph-pattern test;</item>
-        /// <item>a value-expression parsed at the relational (<c>ValueLogical</c>) level and wrapped in an
-        ///   <see cref="RDFExpressionFilter"/>.</item>
-        /// </list>
-        /// Entering the expression grammar at the relational level (rather than at <c>||</c>) is what keeps the
-        /// top-level <c>||</c>/<c>&amp;&amp;</c> with the skeleton while still letting parentheses and comparisons
-        /// work: a leading <c>(</c> is NOT special-cased here — it flows into the relational level, where
-        /// <see cref="ParsePrimaryExpression"/> treats it as a bracketed expression. That is what makes
-        /// <c>(?x + 1) &gt; 10</c> parse as a comparison (numeric bracket on the left) while <c>(?a &amp;&amp; ?b)</c>
-        /// parses as a boolean expression — both correctly wrapped in a single <see cref="RDFExpressionFilter"/>.
+        /// Parses a bare (non-bracketed) constraint: a single value-expression at the relational (<c>ValueLogical</c>)
+        /// level, wrapped in an <see cref="RDFFilter"/>. Entering at the relational level (rather than at <c>||</c>)
+        /// means top-level <c>||</c>/<c>&amp;&amp;</c> are NOT accepted without parentheses (as the SPARQL grammar
+        /// requires); a leading <c>(</c> still flows into the relational level, where <see cref="ParsePrimaryExpression"/>
+        /// treats it as a bracketed expression — so <c>(?x + 1) &gt; 10</c> parses as a comparison (numeric bracket on
+        /// the left) while a standalone <c>(?a &amp;&amp; ?b)</c> parses as a boolean expression.
         /// </summary>
         private static RDFFilter ParseFilterAtom(RDFQueryParserContext parserContext)
         {
-            //Every constraint is a value-expression: parse one ValueLogical and wrap it in an expression filter,
-            //validating that the resulting expression is one the engine accepts as a boolean constraint. EXISTS /
-            //NOT EXISTS now flow through the expression grammar (as RDFExistsExpression / !RDFExistsExpression) and
-            //are wrapped here just like any other boolean expression.
+            //Every constraint is a value-expression: parse one ValueLogical and wrap it in a filter, validating that
+            //the resulting expression is one the engine accepts as a boolean constraint. EXISTS / NOT EXISTS flow
+            //through the expression grammar (as RDFExistsExpression / !RDFExistsExpression) and are wrapped here just
+            //like any other boolean expression.
             return WrapExpressionInFilter(parserContext, ParseRelationalExpression(parserContext));
         }
 
@@ -137,7 +131,7 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Wraps a boolean value-expression in an <see cref="RDFExpressionFilter"/>, dispatching on the concrete
+        /// Wraps a boolean value-expression in an <see cref="RDFFilter"/>, dispatching on the concrete
         /// expression type so the right public constructor is invoked. An expression that the engine does not accept
         /// as a boolean filter (e.g. a bare arithmetic/string expression, or a built-in with no filter constructor)
         /// is rejected with a precise message.
@@ -146,30 +140,30 @@ namespace RDFSharp.Query
         {
             switch (valueExpression)
             {
-                case RDFBooleanExpression booleanExpression:       return new RDFExpressionFilter(booleanExpression);
-                case RDFComparisonExpression comparisonExpression: return new RDFExpressionFilter(comparisonExpression);
-                case RDFBoundExpression boundExpression:           return new RDFExpressionFilter(boundExpression);
-                case RDFInExpression inExpression:                 return new RDFExpressionFilter(inExpression);
-                case RDFNotExpression notExpression:               return new RDFExpressionFilter(notExpression);
-                case RDFExistsExpression existsExpression:         return new RDFExpressionFilter(existsExpression);
-                case RDFIsBlankExpression isBlankExpression:       return new RDFExpressionFilter(isBlankExpression);
-                case RDFIsLiteralExpression isLiteralExpression:   return new RDFExpressionFilter(isLiteralExpression);
-                case RDFIsNumericExpression isNumericExpression:   return new RDFExpressionFilter(isNumericExpression);
-                case RDFIsUriExpression isUriExpression:           return new RDFExpressionFilter(isUriExpression);
-                case RDFLangMatchesExpression langMatchesExpr:     return new RDFExpressionFilter(langMatchesExpr);
-                case RDFRegexExpression regexExpression:           return new RDFExpressionFilter(regexExpression);
-                case RDFSameTermExpression sameTermExpression:     return new RDFExpressionFilter(sameTermExpression);
-                case RDFContainsExpression containsExpression:     return new RDFExpressionFilter(containsExpression);
-                case RDFStrStartsExpression strStartsExpression:   return new RDFExpressionFilter(strStartsExpression);
-                case RDFStrEndsExpression strEndsExpression:       return new RDFExpressionFilter(strEndsExpression);
-                case RDFHasLangExpression hasLangExpression:       return new RDFExpressionFilter(hasLangExpression);
-                case RDFHasLangDirExpression hasLangDirExpression: return new RDFExpressionFilter(hasLangDirExpression);
+                case RDFBooleanExpression booleanExpression:       return new RDFFilter(booleanExpression);
+                case RDFComparisonExpression comparisonExpression: return new RDFFilter(comparisonExpression);
+                case RDFBoundExpression boundExpression:           return new RDFFilter(boundExpression);
+                case RDFInExpression inExpression:                 return new RDFFilter(inExpression);
+                case RDFNotExpression notExpression:               return new RDFFilter(notExpression);
+                case RDFExistsExpression existsExpression:         return new RDFFilter(existsExpression);
+                case RDFIsBlankExpression isBlankExpression:       return new RDFFilter(isBlankExpression);
+                case RDFIsLiteralExpression isLiteralExpression:   return new RDFFilter(isLiteralExpression);
+                case RDFIsNumericExpression isNumericExpression:   return new RDFFilter(isNumericExpression);
+                case RDFIsUriExpression isUriExpression:           return new RDFFilter(isUriExpression);
+                case RDFLangMatchesExpression langMatchesExpr:     return new RDFFilter(langMatchesExpr);
+                case RDFRegexExpression regexExpression:           return new RDFFilter(regexExpression);
+                case RDFSameTermExpression sameTermExpression:     return new RDFFilter(sameTermExpression);
+                case RDFContainsExpression containsExpression:     return new RDFFilter(containsExpression);
+                case RDFStrStartsExpression strStartsExpression:   return new RDFFilter(strStartsExpression);
+                case RDFStrEndsExpression strEndsExpression:       return new RDFFilter(strEndsExpression);
+                case RDFHasLangExpression hasLangExpression:       return new RDFFilter(hasLangExpression);
+                case RDFHasLangDirExpression hasLangDirExpression: return new RDFFilter(hasLangDirExpression);
 
                 //A bare GeoSPARQL relation (geof:sfWithin(?a,?b), geof:rcc8eq(?a,?b), …) yields a boolean-typed
-                //literal but has no RDFExpressionFilter constructor of its own. The engine's idiom is to test it for
+                //literal but has no RDFFilter constructor of its own. The engine's idiom is to test it for
                 //truth, so a standalone geo constraint is wrapped as the comparison 'geoExpression = true'.
                 case RDFGeoExpression geoExpression:
-                    return new RDFExpressionFilter(new RDFComparisonExpression(
+                    return new RDFFilter(new RDFComparisonExpression(
                         RDFQueryEnums.RDFComparisonFlavors.EqualTo, geoExpression, new RDFConstantExpression(RDFTypedLiteral.True)));
 
                 default:

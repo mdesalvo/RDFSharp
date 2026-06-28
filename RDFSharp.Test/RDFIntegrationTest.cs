@@ -361,7 +361,7 @@ WHERE {
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
                 .AddPattern(new RDFPattern(Variable("?s"), UniversityResource("age"), Variable("?a")))
-                .AddFilter(new RDFExpressionFilter(new RDFComparisonExpression(
+                .AddFilter(new RDFFilter(new RDFComparisonExpression(
                     RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
                     new RDFVariableExpression(Variable("?a")),
                     new RDFConstantExpression(IntegerLiteral("25")))))));
@@ -582,7 +582,7 @@ WHERE {
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s")))))))));
+                .AddFilter(new RDFFilter(new RDFNotExpression(new RDFExistsExpression(new RDFPatternGroup().AddPattern(new RDFPattern(Variable("?e"), UniversityResource("examStudent"), Variable("?s")))))))));
 
         //student3 is the only one who never took an exam
         Assert.AreEqual(1, result.SelectResultsCount);
@@ -684,7 +684,7 @@ WHERE {
         RDFSelectQueryResult result = AssertQueryStringAndApply(expectedQueryString, new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup()
+                .AddFilter(new RDFFilter(new RDFExistsExpression(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
                     .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course")))
                     .AddPattern(new RDFPattern(Variable("?course"), UniversityResource("taughtBy"), UniversityResource("prof0"))))))));
@@ -714,7 +714,7 @@ WHERE {
             .AddPatternGroup(new RDFPatternGroup()
                 .AddValues(new RDFValues().AddColumn(Variable("?s"), new List<RDFPatternMember> { UniversityResource("student2"), UniversityResource("student3") }))
                 .AddPattern(new RDFPattern(Variable("?s"), RDFVocabulary.RDF.TYPE, UniversityResource("Student")))
-                .AddFilter(new RDFExpressionFilter(new RDFExistsExpression(new RDFPatternGroup()
+                .AddFilter(new RDFFilter(new RDFExistsExpression(new RDFPatternGroup()
                     .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examStudent"), Variable("?s")))
                     .AddPattern(new RDFPattern(Variable("?ex"), UniversityResource("examCourse"), Variable("?course"))))))));
 

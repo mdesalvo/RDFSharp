@@ -36,7 +36,7 @@ public partial class RDFQueryParserTest
         //A BuiltInCall is a valid Constraint on its own (no surrounding parentheses)
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER REGEX(?o, \"^a\", \"i\") }");
 
-        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFRegexExpression));
     }
 
@@ -46,7 +46,7 @@ public partial class RDFQueryParserTest
         //CONCAT(a, b, c) folds into CONCAT(CONCAT(a, b), c)
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(CONCAT(?o, \"-\", \"x\") = \"y\") }");
 
-        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFComparisonExpression comparison = (RDFComparisonExpression)expressionFilter.Expression;
         RDFConcatExpression outerConcat = (RDFConcatExpression)comparison.LeftArgument;
         Assert.IsInstanceOfType(outerConcat.LeftArgument, typeof(RDFConcatExpression));
@@ -57,7 +57,7 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(SAMETERM(?s, ?o)) }");
 
-        RDFExpressionFilter expressionFilter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFSameTermExpression));
     }
 
@@ -191,7 +191,7 @@ public partial class RDFQueryParserTest
     /// <summary>
     /// A bare FILTER constraint must evaluate to a boolean. A built-in whose value-expression is NON-boolean
     /// (e.g. the integer-returning STRLEN, the string-returning UCASE/SUBSTR, a bare arithmetic expression) has
-    /// no place as a standalone constraint and cannot be wrapped in an <c>RDFExpressionFilter</c>: the parser
+    /// no place as a standalone constraint and cannot be wrapped in an <c>RDFFilter</c>: the parser
     /// rejects it via the <c>WrapExpressionInFilter</c> default branch. This pins that boundary.
     /// </summary>
     [TestMethod]
@@ -204,7 +204,7 @@ public partial class RDFQueryParserTest
             RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?o FILTER({builtInCall}) }}"));
 
     /// <summary>
-    /// The boolean built-ins that DO have an <c>RDFExpressionFilter</c> constructor are accepted as bare FILTER
+    /// The boolean built-ins that DO have an <c>RDFFilter</c> constructor are accepted as bare FILTER
     /// constraints (covering the WrapExpressionInFilter dispatch for each representable type).
     /// </summary>
     [TestMethod]
@@ -225,13 +225,13 @@ public partial class RDFQueryParserTest
     public void ShouldParseRepresentableBareFilterBuiltIn(string builtInCall)
     {
         RDFSelectQuery parsedQuery = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?o FILTER({builtInCall}) }}");
-        Assert.IsInstanceOfType<RDFExpressionFilter>(SingleFilterOf(parsedQuery));
+        Assert.IsInstanceOfType<RDFFilter>(SingleFilterOf(parsedQuery));
     }
 
     /// <summary>
     /// "SPARQL 100%" iso-functionality gate for Parser finding #1: each boolean string/lang built-in newly
     /// representable as a bare FILTER constraint is exercised BOTH ways — built through the fluent API (the new
-    /// <c>RDFExpressionFilter</c> constructors) and obtained by parsing the printed SPARQL — and the two must be
+    /// <c>RDFFilter</c> constructors) and obtained by parsing the printed SPARQL — and the two must be
     /// interchangeable on printing round-trip AND on evaluation against a sample graph (see
     /// <see cref="RDFTestUtilities.AssertIso(RDFSelectQuery, RDFGraph)"/>).
     /// </summary>
@@ -250,11 +250,11 @@ public partial class RDFQueryParserTest
         RDFVariable objectVariable = new RDFVariable("?o");
         RDFFilter[] bareFilters =
         {
-            new RDFExpressionFilter(new RDFContainsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("ell")))),
-            new RDFExpressionFilter(new RDFStrStartsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("wor")))),
-            new RDFExpressionFilter(new RDFStrEndsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("lo")))),
-            new RDFExpressionFilter(new RDFHasLangExpression(objectVariable)),
-            new RDFExpressionFilter(new RDFHasLangDirExpression(objectVariable))
+            new RDFFilter(new RDFContainsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("ell")))),
+            new RDFFilter(new RDFStrStartsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("wor")))),
+            new RDFFilter(new RDFStrEndsExpression(objectVariable, new RDFConstantExpression(new RDFPlainLiteral("lo")))),
+            new RDFFilter(new RDFHasLangExpression(objectVariable)),
+            new RDFFilter(new RDFHasLangDirExpression(objectVariable))
         };
 
         foreach (RDFFilter bareFilter in bareFilters)
@@ -293,7 +293,7 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?o FILTER({constraint}) }}");
 
-        RDFExpressionFilter filter = (RDFExpressionFilter)SingleFilterOf(query);
+        RDFFilter filter = (RDFFilter)SingleFilterOf(query);
         Assert.IsInstanceOfType(filter.Expression, expectedExpressionType);
     }
 
@@ -339,7 +339,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery notInQuery = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable))
-                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFInExpression(
+                .AddFilter(new RDFFilter(new RDFNotExpression(new RDFInExpression(
                     objectVariable,
                     new List<RDFPatternMember> { new RDFPlainLiteral("hello"), new RDFPlainLiteral("world") })))))
             .AddProjectionVariable(subjectVariable);
@@ -349,7 +349,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery notQuery = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable))
-                .AddFilter(new RDFExpressionFilter(new RDFNotExpression(new RDFIsUriExpression(objectVariable)))))
+                .AddFilter(new RDFFilter(new RDFNotExpression(new RDFIsUriExpression(objectVariable)))))
             .AddProjectionVariable(subjectVariable);
         RDFTestUtilities.AssertIso(notQuery, sampleGraph);
 
@@ -357,7 +357,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery inVariableQuery = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(subjectVariable, predicate, objectVariable))
-                .AddFilter(new RDFExpressionFilter(new RDFInExpression(
+                .AddFilter(new RDFFilter(new RDFInExpression(
                     objectVariable,
                     new List<RDFExpression> { new RDFConstantExpression(new RDFPlainLiteral("hello")) }))))
             .AddProjectionVariable(subjectVariable);
