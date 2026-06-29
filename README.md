@@ -18,8 +18,8 @@ RDFSharp is a modular .NET library made up of 3 layers:
 
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v3.23.0/RDFSharp.Query-3.23.pdf">RDFSharp.Query</a></b>
 <ul>
-    <li>Create and execute <b>SPARQL queries</b> on graphs, stores, federations and SPARQL endpoints</li>
-    <li>Create and execute <b>SPARQL operations</b> on graphs, stores and SPARQL UPDATE endpoints</li>
+    <li>Parse, compose and apply <b>SPARQL queries</b> on graphs, stores, federations and SPARQL endpoints</li>
+    <li>Parse, compose and apply <b>SPARQL operations</b> on graphs, stores and SPARQL UPDATE endpoints</li>
 </ul>
 <hr/>
 The project also delivers a <a href="https://github.com/mdesalvo/OWLSharp">library</a> for working with <b>OWL2 ontologies</b>!
