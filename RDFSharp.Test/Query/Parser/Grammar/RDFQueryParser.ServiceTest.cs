@@ -99,7 +99,7 @@ public partial class RDFQueryParserTest
         Assert.IsNull(service.EndpointVariable);
         Assert.AreEqual("http://example.org/sparql", service.Endpoint.BaseAddress.ToString());
         Assert.AreEqual(RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException, service.QueryOptions.ErrorBehavior);
-        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFPatternGroup));
+        Assert.IsInstanceOfType<RDFPatternGroup>(service.InnerPattern);
     }
 
     [TestMethod]
@@ -125,7 +125,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o . ?o ?q ?z } }");
 
         RDFService service = query.GetServices().Single();
-        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFPatternGroup));
+        Assert.IsInstanceOfType<RDFPatternGroup>(service.InnerPattern);
         Assert.AreEqual(2, ((RDFPatternGroup)service.InnerPattern).GetPatterns().Count());
     }
 
@@ -145,7 +145,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { SERVICE <http://example.org/sparql> { { ?s ?p ?o } UNION { ?a ?b ?c } } }");
 
         RDFService service = query.GetServices().Single();
-        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFBinaryQueryMember));
+        Assert.IsInstanceOfType<RDFBinaryQueryMember>(service.InnerPattern);
     }
 
     [TestMethod]
@@ -163,7 +163,7 @@ public partial class RDFQueryParserTest
 
         RDFService service = query.GetServices().Single();
         Assert.AreEqual("http://example.org/a", service.Endpoint.BaseAddress.ToString());
-        Assert.IsInstanceOfType(service.InnerPattern, typeof(RDFService));
+        Assert.IsInstanceOfType<RDFService>(service.InnerPattern);
         Assert.AreEqual("http://example.org/b", ((RDFService)service.InnerPattern).Endpoint.BaseAddress.ToString());
     }
 

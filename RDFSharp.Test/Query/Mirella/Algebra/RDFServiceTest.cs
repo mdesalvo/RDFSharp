@@ -16,7 +16,6 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RDFSharp.Model;
 using RDFSharp.Query;
 
 namespace RDFSharp.Test.Query;
@@ -127,7 +126,7 @@ public class RDFServiceTest
         RDFBinaryQueryMember union = service.Union(new RDFPatternGroup());
 
         Assert.AreSame(service, union.LeftOperand);
-        Assert.IsInstanceOfType(union.RightOperand, typeof(RDFPatternGroup));
+        Assert.IsInstanceOfType<RDFPatternGroup>(union.RightOperand);
     }
 
     [TestMethod]
@@ -136,7 +135,7 @@ public class RDFServiceTest
         RDFService service = new RDFService(SampleEndpoint(), SamplePatternGroup());
         RDFBinaryQueryMember union = service.Union(new RDFSelectQuery());
 
-        Assert.IsInstanceOfType(union.RightOperand, typeof(RDFSelectQuery));
+        Assert.IsInstanceOfType<RDFSelectQuery>(union.RightOperand);
     }
 
     [TestMethod]
@@ -145,7 +144,7 @@ public class RDFServiceTest
         RDFService service = new RDFService(SampleEndpoint(), SamplePatternGroup());
         RDFBinaryQueryMember union = service.Union(new RDFPatternGroup().Union(new RDFPatternGroup()));
 
-        Assert.IsInstanceOfType(union.RightOperand, typeof(RDFBinaryQueryMember));
+        Assert.IsInstanceOfType<RDFBinaryQueryMember>(union.RightOperand);
     }
 
     [TestMethod]
@@ -166,7 +165,7 @@ public class RDFServiceTest
         RDFBinaryQueryMember minus = service.Minus(new RDFPatternGroup());
 
         Assert.AreSame(service, minus.LeftOperand);
-        Assert.IsInstanceOfType(minus.RightOperand, typeof(RDFPatternGroup));
+        Assert.IsInstanceOfType<RDFPatternGroup>(minus.RightOperand);
     }
 
     [TestMethod]
@@ -175,7 +174,7 @@ public class RDFServiceTest
         RDFService service = new RDFService(SampleEndpoint(), SamplePatternGroup());
         RDFBinaryQueryMember minus = service.Minus(new RDFSelectQuery());
 
-        Assert.IsInstanceOfType(minus.RightOperand, typeof(RDFSelectQuery));
+        Assert.IsInstanceOfType<RDFSelectQuery>(minus.RightOperand);
     }
 
     [TestMethod]
@@ -184,7 +183,7 @@ public class RDFServiceTest
         RDFService service = new RDFService(SampleEndpoint(), SamplePatternGroup());
         RDFBinaryQueryMember minus = service.Minus(new RDFPatternGroup().Union(new RDFPatternGroup()));
 
-        Assert.IsInstanceOfType(minus.RightOperand, typeof(RDFBinaryQueryMember));
+        Assert.IsInstanceOfType<RDFBinaryQueryMember>(minus.RightOperand);
     }
 
     [TestMethod]
@@ -202,8 +201,8 @@ public class RDFServiceTest
     {
         RDFService service = new RDFService(SampleEndpoint(), SamplePatternGroup());
 
-        Assert.IsInstanceOfType(new RDFPatternGroup().Union(service).RightOperand, typeof(RDFService));
-        Assert.IsInstanceOfType(new RDFPatternGroup().Minus(service).RightOperand, typeof(RDFService));
+        Assert.IsInstanceOfType<RDFService>(new RDFPatternGroup().Union(service).RightOperand);
+        Assert.IsInstanceOfType<RDFService>(new RDFPatternGroup().Minus(service).RightOperand);
     }
 
     [TestMethod]
@@ -211,8 +210,8 @@ public class RDFServiceTest
     {
         RDFService service = new RDFService(SampleEndpoint(), SamplePatternGroup());
 
-        Assert.IsInstanceOfType(new RDFSelectQuery().Union(service).RightOperand, typeof(RDFService));
-        Assert.IsInstanceOfType(new RDFSelectQuery().Minus(service).RightOperand, typeof(RDFService));
+        Assert.IsInstanceOfType<RDFService>(new RDFSelectQuery().Union(service).RightOperand);
+        Assert.IsInstanceOfType<RDFService>(new RDFSelectQuery().Minus(service).RightOperand);
     }
 
     [TestMethod]
@@ -221,8 +220,8 @@ public class RDFServiceTest
         RDFService service = new RDFService(SampleEndpoint(), SamplePatternGroup());
         RDFBinaryQueryMember tree = new RDFPatternGroup().Union(new RDFPatternGroup());
 
-        Assert.IsInstanceOfType(tree.Union(service).RightOperand, typeof(RDFService));
-        Assert.IsInstanceOfType(tree.Minus(service).RightOperand, typeof(RDFService));
+        Assert.IsInstanceOfType<RDFService>(tree.Union(service).RightOperand);
+        Assert.IsInstanceOfType<RDFService>(tree.Minus(service).RightOperand);
     }
     #endregion
 }

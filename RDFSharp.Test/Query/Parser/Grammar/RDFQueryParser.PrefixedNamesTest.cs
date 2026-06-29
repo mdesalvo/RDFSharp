@@ -18,7 +18,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
-using RDFSharp.Store;
 
 namespace RDFSharp.Test.Query;
 
@@ -158,11 +157,11 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldThrowOnNonRegisteredUndeclaredPrefix()
     {
-        //'ex' is NOT a well-known registered prefix, so without a PREFIX declaration it cannot be resolved:
+        //'ext4' is NOT a well-known registered prefix, so without a PREFIX declaration it cannot be resolved:
         //the query must fail rather than silently inventing a namespace
-        Assert.IsNull(RDFNamespaceRegister.GetByPrefix("ex"));
+        Assert.IsNull(RDFNamespaceRegister.GetByPrefix("ext4"));
         Assert.ThrowsExactly<RDFQueryException>(() =>
-            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ex:resource }"));
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ext4:resource }"));
     }
 
     [TestMethod]
@@ -173,7 +172,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p bnode:resource }");
 
         RDFPattern pattern = PatternsOf(query).Single();
-        Assert.IsInstanceOfType(pattern.Object, typeof(RDFResource));
+        Assert.IsInstanceOfType<RDFResource>(pattern.Object);
         Assert.IsTrue(((RDFResource)pattern.Object).IsBlank);
     }
 
@@ -264,7 +263,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString(
             "SELECT * WHERE { ?s ?p ?o FILTER(SAMETERM(?o, foaf:Person)) }");
 
-        Assert.IsInstanceOfType(((RDFFilter)SingleFilterOf(query)).Expression, typeof(RDFSameTermExpression));
+        Assert.IsInstanceOfType<RDFSameTermExpression>(((RDFFilter)SingleFilterOf(query)).Expression);
     }
 
     [TestMethod]

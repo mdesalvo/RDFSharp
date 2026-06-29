@@ -52,7 +52,7 @@ public class RDFExistsExpressionTest
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.GroupGraphPattern);
-        Assert.IsInstanceOfType(expression.GroupGraphPattern, typeof(RDFPatternGroup));
+        Assert.IsInstanceOfType<RDFPatternGroup>(expression.GroupGraphPattern);
         Assert.IsTrue(expression.ToString().Equals("EXISTS { ?S ?P <" + RDFVocabulary.RDF.ALT + "> . }", System.StringComparison.Ordinal));
         Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("rdf")]).Equals("EXISTS { ?S ?P rdf:Alt . }", System.StringComparison.Ordinal));
     }
@@ -65,7 +65,7 @@ public class RDFExistsExpressionTest
         RDFExistsExpression expression = new RDFExistsExpression(subSelect);
 
         Assert.IsNotNull(expression);
-        Assert.IsInstanceOfType(expression.GroupGraphPattern, typeof(RDFSelectQuery));
+        Assert.IsInstanceOfType<RDFSelectQuery>(expression.GroupGraphPattern);
         Assert.IsTrue(((RDFSelectQuery)expression.GroupGraphPattern).IsSubQuery);
         Assert.IsTrue(expression.ToString().StartsWith("EXISTS {", System.StringComparison.Ordinal));
         Assert.IsTrue(expression.ToString().Contains("SELECT"));

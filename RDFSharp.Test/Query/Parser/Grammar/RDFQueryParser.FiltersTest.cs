@@ -66,8 +66,8 @@ public partial class RDFQueryParserTest
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFBooleanAndExpression andExpression = (RDFBooleanAndExpression)expressionFilter.Expression;
-        Assert.IsInstanceOfType(andExpression.LeftArgument, typeof(RDFComparisonExpression));
-        Assert.IsInstanceOfType(andExpression.RightArgument, typeof(RDFComparisonExpression));
+        Assert.IsInstanceOfType<RDFComparisonExpression>(andExpression.LeftArgument);
+        Assert.IsInstanceOfType<RDFComparisonExpression>(andExpression.RightArgument);
     }
 
     [TestMethod]
@@ -76,7 +76,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(?o = 1 || ?o = 2) }");
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFBooleanOrExpression));
+        Assert.IsInstanceOfType<RDFBooleanOrExpression>(expressionFilter.Expression);
     }
 
     [TestMethod]
@@ -87,8 +87,8 @@ public partial class RDFQueryParserTest
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFBooleanOrExpression orExpression = (RDFBooleanOrExpression)expressionFilter.Expression;
-        Assert.IsInstanceOfType(orExpression.LeftArgument, typeof(RDFComparisonExpression));
-        Assert.IsInstanceOfType(orExpression.RightArgument, typeof(RDFBooleanAndExpression));
+        Assert.IsInstanceOfType<RDFComparisonExpression>(orExpression.LeftArgument);
+        Assert.IsInstanceOfType<RDFBooleanAndExpression>(orExpression.RightArgument);
     }
 
     [TestMethod]
@@ -98,7 +98,7 @@ public partial class RDFQueryParserTest
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFNotExpression notExpression = (RDFNotExpression)expressionFilter.Expression;
-        Assert.IsInstanceOfType(notExpression.LeftArgument, typeof(RDFBoundExpression));
+        Assert.IsInstanceOfType<RDFBoundExpression>(notExpression.LeftArgument);
     }
 
     [TestMethod]
@@ -117,14 +117,14 @@ public partial class RDFQueryParserTest
 
         //Left of '||' is the first '&&' group: two comparisons
         RDFBooleanAndExpression leftAnd = (RDFBooleanAndExpression)orExpression.LeftArgument;
-        Assert.IsInstanceOfType(leftAnd.LeftArgument, typeof(RDFComparisonExpression));
-        Assert.IsInstanceOfType(leftAnd.RightArgument, typeof(RDFComparisonExpression));
+        Assert.IsInstanceOfType<RDFComparisonExpression>(leftAnd.LeftArgument);
+        Assert.IsInstanceOfType<RDFComparisonExpression>(leftAnd.RightArgument);
 
         //Right of '||' is the second '&&' group: unary '!' binds tighter than '&&', so its left is NOT(CONTAINS)
         RDFBooleanAndExpression rightAnd = (RDFBooleanAndExpression)orExpression.RightArgument;
         RDFNotExpression notExpression = (RDFNotExpression)rightAnd.LeftArgument;
-        Assert.IsInstanceOfType(notExpression.LeftArgument, typeof(RDFContainsExpression));
-        Assert.IsInstanceOfType(rightAnd.RightArgument, typeof(RDFComparisonExpression));
+        Assert.IsInstanceOfType<RDFContainsExpression>(notExpression.LeftArgument);
+        Assert.IsInstanceOfType<RDFComparisonExpression>(rightAnd.RightArgument);
     }
 
     [TestMethod]
@@ -187,7 +187,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(?o IN (1, 2, 3)) }");
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFInExpression));
+        Assert.IsInstanceOfType<RDFInExpression>(expressionFilter.Expression);
     }
 
     [TestMethod]
@@ -197,7 +197,7 @@ public partial class RDFQueryParserTest
 
         //EXISTS is now a value-expression wrapped into a plain expression filter
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFExistsExpression));
+        Assert.IsInstanceOfType<RDFExistsExpression>(expressionFilter.Expression);
     }
 
     [TestMethod]
@@ -208,7 +208,7 @@ public partial class RDFQueryParserTest
         //NOT EXISTS is modelled as the negation of an EXISTS expression
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFNotExpression notExpression = (RDFNotExpression)expressionFilter.Expression;
-        Assert.IsInstanceOfType(notExpression.LeftArgument, typeof(RDFExistsExpression));
+        Assert.IsInstanceOfType<RDFExistsExpression>(notExpression.LeftArgument);
     }
 
     [TestMethod]
@@ -219,7 +219,7 @@ public partial class RDFQueryParserTest
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFComparisonExpression comparison = (RDFComparisonExpression)expressionFilter.Expression;
-        Assert.IsInstanceOfType(comparison.LeftArgument, typeof(RDFAddExpression));
+        Assert.IsInstanceOfType<RDFAddExpression>(comparison.LeftArgument);
     }
 
     [TestMethod]
@@ -231,7 +231,7 @@ public partial class RDFQueryParserTest
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFComparisonExpression comparison = (RDFComparisonExpression)expressionFilter.Expression;
         RDFAddExpression addition = (RDFAddExpression)comparison.LeftArgument;
-        Assert.IsInstanceOfType(addition.RightArgument, typeof(RDFMultiplyExpression));
+        Assert.IsInstanceOfType<RDFMultiplyExpression>(addition.RightArgument);
     }
 
     [TestMethod]
@@ -250,9 +250,9 @@ public partial class RDFQueryParserTest
 
         List<RDFFilter> filters = FiltersOf(query);
         Assert.AreEqual(1, filters.Count);
-        Assert.IsInstanceOfType(filters[0], typeof(RDFFilter));
+        Assert.IsInstanceOfType<RDFFilter>(filters[0]);
         RDFComparisonExpression comparison = (RDFComparisonExpression)((RDFFilter)filters[0]).Expression;
-        Assert.IsInstanceOfType(comparison.RightArgument, typeof(RDFNotExpression));
+        Assert.IsInstanceOfType<RDFNotExpression>(comparison.RightArgument);
     }
 
     [TestMethod]
@@ -262,7 +262,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z . ?z <http://ex/r> ?w } }");
 
         RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFFilter)SingleFilterOf(query)).Expression;
-        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFPatternGroup));
+        Assert.IsInstanceOfType<RDFPatternGroup>(existsExpression.GroupGraphPattern);
         Assert.AreEqual(2, ((RDFPatternGroup)existsExpression.GroupGraphPattern).GetPatterns().Count());
     }
 
@@ -273,7 +273,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { { ?s <http://ex/q> ?z } UNION { ?s <http://ex/r> ?z } } }");
 
         RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFFilter)SingleFilterOf(query)).Expression;
-        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFSelectQuery));
+        Assert.IsInstanceOfType<RDFSelectQuery>(existsExpression.GroupGraphPattern);
     }
 
     [TestMethod]
@@ -282,7 +282,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { ?s <http://ex/q> ?z . OPTIONAL { ?z <http://ex/r> ?w } } }");
 
         RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFFilter)SingleFilterOf(query)).Expression;
-        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFSelectQuery));
+        Assert.IsInstanceOfType<RDFSelectQuery>(existsExpression.GroupGraphPattern);
     }
 
     [TestMethod]
@@ -291,7 +291,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER EXISTS { SELECT ?s WHERE { ?s <http://ex/q> ?z } } }");
 
         RDFExistsExpression existsExpression = (RDFExistsExpression)((RDFFilter)SingleFilterOf(query)).Expression;
-        Assert.IsInstanceOfType(existsExpression.GroupGraphPattern, typeof(RDFSelectQuery));
+        Assert.IsInstanceOfType<RDFSelectQuery>(existsExpression.GroupGraphPattern);
     }
 
     [TestMethod]
@@ -569,7 +569,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString(
             "SELECT * WHERE { ?s ?p ?o FILTER(?o IN (foaf:Person, foaf:Agent, foaf:Group)) }");
 
-        Assert.IsInstanceOfType(((RDFFilter)SingleFilterOf(query)).Expression, typeof(RDFInExpression));
+        Assert.IsInstanceOfType<RDFInExpression>(((RDFFilter)SingleFilterOf(query)).Expression);
     }
 
     [TestMethod]
@@ -579,8 +579,8 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(?a NOT IN (1, 2)) }");
 
         RDFExpression expression = ((RDFFilter)SingleFilterOf(query)).Expression;
-        Assert.IsInstanceOfType(expression, typeof(RDFNotExpression));
-        Assert.IsInstanceOfType(((RDFNotExpression)expression).LeftArgument, typeof(RDFInExpression));
+        Assert.IsInstanceOfType<RDFNotExpression>(expression);
+        Assert.IsInstanceOfType<RDFInExpression>(((RDFNotExpression)expression).LeftArgument);
     }
 
     [TestMethod]

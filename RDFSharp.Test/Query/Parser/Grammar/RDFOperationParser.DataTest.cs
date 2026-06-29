@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;

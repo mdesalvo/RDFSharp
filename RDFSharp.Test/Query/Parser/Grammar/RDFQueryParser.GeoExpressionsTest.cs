@@ -14,9 +14,6 @@
    limitations under the License.
 */
 
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -50,7 +47,7 @@ public partial class RDFQueryParserTest
         //geof: is a well-known registered prefix, so it resolves without an explicit PREFIX declaration
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a . ?s ?q ?b FILTER(geof:sfWithin(?a, ?b)) }");
 
-        Assert.IsInstanceOfType(GeoExpressionOf(query), typeof(RDFGeoWithinExpression));
+        Assert.IsInstanceOfType<RDFGeoWithinExpression>(GeoExpressionOf(query));
     }
 
     [TestMethod]
@@ -67,7 +64,7 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a . ?s ?q ?b FILTER(geof:rcc8eq(?a, ?b)) }");
 
-        Assert.IsInstanceOfType(GeoExpressionOf(query), typeof(RDFGeoRCC8Expression));
+        Assert.IsInstanceOfType<RDFGeoRCC8Expression>(GeoExpressionOf(query));
     }
 
     [TestMethod]
@@ -75,7 +72,7 @@ public partial class RDFQueryParserTest
     {
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a . ?s ?q ?b FILTER(geof:relate(?a, ?b, \"T*T***T**\")) }");
 
-        Assert.IsInstanceOfType(GeoExpressionOf(query), typeof(RDFGeoRelateExpression));
+        Assert.IsInstanceOfType<RDFGeoRelateExpression>(GeoExpressionOf(query));
     }
 
     [TestMethod]
@@ -87,7 +84,7 @@ public partial class RDFQueryParserTest
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFComparisonExpression comparison = (RDFComparisonExpression)expressionFilter.Expression;
-        Assert.IsInstanceOfType(comparison.LeftArgument, typeof(RDFGeoDistanceExpression));
+        Assert.IsInstanceOfType<RDFGeoDistanceExpression>(comparison.LeftArgument);
     }
 
     [TestMethod]
@@ -97,7 +94,7 @@ public partial class RDFQueryParserTest
             "SELECT * WHERE { ?s ?p ?a FILTER(geof:sfWithin(geof:buffer(?a, 10, <http://www.opengis.net/def/uom/OGC/1.0/metre>), ?a)) }");
 
         RDFGeoWithinExpression within = (RDFGeoWithinExpression)GeoExpressionOf(query);
-        Assert.IsInstanceOfType(within.LeftArgument, typeof(RDFGeoBufferExpression));
+        Assert.IsInstanceOfType<RDFGeoBufferExpression>(within.LeftArgument);
     }
 
     [TestMethod]
@@ -107,7 +104,7 @@ public partial class RDFQueryParserTest
             "SELECT * WHERE { ?s ?p ?a . ?s ?q ?b FILTER(geof:sfWithin(geof:envelope(?a), ?b)) }");
 
         RDFGeoWithinExpression within = (RDFGeoWithinExpression)GeoExpressionOf(query);
-        Assert.IsInstanceOfType(within.LeftArgument, typeof(RDFGeoEnvelopeExpression));
+        Assert.IsInstanceOfType<RDFGeoEnvelopeExpression>(within.LeftArgument);
     }
 
     [TestMethod]

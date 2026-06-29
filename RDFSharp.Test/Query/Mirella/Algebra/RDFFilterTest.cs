@@ -443,7 +443,7 @@ public class RDFFilterTest
             new RDFPatternGroup().AddPattern(new RDFPattern(new RDFVariable("?S"), new RDFVariable("?P"), RDFVocabulary.RDF.ALT))));
 
         Assert.IsNotNull(filter);
-        Assert.IsInstanceOfType(filter.Expression, typeof(RDFExistsExpression));
+        Assert.IsInstanceOfType<RDFExistsExpression>(filter.Expression);
         Assert.IsTrue(string.Equals(filter.ToString(), "FILTER ( EXISTS { ?S ?P <" + RDFVocabulary.RDF.ALT + "> . } )", System.StringComparison.Ordinal));
     }
 

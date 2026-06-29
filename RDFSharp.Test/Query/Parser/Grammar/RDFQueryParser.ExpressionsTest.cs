@@ -37,7 +37,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER REGEX(?o, \"^a\", \"i\") }");
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFRegexExpression));
+        Assert.IsInstanceOfType<RDFRegexExpression>(expressionFilter.Expression);
     }
 
     [TestMethod]
@@ -49,7 +49,7 @@ public partial class RDFQueryParserTest
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
         RDFComparisonExpression comparison = (RDFComparisonExpression)expressionFilter.Expression;
         RDFConcatExpression outerConcat = (RDFConcatExpression)comparison.LeftArgument;
-        Assert.IsInstanceOfType(outerConcat.LeftArgument, typeof(RDFConcatExpression));
+        Assert.IsInstanceOfType<RDFConcatExpression>(outerConcat.LeftArgument);
     }
 
     [TestMethod]
@@ -58,7 +58,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(SAMETERM(?s, ?o)) }");
 
         RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
-        Assert.IsInstanceOfType(expressionFilter.Expression, typeof(RDFSameTermExpression));
+        Assert.IsInstanceOfType<RDFSameTermExpression>(expressionFilter.Expression);
     }
 
     [TestMethod]
