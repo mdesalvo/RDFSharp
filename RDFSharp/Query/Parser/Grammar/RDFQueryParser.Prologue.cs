@@ -140,7 +140,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// <para>
         /// Re-attaches the PREFIX declarations accumulated by this query's prologue to
-        /// <paramref name="selectQuery"/> as <see cref="RDFNamespace"/> objects, so that the parsed query
+        /// <paramref name="targetQuery"/> as <see cref="RDFNamespace"/> objects, so that the parsed query
         /// can re-serialise its prologue section identically to the original input text.
         /// </para>
         /// <para>

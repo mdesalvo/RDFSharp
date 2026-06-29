@@ -29,7 +29,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// <para>
         /// Parses the trailing solution-modifier section of a SELECT query and attaches the resulting
-        /// modifier objects to <paramref name="selectQuery"/>. Scanning stops as soon as a token that is
+        /// modifier objects via <paramref name="addModifier"/>. Scanning stops as soon as a token that is
         /// not a recognized modifier keyword is encountered; that token is pushed back so the caller can
         /// process it (or simply ignore it at end of input).
         /// </para>
@@ -107,8 +107,8 @@ namespace RDFSharp.Query
         /// <summary>
         /// <para>
         /// Parses the body of an ORDER BY clause (the <c>ORDER</c> keyword has already been consumed by
-        /// <see cref="ParseSolutionModifiers"/>) and attaches the resulting ordering modifiers to
-        /// <paramref name="selectQuery"/>.
+        /// <see cref="ParseSolutionModifiers"/>) and attaches the resulting ordering modifiers via
+        /// <paramref name="addModifier"/>.
         /// </para>
         /// <para>
         /// SPARQL grammar:
