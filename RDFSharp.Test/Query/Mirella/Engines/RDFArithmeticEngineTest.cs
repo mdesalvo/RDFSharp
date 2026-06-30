@@ -95,7 +95,7 @@ public class RDFArithmeticEngineTest
     [DataRow("6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '/', "4", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "1.5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
     public void ShouldComputeNumericArithmeticMatrix(string leftValue, RDFModelEnums.RDFDatatypes leftType, char op, string rightValue, RDFModelEnums.RDFDatatypes rightType, string expectedValue, RDFModelEnums.RDFDatatypes expectedType)
     {
-        RDFTypedLiteral result = RDFArithmeticEngine.EvaluateNumericLattice(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op);
+        RDFTypedLiteral result = RDFArithmeticEngine.ComputeNumericOperation(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op);
         Assert.IsNotNull(result);
         Assert.AreEqual(new RDFTypedLiteral(expectedValue, expectedType).ToString(), result.ToString());
     }
@@ -112,7 +112,7 @@ public class RDFArithmeticEngineTest
     [DataRow("6", RDFModelEnums.RDFDatatypes.OWL_REAL, '+', "4", RDFModelEnums.RDFDatatypes.OWL_REAL, "10", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)] //owl:real -> double
     public void ShouldComputeNumericArithmeticCanonical(string leftValue, RDFModelEnums.RDFDatatypes leftType, char op, string rightValue, RDFModelEnums.RDFDatatypes rightType, string expectedValue, RDFModelEnums.RDFDatatypes expectedType)
     {
-        RDFTypedLiteral result = RDFArithmeticEngine.EvaluateNumericLattice(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op);
+        RDFTypedLiteral result = RDFArithmeticEngine.ComputeNumericOperation(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op);
         Assert.IsNotNull(result);
         Assert.AreEqual(new RDFTypedLiteral(expectedValue, expectedType).ToString(), result.ToString());
     }
@@ -132,7 +132,7 @@ public class RDFArithmeticEngineTest
     [DataRow(RDFModelEnums.RDFDatatypes.XSD_POSITIVEINTEGER)]
     public void ShouldPromoteIntegerFamilyDivisionToDecimal(RDFModelEnums.RDFDatatypes integerType)
     {
-        RDFTypedLiteral result = RDFArithmeticEngine.EvaluateNumericLattice(new RDFTypedLiteral("7", integerType), new RDFTypedLiteral("2", integerType), '/');
+        RDFTypedLiteral result = RDFArithmeticEngine.ComputeNumericOperation(new RDFTypedLiteral("7", integerType), new RDFTypedLiteral("2", integerType), '/');
         Assert.IsNotNull(result);
         Assert.AreEqual(new RDFTypedLiteral("3.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString(), result.ToString());
     }
@@ -143,7 +143,7 @@ public class RDFArithmeticEngineTest
     [DataRow(RDFModelEnums.RDFDatatypes.XSD_NONPOSITIVEINTEGER)]
     public void ShouldPromoteNegativeIntegerFamilyDivisionToDecimal(RDFModelEnums.RDFDatatypes integerType)
     {
-        RDFTypedLiteral result = RDFArithmeticEngine.EvaluateNumericLattice(new RDFTypedLiteral("-7", integerType), new RDFTypedLiteral("-2", integerType), '/');
+        RDFTypedLiteral result = RDFArithmeticEngine.ComputeNumericOperation(new RDFTypedLiteral("-7", integerType), new RDFTypedLiteral("-2", integerType), '/');
         Assert.IsNotNull(result);
         Assert.AreEqual(new RDFTypedLiteral("3.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL).ToString(), result.ToString());
     }
@@ -158,16 +158,16 @@ public class RDFArithmeticEngineTest
     [DataRow("1E308", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '*', "10", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)] //double overflow -> Infinity
     [DataRow("1E38", RDFModelEnums.RDFDatatypes.XSD_FLOAT, '*', "100", RDFModelEnums.RDFDatatypes.XSD_FLOAT)] //float downcast -> Infinity
     public void ShouldComputeNumericArithmeticReturningNull(string leftValue, RDFModelEnums.RDFDatatypes leftType, char op, string rightValue, RDFModelEnums.RDFDatatypes rightType)
-        => Assert.IsNull(RDFArithmeticEngine.EvaluateNumericLattice(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op));
+        => Assert.IsNull(RDFArithmeticEngine.ComputeNumericOperation(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op));
 
     //A null operand is a type error => null result
     [TestMethod]
     public void ShouldComputeNumericArithmeticReturningNullOnNullOperands()
     {
         RDFTypedLiteral six = new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-        Assert.IsNull(RDFArithmeticEngine.EvaluateNumericLattice(null, six, '+'));
-        Assert.IsNull(RDFArithmeticEngine.EvaluateNumericLattice(six, null, '+'));
-        Assert.IsNull(RDFArithmeticEngine.EvaluateNumericLattice(null, null, '+'));
+        Assert.IsNull(RDFArithmeticEngine.ComputeNumericOperation(null, six, '+'));
+        Assert.IsNull(RDFArithmeticEngine.ComputeNumericOperation(six, null, '+'));
+        Assert.IsNull(RDFArithmeticEngine.ComputeNumericOperation(null, null, '+'));
     }
 
     //owl:rational "p/q" evaluates to the exact decimal p/q

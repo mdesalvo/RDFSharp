@@ -188,7 +188,7 @@ namespace RDFSharp.Query
                 if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
                      && rightArgumentPMember is RDFTypedLiteral rightArgumentTypedLiteral)
                 {
-                    expressionResult = RDFArithmeticEngine.EvaluateNumericLattice(leftArgumentTypedLiteral, rightArgumentTypedLiteral, ArithmeticOperator);
+                    expressionResult = RDFArithmeticEngine.ComputeNumericOperation(leftArgumentTypedLiteral, rightArgumentTypedLiteral, ArithmeticOperator);
                 }
                 #endregion
             }

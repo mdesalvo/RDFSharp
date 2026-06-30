@@ -110,9 +110,9 @@ namespace RDFSharp.Query
                      && leftArgumentTypedLiteral.HasDatetimeDatatype()
                      && DateTime.TryParse(leftArgumentTypedLiteral.Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime leftArgumentDateTimeValue))
                 {
+                    //Execute the datetime expression's comparison logics
                     switch (this)
                     {
-                        //Execute the datetime expression's comparison logics
                         case RDFYearExpression _:
                             expressionResult = new RDFTypedLiteral(leftArgumentDateTimeValue.Year.ToString(), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
                             break;

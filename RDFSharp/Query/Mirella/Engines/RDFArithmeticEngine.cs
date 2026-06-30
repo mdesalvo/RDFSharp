@@ -54,7 +54,7 @@ namespace RDFSharp.Query
         /// operand is not numeric, on division by zero, on numeric overflow, or when a float/double result is not
         /// finite (the caller interprets null as "no binding").
         /// </summary>
-        internal static RDFTypedLiteral EvaluateNumericLattice(RDFTypedLiteral leftLiteral, RDFTypedLiteral rightLiteral, char arithmeticOperator)
+        internal static RDFTypedLiteral ComputeNumericOperation(RDFTypedLiteral leftLiteral, RDFTypedLiteral rightLiteral, char arithmeticOperator)
         {
             //Both operands must be numeric, otherwise the operation is a type error => no binding
             int leftRank  = GetNumericRank(leftLiteral);

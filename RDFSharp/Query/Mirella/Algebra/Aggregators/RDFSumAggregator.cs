@@ -75,7 +75,7 @@ namespace RDFSharp.Query
             //Fold the addition via the shared promotion-aware primitive (running sum starts at integer 0); an overflow
             //(null) poisons the partition
             RDFTypedLiteral aggregatorValue = Context.GetPartitionKeyExecutionResult(partitionKey, RDFTypedLiteral.Zero);
-            RDFTypedLiteral newAggregatorValue = RDFArithmeticEngine.EvaluateNumericLattice(aggregatorValue, rowValue, '+');
+            RDFTypedLiteral newAggregatorValue = RDFArithmeticEngine.ComputeNumericOperation(aggregatorValue, rowValue, '+');
             if (newAggregatorValue == null)
                 Context.MarkPartitionKeyAsPoisoned(partitionKey);
             else

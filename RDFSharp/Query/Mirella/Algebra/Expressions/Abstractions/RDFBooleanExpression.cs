@@ -63,9 +63,9 @@ namespace RDFSharp.Query
                      && bool.TryParse(leftArgumentTypedLiteral.Value, out bool leftArgumentBooleanValue)
                      && bool.TryParse(rightArgumentTypedLiteral.Value, out bool rightArgumentBooleanValue))
                 {
+                    //Execute the boolean expression's comparison logics
                     switch (this)
                     {
-                        //Execute the boolean expression's comparison logics
                         case RDFBooleanAndExpression _:
                             expressionResult = leftArgumentBooleanValue && rightArgumentBooleanValue ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                             break;

@@ -147,9 +147,9 @@ namespace RDFSharp.Query
                         }
                     }
 
+                    //Execute GEO functions on LAZ geometries
                     switch (this)
                     {
-                        //Execute GEO functions on LAZ geometries
                         case RDFGeoBoundaryExpression _:
                         {
                             Geometry boundaryGeometryLAZ = leftGeometryLAZ.Boundary;
