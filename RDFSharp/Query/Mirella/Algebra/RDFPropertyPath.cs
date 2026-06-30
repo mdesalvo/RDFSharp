@@ -281,8 +281,11 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         public static RDFPropertyPathExpression Link(RDFResource property)
         {
+            #region Guards
             if (property == null)
                 throw new RDFQueryException("Cannot create property path Link because given \"property\" parameter is null.");
+            #endregion
+
             return new RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds.Link) { Property = property };
         }
 
@@ -291,14 +294,14 @@ namespace RDFSharp.Query
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public static RDFPropertyPathExpression Sequence(List<RDFPropertyPathExpression> children)
-            => CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, children, "Sequence");
+            => CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, children);
 
         /// <summary>
         /// Builds an Alternative node unioning the given sub-paths (<c>P1|P2|…</c>)
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
         public static RDFPropertyPathExpression Alternative(List<RDFPropertyPathExpression> children)
-            => CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, children, "Alternative");
+            => CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, children);
 
         /// <summary>
         /// Builds a NegatedPropertySet node matching one hop over any predicate NOT among the given members.
@@ -307,19 +310,25 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         public static RDFPropertyPathExpression NegatedPropertySet(List<(RDFResource Property, bool IsInverse)> members)
         {
+            #region Guards
             if (members == null)
                 throw new RDFQueryException("Cannot create property path NegatedPropertySet because given \"members\" parameter is null.");
             if (members.Any(m => m.Property == null))
                 throw new RDFQueryException("Cannot create property path NegatedPropertySet because given \"members\" contains a null predicate.");
+            #endregion
+
             return new RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds.NegatedPropertySet) { NegatedMembers = members };
         }
 
-        private static RDFPropertyPathExpression CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds kind, List<RDFPropertyPathExpression> children, string label)
+        private static RDFPropertyPathExpression CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds kind, List<RDFPropertyPathExpression> children)
         {
+            #region Guards
             if (children == null || children.Count == 0)
-                throw new RDFQueryException($"Cannot create property path {label} because given \"children\" parameter is null or empty.");
+                throw new RDFQueryException($"Cannot create property path {kind} because given \"children\" parameter is null or empty.");
             if (children.Any(c => c == null))
-                throw new RDFQueryException($"Cannot create property path {label} because given \"children\" contains a null element.");
+                throw new RDFQueryException($"Cannot create property path {kind} because given \"children\" contains a null element.");
+            #endregion
+
             return new RDFPropertyPathExpression(kind) { Children = new List<RDFPropertyPathExpression>(children) };
         }
         #endregion
@@ -368,8 +377,7 @@ namespace RDFSharp.Query
 
         //Builds the explicit single-child Sequence group wrapping the given inner sub-path
         private static RDFPropertyPathExpression WrapInImplicitGroup(RDFPropertyPathExpression innerSubPath)
-            => new RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence)
-               { Children = new List<RDFPropertyPathExpression> { innerSubPath } };
+            => new RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence) { Children = new List<RDFPropertyPathExpression> { innerSubPath } };
         #endregion
     }
 }
