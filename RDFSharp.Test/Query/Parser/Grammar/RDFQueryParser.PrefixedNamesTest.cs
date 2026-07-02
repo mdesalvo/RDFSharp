@@ -116,6 +116,74 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
+    public void ShouldResolveSameDocumentRelativeIriReferenceAgainstBase()
+    {
+        //An empty relative reference '<>' (RFC 3986 same-document reference) resolves to the base IRI itself
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "BASE <http://example.org/base> SELECT * WHERE { ?s <> ?o }");
+
+        Assert.AreEqual("http://example.org/base", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldResolveFragmentOnlyRelativeIriReferenceAgainstBase()
+    {
+        //A fragment-only relative reference '<#frag>' keeps the base path and replaces only the fragment
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "BASE <http://example.org/base> SELECT * WHERE { ?s <#frag> ?o }");
+
+        Assert.AreEqual("http://example.org/base#frag", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldResolveAbsolutePathRelativeIriReferenceAgainstBase()
+    {
+        //An absolute-path reference '</other>' keeps scheme+authority and replaces the whole path
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "BASE <http://example.org/some/deep/path> SELECT * WHERE { ?s </other> ?o }");
+
+        Assert.AreEqual("http://example.org/other", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldResolveNetworkPathRelativeIriReferenceAgainstBase()
+    {
+        //A network-path reference '<//other.org/path>' keeps the scheme and replaces authority+path
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "BASE <http://example.org/base/> SELECT * WHERE { ?s <//other.org/path> ?o }");
+
+        Assert.AreEqual("http://other.org/path", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldResolveDotSegmentRelativeIriReferenceAgainstBase()
+    {
+        //A relative reference with '..' is resolved via RFC 3986 dot-segment removal, not string concatenation
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "BASE <http://example.org/a/b/c> SELECT * WHERE { ?s <../sibling> ?o }");
+
+        Assert.AreEqual("http://example.org/a/sibling", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldResolveQueryOnlyRelativeIriReferenceAgainstBase()
+    {
+        //A query-only reference '<?new=2>' keeps the base path and replaces only the query string
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "BASE <http://example.org/base?old=1> SELECT * WHERE { ?s <?new=2> ?o }");
+
+        Assert.AreEqual("http://example.org/base?new=2", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnRelativeIriReferenceWithoutAnyBase()
+    {
+        //No BASE was declared and none was supplied externally: a relative reference has nothing to resolve against
+        Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s <test> ?o }"));
+    }
+
+    [TestMethod]
     public void ShouldResolveDefaultPrefixedNameAgainstBase()
     {
         //A relative default-namespace declaration is itself resolved against BASE, so ':test' becomes absolute

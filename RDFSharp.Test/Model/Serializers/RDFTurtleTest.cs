@@ -2240,6 +2240,31 @@ public class RDFTurtleTest
     }
 
     [TestMethod]
+    public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseIriReferenceContainsIllegalCharacter()
+    {
+        //IRIREF grammar forbids a raw, unescaped '{' inside '<...>': an unterminated/garbled reference must be
+        //rejected explicitly rather than relying on it accidentally failing Uri well-formedness downstream
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine("<http://subj/{bad}> <http://pred/> <http://obj/>.");
+        Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
+    }
+
+    [TestMethod]
+    public void ShouldDeserializeGraphWithSPOTripleUsingDotSegmentRelativeIri()
+    {
+        //Relative references are resolved via RFC 3986 §5.3 (dot-segment removal), not naive string concatenation
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine($"@base <http://example.org/a/b/c>.{Environment.NewLine}<../sibling> <http://pred/> <http://obj/>.");
+        RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("http://example.org/a/sibling"), new RDFResource("http://pred/"), new RDFResource("http://obj/"))));
+    }
+
+    [TestMethod]
     public void ShouldThrowExceptionOnDeserializingGraphWithSPOTripleBecauseUnrecognizedDirective()
     {
         MemoryStream stream = new MemoryStream();

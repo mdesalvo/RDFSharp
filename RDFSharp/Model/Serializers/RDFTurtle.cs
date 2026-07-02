@@ -766,7 +766,7 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Parses the Turtle data in order to detect a valid Uri
+        /// Parses an IRIREF ("&lt;...&gt;"), resolving it against the current base Uri if relative
         /// </summary>
         internal static Uri ParseURI(RDFTurtleContext turtleContext)
         {
@@ -783,13 +783,12 @@ namespace RDFSharp.Model
                 if (bufChar == '>')
                     break;
 
-                switch (bufChar)
-                {
-                    case -1:
-                        throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
-                    case ' ':
-                        throw new RDFModelException("Uri included an unencoded space: '" + bufChar + "'" + GetTurtleContextCoordinates(turtleContext));
-                }
+                if (bufChar == -1)
+                    throw new RDFModelException("Unexpected end of Turtle file" + GetTurtleContextCoordinates(turtleContext));
+
+                //Control chars (space included) and '<"{}|^`' are illegal unescaped inside an IRIREF
+                if (bufChar <= 0x20 || bufChar == '<' || bufChar == '"' || bufChar == '{' || bufChar == '}' || bufChar == '|' || bufChar == '^' || bufChar == '`')
+                    throw new RDFModelException("Uri included an illegal character: '" + char.ConvertFromUtf32(bufChar) + "'" + GetTurtleContextCoordinates(turtleContext));
 
                 AppendCodePoint(uriBuf, bufChar);
 
@@ -807,17 +806,52 @@ namespace RDFSharp.Model
             }
 
             string uriString = DecodeString(turtleContext, uriBuf.ToString());
-            //Absolute: use as found
-            if (Uri.IsWellFormedUriString(uriString, UriKind.Absolute))
-                return new Uri(uriString);
-            //Relative: append to base IRI
-            if (Uri.IsWellFormedUriString(uriString, UriKind.Relative))
-                return new Uri(string.Concat(turtleContext.Resolver.BaseUri, uriString));
-            //PureFragment: append to base IRI
-            return uriString.Equals("#")
-                ? new Uri(string.Concat(turtleContext.Resolver.BaseUri.TrimEnd('#'), uriString))
-                //Error: not well-formed, so throw exception
-                : throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
+
+            //An IRI reference is absolute per RFC 3986 iff it opens with a genuine "scheme:" prefix
+            if (HasSchemePrefix(uriString))
+            {
+                //Uri.TryCreate(..., UriKind.Absolute) alone is not enough here: it also accepts scheme-less
+                //OS-style paths like "/x" or "//host/x" by silently assigning them an implicit "file" scheme
+                if (!Uri.TryCreate(uriString, UriKind.Absolute, out Uri absoluteUri))
+                    throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
+                return absoluteUri;
+            }
+
+            //No scheme: it is a relative reference, resolvable only against a base Uri
+            if (string.IsNullOrEmpty(turtleContext.Resolver.BaseUri)
+                 || !Uri.TryCreate(turtleContext.Resolver.BaseUri, UriKind.Absolute, out Uri baseUri))
+                throw new RDFModelException("Found relative Uri reference '" + uriString + "' with no usable base Uri to resolve it against" + GetTurtleContextCoordinates(turtleContext));
+
+            //The two-argument Uri resolution already implements RFC 3986 §5.3 (dot-segment removal, '#'/'?'/'/'/'//' references, ...)
+            if (!Uri.TryCreate(baseUri, uriString, out Uri resolvedUri))
+                throw new RDFModelException("Uri is not well-formed" + GetTurtleContextCoordinates(turtleContext));
+            return resolvedUri;
+
+            #region Utilities
+            //True iff the string opens with an RFC 3986 scheme ("ALPHA *(ALPHA / DIGIT / '+' / '-' / '.') ':'")
+            bool HasSchemePrefix(string candidateUriString)
+            {
+                int colonIndex = candidateUriString.IndexOf(':');
+                if (colonIndex <= 0)
+                    return false;
+
+                //First scheme character must be a letter
+                char firstChar = candidateUriString[0];
+                if ((firstChar < 'a' || firstChar > 'z') && (firstChar < 'A' || firstChar > 'Z'))
+                    return false;
+
+                //The rest may also contain digits, '+', '-', '.'
+                for (int i = 1; i < colonIndex; i++)
+                {
+                    char c = candidateUriString[i];
+                    bool isSchemeChar = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
+                                         || c == '+' || c == '-' || c == '.';
+                    if (!isSchemeChar)
+                        return false;
+                }
+                return true;
+            }
+            #endregion
         }
 
         /// <summary>
