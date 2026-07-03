@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-RDFSharp is a .NET library for Semantic Web applications (RDF, SPARQL, SHACL). It is published as a NuGet package and targets both `netstandard2.0` and `net8.0` from a single source tree (see `RDFSharp/RDFSharp.csproj`). The test project targets `net8.0` only.
+RDFSharp is a .NET library for Semantic Web applications (RDF, SPARQL, SHACL). It is published as a NuGet package and targets both `netstandard2.0` and `net8.0` from a single source tree (see `RDFSharp/RDFSharp.csproj`). The test project targets `net10.0` only.
 
 The codebase is logically split into three layers, all inside the single `RDFSharp` assembly:
 
