@@ -36,9 +36,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFDeleteDataOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid DELETE DATA operation.</exception>
-        public static RDFDeleteDataOperation FromString(string deleteDataOperation)
+        public static RDFDeleteDataOperation FromString(string deleteDataOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(deleteDataOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(deleteDataOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a DELETE DATA
             if (parsedOperation is RDFDeleteDataOperation parsedDeleteDataOperation)

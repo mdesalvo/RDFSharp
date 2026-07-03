@@ -63,9 +63,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL string into an RDFDescribeQuery.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid DESCRIBE query.</exception>
-        public static RDFDescribeQuery FromString(string describeQuery)
+        public static RDFDescribeQuery FromString(string describeQuery, RDFQueryOptions queryOptions = null)
         {
-            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(describeQuery);
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(describeQuery, queryOptions);
 
             //The factory dispatches on the query form: enforce that the parsed query is indeed a DESCRIBE
             if (parsedQuery is RDFDescribeQuery parsedDescribeQuery)

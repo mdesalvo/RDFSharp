@@ -71,8 +71,8 @@ namespace RDFSharp.Query
         /// RDFOperationSet preserving the source order of its operations.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is null/empty or not a syntactically valid SPARQL UPDATE chain.</exception>
-        public static RDFOperationSet FromString(string operationSet)
-            => RDFOperationParserFactory.ParseOperationSet(operationSet);
+        public static RDFOperationSet FromString(string operationSet, RDFQueryOptions queryOptions = null)
+            => RDFOperationParserFactory.ParseOperationSet(operationSet, queryOptions);
 
         /// <summary>
         /// Adds the given operation to the end of the set, preserving its ordinal position in the chain

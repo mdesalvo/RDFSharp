@@ -57,9 +57,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFAddOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid ADD operation.</exception>
-        public static RDFAddOperation FromString(string addOperation)
+        public static RDFAddOperation FromString(string addOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(addOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(addOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed an ADD
             if (parsedOperation is RDFAddOperation parsedAddOperation)

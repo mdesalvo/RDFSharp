@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RDFSharp.Model;
@@ -272,4 +273,27 @@ namespace RDFSharp.Query
     /// RDFQueryResult is the foundation class for modeling SPARQL query results
     /// </summary>
     public class RDFQueryResult {}
+
+    /// <summary>
+    /// RDFQueryOptions models the optional settings accepted by the FromString family of methods parsing a SPARQL query/operation string
+    /// </summary>
+    public class RDFQueryOptions
+    {
+        #region Properties
+        /// <summary>
+        /// Absolute Uri used to resolve relative Uri references met while parsing, in case the command text carries no BASE declaration of its own (an explicit BASE always takes precedence over this fallback)
+        /// </summary>
+        public Uri FallbackBaseUri
+        {
+            get => fallbackBaseUri;
+            set
+            {
+                if (value != null && !value.IsAbsoluteUri)
+                    throw new RDFQueryException("Cannot set RDFQueryOptions.FallbackBaseUri because the given Uri is not absolute");
+                fallbackBaseUri = value;
+            }
+        }
+        private Uri fallbackBaseUri;
+        #endregion
+    }
 }

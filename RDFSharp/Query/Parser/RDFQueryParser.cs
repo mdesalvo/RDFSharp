@@ -221,12 +221,26 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// <para>
         /// Factory helper: wraps <paramref name="sparqlCommandText"/> in a <see cref="StringReader"/> and
         /// returns a fresh <see cref="RDFQueryParserContext"/> ready to parse. A null text is normalised to
         /// the empty string so the reader starts at EOF rather than throwing a NullReferenceException.
+        /// </para>
+        /// <para>
+        /// When <paramref name="queryOptions"/> carries a <see cref="RDFQueryOptions.FallbackBaseUri"/>, it seeds
+        /// the resolver's base IRI before the prologue is parsed: an explicit <c>BASE</c> declaration met while
+        /// parsing the prologue overrides it, matching the resolver's own "last declaration wins" semantics.
+        /// </para>
         /// </summary>
-        internal static RDFQueryParserContext CreateContext(string sparqlCommandText)
-            => new RDFQueryParserContext(new StringReader(sparqlCommandText ?? string.Empty));
+        internal static RDFQueryParserContext CreateContext(string sparqlCommandText, RDFQueryOptions queryOptions = null)
+        {
+            RDFQueryParserContext parserContext = new RDFQueryParserContext(new StringReader(sparqlCommandText ?? string.Empty));
+
+            if (queryOptions?.FallbackBaseUri != null)
+                parserContext.Resolver.SetBaseIri(queryOptions.FallbackBaseUri.ToString());
+
+            return parserContext;
+        }
         #endregion
 
         #region Query
@@ -239,7 +253,7 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the text is empty, the form keyword is missing/unknown, or the body is malformed.</exception>
-        internal static RDFQuery ParseQuery(string sparqlQueryText)
+        internal static RDFQuery ParseQuery(string sparqlQueryText, RDFQueryOptions queryOptions = null)
         {
             //Fail fast on a missing/blank command: there is nothing to parse, and every downstream step assumes
             //the reader has at least one significant character to work on. We reject here rather than returning an
@@ -250,7 +264,7 @@ namespace RDFSharp.Query
             //Build the per-parse state: a pull-style reader over the command text plus the autonomous resolver
             //that the prologue will populate. The context is single-use (it carries reader position and accumulated
             //prefixes/base), so a fresh one is created for every ParseQuery invocation and never shared.
-            RDFQueryParserContext parserContext = CreateContext(sparqlQueryText);
+            RDFQueryParserContext parserContext = CreateContext(sparqlQueryText, queryOptions);
 
             //STEP 1 - Prologue. A SPARQL query opens with a (possibly empty) run of BASE/PREFIX declarations.
             //ParsePrologue consumes them and feeds the base IRI and prefix-to-namespace bindings into the context
@@ -305,8 +319,8 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL 1.1 query string into its RDFQuery object-model representation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the query string is null/empty or syntactically invalid.</exception>
-        public static RDFQuery ParseQuery(string queryString)
-            => RDFQueryParser.ParseQuery(queryString);
+        public static RDFQuery ParseQuery(string queryString, RDFQueryOptions queryOptions = null)
+            => RDFQueryParser.ParseQuery(queryString, queryOptions);
         #endregion
     }
 

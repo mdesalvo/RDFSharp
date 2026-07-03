@@ -57,9 +57,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFCopyOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid COPY operation.</exception>
-        public static RDFCopyOperation FromString(string copyOperation)
+        public static RDFCopyOperation FromString(string copyOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(copyOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(copyOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a COPY
             if (parsedOperation is RDFCopyOperation parsedCopyOperation)

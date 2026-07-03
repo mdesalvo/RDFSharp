@@ -62,9 +62,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFLoadOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid LOAD operation.</exception>
-        public static RDFLoadOperation FromString(string loadOperation)
+        public static RDFLoadOperation FromString(string loadOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(loadOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(loadOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a LOAD
             if (parsedOperation is RDFLoadOperation parsedLoadOperation)

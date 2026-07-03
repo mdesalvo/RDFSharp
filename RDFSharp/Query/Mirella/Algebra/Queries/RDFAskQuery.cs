@@ -45,9 +45,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL string into an RDFAskQuery.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid ASK query.</exception>
-        public static RDFAskQuery FromString(string askQuery)
+        public static RDFAskQuery FromString(string askQuery, RDFQueryOptions queryOptions = null)
         {
-            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(askQuery);
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(askQuery, queryOptions);
 
             //The factory dispatches on the query form: enforce that the parsed query is indeed an ASK
             if (parsedQuery is RDFAskQuery parsedAskQuery)

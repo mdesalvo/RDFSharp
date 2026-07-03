@@ -36,9 +36,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFInsertWhereOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid INSERT … WHERE operation.</exception>
-        public static RDFInsertWhereOperation FromString(string insertWhereOperation)
+        public static RDFInsertWhereOperation FromString(string insertWhereOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(insertWhereOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(insertWhereOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed an INSERT WHERE
             if (parsedOperation is RDFInsertWhereOperation parsedInsertWhereOperation)

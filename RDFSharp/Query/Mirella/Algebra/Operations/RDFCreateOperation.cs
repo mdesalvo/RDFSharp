@@ -60,9 +60,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFCreateOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid CREATE operation.</exception>
-        public static RDFCreateOperation FromString(string createOperation)
+        public static RDFCreateOperation FromString(string createOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(createOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(createOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a CREATE
             if (parsedOperation is RDFCreateOperation parsedCreateOperation)

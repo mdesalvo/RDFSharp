@@ -71,9 +71,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFDropOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid DROP operation.</exception>
-        public static RDFDropOperation FromString(string dropOperation)
+        public static RDFDropOperation FromString(string dropOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(dropOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(dropOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a DROP
             if (parsedOperation is RDFDropOperation parsedDropOperation)

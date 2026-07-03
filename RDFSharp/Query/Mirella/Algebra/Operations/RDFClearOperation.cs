@@ -69,9 +69,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFClearOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid CLEAR operation.</exception>
-        public static RDFClearOperation FromString(string clearOperation)
+        public static RDFClearOperation FromString(string clearOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(clearOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(clearOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a CLEAR
             if (parsedOperation is RDFClearOperation parsedClearOperation)

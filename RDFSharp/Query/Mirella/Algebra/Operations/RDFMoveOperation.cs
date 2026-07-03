@@ -58,9 +58,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFMoveOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid MOVE operation.</exception>
-        public static RDFMoveOperation FromString(string moveOperation)
+        public static RDFMoveOperation FromString(string moveOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(moveOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(moveOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a MOVE
             if (parsedOperation is RDFMoveOperation parsedMoveOperation)

@@ -65,9 +65,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL string into an RDFSelectQuery.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid SELECT query.</exception>
-        public static RDFSelectQuery FromString(string selectQuery)
+        public static RDFSelectQuery FromString(string selectQuery, RDFQueryOptions queryOptions = null)
         {
-            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(selectQuery);
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(selectQuery, queryOptions);
 
             //The factory dispatches on the query form: enforce that the parsed query is indeed a SELECT
             if (parsedQuery is RDFSelectQuery parsedSelectQuery)

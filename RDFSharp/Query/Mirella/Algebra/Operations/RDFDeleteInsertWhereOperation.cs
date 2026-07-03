@@ -36,9 +36,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL UPDATE string into an RDFDeleteInsertWhereOperation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid DELETE … INSERT … WHERE operation.</exception>
-        public static RDFDeleteInsertWhereOperation FromString(string deleteInsertWhereOperation)
+        public static RDFDeleteInsertWhereOperation FromString(string deleteInsertWhereOperation, RDFQueryOptions queryOptions = null)
         {
-            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(deleteInsertWhereOperation);
+            RDFOperation parsedOperation = RDFOperationParserFactory.ParseOperation(deleteInsertWhereOperation, queryOptions);
 
             //The factory dispatches on the operation form: enforce that the parsed operation is indeed a DELETE/INSERT WHERE
             if (parsedOperation is RDFDeleteInsertWhereOperation parsedDeleteInsertWhereOperation)

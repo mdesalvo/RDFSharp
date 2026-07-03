@@ -64,9 +64,9 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL string into an RDFConstructQuery.
         /// </summary>
         /// <exception cref="RDFQueryException">When the string is not a syntactically valid CONSTRUCT query.</exception>
-        public static RDFConstructQuery FromString(string constructQuery)
+        public static RDFConstructQuery FromString(string constructQuery, RDFQueryOptions queryOptions = null)
         {
-            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(constructQuery);
+            RDFQuery parsedQuery = RDFQueryParserFactory.ParseQuery(constructQuery, queryOptions);
 
             //The factory dispatches on the query form: enforce that the parsed query is indeed a CONSTRUCT
             if (parsedQuery is RDFConstructQuery parsedConstructQuery)

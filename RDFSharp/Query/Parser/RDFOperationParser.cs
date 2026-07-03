@@ -47,14 +47,14 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the text is empty, the operation keyword is missing/unknown/non-representable, or the body is malformed.</exception>
-        internal static RDFOperation ParseOperation(string sparqlOperationText)
+        internal static RDFOperation ParseOperation(string sparqlOperationText, RDFQueryOptions queryOptions = null)
         {
             //Fail fast on a missing/blank command: there is nothing to parse
             if (string.IsNullOrWhiteSpace(sparqlOperationText))
                 throw new RDFQueryException("Cannot parse SPARQL UPDATE operation because the given command text is null or empty");
 
             //Build the per-parse state (single-use), reusing the very same context as the query parser
-            RDFQueryParserContext parserContext = RDFQueryParser.CreateContext(sparqlOperationText);
+            RDFQueryParserContext parserContext = RDFQueryParser.CreateContext(sparqlOperationText, queryOptions);
 
             //STEP 1 - Prologue (shared with the query path): consume the BASE/PREFIX declarations, leaving the
             //operation keyword unconsumed in the reader for the dispatch below
@@ -85,7 +85,7 @@ namespace RDFSharp.Query
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When the text is empty, an operation keyword is missing/unknown/non-representable, a body is malformed, or two operations are not separated by ';'.</exception>
-        internal static RDFOperationSet ParseOperationSet(string sparqlOperationSetText)
+        internal static RDFOperationSet ParseOperationSet(string sparqlOperationSetText, RDFQueryOptions queryOptions = null)
         {
             //Fail fast on a missing/blank command: there is nothing to parse
             if (string.IsNullOrWhiteSpace(sparqlOperationSetText))
@@ -93,7 +93,7 @@ namespace RDFSharp.Query
 
             //Build the per-parse state ONCE and reuse it for the whole chain, so the resolver's PREFIX/BASE
             //declarations accumulate across the ';'-separated operations (cumulative prologue scoping per spec)
-            RDFQueryParserContext parserContext = RDFQueryParser.CreateContext(sparqlOperationSetText);
+            RDFQueryParserContext parserContext = RDFQueryParser.CreateContext(sparqlOperationSetText, queryOptions);
             RDFOperationSet operationSet = new RDFOperationSet();
 
             while (true)
@@ -260,16 +260,16 @@ namespace RDFSharp.Query
         /// Parses the given SPARQL 1.1 UPDATE command string into its RDFOperation object-model representation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the command string is null/empty or syntactically invalid.</exception>
-        public static RDFOperation ParseOperation(string operationString)
-            => RDFOperationParser.ParseOperation(operationString);
+        public static RDFOperation ParseOperation(string operationString, RDFQueryOptions queryOptions = null)
+            => RDFOperationParser.ParseOperation(operationString, queryOptions);
 
         /// <summary>
         /// Parses the given SPARQL 1.1 UPDATE command string, which may carry a chain of ';'-separated operations,
         /// into its <see cref="RDFOperationSet"/> object-model representation.
         /// </summary>
         /// <exception cref="RDFQueryException">When the command string is null/empty or syntactically invalid.</exception>
-        public static RDFOperationSet ParseOperationSet(string operationSetString)
-            => RDFOperationParser.ParseOperationSet(operationSetString);
+        public static RDFOperationSet ParseOperationSet(string operationSetString, RDFQueryOptions queryOptions = null)
+            => RDFOperationParser.ParseOperationSet(operationSetString, queryOptions);
         #endregion
     }
 }

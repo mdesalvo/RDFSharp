@@ -14,6 +14,7 @@
    limitations under the License.
 */
 
+using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
@@ -181,6 +182,53 @@ public partial class RDFQueryParserTest
         //No BASE was declared and none was supplied externally: a relative reference has nothing to resolve against
         Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString("SELECT * WHERE { ?s <test> ?o }"));
+    }
+
+    [TestMethod]
+    public void ShouldResolveRelativeIriReferenceAgainstFallbackBaseUriWhenNoBaseDeclared()
+    {
+        //No BASE in the query, but RDFQueryOptions.FallbackBaseUri is supplied: the relative reference now resolves
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s <test> ?o }",
+            new RDFQueryOptions { FallbackBaseUri = new Uri("http://example.org/") });
+
+        Assert.AreEqual("http://example.org/test", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldPreferDeclaredBaseOverFallbackBaseUri()
+    {
+        //An explicit BASE declared by the query always overrides the externally supplied fallback
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "BASE <http://declared.org/> SELECT * WHERE { ?s <test> ?o }",
+            new RDFQueryOptions { FallbackBaseUri = new Uri("http://fallback.org/") });
+
+        Assert.AreEqual("http://declared.org/test", PatternsOf(query).Single().Predicate.ToString());
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnRelativeIriReferenceWhenFallbackBaseUriIsNotSet()
+    {
+        //RDFQueryOptions is supplied but its FallbackBaseUri is left null: same as-is failure as with no options at all
+        Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s <test> ?o }", new RDFQueryOptions()));
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnRelativeFallbackBaseUri()
+        //RDFQueryOptions.FallbackBaseUri must be an absolute Uri: a relative one is rejected immediately, not deferred to parse time
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            new RDFQueryOptions { FallbackBaseUri = new Uri("relative/path", UriKind.Relative) });
+
+    [TestMethod]
+    public void ShouldResolveRelativeIriReferenceAgainstFallbackBaseUriInUpdateOperation()
+    {
+        //The fallback base applies uniformly to every SPARQL form, not just SELECT: here a SPARQL UPDATE operation
+        RDFInsertDataOperation operation = RDFInsertDataOperation.FromString(
+            "INSERT DATA { <s> <p> <o> }",
+            new RDFQueryOptions { FallbackBaseUri = new Uri("http://example.org/") });
+
+        Assert.AreEqual("http://example.org/p", operation.InsertTemplates.Single().Predicate.ToString());
     }
 
     [TestMethod]
