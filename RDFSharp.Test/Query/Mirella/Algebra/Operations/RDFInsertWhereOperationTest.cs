@@ -336,9 +336,9 @@ public class RDFInsertWhereOperationTest
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
-                            .AddStep(RDFPropertyPathExpression.Alternative([
-                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.LABEL),
-                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.COMMENT)]))))
+                            .AddStep(RDFPropertyPathStep.Alternative([
+                                RDFPropertyPathStep.Link(RDFVocabulary.RDFS.LABEL),
+                                RDFPropertyPathStep.Link(RDFVocabulary.RDFS.COMMENT)]))))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                 .Union(
                     new RDFSelectQuery()
@@ -419,9 +419,9 @@ public class RDFInsertWhereOperationTest
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
-                            .AddStep(RDFPropertyPathExpression.Alternative([
-                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.LABEL),
-                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.COMMENT)]))))
+                            .AddStep(RDFPropertyPathStep.Alternative([
+                                RDFPropertyPathStep.Link(RDFVocabulary.RDFS.LABEL),
+                                RDFPropertyPathStep.Link(RDFVocabulary.RDFS.COMMENT)]))))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                 .Union(
                     new RDFSelectQuery()
@@ -509,9 +509,9 @@ public class RDFInsertWhereOperationTest
                 new RDFSelectQuery()
                     .AddPatternGroup(new RDFPatternGroup()
                         .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?X"))
-                            .AddStep(RDFPropertyPathExpression.Alternative([
-                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.LABEL),
-                                RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.COMMENT)]))))
+                            .AddStep(RDFPropertyPathStep.Alternative([
+                                RDFPropertyPathStep.Link(RDFVocabulary.RDFS.LABEL),
+                                RDFPropertyPathStep.Link(RDFVocabulary.RDFS.COMMENT)]))))
                     .AddProjectionVariable(new RDFVariable("?Y"))
                 .Union(
                     new RDFSelectQuery()

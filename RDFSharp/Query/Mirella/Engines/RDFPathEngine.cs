@@ -25,7 +25,7 @@ namespace RDFSharp.Query
     /// <summary>
     /// <para>
     /// RDFPathEngine evaluates SPARQL 1.1 property paths over a datasource. A property path is a recursive
-    /// expression tree (<see cref="RDFPropertyPathExpression"/>) and every node denotes a BINARY RELATION over
+    /// step tree (<see cref="RDFPropertyPathStep"/>) and every node denotes a BINARY RELATION over
     /// the datasource terms (the set of (start, end) pairs the sub-path connects). The engine computes that
     /// relation compositionally:
     /// <list type="bullet">
@@ -41,7 +41,7 @@ namespace RDFSharp.Query
     /// </para>
     /// <para>
     /// LOOP SAFETY (the chief hazard of recursive path evaluation): the recursion is on the FINITE, ACYCLIC
-    /// expression tree, so it always terminates regardless of the data. The only cycles are in the DATA, under
+    /// step tree, so it always terminates regardless of the data. The only cycles are in the DATA, under
     /// <c>+</c>/<c>*</c>: there the sub-relation is first materialized into an EXPLICIT, FINITE adjacency map and
     /// the closure is always delegated to <see cref="RDFTransitiveClosureIndex"/> (Tarjan SCC → acyclic
     /// condensation), which is provably cycle-proof. The engine NEVER walks the data graph recursively for a
@@ -110,17 +110,17 @@ namespace RDFSharp.Query
 
             //Materialize the datasource adjacency once and reuse it (plus memoized closures) across all seeds
             RDFPathEvaluationCache evaluationCache = new RDFPathEvaluationCache(dataSource);
-            RDFPropertyPathExpression rootExpression = propertyPath.Expression;
+            RDFPropertyPathStep rootStep = propertyPath.StepThree;
 
             //Fast path: concrete end + variable start on a single OneOrMore Link, e.g. "?s prop+ <end>".
             //The naive plan seeds from every node and keeps only those reaching <end>. But "x reaches end over
             //forward edges" is the same statement as "end reaches x over REVERSED edges": the set of valid
             //starts is precisely the forward closure of the relation read backwards, evaluated once from <end>.
             if (startIsVar && !endIsVar
-                 && rootExpression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Link
-                 && rootExpression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore)
+                 && rootStep.Kind == RDFQueryEnums.RDFPropertyPathStepKinds.Link
+                 && rootStep.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore)
             {
-                foreach (RDFPatternMember startNode in evaluationCache.GetClosureIndex(rootExpression.Property, !rootExpression.IsInverse)
+                foreach (RDFPatternMember startNode in evaluationCache.GetClosureIndex(rootStep.Property, !rootStep.IsInverse)
                                                                       .EnumerateReachableNodes(endResource))
                 {
                     AddBindingRow(startNode, endResource);
@@ -130,9 +130,9 @@ namespace RDFSharp.Query
 
             //Determine the seed set: a concrete start yields a single seed; a variable start is pruned to the
             //domain of a single non-zero-length Link, otherwise every node is a candidate seed
-            foreach (RDFPatternMember seed in GetSeeds(rootExpression, startIsVar, startResource, evaluationCache))
+            foreach (RDFPatternMember seed in GetSeeds(rootStep, startIsVar, startResource, evaluationCache))
             {
-                foreach (RDFPatternMember reached in EvaluateExpressionFromNode(seed, rootExpression, evaluationCache))
+                foreach (RDFPatternMember reached in EvaluateStepFromNode(seed, rootStep, evaluationCache))
                     AddBindingRow(seed, reached);
             }
 
@@ -145,7 +145,7 @@ namespace RDFSharp.Query
         /// actually having an outgoing edge on the step property (its domain). In every other case a zero-length
         /// match may be possible, so all nodes in the datasource remain candidate seeds.
         /// </summary>
-        private static IEnumerable<RDFPatternMember> GetSeeds(RDFPropertyPathExpression rootExpression, bool startIsVar, RDFResource startResource, RDFPathEvaluationCache evaluationCache)
+        private static IEnumerable<RDFPatternMember> GetSeeds(RDFPropertyPathStep rootStep, bool startIsVar, RDFResource startResource, RDFPathEvaluationCache evaluationCache)
         {
             //Concrete start: the single resource is the only seed
             if (!startIsVar)
@@ -153,11 +153,11 @@ namespace RDFSharp.Query
 
             //Variable start over a single Link that cannot match zero-length (a plain or '+' hop): only the terms
             //with an outgoing edge on that property can begin a match, so seed from its domain instead of all nodes
-            if (rootExpression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Link
-                 && (rootExpression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne
-                      || rootExpression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore))
+            if (rootStep.Kind == RDFQueryEnums.RDFPropertyPathStepKinds.Link
+                 && (rootStep.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne
+                      || rootStep.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore))
             {
-                return evaluationCache.GetSources(rootExpression.Property, rootExpression.IsInverse);
+                return evaluationCache.GetSources(rootStep.Property, rootStep.IsInverse);
             }
 
             //Anything else (a zero-length-capable '?'/'*', or a composite/negated root) may bind the start to any
@@ -166,24 +166,24 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Evaluates the sub-path <paramref name="expression"/> starting from <paramref name="node"/>, returning
+        /// Evaluates the sub-path <paramref name="step"/> starting from <paramref name="node"/>, returning
         /// the set of reachable end nodes. This is the recursive heart of the engine: the recursion is on the
-        /// finite expression tree (always terminating), while data cycles are handled only inside the memoized
+        /// finite step tree (always terminating), while data cycles are handled only inside the memoized
         /// transitive closures.
         /// </summary>
-        private static IEnumerable<RDFPatternMember> EvaluateExpressionFromNode(RDFPatternMember node, RDFPropertyPathExpression expression, RDFPathEvaluationCache evaluationCache)
+        private static IEnumerable<RDFPatternMember> EvaluateStepFromNode(RDFPatternMember node, RDFPropertyPathStep step, RDFPathEvaluationCache evaluationCache)
         {
-            switch (expression.Kind)
+            switch (step.Kind)
             {
                 //A single predicate: its cardinality reuses the memoized per-property adjacency/closure directly
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Link:
-                    return EvaluateLinkFromNode(node, expression, evaluationCache);
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Link:
+                    return EvaluateLinkFromNode(node, step, evaluationCache);
 
                 //Composite/negated nodes: lazy when undecorated, materialized when they carry cardinality/inverse
                 default:
-                    if (expression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne && !expression.IsInverse)
-                        return EvaluateUndecoratedCompositeFromNode(node, expression, evaluationCache);
-                    return EvaluateDecoratedCompositeFromNode(node, expression, evaluationCache);
+                    if (step.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne && !step.IsInverse)
+                        return EvaluateUndecoratedCompositeFromNode(node, step, evaluationCache);
+                    return EvaluateDecoratedCompositeFromNode(node, step, evaluationCache);
             }
         }
 
@@ -191,37 +191,37 @@ namespace RDFSharp.Query
         /// Evaluates a Link node (single predicate) from the given node, honoring its inverse direction and
         /// cardinality by reusing the memoized per-property adjacency and transitive closure.
         /// </summary>
-        private static IEnumerable<RDFPatternMember> EvaluateLinkFromNode(RDFPatternMember node, RDFPropertyPathExpression linkExpression, RDFPathEvaluationCache evaluationCache)
+        private static IEnumerable<RDFPatternMember> EvaluateLinkFromNode(RDFPatternMember node, RDFPropertyPathStep linkStep, RDFPathEvaluationCache evaluationCache)
         {
             //Direction of the hop: '^' reads the reverse adjacency (object→subject)
-            bool inverse = linkExpression.IsInverse;
-            switch (linkExpression.Cardinality)
+            bool inverse = linkStep.IsInverse;
+            switch (linkStep.Cardinality)
             {
                 //'?': the node itself (zero hops) plus its direct successors (at most one hop), deduplicated by hash
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:
                 {
                     Dictionary<long, RDFPatternMember> result = new Dictionary<long, RDFPatternMember> { [node.PatternMemberID] = node };
-                    foreach (RDFPatternMember r in evaluationCache.GetDirectSuccessors(node, linkExpression.Property, inverse))
+                    foreach (RDFPatternMember r in evaluationCache.GetDirectSuccessors(node, linkStep.Property, inverse))
                         result[r.PatternMemberID] = r;
                     return result.Values;
                 }
 
                 //'+': one-or-more hops = the memoized transitive closure from the node (no zero-length match)
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:
-                    return evaluationCache.GetClosureIndex(linkExpression.Property, inverse).EnumerateReachableNodes(node);
+                    return evaluationCache.GetClosureIndex(linkStep.Property, inverse).EnumerateReachableNodes(node);
 
                 //'*': zero-or-more hops = the node itself (zero-length) unioned with its '+' closure
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore:
                 {
                     Dictionary<long, RDFPatternMember> result = new Dictionary<long, RDFPatternMember> { [node.PatternMemberID] = node };
-                    foreach (RDFPatternMember r in evaluationCache.GetClosureIndex(linkExpression.Property, inverse).EnumerateReachableNodes(node))
+                    foreach (RDFPatternMember r in evaluationCache.GetClosureIndex(linkStep.Property, inverse).EnumerateReachableNodes(node))
                         result[r.PatternMemberID] = r;
                     return result.Values;
                 }
 
                 //ExactlyOne: a single direct hop
                 default:
-                    return evaluationCache.GetDirectSuccessors(node, linkExpression.Property, inverse);
+                    return evaluationCache.GetDirectSuccessors(node, linkStep.Property, inverse);
             }
         }
 
@@ -231,37 +231,37 @@ namespace RDFSharp.Query
         /// composes children left-to-right (frontier expansion); Alternative unions them; NegatedPropertySet
         /// takes one hop over any non-excluded predicate.
         /// </summary>
-        private static IEnumerable<RDFPatternMember> EvaluateUndecoratedCompositeFromNode(RDFPatternMember node, RDFPropertyPathExpression expression, RDFPathEvaluationCache evaluationCache)
+        private static IEnumerable<RDFPatternMember> EvaluateUndecoratedCompositeFromNode(RDFPatternMember node, RDFPropertyPathStep step, RDFPathEvaluationCache evaluationCache)
         {
-            switch (expression.Kind)
+            switch (step.Kind)
             {
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence:
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Sequence:
                 {
                     //Compose children: each child rewrites the current frontier into the next one
                     List<RDFPatternMember> frontier = new List<RDFPatternMember> { node };
-                    foreach (RDFPropertyPathExpression child in expression.Children)
+                    foreach (RDFPropertyPathStep child in step.Children)
                     {
                         Dictionary<long, RDFPatternMember> next = new Dictionary<long, RDFPatternMember>();
                         foreach (RDFPatternMember frontierNode in frontier)
-                            foreach (RDFPatternMember reached in EvaluateExpressionFromNode(frontierNode, child, evaluationCache))
+                            foreach (RDFPatternMember reached in EvaluateStepFromNode(frontierNode, child, evaluationCache))
                                 next[reached.PatternMemberID] = reached;
                         frontier = next.Values.ToList();
                     }
                     return frontier;
                 }
 
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative:
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Alternative:
                 {
                     //Union of the children evaluated in parallel from the same node
                     Dictionary<long, RDFPatternMember> union = new Dictionary<long, RDFPatternMember>();
-                    foreach (RDFPropertyPathExpression child in expression.Children)
-                        foreach (RDFPatternMember reached in EvaluateExpressionFromNode(node, child, evaluationCache))
+                    foreach (RDFPropertyPathStep child in step.Children)
+                        foreach (RDFPatternMember reached in EvaluateStepFromNode(node, child, evaluationCache))
                             union[reached.PatternMemberID] = reached;
                     return union.Values;
                 }
 
                 default: // NegatedPropertySet
-                    return evaluationCache.GetNegatedSuccessors(node, expression.NegatedMembers);
+                    return evaluationCache.GetNegatedSuccessors(node, step.NegatedMembers);
             }
         }
 
@@ -271,13 +271,13 @@ namespace RDFSharp.Query
         /// explicit finite adjacency map (memoized), then the inverse is applied by reversing the map and the
         /// cardinality by delegating to the SCC transitive closure — never by recursive data traversal.
         /// </summary>
-        private static IEnumerable<RDFPatternMember> EvaluateDecoratedCompositeFromNode(RDFPatternMember node, RDFPropertyPathExpression expression, RDFPathEvaluationCache evaluationCache)
+        private static IEnumerable<RDFPatternMember> EvaluateDecoratedCompositeFromNode(RDFPatternMember node, RDFPropertyPathStep step, RDFPathEvaluationCache evaluationCache)
         {
             //Materialize the (possibly reversed) base relation of the composite, memoized per node identity. The
             //node's cardinality is applied below ON TOP of this finite relation (never on the live data graph).
-            RDFPathRelation relation = evaluationCache.GetCompositeRelation(expression);
+            RDFPathRelation relation = evaluationCache.GetCompositeRelation(step);
 
-            switch (expression.Cardinality)
+            switch (step.Cardinality)
             {
                 //'?': the node itself plus its direct successors in the composite relation
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:
@@ -290,13 +290,13 @@ namespace RDFSharp.Query
 
                 //'+': the SCC transitive closure of the composite relation from the node
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore:
-                    return evaluationCache.GetCompositeClosure(expression).EnumerateReachableNodes(node);
+                    return evaluationCache.GetCompositeClosure(step).EnumerateReachableNodes(node);
 
                 //'*': the node itself (zero-length) unioned with the '+' closure of the composite relation
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore:
                 {
                     Dictionary<long, RDFPatternMember> result = new Dictionary<long, RDFPatternMember> { [node.PatternMemberID] = node };
-                    foreach (RDFPatternMember r in evaluationCache.GetCompositeClosure(expression).EnumerateReachableNodes(node))
+                    foreach (RDFPatternMember r in evaluationCache.GetCompositeClosure(step).EnumerateReachableNodes(node))
                         result[r.PatternMemberID] = r;
                     return result.Values;
                 }
@@ -441,15 +441,15 @@ namespace RDFSharp.Query
 
             /// <summary>
             /// The materialized finite relation of each composite sub-path (Sequence/Alternative/NegatedPropertySet
-            /// carrying an inverse and/or cardinality), keyed by the expression node identity to memoize the sweep.
+            /// carrying an inverse and/or cardinality), keyed by the step node identity to memoize the sweep.
             /// </summary>
-            private readonly Dictionary<RDFPropertyPathExpression, RDFPathRelation> compositeRelations = new Dictionary<RDFPropertyPathExpression, RDFPathRelation>();
+            private readonly Dictionary<RDFPropertyPathStep, RDFPathRelation> compositeRelations = new Dictionary<RDFPropertyPathStep, RDFPathRelation>();
 
             /// <summary>
             /// The transitive closure over each composite sub-path's relation (for <c>+</c>/<c>*</c> on a group),
-            /// keyed by the expression node identity so the cycle-proof SCC closure is built only once.
+            /// keyed by the step node identity so the cycle-proof SCC closure is built only once.
             /// </summary>
-            private readonly Dictionary<RDFPropertyPathExpression, RDFTransitiveClosureIndex> compositeClosures = new Dictionary<RDFPropertyPathExpression, RDFTransitiveClosureIndex>();
+            private readonly Dictionary<RDFPropertyPathStep, RDFTransitiveClosureIndex> compositeClosures = new Dictionary<RDFPropertyPathStep, RDFTransitiveClosureIndex>();
 
             internal RDFPathEvaluationCache(RDFDataSource dataSource)
                 => DataSource = dataSource;
@@ -537,17 +537,17 @@ namespace RDFSharp.Query
             /// node's own inverse applied but NOT its cardinality), memoized per node identity. Materialization
             /// sweeps every node as a seed and evaluates the base relation from it.
             /// </summary>
-            internal RDFPathRelation GetCompositeRelation(RDFPropertyPathExpression expression)
+            internal RDFPathRelation GetCompositeRelation(RDFPropertyPathStep step)
             {
-                //Materialize the composite's relation once per expression node and cache it
-                if (!compositeRelations.TryGetValue(expression, out RDFPathRelation relation))
+                //Materialize the composite's relation once per step node and cache it
+                if (!compositeRelations.TryGetValue(step, out RDFPathRelation relation))
                 {
                     //First the kind+children base relation, then the node's own inverse (if any) by flipping it;
                     //the cardinality is NOT applied here (it is handled by GetCompositeClosure)
-                    relation = BuildCompositeBaseRelation(expression);
-                    if (expression.IsInverse)
+                    relation = BuildCompositeBaseRelation(step);
+                    if (step.IsInverse)
                         relation = relation.Reverse();
-                    compositeRelations[expression] = relation;
+                    compositeRelations[step] = relation;
                 }
                 return relation;
             }
@@ -556,23 +556,23 @@ namespace RDFSharp.Query
             /// Returns the memoized transitive closure over a composite sub-path's relation, delegating to the
             /// cycle-proof SCC closure builder.
             /// </summary>
-            internal RDFTransitiveClosureIndex GetCompositeClosure(RDFPropertyPathExpression expression)
+            internal RDFTransitiveClosureIndex GetCompositeClosure(RDFPropertyPathStep step)
             {
-                //Build the closure once per expression node and cache it
-                if (!compositeClosures.TryGetValue(expression, out RDFTransitiveClosureIndex closure))
+                //Build the closure once per step node and cache it
+                if (!compositeClosures.TryGetValue(step, out RDFTransitiveClosureIndex closure))
                 {
                     //Feed the composite's already-materialized finite relation to the same cycle-proof SCC builder
                     //used for single properties — this is what makes (a/b)+ safe and fast on cyclic data
-                    RDFPathRelation relation = GetCompositeRelation(expression);
+                    RDFPathRelation relation = GetCompositeRelation(step);
                     closure = RDFTransitiveClosureIndex.BuildTransitiveClosureIndex(relation.Map, relation.Nodes);
-                    compositeClosures[expression] = closure;
+                    compositeClosures[step] = closure;
                 }
                 return closure;
             }
 
             //Materializes the base relation (kind + children, ignoring outer cardinality/inverse) of a composite
             //node by sweeping all nodes and evaluating the lazy base from each
-            private RDFPathRelation BuildCompositeBaseRelation(RDFPropertyPathExpression expression)
+            private RDFPathRelation BuildCompositeBaseRelation(RDFPropertyPathStep step)
             {
                 //The relation being built: node-hash → successors, plus the registry resolving each hash to its term
                 Dictionary<long, List<RDFPatternMember>> map = new Dictionary<long, List<RDFPatternMember>>();
@@ -584,7 +584,7 @@ namespace RDFSharp.Query
                 foreach (RDFPatternMember seed in GetAllNodes(DataSource))
                 {
                     List<RDFPatternMember> successors = null;
-                    foreach (RDFPatternMember reached in EvaluateUndecoratedCompositeFromNode(seed, expression, this))
+                    foreach (RDFPatternMember reached in EvaluateUndecoratedCompositeFromNode(seed, step, this))
                     {
                         //Lazily create the successor list only for seeds that actually reach something
                         (successors ?? (successors = new List<RDFPatternMember>())).Add(reached);

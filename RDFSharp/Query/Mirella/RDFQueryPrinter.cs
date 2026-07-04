@@ -618,73 +618,73 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Operator precedence of a property path expression, used to decide when a child needs parentheses:
+        /// Operator precedence of a property path step, used to decide when a child needs parentheses:
         /// alternative (1) binds looser than sequence (2), and an atom or any decorated node (4) binds tightest
         /// (its own decoration already parenthesizes a composite base when needed).
         /// </summary>
-        private static int PathExpressionPrecedence(RDFPropertyPathExpression expression)
+        private static int PathStepPrecedence(RDFPropertyPathStep step)
         {
-            if (expression.IsInverse || expression.Cardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
+            if (step.IsInverse || step.Cardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
                 return 4;
-            switch (expression.Kind)
+            switch (step.Kind)
             {
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative: return 1;
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence:    return 2;
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Alternative: return 1;
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Sequence:    return 2;
                 default:                                                       return 4; //Link, NegatedPropertySet
             }
         }
 
         /// <summary>
-        /// Prints a property path expression as a child of a parent context with the given precedence, adding
+        /// Prints a property path step as a child of a parent context with the given precedence, adding
         /// parentheses only when the child binds looser than the context requires.
         /// </summary>
-        private static string PrintPathExpression(RDFPropertyPathExpression expression, int parentPrecedence, List<RDFNamespace> prefixes)
+        private static string PrintPathStep(RDFPropertyPathStep step, int parentPrecedence, List<RDFNamespace> prefixes)
         {
-            string rendered = PrintPathExpression(expression, prefixes);
-            return PathExpressionPrecedence(expression) < parentPrecedence ? $"({rendered})" : rendered;
+            string rendered = PrintPathStep(step, prefixes);
+            return PathStepPrecedence(step) < parentPrecedence ? $"({rendered})" : rendered;
         }
 
         /// <summary>
-        /// Prints a property path expression, recursively, with its inverse (<c>^</c>) and cardinality
+        /// Prints a property path step, recursively, with its inverse (<c>^</c>) and cardinality
         /// (<c>? * +</c>) decorations. A decoration wrapping a composite base (sequence/alternative) parenthesizes
         /// that base so it binds as a unit.
         /// </summary>
-        private static string PrintPathExpression(RDFPropertyPathExpression expression, List<RDFNamespace> prefixes)
+        private static string PrintPathStep(RDFPropertyPathStep step, List<RDFNamespace> prefixes)
         {
             //Render the base (kind + children), ignoring the node's own inverse/cardinality decorations
             string baseString;
-            switch (expression.Kind)
+            switch (step.Kind)
             {
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence:
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Sequence:
                     //A single-child sequence is the implicit group used to wrap a decorated inner sub-path
-                    baseString = expression.Children.Count == 1
-                        ? PrintPathExpression(expression.Children[0], prefixes)
-                        : string.Join("/", expression.Children.Select(child => PrintPathExpression(child, 2, prefixes)));
+                    baseString = step.Children.Count == 1
+                        ? PrintPathStep(step.Children[0], prefixes)
+                        : string.Join("/", step.Children.Select(child => PrintPathStep(child, 2, prefixes)));
                     break;
 
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative:
-                    baseString = string.Join("|", expression.Children.Select(child => PrintPathExpression(child, 1, prefixes)));
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Alternative:
+                    baseString = string.Join("|", step.Children.Select(child => PrintPathStep(child, 1, prefixes)));
                     break;
 
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.NegatedPropertySet:
-                    baseString = PrintNegatedPropertySet(expression.NegatedMembers, prefixes);
+                case RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet:
+                    baseString = PrintNegatedPropertySet(step.NegatedMembers, prefixes);
                     break;
 
                 default: // Link
-                    baseString = PrintPatternMember(expression.Property, prefixes);
+                    baseString = PrintPatternMember(step.Property, prefixes);
                     break;
             }
 
             //A decoration over a composite base must parenthesize the base so the decoration binds the whole group
-            bool decorated = expression.IsInverse || expression.Cardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne;
-            bool compositeBase = expression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence
-                                  || expression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative;
+            bool decorated = step.IsInverse || step.Cardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne;
+            bool compositeBase = step.Kind == RDFQueryEnums.RDFPropertyPathStepKinds.Sequence
+                                  || step.Kind == RDFQueryEnums.RDFPropertyPathStepKinds.Alternative;
             if (decorated && compositeBase)
                 baseString = $"({baseString})";
 
-            if (expression.IsInverse)
+            if (step.IsInverse)
                 baseString = "^" + baseString;
-            return baseString + PrintPathCardinality(expression.Cardinality);
+            return baseString + PrintPathCardinality(step.Cardinality);
         }
 
         /// <summary>
@@ -706,8 +706,8 @@ namespace RDFSharp.Query
         internal static string PrintPropertyPath(RDFPropertyPath propertyPath, List<RDFNamespace> prefixes)
         {
             //An empty path (no steps yet) prints with an empty middle, preserving the historical double space
-            string expressionString = propertyPath.Expression != null ? PrintPathExpression(propertyPath.Expression, prefixes) : string.Empty;
-            string pathString = $"{PrintPatternMember(propertyPath.Start, prefixes)} {expressionString} {PrintPatternMember(propertyPath.End, prefixes)}";
+            string stepString = propertyPath.StepThree != null ? PrintPathStep(propertyPath.StepThree, prefixes) : string.Empty;
+            string pathString = $"{PrintPatternMember(propertyPath.Start, prefixes)} {stepString} {PrintPatternMember(propertyPath.End, prefixes)}";
             return propertyPath.IsOptional ? $"OPTIONAL {{ {pathString} }}" : pathString;
         }
 
@@ -911,7 +911,7 @@ namespace RDFSharp.Query
                     break;
                 }
 
-                //Leaf: property path (printed as a bracketed path expression)
+                //Leaf: property path (printed as a bracketed path step)
                 case RDFPropertyPath propertyPath:
                 {
                     result.AppendLine(string.Concat(spaces, "    { ", PrintPropertyPath(propertyPath, prefixes), " }"));

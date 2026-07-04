@@ -100,18 +100,18 @@ namespace RDFSharp.Model
                     case RDFPropertyShape propertyShape:
                         if (focusNode is RDFResource focusNodeResource)
                         {
-                            RDFPropertyPathExpression pathExpression = propertyShape.Path.Expression;
+                            RDFPropertyPathStep pathStep = propertyShape.Path.StepThree;
 
                             #region single predicate (fast path)
                             //A plain single predicate (possibly inverse) is a ground triple lookup, not a path evaluation
-                            if (pathExpression.Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Link
-                                 && pathExpression.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
+                            if (pathStep.Kind == RDFQueryEnums.RDFPropertyPathStepKinds.Link
+                                 && pathStep.Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
                             {
-                                if (pathExpression.IsInverse)
-                                    result.AddRange(dataGraph.SelectTriples(p: pathExpression.Property, o: focusNodeResource)
+                                if (pathStep.IsInverse)
+                                    result.AddRange(dataGraph.SelectTriples(p: pathStep.Property, o: focusNodeResource)
                                           .Select(t => t.Subject));
                                 else
-                                    result.AddRange(dataGraph.SelectTriples(s: focusNodeResource, p: pathExpression.Property)
+                                    result.AddRange(dataGraph.SelectTriples(s: focusNodeResource, p: pathStep.Property)
                                           .Select(t => t.Object));
                             }
                             #endregion
@@ -125,7 +125,7 @@ namespace RDFSharp.Model
                                 //immutable path units): the shape's stored path is never touched, so concurrent
                                 //validations stay isolated and the focus node is the only varying boundary term
                                 RDFPropertyPath contextualizedPath = new RDFPropertyPath(focusNode, new RDFVariable("?END"));
-                                propertyShape.Path.SequenceUnits.ForEach(pathUnit => contextualizedPath.AddStep(pathUnit));
+                                propertyShape.Path.Steps.ForEach(pathUnit => contextualizedPath.AddStep(pathUnit));
                                 RDFTable pathResult = new RDFQueryEngine().ApplyPropertyPath(contextualizedPath, dataGraph);
                                 result.AddRange(from RDFTableRow pathResultRow
                                                 in pathResult.Rows
@@ -626,50 +626,50 @@ namespace RDFSharp.Model
         /// </summary>
         private static RDFPropertyPath DetectShapePath(RDFGraph graph, RDFResource node)
             => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                    .AddStep(DetectShapePathExpression(graph, node));
+                    .AddStep(DetectShapePathStep(graph, node));
 
         /// <summary>
-        /// Detects a single node of the path definition, turning it into the equivalent path expression
+        /// Detects a single node of the path definition, turning it into the equivalent path step
         /// </summary>
-        private static RDFPropertyPathExpression DetectShapePathExpression(RDFGraph graph, RDFResource node)
+        private static RDFPropertyPathStep DetectShapePathStep(RDFGraph graph, RDFResource node)
         {
             //A bare predicate IRI is a plain Link
             if (!node.IsBlank)
-                return RDFPropertyPathExpression.Link(node);
+                return RDFPropertyPathStep.Link(node);
 
             RDFGraph pathDefinition = graph[s: node];
 
             //sh:inversePath O -> ^(...)
             if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.INVERSE_PATH).FirstOrDefault()?.Object is RDFResource inversePathObject)
-                return DetectShapePathExpression(graph, inversePathObject).Inverse();
+                return DetectShapePathStep(graph, inversePathObject).Inverse();
 
             //sh:zeroOrMorePath O -> (...)*
             if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ZERO_OR_MORE_PATH).FirstOrDefault()?.Object is RDFResource zeroOrMorePathObject)
-                return DetectShapePathExpression(graph, zeroOrMorePathObject).ZeroOrMore();
+                return DetectShapePathStep(graph, zeroOrMorePathObject).ZeroOrMore();
 
             //sh:oneOrMorePath O -> (...)+
             if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ONE_OR_MORE_PATH).FirstOrDefault()?.Object is RDFResource oneOrMorePathObject)
-                return DetectShapePathExpression(graph, oneOrMorePathObject).OneOrMore();
+                return DetectShapePathStep(graph, oneOrMorePathObject).OneOrMore();
 
             //sh:zeroOrOnePath O -> (...)?
             if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ZERO_OR_ONE_PATH).FirstOrDefault()?.Object is RDFResource zeroOrOnePathObject)
-                return DetectShapePathExpression(graph, zeroOrOnePathObject).ZeroOrOne();
+                return DetectShapePathStep(graph, zeroOrOnePathObject).ZeroOrOne();
 
             //sh:alternativePath L -> (...|...)
             if (pathDefinition.SelectTriples(p: RDFVocabulary.SHACL.ALTERNATIVE_PATH).FirstOrDefault()?.Object is RDFResource alternativePathObject)
             {
                 RDFCollection alternativeList = RDFModelUtilities.DeserializeCollectionFromGraph(graph, alternativePathObject, RDFModelEnums.RDFTripleFlavors.SPO);
-                return RDFPropertyPathExpression.Alternative(alternativeList.Items.OfType<RDFResource>()
-                                                                                  .Select(item => DetectShapePathExpression(graph, item))
+                return RDFPropertyPathStep.Alternative(alternativeList.Items.OfType<RDFResource>()
+                                                                                  .Select(item => DetectShapePathStep(graph, item))
                                                                                   .ToList());
             }
 
             //Otherwise the node is an rdf:List (sequence) -> P1/P2/...
             RDFCollection sequenceList = RDFModelUtilities.DeserializeCollectionFromGraph(graph, node, RDFModelEnums.RDFTripleFlavors.SPO);
-            List<RDFPropertyPathExpression> sequenceSteps = sequenceList.Items.OfType<RDFResource>()
-                                                                              .Select(item => DetectShapePathExpression(graph, item))
+            List<RDFPropertyPathStep> sequenceSteps = sequenceList.Items.OfType<RDFResource>()
+                                                                              .Select(item => DetectShapePathStep(graph, item))
                                                                               .ToList();
-            return sequenceSteps.Count == 1 ? sequenceSteps[0] : RDFPropertyPathExpression.Sequence(sequenceSteps);
+            return sequenceSteps.Count == 1 ? sequenceSteps[0] : RDFPropertyPathStep.Sequence(sequenceSteps);
         }
         #endregion
 
@@ -682,23 +682,23 @@ namespace RDFSharp.Model
         internal static RDFPropertyPath SinglePredicatePath(RDFResource predicate)
             => predicate != null
                 ? new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                        .AddStep(RDFPropertyPathExpression.Link(predicate))
+                        .AddStep(RDFPropertyPathStep.Link(predicate))
                 : null;
 
         /// <summary>
-        /// Serializes the given path expression into RDF, returning its path node (the bare predicate IRI for
+        /// Serializes the given path step into RDF, returning its path node (the bare predicate IRI for
         /// a plain single predicate, otherwise the blank node rooting the structure) and adding the structure triples
         /// to the given graph.
         /// </summary>
         /// <exception cref="RDFModelException"></exception>
-        internal static RDFResource SerializeShapePath(RDFGraph graph, RDFPropertyPathExpression expression)
+        internal static RDFResource SerializeShapePath(RDFGraph graph, RDFPropertyPathStep step)
         {
             #region Utilities
             //Builds the rdf:List of the SHACL path nodes of the given children, returning the list head
-            RDFResource SerializeShaclPathList(List<RDFPropertyPathExpression> pathExpressions)
+            RDFResource SerializeShaclPathList(List<RDFPropertyPathStep> pathSteps)
             {
                 RDFCollection pathNodes = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource);
-                pathExpressions.ForEach(pathExpression => pathNodes.AddItem(SerializeShapePath(graph, pathExpression)));
+                pathSteps.ForEach(pathStep => pathNodes.AddItem(SerializeShapePath(graph, pathStep)));
                 graph.AddCollection(pathNodes);
                 return pathNodes.ReificationSubject;
             }
@@ -714,22 +714,22 @@ namespace RDFSharp.Model
 
             //Undecorated core (the node kind)
             RDFResource pathNode;
-            switch (expression.Kind)
+            switch (step.Kind)
             {
                 //A single predicate: the path node is the bare IRI
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Link:
-                    pathNode = expression.Property;
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Link:
+                    pathNode = step.Property;
                     break;
 
                 //A sequence P1/P2/...: the path node is the rdf:List of the child path nodes
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence:
-                    pathNode = SerializeShaclPathList(expression.Children);
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Sequence:
+                    pathNode = SerializeShaclPathList(step.Children);
                     break;
 
                 //An alternative P1|P2|...: bnode sh:alternativePath -> rdf:List of the child path nodes
-                case RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative:
+                case RDFQueryEnums.RDFPropertyPathStepKinds.Alternative:
                     pathNode = new RDFResource();
-                    graph.AddTriple(new RDFTriple(pathNode, RDFVocabulary.SHACL.ALTERNATIVE_PATH, SerializeShaclPathList(expression.Children)));
+                    graph.AddTriple(new RDFTriple(pathNode, RDFVocabulary.SHACL.ALTERNATIVE_PATH, SerializeShaclPathList(step.Children)));
                     break;
 
                 //A negated property set has no SHACL representation (SHACL paths do not include negation)
@@ -738,7 +738,7 @@ namespace RDFSharp.Model
             }
 
             //Cardinality decoration: ?/+/* -> bnode sh:zeroOrOnePath/oneOrMorePath/zeroOrMorePath
-            switch (expression.Cardinality)
+            switch (step.Cardinality)
             {
                 case RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne:
                     pathNode = WrapShaclPath(RDFVocabulary.SHACL.ZERO_OR_ONE_PATH, pathNode);
@@ -752,7 +752,7 @@ namespace RDFSharp.Model
             }
 
             //Inverse decoration: ^ -> bnode sh:inversePath
-            if (expression.IsInverse)
+            if (step.IsInverse)
                 pathNode = WrapShaclPath(RDFVocabulary.SHACL.INVERSE_PATH, pathNode);
 
             return pathNode;

@@ -656,7 +656,7 @@ public class RDFValidationEngineTest
 
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
         RDFPropertyPath recursivePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
+            .AddStep(RDFPropertyPathStep.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), recursivePath);
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Person")));
@@ -700,7 +700,7 @@ public class RDFValidationEngineTest
         //Sanity: the recursive path survived deserialization
         RDFPropertyShape propertyShape = shapesGraph.SelectShape("http://ex.com/ns#PropertyShape") as RDFPropertyShape;
         Assert.IsNotNull(propertyShape);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, propertyShape.Path.Expression.Cardinality);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, propertyShape.Path.StepThree.Cardinality);
 
         //DataGraph: Alice -> Bob -> Carol; Carol is not a Person (will violate)
         RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));

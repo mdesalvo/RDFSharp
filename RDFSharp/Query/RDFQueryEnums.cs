@@ -83,9 +83,9 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// RDFPropertyPathExpressionKinds represents an enumeration for the node kinds of a SPARQL property path expression tree.
+        /// RDFPropertyPathStepKinds represents an enumeration for the node kinds of a SPARQL property path step tree.
         /// </summary>
-        public enum RDFPropertyPathExpressionKinds
+        public enum RDFPropertyPathStepKinds
         {
             /// <summary>
             /// A single predicate IRI (the atomic step)

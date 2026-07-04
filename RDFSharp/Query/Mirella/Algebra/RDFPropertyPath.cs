@@ -29,30 +29,30 @@ namespace RDFSharp.Query
         /// <summary>
         /// Start of the path
         /// </summary>
-        public RDFPatternMember Start { get; internal set; }
+        public RDFPatternMember Start { get; }
 
         /// <summary>
         /// End of the path
         /// </summary>
-        public RDFPatternMember End { get; internal set; }
+        public RDFPatternMember End { get; }
 
         /// <summary>
-        /// Top-level sequence units composing the path (a path is a sequence of one or more units; each unit is
-        /// an arbitrary path expression). Their concatenation is exposed as <see cref="Expression"/>.
+        /// Top-level steps composing the path (a path is a sequence of one or more steps; each step is
+        /// an arbitrary <see cref="RDFPropertyPathStep"/> sub-tree). Their concatenation is exposed as <see cref="StepThree"/>.
         /// </summary>
-        internal List<RDFPropertyPathExpression> SequenceUnits { get; }
+        internal List<RDFPropertyPathStep> Steps { get; }
 
         /// <summary>
-        /// Root of the path expression tree: the single unit when there is exactly one, otherwise the sequence
+        /// Root of the path step tree: the single unit when there is exactly one, otherwise the sequence
         /// of all units. Null until at least one unit has been added.
         /// </summary>
-        internal RDFPropertyPathExpression Expression
-            => SequenceUnits.Count == 0 ? null : RDFPropertyPathExpression.Sequence(SequenceUnits);
+        internal RDFPropertyPathStep StepThree
+            => Steps.Count == 0 ? null : RDFPropertyPathStep.Sequence(Steps);
 
         /// <summary>
         /// Flag indicating the property path as Optional
         /// </summary>
-        internal bool IsOptional { get; set; }
+        internal bool IsOptional { get; private set; }
         #endregion
 
         #region Ctors
@@ -75,7 +75,7 @@ namespace RDFSharp.Query
 
             Start = start;
             End = end;
-            SequenceUnits = new List<RDFPropertyPathExpression>();
+            Steps = new List<RDFPropertyPathStep>();
         }
         #endregion
 
@@ -143,30 +143,30 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Adds the given sub-path to the path as its next unit. What the unit "is" (a plain link, an inverse,
-        /// a sequence, an alternative, a negated property set, …) is already carried by the expression itself:
-        /// build it with the matching <see cref="RDFPropertyPathExpression"/> factory before adding it here.
+        /// a sequence, an alternative, a negated property set, …) is already carried by the step itself:
+        /// build it with the matching <see cref="RDFPropertyPathStep"/> factory before adding it here.
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFPropertyPath AddStep(RDFPropertyPathExpression step)
+        public RDFPropertyPath AddStep(RDFPropertyPathStep step)
         {
             #region Guards
             if (step == null)
                 throw new RDFQueryException("Cannot add step because it is null.");
             #endregion
 
-            SequenceUnits.Add(step);
+            Steps.Add(step);
 
             UpdateEvaluabilityStatus();
             return this;
         }
 
         /// <summary>
-        /// Returns the predicate IRI of this path when its expression is a single plain predicate. Every
+        /// Returns the predicate IRI of this path when its step tree is a single plain predicate. Every
         /// decorated or composite path (inverse, recursive cardinality, sequence, alternative) returns null.
         /// </summary>
         internal RDFResource AsSinglePredicate()
-            => Expression is RDFPropertyPathExpression expression && expression.IsPlainLink
-                ? expression.Property : null;
+            => StepThree is RDFPropertyPathStep step && step.IsPlainLink
+                ? step.Property : null;
 
         /// <summary>
         /// Recomputes whether the path is independently evaluable by the engine. A path is evaluable unless it is
@@ -175,20 +175,20 @@ namespace RDFSharp.Query
         /// </summary>
         private void UpdateEvaluabilityStatus()
         {
-            bool hasComplexExpression = SequenceUnits.Count > 1 || (SequenceUnits.Count == 1 && !SequenceUnits[0].IsPlainLink);
-            IsEvaluable = Start is RDFVariable || End is RDFVariable || hasComplexExpression;
+            bool hasComplexStep = Steps.Count > 1 || (Steps.Count == 1 && !Steps[0].IsPlainLink);
+            IsEvaluable = Start is RDFVariable || End is RDFVariable || hasComplexStep;
         }
         #endregion
     }
 
     /// <summary>
     /// <para>
-    /// RDFPropertyPathExpression is a node of the SPARQL 1.1 property path algebra tree. Every node denotes a
+    /// RDFPropertyPathStep is a node of the SPARQL 1.1 property path algebra tree. Every node denotes a
     /// BINARY RELATION over the datasource resources (the set of (start, end) pairs the sub-path connects), and
     /// carries an optional inverse decoration (<c>^</c>) and an optional cardinality modifier (<c>? * +</c>).
     /// </para>
     /// <para>
-    /// Node kinds (see <see cref="RDFQueryEnums.RDFPropertyPathExpressionKinds"/>):
+    /// Step kinds (see <see cref="RDFQueryEnums.RDFPropertyPathStepKinds"/>):
     /// <list type="bullet">
     /// <item><c>Link</c> — a single predicate IRI (the atomic step);</item>
     /// <item><c>Sequence</c> — an ordered composition of children (<c>P1/P2/…</c>);</item>
@@ -201,39 +201,39 @@ namespace RDFSharp.Query
     /// Sequence acting as the explicit group.
     /// </para>
     /// </summary>
-    public sealed class RDFPropertyPathExpression
+    public sealed class RDFPropertyPathStep
     {
         #region Properties
         /// <summary>
-        /// Kind of the node
+        /// Kind of the step
         /// </summary>
-        public RDFQueryEnums.RDFPropertyPathExpressionKinds Kind { get; internal set; }
+        public RDFQueryEnums.RDFPropertyPathStepKinds Kind { get; }
 
         /// <summary>
-        /// Predicate IRI of a Link node
+        /// Predicate IRI of a Link step
         /// </summary>
-        public RDFResource Property { get; internal set; }
+        public RDFResource Property { get; private set; }
 
         /// <summary>
-        /// Children of a Sequence or Alternative node
+        /// Children of a Sequence or Alternative step
         /// </summary>
-        internal List<RDFPropertyPathExpression> Children { get; set; }
+        internal List<RDFPropertyPathStep> Children { get; private set; }
 
         /// <summary>
-        /// Members of a NegatedPropertySet node (each is a predicate IRI plus a flag telling whether it is matched
+        /// Members of a NegatedPropertySet step (each is a predicate IRI plus a flag telling whether it is matched
         /// in the inverse direction, i.e. the <c>^a</c> members of <c>!(a|^b)</c>)
         /// </summary>
-        internal List<(RDFResource Property, bool IsInverse)> NegatedMembers { get; set; }
+        internal List<(RDFResource Property, bool IsInverse)> NegatedMembers { get; private set; }
 
         /// <summary>
         /// Flag indicating that the node is matched in the inverse direction (<c>^</c>)
         /// </summary>
-        public bool IsInverse { get; internal set; }
+        public bool IsInverse { get; private set; }
 
         /// <summary>
         /// Cardinality modifier applied to the node (<c>? * +</c>, or ExactlyOne when none)
         /// </summary>
-        public RDFQueryEnums.RDFPropertyPathStepCardinalities Cardinality { get; internal set; }
+        public RDFQueryEnums.RDFPropertyPathStepCardinalities Cardinality { get; private set; }
             = RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne;
 
         /// <summary>
@@ -241,13 +241,13 @@ namespace RDFSharp.Query
         /// equivalent to a ground triple predicate.
         /// </summary>
         internal bool IsPlainLink
-            => Kind == RDFQueryEnums.RDFPropertyPathExpressionKinds.Link
+            => Kind == RDFQueryEnums.RDFPropertyPathStepKinds.Link
                 && !IsInverse
                 && Cardinality == RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne;
         #endregion
 
         #region Ctors
-        private RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds kind)
+        private RDFPropertyPathStep(RDFQueryEnums.RDFPropertyPathStepKinds kind)
             => Kind = kind;
         #endregion
 
@@ -256,36 +256,36 @@ namespace RDFSharp.Query
         /// Builds a Link node over the given predicate IRI
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public static RDFPropertyPathExpression Link(RDFResource property)
+        public static RDFPropertyPathStep Link(RDFResource property)
         {
             #region Guards
             if (property == null)
                 throw new RDFQueryException("Cannot create property path Link because given \"property\" parameter is null.");
             #endregion
 
-            return new RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds.Link) { Property = property };
+            return new RDFPropertyPathStep(RDFQueryEnums.RDFPropertyPathStepKinds.Link) { Property = property };
         }
 
         /// <summary>
         /// Builds a Sequence node composing the given sub-paths (<c>P1/P2/…</c>)
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public static RDFPropertyPathExpression Sequence(List<RDFPropertyPathExpression> children)
-            => CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, children);
+        public static RDFPropertyPathStep Sequence(List<RDFPropertyPathStep> children)
+            => CompositeStep(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, children);
 
         /// <summary>
         /// Builds an Alternative node unioning the given sub-paths (<c>P1|P2|…</c>)
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public static RDFPropertyPathExpression Alternative(List<RDFPropertyPathExpression> children)
-            => CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, children);
+        public static RDFPropertyPathStep Alternative(List<RDFPropertyPathStep> children)
+            => CompositeStep(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, children);
 
         /// <summary>
         /// Builds a NegatedPropertySet node matching one hop over any predicate NOT among the given members.
         /// A member with IsInverse=true contributes to the inverse-direction exclusion set (<c>^a</c> in <c>!(a|^b)</c>).
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public static RDFPropertyPathExpression NegatedPropertySet(List<(RDFResource Property, bool IsInverse)> members)
+        public static RDFPropertyPathStep NegatedPropertySet(List<(RDFResource Property, bool IsInverse)> members)
         {
             #region Guards
             if (members == null)
@@ -294,10 +294,10 @@ namespace RDFSharp.Query
                 throw new RDFQueryException("Cannot create property path NegatedPropertySet because given \"members\" contains a null predicate.");
             #endregion
 
-            return new RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds.NegatedPropertySet) { NegatedMembers = members };
+            return new RDFPropertyPathStep(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet) { NegatedMembers = members };
         }
 
-        private static RDFPropertyPathExpression CompositeNode(RDFQueryEnums.RDFPropertyPathExpressionKinds kind, List<RDFPropertyPathExpression> children)
+        private static RDFPropertyPathStep CompositeStep(RDFQueryEnums.RDFPropertyPathStepKinds kind, List<RDFPropertyPathStep> children)
         {
             #region Guards
             if (children == null || children.Count == 0)
@@ -309,7 +309,7 @@ namespace RDFSharp.Query
             //A single child needs no composition: it stands for itself (e.g. a 1-branch Alternative is just that branch)
             return children.Count == 1
                 ? children[0]
-                : new RDFPropertyPathExpression(kind) { Children = new List<RDFPropertyPathExpression>(children) };
+                : new RDFPropertyPathStep(kind) { Children = new List<RDFPropertyPathStep>(children) };
         }
         #endregion
 
@@ -318,9 +318,9 @@ namespace RDFSharp.Query
         /// Returns the inverse of this sub-path (<c>^P</c>). Wraps in a group when an inverse is already present,
         /// so a double inverse stays well-formed.
         /// </summary>
-        public RDFPropertyPathExpression Inverse()
+        public RDFPropertyPathStep Inverse()
         {
-            RDFPropertyPathExpression nodeToInvert = IsInverse ? WrapInImplicitGroup(this) : this;
+            RDFPropertyPathStep nodeToInvert = IsInverse ? WrapInImplicitGroup(this) : this;
             nodeToInvert.IsInverse = true;
             return nodeToInvert;
         }
@@ -328,27 +328,27 @@ namespace RDFSharp.Query
         /// <summary>
         /// Returns this sub-path with a zero-or-one cardinality (<c>P?</c>)
         /// </summary>
-        public RDFPropertyPathExpression ZeroOrOne()
+        public RDFPropertyPathStep ZeroOrOne()
             => WithCardinality(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne);
 
         /// <summary>
         /// Returns this sub-path with a one-or-more transitive cardinality (<c>P+</c>)
         /// </summary>
-        public RDFPropertyPathExpression OneOrMore()
+        public RDFPropertyPathStep OneOrMore()
             => WithCardinality(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore);
 
         /// <summary>
         /// Returns this sub-path with a zero-or-more reflexive-transitive cardinality (<c>P*</c>)
         /// </summary>
-        public RDFPropertyPathExpression ZeroOrMore()
+        public RDFPropertyPathStep ZeroOrMore()
             => WithCardinality(RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore);
 
         //Applies a cardinality. Because evaluation applies cardinality (inner) before inverse (outer), a
         //cardinality on a node that already carries an inverse or a cardinality must wrap in a group so that the
         //new cardinality stays the outermost operator.
-        private RDFPropertyPathExpression WithCardinality(RDFQueryEnums.RDFPropertyPathStepCardinalities cardinality)
+        private RDFPropertyPathStep WithCardinality(RDFQueryEnums.RDFPropertyPathStepCardinalities cardinality)
         {
-            RDFPropertyPathExpression nodeToConstrain =
+            RDFPropertyPathStep nodeToConstrain =
                 (IsInverse || Cardinality != RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
                     ? WrapInImplicitGroup(this) : this;
             nodeToConstrain.Cardinality = cardinality;
@@ -356,8 +356,8 @@ namespace RDFSharp.Query
         }
 
         //Builds the explicit single-child Sequence group wrapping the given inner sub-path
-        private static RDFPropertyPathExpression WrapInImplicitGroup(RDFPropertyPathExpression innerSubPath)
-            => new RDFPropertyPathExpression(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence) { Children = new List<RDFPropertyPathExpression> { innerSubPath } };
+        private static RDFPropertyPathStep WrapInImplicitGroup(RDFPropertyPathStep innerSubPath)
+            => new RDFPropertyPathStep(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence) { Children = new List<RDFPropertyPathStep> { innerSubPath } };
         #endregion
     }
 }

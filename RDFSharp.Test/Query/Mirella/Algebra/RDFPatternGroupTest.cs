@@ -207,8 +207,8 @@ public class RDFPatternGroupTest
     [TestMethod]
     public void ShouldAddPropertyPath()
     {
-        RDFPropertyPath pPath = new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("e")).AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE))
-            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE));
+        RDFPropertyPath pPath = new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("e")).AddStep(RDFPropertyPathStep.Link(RDFVocabulary.RDF.TYPE))
+            .AddStep(RDFPropertyPathStep.Link(RDFVocabulary.RDF.TYPE));
         RDFPatternGroup pGroup = new RDFPatternGroup();
         pGroup.AddPropertyPath(pPath);
         pGroup.AddPropertyPath(null); //Will not be added, since null is not allowed

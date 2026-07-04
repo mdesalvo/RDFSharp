@@ -24,7 +24,7 @@ namespace RDFSharp.Query
     /// <para>
     /// Property-path half of the SPARQL parser: the verb of a triples block can be a full SPARQL 1.1
     /// <c>Path</c> expression rather than a single predicate. This file parses the W3C SPARQL 1.1 path grammar
-    /// directly into RDFSharp's recursive <see cref="RDFPropertyPathExpression"/> tree (the model represents every
+    /// directly into RDFSharp's recursive <see cref="RDFPropertyPathStep"/> tree (the model represents every
     /// spec-legal path shape, so there is no lowering step and no rejected forms).
     /// </para>
     /// <para>
@@ -70,28 +70,28 @@ namespace RDFSharp.Query
                 return ParsedVerb.FromVariable(ParseVariable(parserContext));
 
             //Otherwise the verb is a property path (VerbPath): parse the W3C path grammar into the expression tree
-            RDFPropertyPathExpression pathExpression = ParsePathAlternative(parserContext);
+            RDFPropertyPathStep pathStep = ParsePathAlternative(parserContext);
 
             //If the whole path is one plain predicate (no inverse, exactly-one cardinality), treat it as a simple
             //IRI predicate so a plain triple stays a triple
-            if (pathExpression.IsPlainLink)
-                return ParsedVerb.FromSimpleIri(pathExpression.Property);
+            if (pathStep.IsPlainLink)
+                return ParsedVerb.FromSimpleIri(pathStep.Property);
 
             //Genuine property path
-            return ParsedVerb.FromPath(pathExpression);
+            return ParsedVerb.FromPath(pathStep);
         }
 
         /// <summary>
         /// <para>
         /// Parses the object list following a property-path verb (<c>ObjectList ::= Object ( ',' Object )*</c>)
         /// and emits one <see cref="RDFPropertyPath"/> per object into <paramref name="targetPatternGroup"/>.
-        /// Every comma-separated object shares the same start (the subject) and the same parsed path expression;
-        /// each object becomes the End of a freshly built property path carrying that single expression as its unit.
+        /// Every comma-separated object shares the same start (the subject) and the same parsed path step;
+        /// each object becomes the End of a freshly built property path carrying that single step as its unit.
         /// </para>
         /// </summary>
         /// <exception cref="RDFQueryException">When an object is malformed or invalid as a path endpoint.</exception>
         private static void ParsePathObjectList(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup,
-            RDFPatternMember pathStart, RDFPropertyPathExpression pathExpression)
+            RDFPatternMember pathStart, RDFPropertyPathStep pathStep)
         {
             while (true)
             {
@@ -101,7 +101,7 @@ namespace RDFSharp.Query
                 //Build the property path between start and end, carrying the parsed expression as its single unit.
                 //The RDFPropertyPath constructor enforces that both endpoints are an IRI or a variable.
                 RDFPropertyPath propertyPath = new RDFPropertyPath(pathStart, pathEnd);
-                propertyPath.AddStep(pathExpression);
+                propertyPath.AddStep(pathStep);
                 targetPatternGroup.AddPropertyPath(propertyPath);
 
                 //A ',' introduces another object sharing this subject+path: consume and continue
@@ -121,9 +121,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// <c>[89] PathAlternative ::= PathSequence ( '|' PathSequence )*</c>. Lowest-precedence path operator.
         /// </summary>
-        private static RDFPropertyPathExpression ParsePathAlternative(RDFQueryParserContext parserContext)
+        private static RDFPropertyPathStep ParsePathAlternative(RDFQueryParserContext parserContext)
         {
-            List<RDFPropertyPathExpression> alternativeBranches = new List<RDFPropertyPathExpression> { ParsePathSequence(parserContext) };
+            List<RDFPropertyPathStep> alternativeBranches = new List<RDFPropertyPathStep> { ParsePathSequence(parserContext) };
 
             //Collect every '|'-separated sequence into the alternative list
             while (SkipWhitespace(parserContext) == '|')
@@ -133,15 +133,15 @@ namespace RDFSharp.Query
             }
 
             //A single branch collapses to that sequence; two or more become an alternative node (see CompositeNode)
-            return RDFPropertyPathExpression.Alternative(alternativeBranches);
+            return RDFPropertyPathStep.Alternative(alternativeBranches);
         }
 
         /// <summary>
         /// <c>[90] PathSequence ::= PathEltOrInverse ( '/' PathEltOrInverse )*</c>. Binds tighter than '|'.
         /// </summary>
-        private static RDFPropertyPathExpression ParsePathSequence(RDFQueryParserContext parserContext)
+        private static RDFPropertyPathStep ParsePathSequence(RDFQueryParserContext parserContext)
         {
-            List<RDFPropertyPathExpression> sequenceElements = new List<RDFPropertyPathExpression> { ParsePathEltOrInverse(parserContext) };
+            List<RDFPropertyPathStep> sequenceElements = new List<RDFPropertyPathStep> { ParsePathEltOrInverse(parserContext) };
 
             //Collect every '/'-separated element into the sequence list
             while (SkipWhitespace(parserContext) == '/')
@@ -151,13 +151,13 @@ namespace RDFSharp.Query
             }
 
             //A single element collapses to that element; two or more become a sequence node (see CompositeNode)
-            return RDFPropertyPathExpression.Sequence(sequenceElements);
+            return RDFPropertyPathStep.Sequence(sequenceElements);
         }
 
         /// <summary>
         /// <c>[92] PathEltOrInverse ::= PathElt | '^' PathElt</c>. A leading '^' marks the element as inverse.
         /// </summary>
-        private static RDFPropertyPathExpression ParsePathEltOrInverse(RDFQueryParserContext parserContext)
+        private static RDFPropertyPathStep ParsePathEltOrInverse(RDFQueryParserContext parserContext)
         {
             //A leading '^' inverts the following element
             if (SkipWhitespace(parserContext) == '^')
@@ -172,9 +172,9 @@ namespace RDFSharp.Query
         /// <summary>
         /// <c>[91] PathElt ::= PathPrimary PathMod?</c>. Parses the primary then an optional cardinality modifier.
         /// </summary>
-        private static RDFPropertyPathExpression ParsePathElt(RDFQueryParserContext parserContext)
+        private static RDFPropertyPathStep ParsePathElt(RDFQueryParserContext parserContext)
         {
-            RDFPropertyPathExpression pathPrimary = ParsePathPrimary(parserContext);
+            RDFPropertyPathStep pathPrimary = ParsePathPrimary(parserContext);
 
             //Optional cardinality modifier '?' / '*' / '+' (W3C PathMod — note: NO '{n,m}'). The modifier must
             //immediately follow the element with NO intervening whitespace: this is what disambiguates a postfix
@@ -203,7 +203,7 @@ namespace RDFSharp.Query
         /// sub-path becomes the inner expression (grouping is implicit in the tree); a negated property set
         /// becomes a NegatedPropertySet node.
         /// </summary>
-        private static RDFPropertyPathExpression ParsePathPrimary(RDFQueryParserContext parserContext)
+        private static RDFPropertyPathStep ParsePathPrimary(RDFQueryParserContext parserContext)
         {
             int nextSignificantCodePoint = SkipWhitespace(parserContext);
 
@@ -211,7 +211,7 @@ namespace RDFSharp.Query
             if (nextSignificantCodePoint == '(')
             {
                 ReadCodePoint(parserContext);
-                RDFPropertyPathExpression innerPath = ParsePathAlternative(parserContext);
+                RDFPropertyPathStep innerPath = ParsePathAlternative(parserContext);
                 ExpectChar(parserContext, ')', "property path group");
                 return innerPath;
             }
@@ -231,7 +231,7 @@ namespace RDFSharp.Query
                 ReadCodePoint(parserContext);
                 int codePointAfterA = PeekCodePoint(parserContext);
                 if (!IsPrefixedNameContinuation(codePointAfterA))
-                    return RDFPropertyPathExpression.Link(new RDFResource(RDFVocabulary.RDF.TYPE.ToString()));
+                    return RDFPropertyPathStep.Link(new RDFResource(RDFVocabulary.RDF.TYPE.ToString()));
 
                 //'a' was the first character of a longer token: push it back and let the term reader parse it whole
                 UnreadCodePoint(parserContext, 'a');
@@ -239,14 +239,14 @@ namespace RDFSharp.Query
 
             //General case: a concrete IRI / prefixed name. A property-path step must be an IRI (resource), so a
             //literal here is a parse error.
-            return RDFPropertyPathExpression.Link(ReadPathPropertyIri(parserContext));
+            return RDFPropertyPathStep.Link(ReadPathPropertyIri(parserContext));
         }
 
         /// <summary>
         /// <c>[95]/[96]</c> PathNegatedPropertySet: either a single one-in-property-set member, or a parenthesized
         /// (possibly empty) '|'-separated list of members. Each member is <c>iri | 'a' | '^' (iri | 'a')</c>.
         /// </summary>
-        private static RDFPropertyPathExpression ParsePathNegatedPropertySet(RDFQueryParserContext parserContext)
+        private static RDFPropertyPathStep ParsePathNegatedPropertySet(RDFQueryParserContext parserContext)
         {
             List<(RDFResource Property, bool IsInverse)> members = new List<(RDFResource, bool)>();
 
@@ -271,7 +271,7 @@ namespace RDFSharp.Query
                 members.Add(ParsePathOneInPropertySet(parserContext));
             }
 
-            return RDFPropertyPathExpression.NegatedPropertySet(members);
+            return RDFPropertyPathStep.NegatedPropertySet(members);
         }
 
         /// <summary>
@@ -331,14 +331,14 @@ namespace RDFSharp.Query
         {
             internal RDFVariable Variable { get; private set; }
             internal RDFResource SimpleIri { get; private set; }
-            internal RDFPropertyPathExpression PathExpression { get; private set; }
+            internal RDFPropertyPathStep PathStep { get; private set; }
 
             internal bool IsVariable => Variable != null;
             internal bool IsSimpleIri => SimpleIri != null;
 
             internal static ParsedVerb FromVariable(RDFVariable variable) => new ParsedVerb { Variable = variable };
             internal static ParsedVerb FromSimpleIri(RDFResource simpleIri) => new ParsedVerb { SimpleIri = simpleIri };
-            internal static ParsedVerb FromPath(RDFPropertyPathExpression pathExpression) => new ParsedVerb { PathExpression = pathExpression };
+            internal static ParsedVerb FromPath(RDFPropertyPathStep pathStep) => new ParsedVerb { PathStep = pathStep };
         }
         #endregion
 

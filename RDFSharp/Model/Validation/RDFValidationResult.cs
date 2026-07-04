@@ -122,7 +122,7 @@ namespace RDFSharp.Model
 
             //ResultPath
             if (ResultPath != null)
-                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, RDFValidationHelper.SerializeShapePath(result, ResultPath.Expression)));
+                result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.RESULT_PATH, RDFValidationHelper.SerializeShapePath(result, ResultPath.StepThree)));
 
             //Value
             if (ResultValue != null)

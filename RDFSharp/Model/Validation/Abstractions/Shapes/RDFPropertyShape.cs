@@ -61,7 +61,7 @@ namespace RDFSharp.Model
             #region Guards
             if (path == null)
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter is null.");
-            if (path.Expression == null)
+            if (path.StepThree == null)
                 throw new RDFModelException("Cannot create RDFPropertyShape because given \"path\" parameter has no steps.");
             #endregion
 
@@ -145,7 +145,7 @@ namespace RDFSharp.Model
             result.AddTriple(new RDFTriple(this, RDFVocabulary.RDF.TYPE, RDFVocabulary.SHACL.PROPERTY_SHAPE));
 
             //Path
-            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, RDFValidationHelper.SerializeShapePath(result, Path.Expression)));
+            result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.PATH, RDFValidationHelper.SerializeShapePath(result, Path.StepThree)));
 
             //Descriptions
             Descriptions.ForEach(description => result.AddTriple(new RDFTriple(this, RDFVocabulary.SHACL.DESCRIPTION, description)));

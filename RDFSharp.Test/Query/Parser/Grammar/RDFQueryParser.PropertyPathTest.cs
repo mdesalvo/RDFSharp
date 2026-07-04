@@ -25,7 +25,7 @@ namespace RDFSharp.Test.Query;
 /// Unit tests for the property-path half of RDFQueryParser: the verb of a triples block may be a full SPARQL 1.1
 /// Path expression (sequence '/', alternative '|', inverse '^', cardinality '? * +', negated property set '!')
 /// rather than a single predicate. Coverage spans the W3C path grammar accepted by the parser, the construction
-/// of the recursive RDFPropertyPathExpression tree, the now-supported recursive shapes, and round-trips.
+/// of the recursive RDFPropertyPathStep tree, the now-supported recursive shapes, and round-trips.
 /// </summary>
 public partial class RDFQueryParserTest
 {
@@ -35,17 +35,17 @@ public partial class RDFQueryParserTest
     private static RDFPropertyPath SingleParsedPath(string sparql)
         => RDFSelectQuery.FromString(sparql).GetPatternGroups().Single().GetPropertyPaths().Single();
 
-    private static RDFPropertyPathExpression SingleParsedExpression(string sparql)
-        => SingleParsedPath(sparql).Expression;
+    private static RDFPropertyPathStep SingleParsedExpression(string sparql)
+        => SingleParsedPath(sparql).StepThree;
 
     //Asserts that the given expression is a Link over the given predicate with the given inverse/cardinality decorations
-    private static void AssertLink(RDFPropertyPathExpression expression, string iri, bool inverse = false,
+    private static void AssertLink(RDFPropertyPathStep step, string iri, bool inverse = false,
         RDFQueryEnums.RDFPropertyPathStepCardinalities cardinality = RDFQueryEnums.RDFPropertyPathStepCardinalities.ExactlyOne)
     {
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Link, expression.Kind);
-        Assert.IsTrue(expression.Property.Equals(new RDFResource(iri)));
-        Assert.AreEqual(inverse, expression.IsInverse);
-        Assert.AreEqual(cardinality, expression.Cardinality);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Link, step.Kind);
+        Assert.IsTrue(step.Property.Equals(new RDFResource(iri)));
+        Assert.AreEqual(inverse, step.IsInverse);
+        Assert.AreEqual(cardinality, step.Cardinality);
     }
 
     #region Parsing (W3C grammar)
@@ -72,112 +72,112 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldParseSequencePath()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>/<http://example.org/p2> ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>/<http://example.org/p2> ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, expression.Kind);
-        Assert.AreEqual(2, expression.Children.Count);
-        AssertLink(expression.Children[0], "http://example.org/p1");
-        AssertLink(expression.Children[1], "http://example.org/p2");
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Kind);
+        Assert.AreEqual(2, step.Children.Count);
+        AssertLink(step.Children[0], "http://example.org/p1");
+        AssertLink(step.Children[1], "http://example.org/p2");
     }
 
     [TestMethod]
     public void ShouldParseAlternativePath()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>|<http://example.org/p2> ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>|<http://example.org/p2> ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, expression.Kind);
-        Assert.AreEqual(2, expression.Children.Count);
-        AssertLink(expression.Children[0], "http://example.org/p1");
-        AssertLink(expression.Children[1], "http://example.org/p2");
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, step.Kind);
+        Assert.AreEqual(2, step.Children.Count);
+        AssertLink(step.Children[0], "http://example.org/p1");
+        AssertLink(step.Children[1], "http://example.org/p2");
     }
 
     [TestMethod]
     public void ShouldParseParenthesizedAlternativePath()
     {
         //Parenthesized pure alternative is equivalent to the bare alternative
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>|<http://example.org/p2>) ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>|<http://example.org/p2>) ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, expression.Kind);
-        Assert.AreEqual(2, expression.Children.Count);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, step.Kind);
+        Assert.AreEqual(2, step.Children.Count);
     }
 
     [TestMethod]
     public void ShouldParseInverseStep()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s ^<http://example.org/p> ?o }");
-        AssertLink(expression, "http://example.org/p", inverse: true);
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s ^<http://example.org/p> ?o }");
+        AssertLink(step, "http://example.org/p", inverse: true);
     }
 
     [TestMethod]
     public void ShouldParseOneOrMoreStep()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p>+ ?o }");
-        AssertLink(expression, "http://example.org/p", cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore);
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p>+ ?o }");
+        AssertLink(step, "http://example.org/p", cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore);
     }
 
     [TestMethod]
     public void ShouldParseZeroOrMoreStep()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p>* ?o }");
-        AssertLink(expression, "http://example.org/p", cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore);
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p>* ?o }");
+        AssertLink(step, "http://example.org/p", cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrMore);
     }
 
     [TestMethod]
     public void ShouldParseZeroOrOneStep()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p>? ?o }");
-        AssertLink(expression, "http://example.org/p", cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne);
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p>? ?o }");
+        AssertLink(step, "http://example.org/p", cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.ZeroOrOne);
     }
 
     [TestMethod]
     public void ShouldParseInverseOneOrMoreStep()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s ^<http://example.org/p>+ ?o }");
-        AssertLink(expression, "http://example.org/p", inverse: true, cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore);
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s ^<http://example.org/p>+ ?o }");
+        AssertLink(step, "http://example.org/p", inverse: true, cardinality: RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore);
     }
 
     [TestMethod]
     public void ShouldParseAlternativeThenSequencePath()
     {
         //(p1|p2)/p3 -> sequence of [alternative {p1,p2}, link p3]
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>|<http://example.org/p2>)/<http://example.org/p3> ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>|<http://example.org/p2>)/<http://example.org/p3> ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, expression.Kind);
-        Assert.AreEqual(2, expression.Children.Count);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, expression.Children[0].Kind);
-        AssertLink(expression.Children[1], "http://example.org/p3");
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Kind);
+        Assert.AreEqual(2, step.Children.Count);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, step.Children[0].Kind);
+        AssertLink(step.Children[1], "http://example.org/p3");
     }
 
     [TestMethod]
     public void ShouldParseSequenceThenAlternativePath()
     {
         //p1/(p2|p3) -> sequence of [link p1, alternative {p2,p3}]
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>/(<http://example.org/p2>|<http://example.org/p3>) ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>/(<http://example.org/p2>|<http://example.org/p3>) ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, expression.Kind);
-        Assert.AreEqual(2, expression.Children.Count);
-        AssertLink(expression.Children[0], "http://example.org/p1");
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, expression.Children[1].Kind);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Kind);
+        Assert.AreEqual(2, step.Children.Count);
+        AssertLink(step.Children[0], "http://example.org/p1");
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, step.Children[1].Kind);
     }
 
     [TestMethod]
     public void ShouldParseAShorthandInsidePath()
     {
         //'a' (rdf:type) as the first step of a sequence path
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s a/<http://example.org/p> ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s a/<http://example.org/p> ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, expression.Kind);
-        AssertLink(expression.Children[0], RDFVocabulary.RDF.TYPE.ToString());
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Kind);
+        AssertLink(step.Children[0], RDFVocabulary.RDF.TYPE.ToString());
     }
 
     [TestMethod]
     public void ShouldFlattenRedundantSequenceGroup()
     {
         //(p1/p2) used as a sequence member flattens losslessly into a two-link sequence
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>/<http://example.org/p2>) ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>/<http://example.org/p2>) ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, expression.Kind);
-        Assert.AreEqual(2, expression.Children.Count);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Kind);
+        Assert.AreEqual(2, step.Children.Count);
     }
 
     [TestMethod]
@@ -200,61 +200,61 @@ public partial class RDFQueryParserTest
     }
     #endregion
 
-    #region Recursive shapes (IP5.3 — now representable by the RDFPropertyPathExpression tree)
+    #region Recursive shapes (IP5.3 — now representable by the RDFPropertyPathStep tree)
     [TestMethod]
     public void ShouldParseNegatedPropertySetSingle()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s !<http://example.org/p> ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s !<http://example.org/p> ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.NegatedPropertySet, expression.Kind);
-        Assert.AreEqual(1, expression.NegatedMembers.Count);
-        Assert.IsTrue(expression.NegatedMembers[0].Property.Equals(new RDFResource("http://example.org/p")));
-        Assert.IsFalse(expression.NegatedMembers[0].IsInverse);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
+        Assert.AreEqual(1, step.NegatedMembers.Count);
+        Assert.IsTrue(step.NegatedMembers[0].Property.Equals(new RDFResource("http://example.org/p")));
+        Assert.IsFalse(step.NegatedMembers[0].IsInverse);
     }
 
     [TestMethod]
     public void ShouldParseNegatedPropertySetWithInverseMembers()
     {
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s !(<http://example.org/p1>|^<http://example.org/p2>) ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s !(<http://example.org/p1>|^<http://example.org/p2>) ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.NegatedPropertySet, expression.Kind);
-        Assert.AreEqual(2, expression.NegatedMembers.Count);
-        Assert.IsFalse(expression.NegatedMembers[0].IsInverse);
-        Assert.IsTrue(expression.NegatedMembers[1].IsInverse);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
+        Assert.AreEqual(2, step.NegatedMembers.Count);
+        Assert.IsFalse(step.NegatedMembers[0].IsInverse);
+        Assert.IsTrue(step.NegatedMembers[1].IsInverse);
     }
 
     [TestMethod]
     public void ShouldParseGroupedCardinality()
     {
         //(p1/p2)+ -> sequence carrying a OneOrMore cardinality
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>/<http://example.org/p2>)+ ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s (<http://example.org/p1>/<http://example.org/p2>)+ ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, expression.Kind);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, expression.Cardinality);
-        Assert.AreEqual(2, expression.Children.Count);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Kind);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepCardinalities.OneOrMore, step.Cardinality);
+        Assert.AreEqual(2, step.Children.Count);
     }
 
     [TestMethod]
     public void ShouldParseInverseGroup()
     {
         //^(p1|p2) -> alternative carrying the inverse flag
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s ^(<http://example.org/p1>|<http://example.org/p2>) ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s ^(<http://example.org/p1>|<http://example.org/p2>) ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, expression.Kind);
-        Assert.IsTrue(expression.IsInverse);
-        Assert.AreEqual(2, expression.Children.Count);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, step.Kind);
+        Assert.IsTrue(step.IsInverse);
+        Assert.AreEqual(2, step.Children.Count);
     }
 
     [TestMethod]
     public void ShouldParseSequenceAsAlternativeBranch()
     {
         //p1/p2|p3 -> alternative of [sequence {p1,p2}, link p3]
-        RDFPropertyPathExpression expression = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>/<http://example.org/p2>|<http://example.org/p3> ?o }");
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s <http://example.org/p1>/<http://example.org/p2>|<http://example.org/p3> ?o }");
 
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Alternative, expression.Kind);
-        Assert.AreEqual(2, expression.Children.Count);
-        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathExpressionKinds.Sequence, expression.Children[0].Kind);
-        AssertLink(expression.Children[1], "http://example.org/p3");
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, step.Kind);
+        Assert.AreEqual(2, step.Children.Count);
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Children[0].Kind);
+        AssertLink(step.Children[1], "http://example.org/p3");
     }
     #endregion
 
@@ -265,8 +265,8 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p1")))
-                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2")))));
+                    .AddStep(RDFPropertyPathStep.Link(new RDFResource("http://example.org/p1")))
+                    .AddStep(RDFPropertyPathStep.Link(new RDFResource("http://example.org/p2")))));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -277,9 +277,9 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddStep(RDFPropertyPathExpression.Alternative([
-                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p1")),
-                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2"))]))));
+                    .AddStep(RDFPropertyPathStep.Alternative([
+                        RDFPropertyPathStep.Link(new RDFResource("http://example.org/p1")),
+                        RDFPropertyPathStep.Link(new RDFResource("http://example.org/p2"))]))));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -290,7 +290,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p")).Inverse().OneOrMore())));
+                    .AddStep(RDFPropertyPathStep.Link(new RDFResource("http://example.org/p")).Inverse().OneOrMore())));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -301,10 +301,10 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddStep(RDFPropertyPathExpression.Alternative([
-                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p1")),
-                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2"))]))
-                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p3")))));
+                    .AddStep(RDFPropertyPathStep.Alternative([
+                        RDFPropertyPathStep.Link(new RDFResource("http://example.org/p1")),
+                        RDFPropertyPathStep.Link(new RDFResource("http://example.org/p2"))]))
+                    .AddStep(RDFPropertyPathStep.Link(new RDFResource("http://example.org/p3")))));
 
         AssertSelectQueryRoundTrips(query);
     }

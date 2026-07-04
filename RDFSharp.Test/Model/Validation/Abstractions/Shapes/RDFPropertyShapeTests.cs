@@ -249,7 +249,7 @@ public class RDFPropertyShapeTests
     {
         //A recursive SHACL path "knows+" (sh:oneOrMorePath), now representable by the property shape
         RDFPropertyPath recursivePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
+            .AddStep(RDFPropertyPathStep.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), recursivePath);
         RDFGraph pshGraph = propertyShape.ToRDFGraph();
 
@@ -264,9 +264,9 @@ public class RDFPropertyShapeTests
         //Round-trip: re-parsing the serialized shape yields the same recursive path
         RDFPropertyShape reparsedShape = RDFShapesGraph.FromRDFGraph(pshGraph).SelectShape("ex:propertyShape") as RDFPropertyShape;
         Assert.IsNotNull(reparsedShape);
-        Assert.AreEqual(RDFPropertyPathExpressionKinds.Link, reparsedShape.Path.Expression.Kind);
-        Assert.AreEqual(RDFPropertyPathStepCardinalities.OneOrMore, reparsedShape.Path.Expression.Cardinality);
-        Assert.IsTrue(reparsedShape.Path.Expression.Property.Equals(RDFVocabulary.FOAF.KNOWS));
+        Assert.AreEqual(RDFPropertyPathStepKinds.Link, reparsedShape.Path.StepThree.Kind);
+        Assert.AreEqual(RDFPropertyPathStepCardinalities.OneOrMore, reparsedShape.Path.StepThree.Cardinality);
+        Assert.IsTrue(reparsedShape.Path.StepThree.Property.Equals(RDFVocabulary.FOAF.KNOWS));
     }
 
     [TestMethod]
