@@ -99,6 +99,14 @@ public class RDFLangMatchesExpressionTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLangMatchesExpression(new RDFVariable("?V"), null as RDFVariable));
 
     [TestMethod]
+    public void ShouldThrowExceptionOnCreatingLangMatchesExpressionWithExpressionVariableBecauseNullRightArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLangMatchesExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFVariable));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingLangMatchesExpressionWithVariableExpressionBecauseNullRightArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFLangMatchesExpression(new RDFVariable("?V"), null as RDFExpression));
+
+    [TestMethod]
     public void ShouldCreateExactLangMatchesExpressionAndCalculateResultTrue()
     {
         RDFTable table = new RDFTable();

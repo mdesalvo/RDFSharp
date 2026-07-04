@@ -120,5 +120,24 @@ public class RDFBNodeExpressionTest
 
         Assert.IsNull(expressionResult);
     }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithExpressionArgumentAndCalculateNullResultOnUnboundVariable()
+    {
+        //The Guards region only short-circuits a bare RDFVariable argument: when the argument is wrapped in an
+        //RDFExpression (here RDFVariableExpression), the unbound-ness only surfaces once the inner expression
+        //is evaluated and yields null
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFPlainLiteral("seed").ToString() }
+        });
+
+        RDFBNodeExpression expression = new RDFBNodeExpression(new RDFVariableExpression(new RDFVariable("?NOTBOUND")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNull(expressionResult);
+    }
     #endregion
 }

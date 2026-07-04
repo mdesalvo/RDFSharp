@@ -638,6 +638,16 @@ public class RDFStrLangDirExpressionTest
             new RDFVariable("?V1"), new RDFVariable("?V2"), null as RDFExpression));
 
     [TestMethod]
+    public void ShouldThrowExceptionOnCreatingEVStrLangDirExpressionBecauseNullDirectionExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFStrLangDirExpression(
+            new RDFVariableExpression(new RDFVariable("?V1")), new RDFVariable("?V2"), null as RDFExpression));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingVEStrLangDirExpressionBecauseNullDirectionExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFStrLangDirExpression(
+            new RDFVariable("?V1"), new RDFVariableExpression(new RDFVariable("?V2")), null as RDFExpression));
+
+    [TestMethod]
     public void ShouldApplyStrLangDirExpressionWithDynamicDirectionLTR()
     {
         RDFTable table = new RDFTable();

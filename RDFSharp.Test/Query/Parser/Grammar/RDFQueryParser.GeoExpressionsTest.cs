@@ -115,6 +115,26 @@ public partial class RDFQueryParserTest
             RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(geof:sfWithin(?a)) }"));
     }
 
+    [TestMethod]
+    public void ShouldParseGeoBufferFunctionWithDynamicRadius()
+    {
+        //When the radius is not a constant numeric literal (here, a variable), it is kept as a per-row expression
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            "SELECT * WHERE { ?s ?p ?a . ?s ?r ?radius FILTER(geof:sfWithin(geof:buffer(?a, ?radius, <http://www.opengis.net/def/uom/OGC/1.0/metre>), ?a)) }");
+
+        RDFGeoWithinExpression within = (RDFGeoWithinExpression)GeoExpressionOf(query);
+        RDFGeoBufferExpression buffer = (RDFGeoBufferExpression)within.LeftArgument;
+        Assert.IsNotNull(buffer.BufferMetersExpression);
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnGeoBufferFunctionWithWrongArity()
+    {
+        //geof:buffer requires 2 or 3 arguments
+        Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(geof:sfWithin(geof:buffer(?a), ?a)) }"));
+    }
+
     /// <summary>
     /// Sweeps EVERY GeoSPARQL function in the unary, binary, Egenhofer and RCC8 dispatch tables, invoking each by
     /// its full IRI inside a bare FILTER (where any RDFGeoExpression is wrapped as 'expr = true'), and asserting

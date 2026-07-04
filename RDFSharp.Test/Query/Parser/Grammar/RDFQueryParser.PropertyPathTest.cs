@@ -171,6 +171,26 @@ public partial class RDFQueryParserTest
     }
 
     [TestMethod]
+    public void ShouldParseAShorthandDisambiguatedFromPrefixedNameInsidePath()
+    {
+        //A token starting with 'a' but continuing into a prefixed name (a:Foo) must NOT be read as the rdf:type
+        //shorthand: the parser must push 'a' back and let the term reader parse the whole prefixed name.
+        RDFPropertyPathStep step = SingleParsedExpression(
+            "PREFIX a: <http://a.example.org/> SELECT * WHERE { ?s a:Foo/<http://example.org/p> ?o }");
+
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.Sequence, step.Kind);
+        AssertLink(step.Children[0], "http://a.example.org/Foo");
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnLiteralAsPathStep()
+    {
+        //A property-path step must be an IRI: a literal in verb position is a parse error
+        Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s \"literal\" ?o }"));
+    }
+
+    [TestMethod]
     public void ShouldFlattenRedundantSequenceGroup()
     {
         //(p1/p2) used as a sequence member flattens losslessly into a two-link sequence
@@ -220,6 +240,57 @@ public partial class RDFQueryParserTest
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
         Assert.AreEqual(1, step.ForwardMembers.Count);
         Assert.AreEqual(1, step.InverseMembers.Count);
+    }
+
+    [TestMethod]
+    public void ShouldParseNegatedPropertySetWithBareAShorthand()
+    {
+        //!a -> single forward member, rdf:type
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s !a ?o }");
+
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
+        Assert.AreEqual(1, step.ForwardMembers.Count);
+        Assert.IsTrue(step.ForwardMembers[0].Equals(new RDFResource(RDFVocabulary.RDF.TYPE.ToString())));
+        Assert.AreEqual(0, step.InverseMembers.Count);
+    }
+
+    [TestMethod]
+    public void ShouldParseNegatedPropertySetWithBareInverseAShorthand()
+    {
+        //!^a -> single inverse member, rdf:type
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s !^a ?o }");
+
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
+        Assert.AreEqual(0, step.ForwardMembers.Count);
+        Assert.AreEqual(1, step.InverseMembers.Count);
+        Assert.IsTrue(step.InverseMembers[0].Equals(new RDFResource(RDFVocabulary.RDF.TYPE.ToString())));
+    }
+
+    [TestMethod]
+    public void ShouldParseNegatedPropertySetWithInverseAShorthandInGroup()
+    {
+        //!(p|^a) -> forward iri member plus inverse rdf:type member
+        RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s !(<http://example.org/p>|^a) ?o }");
+
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
+        Assert.AreEqual(1, step.ForwardMembers.Count);
+        Assert.IsTrue(step.ForwardMembers[0].Equals(new RDFResource("http://example.org/p")));
+        Assert.AreEqual(1, step.InverseMembers.Count);
+        Assert.IsTrue(step.InverseMembers[0].Equals(new RDFResource(RDFVocabulary.RDF.TYPE.ToString())));
+    }
+
+    [TestMethod]
+    public void ShouldParseNegatedPropertySetWithAShorthandDisambiguatedFromPrefixedName()
+    {
+        //Inside a negated set, a token starting with 'a' but continuing into a prefixed name (a:Foo) must NOT
+        //be read as the rdf:type shorthand: the parser must fall back to the term reader for the whole token.
+        RDFPropertyPathStep step = SingleParsedExpression(
+            "PREFIX a: <http://a.example.org/> SELECT * WHERE { ?s !a:Foo ?o }");
+
+        Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
+        Assert.AreEqual(1, step.ForwardMembers.Count);
+        Assert.IsTrue(step.ForwardMembers[0].Equals(new RDFResource("http://a.example.org/Foo")));
+        Assert.AreEqual(0, step.InverseMembers.Count);
     }
 
     [TestMethod]
@@ -318,6 +389,8 @@ public partial class RDFQueryParserTest
     [DataRow("foaf:knows|(foaf:name|foaf:account)")]   // nested alternative flattened into the parent
     [DataRow("!foaf:knows")]                            // negated property set, single member
     [DataRow("!(foaf:knows|^foaf:name)")]              // negated property set, inverse member
+    [DataRow("!^a")]                                    // negated property set, bare inverse rdf:type shorthand
+    [DataRow("!(foaf:knows|^a)")]                       // negated property set, inverse rdf:type shorthand in group
     [DataRow("(foaf:knows/foaf:name)+")]               // cardinality on a group
     [DataRow("^(foaf:knows|foaf:name)")]               // inverse of a group
     [DataRow("foaf:knows/foaf:name|foaf:account")]     // sequence as an alternative branch

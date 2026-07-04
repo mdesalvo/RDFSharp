@@ -217,6 +217,22 @@ public class RDFGeoBufferExpressionTest
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoBufferExpression(new RDFVariable("?V"), null as RDFExpression));
 
     [TestMethod]
+    public void ShouldThrowExceptionOnCreatingGeoBufferExpressionWithEXPBecauseNullMetersExpression()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFGeoBufferExpression(new RDFVariableExpression(new RDFVariable("?V")), null as RDFExpression));
+
+    [TestMethod]
+    public void ShouldCreateGeoBufferExpressionWithVariableAndDynamicMeters()
+    {
+        RDFGeoBufferExpression expression = new RDFGeoBufferExpression(
+            new RDFVariable("?V"), new RDFVariableExpression(new RDFVariable("?M")));
+
+        Assert.IsNotNull(expression);
+        Assert.IsNotNull(expression.BufferMetersExpression);
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, ?M))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, ?M))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
     public void ShouldApplyExpressionWithDynamicMetersAndCalculateResultPoint()
     {
         RDFTable table = new RDFTable();

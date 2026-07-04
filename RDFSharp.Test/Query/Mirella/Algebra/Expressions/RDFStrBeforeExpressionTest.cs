@@ -40,6 +40,19 @@ public class RDFStrBeforeExpressionTest
     }
 
     [TestMethod]
+    public void ShouldCreateStrBeforeExpressionWithExpressionAndVariable()
+    {
+        RDFStrBeforeExpression expression = new RDFStrBeforeExpression(
+            new RDFVariableExpression(new RDFVariable("?V1")),
+            new RDFVariable("?V2"));
+
+        Assert.IsNotNull(expression);
+        Assert.IsNotNull(expression.LeftArgument);
+        Assert.IsNotNull(expression.RightArgument);
+        Assert.IsTrue(expression.ToString().Equals("(STRBEFORE(?V1, ?V2))", System.StringComparison.Ordinal));
+    }
+
+    [TestMethod]
     public void ShouldCreateStrBeforeExpressionWithVariables()
     {
         RDFStrBeforeExpression expression = new RDFStrBeforeExpression(
@@ -139,6 +152,45 @@ public class RDFStrBeforeExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionAndCalculateNullResultBecauseLeftUnboundVariable()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?B", new RDFPlainLiteral("cd").ToString() }
+        });
+
+        RDFStrBeforeExpression expression = new RDFStrBeforeExpression(
+            new RDFVariable("?NOTBOUND"),
+            new RDFVariable("?B"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNull(expressionResult);
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionAndCalculateResultOnStringBasedTypedLiterals()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?B");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("abcdef", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() },
+            { "?B", new RDFTypedLiteral("cd", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
+        });
+
+        RDFStrBeforeExpression expression = new RDFStrBeforeExpression(
+            new RDFVariableExpression(new RDFVariable("?A")),
+            new RDFVariableExpression(new RDFVariable("?B")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFPlainLiteral("ab")));
     }
     #endregion
 }

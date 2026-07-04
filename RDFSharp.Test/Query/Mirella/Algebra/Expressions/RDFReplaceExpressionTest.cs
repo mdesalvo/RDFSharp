@@ -857,6 +857,16 @@ public class RDFReplaceExpressionTest
             new RDFVariable("?A"), new RDFVariableExpression(new RDFVariable("?R")), null as RDFExpression));
 
     [TestMethod]
+    public void ShouldThrowExceptionOnCreatingReplaceExpressionWithExpressionBecauseNullRightArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(
+            new RDFVariableExpression(new RDFVariable("?A")), null as RDFExpression, new RDFVariableExpression(new RDFVariable("?P"))));
+
+    [TestMethod]
+    public void ShouldThrowExceptionOnCreatingReplaceVariableExpressionBecauseNullRightArgument()
+        => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFReplaceExpression(
+            new RDFVariable("?A"), null as RDFExpression, new RDFVariableExpression(new RDFVariable("?P"))));
+
+    [TestMethod]
     public void ShouldApplyReplaceExpressionWithDynamicPattern()
     {
         RDFTable table = new RDFTable();
