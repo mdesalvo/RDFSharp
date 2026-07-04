@@ -656,7 +656,7 @@ public class RDFValidationEngineTest
 
         RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
         RDFPropertyPath recursivePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:PropertyShape"), recursivePath);
         propertyShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
         propertyShape.AddConstraint(new RDFClassConstraint(new RDFResource("ex:Person")));

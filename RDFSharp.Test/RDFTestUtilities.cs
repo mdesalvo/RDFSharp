@@ -48,7 +48,7 @@ internal static class RDFTestUtilities
         RDFPropertyPathExpression step = RDFPropertyPathExpression.Link(predicate);
         if (inverse)
             step.Inverse();
-        return new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END")).AddSequenceStep(step);
+        return new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END")).AddStep(step);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ internal static class RDFTestUtilities
     {
         RDFPropertyPath path = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"));
         foreach (RDFResource predicate in predicates)
-            path.AddSequenceStep(RDFPropertyPathExpression.Link(predicate));
+            path.AddStep(RDFPropertyPathExpression.Link(predicate));
         return path;
     }
 
@@ -67,7 +67,7 @@ internal static class RDFTestUtilities
     /// </summary>
     internal static RDFPropertyPath ShaclAlternativePath(params RDFResource[] predicates)
         => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddAlternativeSteps(predicates.Select(predicate => RDFPropertyPathExpression.Link(predicate)).ToList());
+            .AddStep(RDFPropertyPathExpression.Alternative(predicates.Select(predicate => RDFPropertyPathExpression.Link(predicate)).ToList()));
     #endregion
 
     #region SPARQL iso-functionality harness

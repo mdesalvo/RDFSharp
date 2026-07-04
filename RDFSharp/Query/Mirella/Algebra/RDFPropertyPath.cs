@@ -47,9 +47,7 @@ namespace RDFSharp.Query
         /// of all units. Null until at least one unit has been added.
         /// </summary>
         internal RDFPropertyPathExpression Expression
-            => SequenceUnits.Count == 0 ? null
-             : SequenceUnits.Count == 1 ? SequenceUnits[0]
-             : RDFPropertyPathExpression.Sequence(SequenceUnits);
+            => SequenceUnits.Count == 0 ? null : RDFPropertyPathExpression.Sequence(SequenceUnits);
 
         /// <summary>
         /// Flag indicating the property path as Optional
@@ -144,40 +142,19 @@ namespace RDFSharp.Query
             => new RDFBinaryPatternGroupMember(RDFQueryEnums.RDFBinaryOperatorType.Minus, this, other);
 
         /// <summary>
-        /// Adds the given alternative sub-paths to the path as a single unit (OR semantics).
-        /// A single branch is added as a plain sequence unit.
+        /// Adds the given sub-path to the path as its next unit. What the unit "is" (a plain link, an inverse,
+        /// a sequence, an alternative, a negated property set, …) is already carried by the expression itself:
+        /// build it with the matching <see cref="RDFPropertyPathExpression"/> factory before adding it here.
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public RDFPropertyPath AddAlternativeSteps(List<RDFPropertyPathExpression> alternativeSteps)
+        public RDFPropertyPath AddStep(RDFPropertyPathExpression step)
         {
             #region Guards
-            if (alternativeSteps == null || alternativeSteps.Count == 0)
-                throw new RDFQueryException("Cannot add alternative steps because the given list is null or it does not contain elements.");
-            if (alternativeSteps.Any(step => step == null))
-                throw new RDFQueryException("Cannot add alternative steps because the given list contains a null element.");
+            if (step == null)
+                throw new RDFQueryException("Cannot add step because it is null.");
             #endregion
 
-            //A single branch is just a plain sequence unit; two or more become one alternative unit
-            SequenceUnits.Add(alternativeSteps.Count == 1
-                                ? alternativeSteps[0]
-                                : RDFPropertyPathExpression.Alternative(alternativeSteps));
-
-            UpdateEvaluabilityStatus();
-            return this;
-        }
-
-        /// <summary>
-        /// Adds the given sub-path to the path as a sequence unit (AND semantics)
-        /// </summary>
-        /// <exception cref="RDFQueryException"></exception>
-        public RDFPropertyPath AddSequenceStep(RDFPropertyPathExpression sequenceStep)
-        {
-            #region Guards
-            if (sequenceStep == null)
-                throw new RDFQueryException("Cannot add sequence step because it is null.");
-            #endregion
-
-            SequenceUnits.Add(sequenceStep);
+            SequenceUnits.Add(step);
 
             UpdateEvaluabilityStatus();
             return this;
@@ -329,7 +306,10 @@ namespace RDFSharp.Query
                 throw new RDFQueryException($"Cannot create property path {kind} because given \"children\" contains a null element.");
             #endregion
 
-            return new RDFPropertyPathExpression(kind) { Children = new List<RDFPropertyPathExpression>(children) };
+            //A single child needs no composition: it stands for itself (e.g. a 1-branch Alternative is just that branch)
+            return children.Count == 1
+                ? children[0]
+                : new RDFPropertyPathExpression(kind) { Children = new List<RDFPropertyPathExpression>(children) };
         }
         #endregion
 

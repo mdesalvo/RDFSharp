@@ -3205,8 +3205,8 @@ public class RDFQueryEngineTest
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
             .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
-                .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:dogOf")))
-                .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:hasName"))));
+                .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:dogOf")))
+                .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:hasName"))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
@@ -3237,8 +3237,8 @@ public class RDFQueryEngineTest
 
         RDFPatternGroup patternGroup = new RDFPatternGroup()
             .AddPropertyPath(new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
-                .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:dogOf")))
-                .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:hasName2"))));
+                .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:dogOf")))
+                .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:hasName2"))));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         queryEngine.EvaluatePatternGroup(patternGroup, graph);
 
@@ -5159,8 +5159,8 @@ public class RDFQueryEngineTest
             new RDFTriple(new RDFResource("ex:paperino"),new RDFResource("ex:hasName"),new RDFPlainLiteral("Donald Duck", "en-US"))
         ]);
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
-            .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:dogOf")))
-            .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:hasName")));
+            .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:dogOf")))
+            .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:hasName")));
         RDFQueryEngine queryEngine = new RDFQueryEngine();
         RDFTable result = queryEngine.ApplyPropertyPath(propertyPath, graph);
 
@@ -5648,8 +5648,8 @@ public class RDFQueryEngineTest
 
         RDFPattern pattern = new RDFPattern(new RDFVariable("?S"), new RDFResource("ex:p1"), new RDFVariable("?O"));
         RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?S"), new RDFVariable("?O"))
-            .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:p1")))
-            .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("ex:p2")));
+            .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:p1")))
+            .AddStep(RDFPropertyPathExpression.Link(new RDFResource("ex:p2")));
 
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()

@@ -101,7 +101,7 @@ namespace RDFSharp.Query
                 //Build the property path between start and end, carrying the parsed expression as its single unit.
                 //The RDFPropertyPath constructor enforces that both endpoints are an IRI or a variable.
                 RDFPropertyPath propertyPath = new RDFPropertyPath(pathStart, pathEnd);
-                propertyPath.AddSequenceStep(pathExpression);
+                propertyPath.AddStep(pathExpression);
                 targetPatternGroup.AddPropertyPath(propertyPath);
 
                 //A ',' introduces another object sharing this subject+path: consume and continue
@@ -132,10 +132,8 @@ namespace RDFSharp.Query
                 alternativeBranches.Add(ParsePathSequence(parserContext));
             }
 
-            //A single branch is just that sequence; two or more become an alternative node
-            return alternativeBranches.Count == 1
-                ? alternativeBranches[0]
-                : RDFPropertyPathExpression.Alternative(alternativeBranches);
+            //A single branch collapses to that sequence; two or more become an alternative node (see CompositeNode)
+            return RDFPropertyPathExpression.Alternative(alternativeBranches);
         }
 
         /// <summary>
@@ -152,10 +150,8 @@ namespace RDFSharp.Query
                 sequenceElements.Add(ParsePathEltOrInverse(parserContext));
             }
 
-            //A single element is just that element; two or more become a sequence node
-            return sequenceElements.Count == 1
-                ? sequenceElements[0]
-                : RDFPropertyPathExpression.Sequence(sequenceElements);
+            //A single element collapses to that element; two or more become a sequence node (see CompositeNode)
+            return RDFPropertyPathExpression.Sequence(sequenceElements);
         }
 
         /// <summary>

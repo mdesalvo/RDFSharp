@@ -265,8 +265,8 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p1")))
-                    .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2")))));
+                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p1")))
+                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2")))));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -277,9 +277,9 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddAlternativeSteps([
+                    .AddStep(RDFPropertyPathExpression.Alternative([
                         RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p1")),
-                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2"))])));
+                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2"))]))));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -290,7 +290,7 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p")).Inverse().OneOrMore())));
+                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p")).Inverse().OneOrMore())));
 
         AssertSelectQueryRoundTrips(query);
     }
@@ -301,10 +301,10 @@ public partial class RDFQueryParserTest
         RDFSelectQuery query = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPropertyPath(new RDFPropertyPath(new RDFVariable("s"), new RDFVariable("o"))
-                    .AddAlternativeSteps([
+                    .AddStep(RDFPropertyPathExpression.Alternative([
                         RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p1")),
-                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2"))])
-                    .AddSequenceStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p3")))));
+                        RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p2"))]))
+                    .AddStep(RDFPropertyPathExpression.Link(new RDFResource("http://example.org/p3")))));
 
         AssertSelectQueryRoundTrips(query);
     }

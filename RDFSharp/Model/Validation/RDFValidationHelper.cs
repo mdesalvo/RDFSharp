@@ -125,7 +125,7 @@ namespace RDFSharp.Model
                                 //immutable path units): the shape's stored path is never touched, so concurrent
                                 //validations stay isolated and the focus node is the only varying boundary term
                                 RDFPropertyPath contextualizedPath = new RDFPropertyPath(focusNode, new RDFVariable("?END"));
-                                propertyShape.Path.SequenceUnits.ForEach(pathUnit => contextualizedPath.AddSequenceStep(pathUnit));
+                                propertyShape.Path.SequenceUnits.ForEach(pathUnit => contextualizedPath.AddStep(pathUnit));
                                 RDFTable pathResult = new RDFQueryEngine().ApplyPropertyPath(contextualizedPath, dataGraph);
                                 result.AddRange(from RDFTableRow pathResultRow
                                                 in pathResult.Rows
@@ -626,7 +626,7 @@ namespace RDFSharp.Model
         /// </summary>
         private static RDFPropertyPath DetectShapePath(RDFGraph graph, RDFResource node)
             => new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                    .AddSequenceStep(DetectShapePathExpression(graph, node));
+                    .AddStep(DetectShapePathExpression(graph, node));
 
         /// <summary>
         /// Detects a single node of the path definition, turning it into the equivalent path expression
@@ -682,7 +682,7 @@ namespace RDFSharp.Model
         internal static RDFPropertyPath SinglePredicatePath(RDFResource predicate)
             => predicate != null
                 ? new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-                        .AddSequenceStep(RDFPropertyPathExpression.Link(predicate))
+                        .AddStep(RDFPropertyPathExpression.Link(predicate))
                 : null;
 
         /// <summary>

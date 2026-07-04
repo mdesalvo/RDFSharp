@@ -63,7 +63,7 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable y = new RDFVariable("?Y");
         RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
         RDFPropertyPath ppB = new RDFPropertyPath(x, y)
-            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
         RDFBinaryPatternGroupMember op = pA.Union(ppB);
 
         Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
@@ -77,9 +77,9 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable x = new RDFVariable("?X");
         RDFVariable y = new RDFVariable("?Y");
         RDFPropertyPath ppA = new RDFPropertyPath(x, y)
-            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
         RDFPropertyPath ppB = new RDFPropertyPath(x, y)
-            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE));
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE));
         RDFBinaryPatternGroupMember op = ppA.Union(ppB);
 
         Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
@@ -190,7 +190,7 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable z = new RDFVariable("?Z");
         RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
         RDFPropertyPath ppB = new RDFPropertyPath(x, z)
-            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
 
         RDFBinaryPatternGroupMember op = pA.Union(ppB);
 
@@ -228,6 +228,207 @@ public class RDFBinaryPatternGroupMemberTest
         Assert.AreEqual(0, pg.GetEvaluablePatternGroupMembers().Count());
     }
 
+    #region Union/Minus operand matrix (Pattern / PropertyPath / BinaryPatternGroupMember on both sides)
+
+    [TestMethod]
+    public void ShouldCreateMinusBetweenPatternAndPropertyPath()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPropertyPath ppB = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFBinaryPatternGroupMember op = pA.Minus(ppB);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
+        Assert.AreSame(pA, op.LeftOperand);
+        Assert.AreSame(ppB, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateMinusBetweenPatternAndOperatorNode()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFPattern pC = new RDFPattern(x, RDFVocabulary.RDFS.COMMENT, y);
+        RDFBinaryPatternGroupMember node = pB.Union(pC);
+        RDFBinaryPatternGroupMember op = pA.Minus(node);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
+        Assert.AreSame(pA, op.LeftOperand);
+        Assert.AreSame(node, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateUnionBetweenPropertyPathAndPattern()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPropertyPath ppA = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFBinaryPatternGroupMember op = ppA.Union(pB);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
+        Assert.AreSame(ppA, op.LeftOperand);
+        Assert.AreSame(pB, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateUnionBetweenPropertyPathAndOperatorNode()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPropertyPath ppA = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pC = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFBinaryPatternGroupMember node = pB.Union(pC);
+        RDFBinaryPatternGroupMember op = ppA.Union(node);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
+        Assert.AreSame(ppA, op.LeftOperand);
+        Assert.AreSame(node, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateMinusBetweenPropertyPathAndPattern()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPropertyPath ppA = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFBinaryPatternGroupMember op = ppA.Minus(pB);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
+        Assert.AreSame(ppA, op.LeftOperand);
+        Assert.AreSame(pB, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateMinusBetweenDistinctPropertyPaths()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPropertyPath ppA = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFPropertyPath ppB = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDF.TYPE));
+        RDFBinaryPatternGroupMember op = ppA.Minus(ppB);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
+        Assert.AreSame(ppA, op.LeftOperand);
+        Assert.AreSame(ppB, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateMinusBetweenPropertyPathAndOperatorNode()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPropertyPath ppA = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pC = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFBinaryPatternGroupMember node = pB.Union(pC);
+        RDFBinaryPatternGroupMember op = ppA.Minus(node);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
+        Assert.AreSame(ppA, op.LeftOperand);
+        Assert.AreSame(node, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateUnionBetweenOperatorNodeAndPattern()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFPattern pC = new RDFPattern(x, RDFVocabulary.RDFS.COMMENT, y);
+        RDFBinaryPatternGroupMember node = pA.Union(pB);
+        RDFBinaryPatternGroupMember op = node.Union(pC);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
+        Assert.AreSame(node, op.LeftOperand);
+        Assert.AreSame(pC, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateUnionBetweenOperatorNodeAndPropertyPath()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFPropertyPath ppC = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFBinaryPatternGroupMember node = pA.Union(pB);
+        RDFBinaryPatternGroupMember op = node.Union(ppC);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
+        Assert.AreSame(node, op.LeftOperand);
+        Assert.AreSame(ppC, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateUnionBetweenDistinctOperatorNodes()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFPattern pC = new RDFPattern(x, RDFVocabulary.RDFS.COMMENT, y);
+        RDFPattern pD = new RDFPattern(x, RDFVocabulary.RDFS.SEE_ALSO, y);
+        RDFBinaryPatternGroupMember nodeLeft = pA.Union(pB);
+        RDFBinaryPatternGroupMember nodeRight = pC.Union(pD);
+        RDFBinaryPatternGroupMember op = nodeLeft.Union(nodeRight);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Union, op.OperatorType);
+        Assert.AreSame(nodeLeft, op.LeftOperand);
+        Assert.AreSame(nodeRight, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateMinusBetweenOperatorNodeAndPropertyPath()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFPropertyPath ppC = new RDFPropertyPath(x, y)
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+        RDFBinaryPatternGroupMember node = pA.Union(pB);
+        RDFBinaryPatternGroupMember op = node.Minus(ppC);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
+        Assert.AreSame(node, op.LeftOperand);
+        Assert.AreSame(ppC, op.RightOperand);
+    }
+
+    [TestMethod]
+    public void ShouldCreateMinusBetweenDistinctOperatorNodes()
+    {
+        RDFVariable x = new RDFVariable("?X");
+        RDFVariable y = new RDFVariable("?Y");
+        RDFPattern pA = new RDFPattern(x, RDFVocabulary.RDF.TYPE, y);
+        RDFPattern pB = new RDFPattern(x, RDFVocabulary.RDFS.LABEL, y);
+        RDFPattern pC = new RDFPattern(x, RDFVocabulary.RDFS.COMMENT, y);
+        RDFPattern pD = new RDFPattern(x, RDFVocabulary.RDFS.SEE_ALSO, y);
+        RDFBinaryPatternGroupMember nodeLeft = pA.Union(pB);
+        RDFBinaryPatternGroupMember nodeRight = pC.Union(pD);
+        RDFBinaryPatternGroupMember op = nodeLeft.Minus(nodeRight);
+
+        Assert.AreEqual(RDFQueryEnums.RDFBinaryOperatorType.Minus, op.OperatorType);
+        Assert.AreSame(nodeLeft, op.LeftOperand);
+        Assert.AreSame(nodeRight, op.RightOperand);
+    }
+
+    #endregion
+
     #region Guards
     [TestMethod]
     public void ShouldThrowOnSelfReferencePattern()
@@ -244,7 +445,7 @@ public class RDFBinaryPatternGroupMemberTest
         RDFVariable x = new RDFVariable("?X");
         RDFVariable y = new RDFVariable("?Y");
         RDFPropertyPath pp = new RDFPropertyPath(x, y)
-            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.RDFS.SUB_CLASS_OF));
 
         Assert.ThrowsExactly<RDFQueryException>(() => pp.Minus(pp));
     }

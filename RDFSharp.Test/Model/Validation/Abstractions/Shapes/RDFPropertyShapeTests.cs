@@ -249,7 +249,7 @@ public class RDFPropertyShapeTests
     {
         //A recursive SHACL path "knows+" (sh:oneOrMorePath), now representable by the property shape
         RDFPropertyPath recursivePath = new RDFPropertyPath(new RDFVariable("?START"), new RDFVariable("?END"))
-            .AddSequenceStep(RDFPropertyPathExpression.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
+            .AddStep(RDFPropertyPathExpression.Link(RDFVocabulary.FOAF.KNOWS).OneOrMore());
         RDFPropertyShape propertyShape = new RDFPropertyShape(new RDFResource("ex:propertyShape"), recursivePath);
         RDFGraph pshGraph = propertyShape.ToRDFGraph();
 
