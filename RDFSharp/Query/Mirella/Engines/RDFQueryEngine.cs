@@ -1548,8 +1548,8 @@ namespace RDFSharp.Query
         private void PreEvaluateExistsInFilters(IEnumerable<RDFFilter> filters, RDFDataSource dataSource)
         {
             foreach (RDFFilter filter in filters)
-                if (filter is RDFFilter expressionFilter)
-                    PreEvaluateNestedExistsExpressions(new[] { expressionFilter.Expression }, dataSource);
+                if (filter is RDFFilter)
+                    PreEvaluateNestedExistsExpressions(new[] { filter.Expression }, dataSource);
         }
 
         /// <summary>

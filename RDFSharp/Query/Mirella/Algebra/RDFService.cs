@@ -91,16 +91,9 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException">When the endpoint or the inner pattern is null.</exception>
         public RDFService(RDFSPARQLEndpoint endpoint, RDFQueryMember innerPattern, RDFSPARQLEndpointQueryOptions queryOptions=null)
         {
-            #region Guards
-            if (endpoint == null)
-                throw new RDFQueryException("Cannot create RDFService because given \"endpoint\" parameter is null.");
-            if (innerPattern == null)
-                throw new RDFQueryException("Cannot create RDFService because given \"innerPattern\" parameter is null.");
-            #endregion
-
-            Endpoint = endpoint;
+            Endpoint = endpoint ?? throw new RDFQueryException("Cannot create RDFService because given \"endpoint\" parameter is null.");
             EndpointVariable = null;
-            InnerPattern = innerPattern;
+            InnerPattern = innerPattern ?? throw new RDFQueryException("Cannot create RDFService because given \"innerPattern\" parameter is null.");
             QueryOptions = queryOptions ?? new RDFSPARQLEndpointQueryOptions();
             IsEvaluable = true;
         }
@@ -113,16 +106,9 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException">When the variable or the inner pattern is null.</exception>
         public RDFService(RDFVariable endpointVariable, RDFQueryMember innerPattern, RDFSPARQLEndpointQueryOptions queryOptions=null)
         {
-            #region Guards
-            if (endpointVariable == null)
-                throw new RDFQueryException("Cannot create RDFService because given \"endpointVariable\" parameter is null.");
-            if (innerPattern == null)
-                throw new RDFQueryException("Cannot create RDFService because given \"innerPattern\" parameter is null.");
-            #endregion
-
             Endpoint = new RDFSPARQLEndpoint(VariableEndpointPlaceholder);
-            EndpointVariable = endpointVariable;
-            InnerPattern = innerPattern;
+            EndpointVariable = endpointVariable ?? throw new RDFQueryException("Cannot create RDFService because given \"endpointVariable\" parameter is null.");
+            InnerPattern = innerPattern ?? throw new RDFQueryException("Cannot create RDFService because given \"innerPattern\" parameter is null.");
             QueryOptions = queryOptions ?? new RDFSPARQLEndpointQueryOptions();
             IsEvaluable = true;
         }

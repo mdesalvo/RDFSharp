@@ -50,7 +50,7 @@ namespace RDFSharp.Query
 
             #region Plain Literal
             //Detect presence of semantically valid datatype indicator ("^^")
-            int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+            int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.Ordinal);
             if (lastIndexOfDatatype == -1
                  || lastIndexOfDatatype == pMember.Length - 2 //EndsWith "^^"
                  || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)

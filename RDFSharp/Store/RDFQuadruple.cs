@@ -167,8 +167,8 @@ namespace RDFSharp.Store
         /// <summary>
         /// Performs the equality comparison between two quadruples
         /// </summary>
-        public override bool Equals(object other)
-            => other is RDFQuadruple q && QuadrupleID == q.QuadrupleID;
+        public override bool Equals(object obj)
+            => obj is RDFQuadruple q && QuadrupleID == q.QuadrupleID;
 
         /// <summary>
         /// Calculates the hashcode of this quadruple

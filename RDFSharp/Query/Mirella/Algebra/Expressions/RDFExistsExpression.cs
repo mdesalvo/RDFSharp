@@ -78,12 +78,7 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         public RDFExistsExpression(RDFPatternGroup patternGroup)
         {
-            #region Guards
-            if (patternGroup == null)
-                throw new RDFQueryException("Cannot create RDFExistsExpression because given \"patternGroup\" parameter is null.");
-            #endregion
-
-            GroupGraphPattern = patternGroup;
+            GroupGraphPattern = patternGroup ?? throw new RDFQueryException("Cannot create RDFExistsExpression because given \"patternGroup\" parameter is null.");
         }
         #endregion
 

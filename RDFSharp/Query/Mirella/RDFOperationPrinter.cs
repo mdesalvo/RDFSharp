@@ -324,7 +324,7 @@ namespace RDFSharp.Query
                 {
                     if (operationIndex > 0)
                         sb.AppendLine().Append(';').AppendLine();
-                    sb.Append(operationSet.Operations[operationIndex].ToString());
+                    sb.Append(operationSet.Operations[operationIndex]);
                 }
             }
 

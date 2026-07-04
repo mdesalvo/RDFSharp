@@ -42,7 +42,7 @@ namespace RDFSharp.Store
             RDFResource qPredicate = new RDFResource(fetchedQuadruples["Predicate"].ToString());
 
             //SPO-flavour quadruple
-            if (string.Equals(fetchedQuadruples["TripleFlavor"].ToString(), "1"))
+            if (string.Equals(fetchedQuadruples["TripleFlavor"].ToString(), "1", StringComparison.Ordinal))
             {
                 RDFResource qObject = new RDFResource(fetchedQuadruples["Object"].ToString());
                 return new RDFQuadruple(qContext, qSubject, qPredicate, qObject);
@@ -53,7 +53,7 @@ namespace RDFSharp.Store
 
             //PlainLiteral
             //Detect presence of semantically valid datatype indicator ("^^")
-            int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.OrdinalIgnoreCase);
+            int lastIndexOfDatatype = literal.LastIndexOf("^^", StringComparison.Ordinal);
             if (lastIndexOfDatatype == -1
                  || lastIndexOfDatatype == literal.Length - 2 //EndsWith "^^"
                  || RDFModelUtilities.GetUriFromString(literal.Substring(lastIndexOfDatatype + 2)) == null)
