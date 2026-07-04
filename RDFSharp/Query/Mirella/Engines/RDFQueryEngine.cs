@@ -20,7 +20,9 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.ExceptionServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using RDFSharp.Model;
 using RDFSharp.Store;
@@ -833,8 +835,12 @@ namespace RDFSharp.Query
         internal RDFTable ApplyPatternToFederation(RDFPattern pattern, RDFFederation federation)
         {
             RDFTable resultTable = new RDFTable();
+            List<RDFSPARQLEndpoint> endpointDataSources = new List<RDFSPARQLEndpoint>();
 
-            //Iterate data sources of the federation
+            //Iterate the federation's local (in-memory) data sources sequentially, merging them right away: this
+            //is fast, order-independent work, so it is not worth the complexity of parallelizing it. Remote
+            //SPARQL endpoints are only collected here: their round-trip is the actually expensive part, handled
+            //below, all concurrently, once every local member has already been merged.
             foreach (RDFDataSource dataSource in federation)
             {
                 switch (dataSource)
@@ -855,15 +861,43 @@ namespace RDFSharp.Query
                         break;
 
                     case RDFSPARQLEndpoint dataSourceSparqlEndpoint:
-                        //Pattern is transformed into an equivalent "SELECT *" query which is sent to the SPARQL endpoint.
-                        //SPARQL endpoint options are eventually retrieved directly from the federation.
-                        federation.EndpointDataSourcesQueryOptions.TryGetValue(dataSourceSparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions dataSourceSparqlEndpointOptions);
-                        RDFSelectQuery sparqlEndpointQuery =  new RDFSelectQuery()
-                                                                .AddPatternGroup(new RDFPatternGroup().AddPattern(pattern));
-                        RDFSelectQueryResult sparqlEndpointTable = sparqlEndpointQuery.ApplyToSPARQLEndpoint(dataSourceSparqlEndpoint, dataSourceSparqlEndpointOptions);
-                        RDFTableEngine.MergeTable(resultTable, RDFTable.FromDataTable(sparqlEndpointTable.SelectResults));
+                        endpointDataSources.Add(dataSourceSparqlEndpoint);
                         break;
                 }
+            }
+
+            // There is remote I/O to do (SPARQL endpoints)
+            if (endpointDataSources.Count > 0)
+            {
+                //Pattern is transformed into an equivalent "SELECT *" query which is sent to each SPARQL endpoint
+                //(options are retrieved directly from the federation); every endpoint is an independent, blocking
+                //network round-trip, so they are fired concurrently instead of one after the other
+                Task<RDFSelectQueryResult>[] endpointTasks = endpointDataSources
+                    .Select(dataSourceSparqlEndpoint =>
+                    {
+                        federation.EndpointDataSourcesQueryOptions.TryGetValue(dataSourceSparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions dataSourceSparqlEndpointOptions);
+                        return new RDFSelectQuery()
+                            .AddPatternGroup(new RDFPatternGroup().AddPattern(pattern))
+                            .ApplyToSPARQLEndpointAsync(dataSourceSparqlEndpoint, dataSourceSparqlEndpointOptions);
+                    })
+                    .ToArray();
+
+                try
+                {
+                    Task.WaitAll(endpointTasks);
+                }
+                catch (AggregateException aggregateException)
+                {
+                    //Task.WaitAll wraps every failed endpoint into an AggregateException: unwrap and rethrow the
+                    //first one (InnerExceptions keeps the tasks' original order, not their completion order, so
+                    //this stays deterministic) so a ThrowException endpoint still surfaces a plain RDFQueryException,
+                    //exactly as the previous sequential loop did -- callers must not see their exception contract change.
+                    ExceptionDispatchInfo.Capture(aggregateException.Flatten().InnerExceptions[0]).Throw();
+                }
+
+                // Aggregate results from each SPARQL endpoint
+                foreach (Task<RDFSelectQueryResult> endpointTask in endpointTasks)
+                    RDFTableEngine.MergeTable(resultTable, RDFTable.FromDataTable(endpointTask.Result.SelectResults));
             }
 
             return resultTable;

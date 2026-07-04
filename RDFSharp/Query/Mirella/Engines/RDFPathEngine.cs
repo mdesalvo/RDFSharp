@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Store;
 
@@ -115,15 +117,35 @@ namespace RDFSharp.Query
                     //changes 'dataSource', never re-enters this 'if' since localDataSources has no endpoints)
                     RDFTable federationResultTable = ApplyPropertyPath(propertyPath, localDataSources);
 
-                    foreach (RDFSPARQLEndpoint sparqlEndpoint in endpointDataSources)
-                    {
-                        endpointQueryOptions.TryGetValue(sparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions options);
-                        RDFSelectQueryResult endpointResult = new RDFSelectQuery()
-                            .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(propertyPath))
-                            .ApplyToSPARQLEndpoint(sparqlEndpoint, options);
+                    //Every endpoint is an independent, blocking network round-trip carrying the whole path: fire
+                    //them all concurrently instead of one after the other
+                    Task<RDFSelectQueryResult>[] endpointTasks = endpointDataSources
+                        .Select(sparqlEndpoint =>
+                        {
+                            endpointQueryOptions.TryGetValue(sparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions options);
+                            return new RDFSelectQuery()
+                                .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(propertyPath))
+                                .ApplyToSPARQLEndpointAsync(sparqlEndpoint, options);
+                        })
+                        .ToArray();
 
-                        RDFTableEngine.MergeTable(federationResultTable, RDFTable.FromDataTable(endpointResult.SelectResults));
+                    try
+                    {
+                        Task.WaitAll(endpointTasks);
                     }
+                    catch (AggregateException aggregateException)
+                    {
+                        //Task.WaitAll wraps every failed endpoint into an AggregateException: unwrap and rethrow
+                        //the first one (InnerExceptions keeps the tasks' original order, not their completion
+                        //order, so this stays deterministic) so a ThrowException endpoint still surfaces a plain
+                        //RDFQueryException, exactly as a sequential loop would -- callers must not see the
+                        //exception contract change shape just because the evaluation is now concurrent.
+                        ExceptionDispatchInfo.Capture(aggregateException.Flatten().InnerExceptions[0]).Throw();
+                    }
+
+                    // Aggregate results from SPARQL endpoints
+                    foreach (Task<RDFSelectQueryResult> endpointTask in endpointTasks)
+                        RDFTableEngine.MergeTable(federationResultTable, RDFTable.FromDataTable(endpointTask.Result.SelectResults));
 
                     //LIMITATION: a binding fully contained in one single source (the local bucket, or one single
                     //endpoint) is found correctly; a hop that would need to cross from one physical source to

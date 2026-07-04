@@ -24,6 +24,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using RDFSharp.Store;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -954,6 +955,189 @@ WHERE {
         //The query actually sent to the OUTER endpoint carries the serialized INNER (concrete) SERVICE
         Assert.IsNotNull(receivedQuery);
         Assert.Contains("SERVICE <http://example.org/inner/sparql>", System.Web.HttpUtility.UrlDecode(receivedQuery));
+    }
+
+    #region Federation stress test utilities
+    /// <summary>
+    /// SPARQL results XML for the "?C a Course" pattern query sent to one federation stress test endpoint
+    /// (2 course rows)
+    /// </summary>
+    private static string TypePatternResponseXml(string course1Uri, string course0Uri) =>
+        $"""
+        <?xml version="1.0" encoding="utf-8"?>
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+          <head><variable name="?C" /></head>
+          <results>
+            <result><binding name="?C"><uri>{course1Uri}</uri></binding></result>
+            <result><binding name="?C"><uri>{course0Uri}</uri></binding></result>
+          </results>
+        </sparql>
+        """;
+
+    /// <summary>
+    /// SPARQL results XML for the "?C prerequisite+ ?ROOT" path query sent to one federation stress test
+    /// endpoint (1 pair row)
+    /// </summary>
+    private static string PrerequisitePathResponseXml(string course1Uri, string course0Uri) =>
+        $"""
+        <?xml version="1.0" encoding="utf-8"?>
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+          <head>
+            <variable name="?C" />
+            <variable name="?ROOT" />
+          </head>
+          <results>
+            <result>
+              <binding name="?C"><uri>{course1Uri}</uri></binding>
+              <binding name="?ROOT"><uri>{course0Uri}</uri></binding>
+            </result>
+          </results>
+        </sparql>
+        """;
+
+    /// <summary>
+    /// Registers, on the given path, the two mutually-exclusive stubs a federation stress test endpoint must
+    /// answer: the property path query (mentions the "prerequisite" predicate) and the plain type pattern query
+    /// (does not). An optional delay simulates a slow/unresponsive endpoint for the timeout test.
+    /// </summary>
+    private void MockEndpoint(string path, string course1Uri, string course0Uri, int delayMilliseconds = 0)
+    {
+        //WireMock.WithDelay rejects a non-positive TimeSpan, so a "no delay" response must simply omit it
+        IResponseBuilder ApplyDelay(IResponseBuilder response)
+            => delayMilliseconds > 0 ? response.WithDelay(delayMilliseconds) : response;
+
+        serviceEndpointServer
+            .Given(
+                Request.Create()
+                    .WithPath(path)
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams["query"].Any(q => q.Contains("prerequisite", StringComparison.Ordinal))))
+            .RespondWith(
+                ApplyDelay(Response.Create()
+                    .WithBody(PrerequisitePathResponseXml(course1Uri, course0Uri), encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithStatusCode(HttpStatusCode.OK)));
+
+        serviceEndpointServer
+            .Given(
+                Request.Create()
+                    .WithPath(path)
+                    .UsingGet()
+                    .WithParam(queryParams => !queryParams["query"].Any(q => q.Contains("prerequisite", StringComparison.Ordinal))))
+            .RespondWith(
+                ApplyDelay(Response.Create()
+                    .WithBody(TypePatternResponseXml(course1Uri, course0Uri), encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithStatusCode(HttpStatusCode.OK)));
+    }
+    #endregion
+
+    /// <summary>
+    /// Federation stress test: a single pattern group mixes an ordinary triple pattern with a transitive
+    /// property path, evaluated over a federation of 1 local graph + 1 local store + 3 mocked SPARQL endpoints.
+    /// This exercises, in one shot, both the parallel per-endpoint pattern dispatch
+    /// (RDFQueryEngine.ApplyPatternToFederation) and the parallel per-endpoint property path delegation
+    /// (RDFPathEngine.ApplyPropertyPath) together -- the hottest and most complex federation code path.
+    /// </summary>
+    [TestMethod]
+    public void ShouldAnswerFederatedQueryMixingPatternAndPropertyPathAcrossGraphStoreAndThreeSPARQLEndpoints()
+    {
+        const string federatedNamespace = "http://federated.org/";
+        RDFResource courseClass = new RDFResource(federatedNamespace + "Course");
+        RDFResource prerequisite = new RDFResource(federatedNamespace + "prerequisite");
+
+        //Local graph: courseG0 is a root course (no prerequisite of its own)
+        RDFGraph localGraph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource(federatedNamespace + "courseG0"), RDFVocabulary.RDF.TYPE, courseClass)
+        ]);
+
+        //Local store: courseG1 -> prerequisite -> courseG0, a hop that CROSSES from the store to the graph member
+        //(the local bucket is still merged into one adjacency, so this cross-member hop keeps working)
+        RDFMemoryStore localStore = new RDFMemoryStore(
+        [
+            new RDFQuadruple(new RDFContext(), new RDFResource(federatedNamespace + "courseG1"), RDFVocabulary.RDF.TYPE, courseClass),
+            new RDFQuadruple(new RDFContext(), new RDFResource(federatedNamespace + "courseG1"), prerequisite, new RDFResource(federatedNamespace + "courseG0"))
+        ]);
+
+        MockEndpoint("/endpointA/sparql", federatedNamespace + "courseA1", federatedNamespace + "courseA0");
+        MockEndpoint("/endpointB/sparql", federatedNamespace + "courseB1", federatedNamespace + "courseB0");
+        MockEndpoint("/endpointC/sparql", federatedNamespace + "courseC1", federatedNamespace + "courseC0");
+
+        RDFFederation federation = new RDFFederation()
+            .AddGraph(localGraph)
+            .AddStore(localStore)
+            .AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri(serviceEndpointServer.Url + "/endpointA/sparql")))
+            .AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri(serviceEndpointServer.Url + "/endpointB/sparql")))
+            .AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri(serviceEndpointServer.Url + "/endpointC/sparql")));
+
+        //One pattern group mixing an ordinary pattern (spans all 5 sources) with a transitive property path
+        //(self-contained within each source: cross-member only across the local graph+store pair, as documented)
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(Variable("?c"), RDFVocabulary.RDF.TYPE, courseClass))
+                .AddPropertyPath(new RDFPropertyPath(Variable("?c"), Variable("?root"))
+                    .AddStep(RDFPropertyPathStep.Link(prerequisite).OneOrMore())));
+
+        RDFSelectQueryResult result = query.ApplyToFederation(federation);
+
+        //Every course WITH a prerequisite survives the join with the type pattern: the local cross-member hop
+        //(courseG1->courseG0) plus each endpoint's own self-contained hop (A1->A0, B1->B0, C1->C0) => 4 rows
+        Assert.AreEqual(4, result.SelectResultsCount);
+        Dictionary<string, string> rootByCourse = result.SelectResults.Rows.Cast<DataRow>()
+            .ToDictionary(row => row["?C"].ToString(), row => row["?ROOT"].ToString());
+        Assert.AreEqual(federatedNamespace + "courseG0", rootByCourse[federatedNamespace + "courseG1"]);
+        Assert.AreEqual(federatedNamespace + "courseA0", rootByCourse[federatedNamespace + "courseA1"]);
+        Assert.AreEqual(federatedNamespace + "courseB0", rootByCourse[federatedNamespace + "courseB1"]);
+        Assert.AreEqual(federatedNamespace + "courseC0", rootByCourse[federatedNamespace + "courseC1"]);
+    }
+
+    /// <summary>
+    /// Failure-path counterpart of the test above, on the very same federation shape (1 graph + 1 store + 3
+    /// SPARQL endpoints, pattern + property path together): endpoint C is tuned to respond after 25ms but is
+    /// only given a 10ms timeout (default ErrorBehavior.ThrowException), so it always times out. Task.WaitAll
+    /// wraps a per-endpoint failure into an AggregateException in BOTH the parallel pattern dispatch
+    /// (RDFQueryEngine.ApplyPatternToFederation) and the parallel property path delegation
+    /// (RDFPathEngine.ApplyPropertyPath): this verifies the castle does not collapse into that AggregateException
+    /// (or anything else) leaking to the caller -- a plain RDFQueryException must still come out, exactly as it
+    /// would have with the old sequential loop.
+    /// </summary>
+    [TestMethod]
+    public void ShouldSurfacePlainRDFQueryExceptionWhenOneFederatedSPARQLEndpointTimesOut()
+    {
+        const string federatedNamespace = "http://federated.org/";
+        RDFResource courseClass = new RDFResource(federatedNamespace + "Course");
+        RDFResource prerequisite = new RDFResource(federatedNamespace + "prerequisite");
+
+        MockEndpoint("/timeoutEndpointA/sparql", federatedNamespace + "courseA1", federatedNamespace + "courseA0");
+        MockEndpoint("/timeoutEndpointB/sparql", federatedNamespace + "courseB1", federatedNamespace + "courseB0");
+        //Endpoint C answers correctly, but only after 25ms -- longer than the 10ms timeout configured for it below
+        MockEndpoint("/timeoutEndpointC/sparql", federatedNamespace + "courseC1", federatedNamespace + "courseC0", delayMilliseconds: 25);
+
+        RDFFederation federation = new RDFFederation()
+            .AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri(serviceEndpointServer.Url + "/timeoutEndpointA/sparql")))
+            .AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri(serviceEndpointServer.Url + "/timeoutEndpointB/sparql")))
+            .AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri(serviceEndpointServer.Url + "/timeoutEndpointC/sparql")),
+                new RDFSPARQLEndpointQueryOptions(10));
+
+        RDFSelectQuery query = new RDFSelectQuery()
+            .AddPatternGroup(new RDFPatternGroup()
+                .AddPattern(new RDFPattern(Variable("?c"), RDFVocabulary.RDF.TYPE, courseClass))
+                .AddPropertyPath(new RDFPropertyPath(Variable("?c"), Variable("?root"))
+                    .AddStep(RDFPropertyPathStep.Link(prerequisite).OneOrMore())));
+
+        try
+        {
+            query.ApplyToFederation(federation);
+            Assert.Fail("Expected an RDFQueryException because of the timed-out federated endpoint, but none was thrown.");
+        }
+        catch (RDFQueryException queryException)
+        {
+            //An AggregateException (or anything other than RDFQueryException) escaping here would NOT be caught
+            //by this clause, and the test would fail loudly with the wrong exception type -- that failure mode
+            //is exactly what this test is meant to catch.
+            Assert.IsTrue(queryException.Message.Contains("timed out", StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     [TestMethod]
