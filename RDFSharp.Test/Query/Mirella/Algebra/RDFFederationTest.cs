@@ -109,6 +109,47 @@ public class RDFFederationTest
     }
 
     [TestMethod]
+    public void ShouldNotAddFederationToFederationWhenItWouldIntroduceAnIndirectCycle()
+    {
+        RDFFederation federationA = new RDFFederation();
+        RDFFederation federationB = new RDFFederation();
+        federationA.AddFederation(federationB); //A -> B, legal (no cycle yet)
+
+        federationB.AddFederation(federationA); //Would close a 2-hop cycle B -> A -> B: must be discarded
+
+        Assert.AreEqual(1, federationA.DataSourcesCount);
+        Assert.AreEqual(0, federationB.DataSourcesCount);
+    }
+
+    [TestMethod]
+    public void ShouldNotAddFederationToFederationWhenItWouldIntroduceADeeperIndirectCycle()
+    {
+        RDFFederation federationA = new RDFFederation();
+        RDFFederation federationB = new RDFFederation();
+        RDFFederation federationC = new RDFFederation();
+        federationA.AddFederation(federationB); //A -> B
+        federationB.AddFederation(federationC); //A -> B -> C
+
+        federationC.AddFederation(federationA); //Would close a 3-hop cycle C -> A -> B -> C: must be discarded
+
+        Assert.AreEqual(1, federationA.DataSourcesCount);
+        Assert.AreEqual(1, federationB.DataSourcesCount);
+        Assert.AreEqual(0, federationC.DataSourcesCount);
+    }
+
+    [TestMethod]
+    public void ShouldConsiderFederationsEqualWhenTheirNameMatchesCaseInsensitively()
+    {
+        RDFFederation federation = new RDFFederation();
+
+        Assert.IsTrue(federation.Equals(federation));
+        Assert.IsFalse(federation.Equals(new RDFFederation())); //Different auto-generated FederationName
+        Assert.IsFalse(federation.Equals(null));
+        Assert.IsFalse(federation.Equals("not a federation"));
+        Assert.AreEqual(StringComparer.OrdinalIgnoreCase.GetHashCode(federation.FederationName), federation.GetHashCode());
+    }
+
+    [TestMethod]
     public void ShouldAddSPARQLEndpointToFederation()
     {
         RDFFederation federation = new RDFFederation();

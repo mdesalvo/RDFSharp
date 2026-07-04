@@ -54,9 +54,86 @@ namespace RDFSharp.Query
         /// <summary>
         /// Evaluates the given property path against the given datasource, returning the table of (Start, End)
         /// bindings (a column per variable endpoint; a blank existence row when both endpoints are concrete).
+        /// Federation members that are SPARQL endpoints are delegated to their own remote SPARQL engine.
         /// </summary>
         internal static RDFTable ApplyPropertyPath(RDFPropertyPath propertyPath, RDFDataSource dataSource)
         {
+            //A federation's remote SPARQLEndpoint members cannot feed the local adjacency-based algorithm below
+            //(it only ever scans Graph/Store triples): split the federation into its local members (re-merged
+            //into one federation, so hops across two local members still work exactly as before) and its endpoint
+            //members, then delegate the whole path -- verbatim, cardinality/inverse/negation included -- to each
+            //endpoint instead of trying to replicate that logic against a raw remote triple scan.
+            if (dataSource is RDFFederation federation)
+            {
+                RDFFederation localDataSources = new RDFFederation();
+                List<RDFSPARQLEndpoint> endpointDataSources = new List<RDFSPARQLEndpoint>();
+                Dictionary<string, RDFSPARQLEndpointQueryOptions> endpointQueryOptions = new Dictionary<string, RDFSPARQLEndpointQueryOptions>();
+
+                #region Utilities
+                //Recursively sorts 'currentFederation' members (at any nesting depth) into the collections above
+                void FlattenFederation(RDFFederation currentFederation)
+                {
+                    foreach (RDFDataSource federationMember in currentFederation)
+                    {
+                        switch (federationMember)
+                        {
+                            case RDFGraph graph:
+                                localDataSources.AddGraph(graph);
+                                break;
+
+                            case RDFStore store:
+                                localDataSources.AddStore(store);
+                                break;
+
+                            case RDFFederation nestedFederation:
+                                FlattenFederation(nestedFederation);
+                                break;
+
+                            case RDFSPARQLEndpoint sparqlEndpoint:
+                                endpointDataSources.Add(sparqlEndpoint);
+                                //Query options live on the federation level the endpoint was actually added to,
+                                //not necessarily on the outermost federation being flattened here
+                                if (currentFederation.EndpointDataSourcesQueryOptions.TryGetValue(sparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions options))
+                                    endpointQueryOptions[sparqlEndpoint.ToString()] = options;
+                                break;
+                        }
+                    }
+                }
+                #endregion
+
+                FlattenFederation(federation);
+
+                //No remote endpoints: the flattening is a no-op equivalent to the original (possibly nested)
+                //federation, so evaluation just continues below exactly as it did before this change
+                if (endpointDataSources.Count == 0)
+                {
+                    dataSource = localDataSources;
+                }
+                else
+                {
+                    //Local members keep the unchanged adjacency-based evaluation (this recursive call only
+                    //changes 'dataSource', never re-enters this 'if' since localDataSources has no endpoints)
+                    RDFTable federationResultTable = ApplyPropertyPath(propertyPath, localDataSources);
+
+                    foreach (RDFSPARQLEndpoint sparqlEndpoint in endpointDataSources)
+                    {
+                        endpointQueryOptions.TryGetValue(sparqlEndpoint.ToString(), out RDFSPARQLEndpointQueryOptions options);
+                        RDFSelectQueryResult endpointResult = new RDFSelectQuery()
+                            .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(propertyPath))
+                            .ApplyToSPARQLEndpoint(sparqlEndpoint, options);
+
+                        RDFTableEngine.MergeTable(federationResultTable, RDFTable.FromDataTable(endpointResult.SelectResults));
+                    }
+
+                    //LIMITATION: a binding fully contained in one single source (the local bucket, or one single
+                    //endpoint) is found correctly; a hop that would need to cross from one physical source to
+                    //another mid-path is NOT reconstructed here -- each source is evaluated independently over its
+                    //own reachable subgraph, exactly like a SPARQL SERVICE call, and results are only unioned
+                    //(never joined) across sources
+                    return RDFTableEngine.DistinctTable(federationResultTable);
+                }
+            }
+
             RDFTable resultTable = new RDFTable();
 
             //Collect information about boundary terms of the property path

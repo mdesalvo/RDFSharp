@@ -31,7 +31,7 @@ namespace RDFSharp.Query
         /// <summary>
         /// Name of the federation
         /// </summary>
-        public string FederationName { get; internal set; }
+        public string FederationName { get; }
 
         /// <summary>
         /// Count of the federation's data sources
@@ -76,6 +76,18 @@ namespace RDFSharp.Query
             => FederationName;
 
         /// <summary>
+        /// Performs the equality comparison between two federations, based on their name
+        /// </summary>
+        public override bool Equals(object obj)
+            => obj is RDFFederation other && string.Equals(FederationName, other.FederationName, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Calculates the hashcode of this federation
+        /// </summary>
+        public override int GetHashCode()
+            => StringComparer.OrdinalIgnoreCase.GetHashCode(FederationName);
+
+        /// <summary>
         /// Exposes a typed enumerator on the federation's data sources
         /// </summary>
         IEnumerator<RDFDataSource> IEnumerable<RDFDataSource>.GetEnumerator()
@@ -116,7 +128,22 @@ namespace RDFSharp.Query
         /// </summary>
         public RDFFederation AddFederation(RDFFederation federation)
         {
-            if (federation?.Equals(this) == false)
+            #region Utilities
+            //Recursively tells whether 'candidate' is this same federation, or (at any nesting depth) already
+            //contains it among its own federation members: linking 'federation' in that case would close a cycle,
+            //which the recursive traversals of the query/path engines cannot survive (they are not cycle-proof).
+            bool WouldIntroduceCycle(RDFFederation candidate)
+            {
+                if (candidate.Equals(this))
+                    return true;
+                foreach (RDFDataSource member in candidate.DataSources)
+                    if (member is RDFFederation nestedFederation && WouldIntroduceCycle(nestedFederation))
+                        return true;
+                return false;
+            }
+            #endregion
+
+            if (federation != null && !WouldIntroduceCycle(federation))
                 DataSources.Add(federation);
             return this;
         }

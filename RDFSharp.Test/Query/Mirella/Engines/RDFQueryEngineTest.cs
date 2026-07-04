@@ -5173,6 +5173,175 @@ public class RDFQueryEngineTest
         Assert.IsTrue(string.Equals(result.Rows[1]["?N"], "Donald Duck@EN-US", StringComparison.Ordinal));
     }
 
+    [TestMethod]
+    public void ShouldApplyPropertyPathOverFederationOfLocalDataSourcesOnly()
+    {
+        //The two hops of the path live in two different graphs of the same federation: this must keep working
+        //exactly as before, since local members are still merged into one unified adjacency (see FlattenFederation)
+        RDFGraph dogOfGraph = new RDFGraph([ new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino")) ]);
+        RDFGraph hasNameGraph = new RDFGraph([ new RDFTriple(new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFResource("ex:topolinoName")) ]);
+        RDFFederation federation = new RDFFederation().AddGraph(dogOfGraph).AddGraph(hasNameGraph);
+
+        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:dogOf")))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:hasName")));
+        RDFQueryEngine queryEngine = new RDFQueryEngine();
+        RDFTable result = queryEngine.ApplyPropertyPath(propertyPath, federation);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.ColumnsCount);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"], "ex:pluto", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?N"], "ex:topolinoName", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldApplyPropertyPathAcrossFederationWithSPARQLEndpointAndMergeResults()
+    {
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/RDFQueryEngineTest/ShouldApplyPropertyPathAcrossFederationWithSPARQLEndpointAndMergeResults/sparql")
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams.ContainsKey("query")))
+            .RespondWith(
+                Response.Create()
+                    .WithBody(
+                        """
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                          <head>
+                            <variable name="?Y" />
+                            <variable name="?N" />
+                          </head>
+                          <results>
+                            <result>
+                              <binding name="?Y"><uri>ex:fido</uri></binding>
+                              <binding name="?N"><uri>ex:paperinoName</uri></binding>
+                            </result>
+                          </results>
+                        </sparql>
+                        """, encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithStatusCode(HttpStatusCode.OK));
+
+        //The federation has one local graph (pluto -> topolinoName) and one remote endpoint (fido -> paperinoName,
+        //mocked above): both bindings are fully contained in a single source, so both must show up in the merge
+        RDFGraph localGraph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:pluto"), new RDFResource("ex:dogOf"), new RDFResource("ex:topolino")),
+            new RDFTriple(new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFResource("ex:topolinoName"))
+        ]);
+        RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldApplyPropertyPathAcrossFederationWithSPARQLEndpointAndMergeResults/sparql"));
+        RDFFederation federation = new RDFFederation().AddGraph(localGraph).AddSPARQLEndpoint(endpoint);
+
+        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:dogOf")))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:hasName")));
+        RDFQueryEngine queryEngine = new RDFQueryEngine();
+        RDFTable result = queryEngine.ApplyPropertyPath(propertyPath, federation);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.ColumnsCount);
+        Assert.AreEqual(2, result.RowsCount);
+        Assert.IsTrue(result.Rows.Any(row => string.Equals(row["?Y"], "ex:pluto", StringComparison.Ordinal) && string.Equals(row["?N"], "ex:topolinoName", StringComparison.Ordinal)));
+        Assert.IsTrue(result.Rows.Any(row => string.Equals(row["?Y"], "ex:fido", StringComparison.Ordinal) && string.Equals(row["?N"], "ex:paperinoName", StringComparison.Ordinal)));
+    }
+
+    [TestMethod]
+    public void ShouldApplyPropertyPathAcrossNestedFederationReachingSPARQLEndpointAtDepth2()
+    {
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/RDFQueryEngineTest/ShouldApplyPropertyPathAcrossNestedFederationReachingSPARQLEndpointAtDepth2/sparql")
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams.ContainsKey("query")))
+            .RespondWith(
+                Response.Create()
+                    .WithBody(
+                        """
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                          <head>
+                            <variable name="?Y" />
+                            <variable name="?N" />
+                          </head>
+                          <results>
+                            <result>
+                              <binding name="?Y"><uri>ex:fido</uri></binding>
+                              <binding name="?N"><uri>ex:paperinoName</uri></binding>
+                            </result>
+                          </results>
+                        </sparql>
+                        """, encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithStatusCode(HttpStatusCode.OK));
+
+        //The endpoint sits two levels deep (outerFederation -> innerFederation -> endpoint): FlattenFederation
+        //must recurse through the nesting to reach it, exactly as GetAllNodes/CollectPropertyEdges already do for
+        //Graph/Store members
+        RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldApplyPropertyPathAcrossNestedFederationReachingSPARQLEndpointAtDepth2/sparql"));
+        RDFFederation innerFederation = new RDFFederation().AddSPARQLEndpoint(endpoint);
+        RDFFederation outerFederation = new RDFFederation().AddFederation(innerFederation);
+
+        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:dogOf")))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:hasName")));
+        RDFQueryEngine queryEngine = new RDFQueryEngine();
+        RDFTable result = queryEngine.ApplyPropertyPath(propertyPath, outerFederation);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(2, result.ColumnsCount);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(string.Equals(result.Rows[0]["?Y"], "ex:fido", StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals(result.Rows[0]["?N"], "ex:paperinoName", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ShouldNotReconstructPropertyPathHopThatCrossesFromSPARQLEndpointToLocalDataSource()
+    {
+        //The endpoint only knows the first hop (dogOf) and has no hasName data of its own, so its own SPARQL
+        //engine correctly finds no match for the full 2-hop path and returns an empty result set
+        server
+            .Given(
+                Request.Create()
+                    .WithPath("/RDFQueryEngineTest/ShouldNotReconstructPropertyPathHopThatCrossesFromSPARQLEndpointToLocalDataSource/sparql")
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams.ContainsKey("query")))
+            .RespondWith(
+                Response.Create()
+                    .WithBody(
+                        """
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                          <head>
+                            <variable name="?Y" />
+                            <variable name="?N" />
+                          </head>
+                          <results />
+                        </sparql>
+                        """, encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithStatusCode(HttpStatusCode.OK));
+
+        //The local graph only knows the second hop (hasName) and has no dogOf data of its own, so it also cannot
+        //complete the path alone. The (pluto -> topolinoName) binding only exists by stitching the endpoint's
+        //dogOf edge with the local graph's hasName edge, which this design does NOT attempt across sources.
+        RDFGraph localGraph = new RDFGraph([ new RDFTriple(new RDFResource("ex:topolino"), new RDFResource("ex:hasName"), new RDFResource("ex:topolinoName")) ]);
+        RDFSPARQLEndpoint endpoint = new RDFSPARQLEndpoint(new Uri(server.Url + "/RDFQueryEngineTest/ShouldNotReconstructPropertyPathHopThatCrossesFromSPARQLEndpointToLocalDataSource/sparql"));
+        RDFFederation federation = new RDFFederation().AddGraph(localGraph).AddSPARQLEndpoint(endpoint);
+
+        RDFPropertyPath propertyPath = new RDFPropertyPath(new RDFVariable("?Y"), new RDFVariable("?N"))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:dogOf")))
+            .AddStep(RDFPropertyPathStep.Link(new RDFResource("ex:hasName")));
+        RDFQueryEngine queryEngine = new RDFQueryEngine();
+        RDFTable result = queryEngine.ApplyPropertyPath(propertyPath, federation);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(0, result.RowsCount);
+    }
+
     #endregion
 
     #region Operator tree tests (Union/Minus)
