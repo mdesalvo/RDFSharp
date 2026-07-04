@@ -220,10 +220,14 @@ namespace RDFSharp.Query
         internal List<RDFPropertyPathStep> Children { get; private set; }
 
         /// <summary>
-        /// Members of a NegatedPropertySet step (each is a predicate IRI plus a flag telling whether it is matched
-        /// in the inverse direction, i.e. the <c>^a</c> members of <c>!(a|^b)</c>)
+        /// Predicates excluded in the forward direction by a NegatedPropertySet step (the <c>a</c> in <c>!(a|^b)</c>)
         /// </summary>
-        internal List<(RDFResource Property, bool IsInverse)> NegatedMembers { get; private set; }
+        internal List<RDFResource> ForwardMembers { get; private set; }
+
+        /// <summary>
+        /// Predicates excluded in the inverse direction by a NegatedPropertySet step (the <c>b</c> in <c>!(a|^b)</c>)
+        /// </summary>
+        internal List<RDFResource> InverseMembers { get; private set; }
 
         /// <summary>
         /// Flag indicating that the node is matched in the inverse direction (<c>^</c>)
@@ -281,20 +285,30 @@ namespace RDFSharp.Query
             => CompositeStep(RDFQueryEnums.RDFPropertyPathStepKinds.Alternative, children);
 
         /// <summary>
-        /// Builds a NegatedPropertySet node matching one hop over any predicate NOT among the given members.
-        /// A member with IsInverse=true contributes to the inverse-direction exclusion set (<c>^a</c> in <c>!(a|^b)</c>).
+        /// Builds a NegatedPropertySet node matching one hop over any predicate NOT among the given properties
+        /// (<c>!(a|^b)</c>): <paramref name="forwardProperties"/> are excluded when traversed in the forward
+        /// direction, <paramref name="inverseProperties"/> when traversed in the inverse (<c>^</c>) direction.
         /// </summary>
         /// <exception cref="RDFQueryException"></exception>
-        public static RDFPropertyPathStep NegatedPropertySet(List<(RDFResource Property, bool IsInverse)> members)
+        public static RDFPropertyPathStep NegatedPropertySet(List<RDFResource> forwardProperties, List<RDFResource> inverseProperties = null)
         {
+            if (forwardProperties == null)
+                forwardProperties = new List<RDFResource>();
+            if (inverseProperties == null)
+                inverseProperties = new List<RDFResource>();
+
             #region Guards
-            if (members == null)
-                throw new RDFQueryException("Cannot create property path NegatedPropertySet because given \"members\" parameter is null.");
-            if (members.Any(m => m.Property == null))
-                throw new RDFQueryException("Cannot create property path NegatedPropertySet because given \"members\" contains a null predicate.");
+            if (forwardProperties.Any(p => p == null) || inverseProperties.Any(p => p == null))
+                throw new RDFQueryException("Cannot create property path NegatedPropertySet because given properties contain a null predicate.");
+            if (forwardProperties.Count == 0 && inverseProperties.Count == 0)
+                throw new RDFQueryException("Cannot create property path NegatedPropertySet because both \"forwardProperties\" and \"inverseProperties\" parameters are null or empty.");
             #endregion
 
-            return new RDFPropertyPathStep(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet) { NegatedMembers = members };
+            return new RDFPropertyPathStep(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet)
+            {
+                ForwardMembers = forwardProperties,
+                InverseMembers = inverseProperties
+            };
         }
 
         private static RDFPropertyPathStep CompositeStep(RDFQueryEnums.RDFPropertyPathStepKinds kind, List<RDFPropertyPathStep> children)

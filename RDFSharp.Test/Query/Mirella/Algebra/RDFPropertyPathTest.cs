@@ -2222,7 +2222,7 @@ public class RDFPropertyPathTest
     {
         //?s !knows ?o -> every forward edge whose predicate is NOT knows (parent and likes edges), no reverse
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddStep(RDFPropertyPathStep.NegatedPropertySet([(Knows, false)]));
+            .AddStep(RDFPropertyPathStep.NegatedPropertySet([Knows]));
 
         RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, BuildSocialGraph());
 
@@ -2236,7 +2236,7 @@ public class RDFPropertyPathTest
     {
         //?s !^knows ?o -> reverse edges over any predicate but knows; no forward direction
         RDFPropertyPath path = new RDFPropertyPath(VarS, VarE)
-            .AddStep(RDFPropertyPathStep.NegatedPropertySet([(Knows, true)]));
+            .AddStep(RDFPropertyPathStep.NegatedPropertySet(null, [Knows]));
 
         RDFTable result = new RDFQueryEngine().ApplyPropertyPath(path, BuildSocialGraph());
 
@@ -2319,7 +2319,7 @@ public class RDFPropertyPathTest
     [TestMethod]
     public void ShouldRoundTripAndEvaluateNegatedPropertySetIso()
         => RDFTestUtilities.AssertIso(
-            PathQuery(RDFPropertyPathStep.NegatedPropertySet([(Knows, false), (Parent, true)])),
+            PathQuery(RDFPropertyPathStep.NegatedPropertySet([Knows], [Parent])),
             BuildSocialGraph());
 
     [TestMethod]

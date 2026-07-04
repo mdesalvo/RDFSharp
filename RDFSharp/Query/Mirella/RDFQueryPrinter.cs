@@ -667,7 +667,7 @@ namespace RDFSharp.Query
                     break;
 
                 case RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet:
-                    baseString = PrintNegatedPropertySet(step.NegatedMembers, prefixes);
+                    baseString = PrintNegatedPropertySet(step.ForwardMembers, step.InverseMembers, prefixes);
                     break;
 
                 default: // Link
@@ -690,14 +690,15 @@ namespace RDFSharp.Query
         /// <summary>
         /// Prints a negated property set: <c>!iri</c> / <c>!^iri</c> for a single member, <c>!(a|^b|…)</c> otherwise.
         /// </summary>
-        private static string PrintNegatedPropertySet(List<(RDFResource Property, bool IsInverse)> members, List<RDFNamespace> prefixes)
+        private static string PrintNegatedPropertySet(List<RDFResource> forwardMembers, List<RDFResource> inverseMembers, List<RDFNamespace> prefixes)
         {
-            string PrintMember((RDFResource Property, bool IsInverse) member)
-                => (member.IsInverse ? "^" : string.Empty) + PrintPatternMember(member.Property, prefixes);
+            List<string> printedMembers = forwardMembers.Select(p => PrintPatternMember(p, prefixes))
+                .Concat(inverseMembers.Select(p => "^" + PrintPatternMember(p, prefixes)))
+                .ToList();
 
-            return members.Count == 1
-                ? "!" + PrintMember(members[0])
-                : "!(" + string.Join("|", members.Select(PrintMember)) + ")";
+            return printedMembers.Count == 1
+                ? "!" + printedMembers[0]
+                : "!(" + string.Join("|", printedMembers) + ")";
         }
 
         /// <summary>

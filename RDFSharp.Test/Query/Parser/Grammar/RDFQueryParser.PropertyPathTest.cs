@@ -207,9 +207,9 @@ public partial class RDFQueryParserTest
         RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s !<http://example.org/p> ?o }");
 
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
-        Assert.AreEqual(1, step.NegatedMembers.Count);
-        Assert.IsTrue(step.NegatedMembers[0].Property.Equals(new RDFResource("http://example.org/p")));
-        Assert.IsFalse(step.NegatedMembers[0].IsInverse);
+        Assert.AreEqual(1, step.ForwardMembers.Count);
+        Assert.IsTrue(step.ForwardMembers[0].Equals(new RDFResource("http://example.org/p")));
+        Assert.AreEqual(0, step.InverseMembers.Count);
     }
 
     [TestMethod]
@@ -218,9 +218,8 @@ public partial class RDFQueryParserTest
         RDFPropertyPathStep step = SingleParsedExpression("SELECT * WHERE { ?s !(<http://example.org/p1>|^<http://example.org/p2>) ?o }");
 
         Assert.AreEqual(RDFQueryEnums.RDFPropertyPathStepKinds.NegatedPropertySet, step.Kind);
-        Assert.AreEqual(2, step.NegatedMembers.Count);
-        Assert.IsFalse(step.NegatedMembers[0].IsInverse);
-        Assert.IsTrue(step.NegatedMembers[1].IsInverse);
+        Assert.AreEqual(1, step.ForwardMembers.Count);
+        Assert.AreEqual(1, step.InverseMembers.Count);
     }
 
     [TestMethod]

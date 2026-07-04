@@ -248,7 +248,12 @@ namespace RDFSharp.Query
         /// </summary>
         private static RDFPropertyPathStep ParsePathNegatedPropertySet(RDFQueryParserContext parserContext)
         {
-            List<(RDFResource Property, bool IsInverse)> members = new List<(RDFResource, bool)>();
+            List<RDFResource> forwardMembers = new List<RDFResource>();
+            List<RDFResource> inverseMembers = new List<RDFResource>();
+
+            //Adds a parsed member to the forward or inverse set depending on its '^' flag
+            void AddMember((RDFResource Property, bool IsInverse) member)
+                => (member.IsInverse ? inverseMembers : forwardMembers).Add(member.Property);
 
             //Parenthesized list: zero or more '|'-separated members
             if (SkipWhitespace(parserContext) == '(')
@@ -256,11 +261,11 @@ namespace RDFSharp.Query
                 ReadCodePoint(parserContext);
                 if (SkipWhitespace(parserContext) != ')')
                 {
-                    members.Add(ParsePathOneInPropertySet(parserContext));
+                    AddMember(ParsePathOneInPropertySet(parserContext));
                     while (SkipWhitespace(parserContext) == '|')
                     {
                         ReadCodePoint(parserContext);
-                        members.Add(ParsePathOneInPropertySet(parserContext));
+                        AddMember(ParsePathOneInPropertySet(parserContext));
                     }
                 }
                 ExpectChar(parserContext, ')', "property path negated set");
@@ -268,10 +273,10 @@ namespace RDFSharp.Query
             //Single bare member
             else
             {
-                members.Add(ParsePathOneInPropertySet(parserContext));
+                AddMember(ParsePathOneInPropertySet(parserContext));
             }
 
-            return RDFPropertyPathStep.NegatedPropertySet(members);
+            return RDFPropertyPathStep.NegatedPropertySet(forwardMembers, inverseMembers);
         }
 
         /// <summary>

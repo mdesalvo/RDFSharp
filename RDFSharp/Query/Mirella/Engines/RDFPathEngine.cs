@@ -261,7 +261,7 @@ namespace RDFSharp.Query
                 }
 
                 default: // NegatedPropertySet
-                    return evaluationCache.GetNegatedSuccessors(node, step.NegatedMembers);
+                    return evaluationCache.GetNegatedSuccessors(node, step.ForwardMembers, step.InverseMembers);
             }
         }
 
@@ -515,15 +515,17 @@ namespace RDFSharp.Query
             /// members (a forward edge whose predicate is not in the forward-excluded set, or a reverse edge whose
             /// predicate is not in the inverse-excluded set), built once per member-set and memoized.
             /// </summary>
-            internal List<RDFPatternMember> GetNegatedSuccessors(RDFPatternMember node, List<(RDFResource Property, bool IsInverse)> members)
+            internal List<RDFPatternMember> GetNegatedSuccessors(RDFPatternMember node, List<RDFResource> forwardMembers, List<RDFResource> inverseMembers)
             {
                 //Canonical, order-independent signature of the member set (each member tagged '^' if inverse),
                 //so two textually-different but equivalent negated sets share one built adjacency
-                string key = string.Join("|", members.Select(m => (m.IsInverse ? "^" : "") + m.Property.PatternMemberID).OrderBy(s => s, StringComparer.Ordinal));
+                string key = string.Join("|", forwardMembers.Select(p => p.PatternMemberID.ToString())
+                    .Concat(inverseMembers.Select(p => "^" + p.PatternMemberID))
+                    .OrderBy(s => s, StringComparer.Ordinal));
                 //Build the negated adjacency on first request and cache it under that signature
                 if (!byNegatedSet.TryGetValue(key, out RDFNegatedAdjacency adjacency))
                 {
-                    adjacency = RDFNegatedAdjacency.BuildNegatedAdjacency(members, DataSource);
+                    adjacency = RDFNegatedAdjacency.BuildNegatedAdjacency(forwardMembers, inverseMembers, DataSource);
                     byNegatedSet[key] = adjacency;
                 }
                 //Return the node's successors, or the shared empty list when it has none
@@ -616,12 +618,11 @@ namespace RDFSharp.Query
             /// and contributes (o → s) when p is not an inverse-excluded predicate (the SPARQL negated set unions
             /// the forward and inverse directions).
             /// </summary>
-            internal static RDFNegatedAdjacency BuildNegatedAdjacency(List<(RDFResource Property, bool IsInverse)> members, RDFDataSource dataSource)
+            internal static RDFNegatedAdjacency BuildNegatedAdjacency(List<RDFResource> forwardMembers, List<RDFResource> inverseMembers, RDFDataSource dataSource)
             {
-                //The predicates the negated set forbids in each direction (kept as their pattern-member hashes):
-                //the plain members forbid the forward direction, the '^' members forbid the inverse direction.
-                HashSet<long> forwardForbiddenPredicates = new HashSet<long>(members.Where(m => !m.IsInverse).Select(m => m.Property.PatternMemberID));
-                HashSet<long> inverseForbiddenPredicates = new HashSet<long>(members.Where(m => m.IsInverse).Select(m => m.Property.PatternMemberID));
+                //The predicates the negated set forbids in each direction, kept as their pattern-member hashes
+                HashSet<long> forwardForbiddenPredicates = new HashSet<long>(forwardMembers.Select(p => p.PatternMemberID));
+                HashSet<long> inverseForbiddenPredicates = new HashSet<long>(inverseMembers.Select(p => p.PatternMemberID));
 
                 //Per SPARQL 1.1 §18.4, the negated set is the UNION of a forward branch (present when the set has
                 //forward members, or is empty) and an inverse branch (present only when the set has inverse '^'
