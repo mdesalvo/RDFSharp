@@ -1,9 +1,7 @@
-RDFSharp/bin/Debug/*
-RDFSharp/bin/Release/*
-RDFSharp.Test/bin/Debug/*
-RDFSharp.Test/bin/Release/*
+RDFSharp/bin/*
 RDFSharp/obj/*
+RDFSharp.Test/bin/*
 RDFSharp.Test/obj/*
 /.vs
 /.claude
-/RDFSharp.Benchmark
+/benchmarks
