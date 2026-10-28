@@ -1,7 +1,5 @@
 # RDFSharp <a href="https://www.nuget.org/packages/RDFSharp"><img src="https://img.shields.io/nuget/dt/RDFSharp?style=flat&color=9f7aea&logo=nuget&label=downloads"/></a> [![codecov](https://codecov.io/gh/mdesalvo/RDFSharp/graph/badge.svg?token=J3KNYAXTZC)](https://codecov.io/gh/mdesalvo/RDFSharp)
 
-⭐ We appreciate your star, it helps!
-
 RDFSharp is a modular .NET library made up of 3 layers: 
 
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v4.0.0/RDFSharp.Model-4.0.pdf">RDFSharp.Model</a></b>
