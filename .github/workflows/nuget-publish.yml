@@ -1,0 +1,64 @@
+name: Pack and Push NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags (v4.0.1, etc.)
+  workflow_dispatch:
+
+jobs:
+  pack-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Trusted Publishing: the OIDC token NuGet/login exchanges for a short-lived API key
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up .NET
+        id: dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      # The runner image carries newer SDKs than the one installed above and without a global.json
+      # the newest one wins: the package is built by the same SDK 10 that builds it in CI
+      - name: Pin the .NET SDK
+        run: dotnet new globaljson --sdk-version ${{ steps.dotnet.outputs.dotnet-version }} --force
+
+      # The package takes its version from RDFSharp/RDFSharp.csproj, never from the tag:
+      # a tag that disagrees with it would publish a package under a version nobody released
+      - name: Check tag against package version
+        id: version
+        run: |
+          VERSION=$(dotnet msbuild RDFSharp/RDFSharp.csproj -getProperty:Version)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          if [ "${{ github.event_name }}" = "push" ] && [ "${GITHUB_REF#refs/tags/v}" != "$VERSION" ]; then
+            echo "::error::Tag ${GITHUB_REF#refs/tags/} does not match version $VERSION of RDFSharp.csproj"
+            exit 1
+          fi
+
+      # RDFSharp declares GeneratePackageOnBuild, so the build itself packs it and dotnet pack
+      # would not build at all on a fresh checkout. The test project is not packable
+      - name: Build and pack
+        run: dotnet build RDFSharp.sln -c Release -p:PackageOutputPath=${{ github.workspace }}/nupkg -p:ContinuousIntegrationBuild=true
+
+      # A version pushed to nuget.org can only be unlisted, never deleted: nothing goes up unless the suite is green
+      - name: Test
+        run: dotnet test RDFSharp.sln -c Release --no-build
+
+      - name: Login to NuGet
+        id: nuget
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      # The .nupkg carries its .snupkg along to the symbol server.
+      # Skipping duplicates lets a failed run be re-run without refusing what already went up
+      - name: Push
+        run: >
+          dotnet nuget push "${{ github.workspace }}/nupkg/*.nupkg"
+          --api-key ${{ steps.nuget.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
