@@ -3,11 +3,11 @@
         <AssemblyTitle>RDFSharp</AssemblyTitle>
         <AssemblyName>RDFSharp</AssemblyName>
         <AssemblyVersion>$(Version)</AssemblyVersion>
-        <Version>4.0.0</Version>
+        <Version>4.0.1</Version>
         <Authors>Marco De Salvo</Authors>
         <Copyright>Marco De Salvo</Copyright>
         <Description>Lightweight and friendly .NET library for realizing Semantic Web applications (RDF, SPARQL, SHACL)</Description>
-        <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
         <SignAssembly>false</SignAssembly>
         <Product>RDFSharp</Product>
         <PackageId>RDFSharp</PackageId>
@@ -47,10 +47,6 @@
         <None Include="..\CLAUDE.md" Link="CLAUDE.md" Pack="false" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="NetTopologySuite" Version="2.6.0" />
         <PackageReference Include="ProjNet" Version="2.1.0" />
     </ItemGroup>

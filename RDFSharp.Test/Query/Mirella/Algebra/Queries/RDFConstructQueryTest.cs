@@ -37,12 +37,17 @@ public class RDFConstructQueryTest
     [TestInitialize]
     public void Initialize() { server = WireMockServer.Start(); }
 
+    //Every test starts its own mock endpoint: releasing it here keeps one host alive at a time,
+    //since each leaked host holds a file watcher and exhausts the inotify instances of Linux machines
+    [TestCleanup]
+    public void Cleanup() { server?.Stop(); server?.Dispose(); }
+
     #region Tests
     [TestMethod]
     public void ShouldApplyConstructWithLimitToSolutionsBeforeTemplate()
     {
         //Per SPARQL 1.1, the solution modifiers (here LIMIT) apply to the WHERE solution sequence BEFORE the
-        //template is instantiated: LIMIT 1 keeps 1 solution, and a 2-triple template then yields 2 triples
+        //template is instantiated: LIMIT 1 keeps 1 solution, from which a 2-triple template then yields 2 triples
         //(NOT 1 triple — which is what a post-template LIMIT would have wrongly produced).
         RDFGraph graph = new RDFGraph(
         [

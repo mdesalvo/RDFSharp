@@ -21,6 +21,8 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RDFSharp.Query;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Model;
@@ -1816,6 +1818,47 @@ public class RDFGraphTest
         int z = 0;
         await foreach (RDFTriple t in graph) z++;
         Assert.AreEqual(2, z);
+    }
+
+    [TestMethod]
+    public void ShouldQueryGraphWithLinqOperators()
+    {
+        RDFGraph graph = new RDFGraph([
+            new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+            new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
+        ]);
+
+        //Since .NET 10 these operators also exist for async sequences: a graph must still bind them unambiguously
+        List<RDFPatternMember> objects = graph.Where(t => t.Object is RDFResource)
+                                              .Select(t => t.Object)
+                                              .ToList();
+        Assert.HasCount(1, objects);
+        Assert.AreEqual(new RDFResource("http://obj/"), objects[0]);
+
+        //Paging and ordering are among the operators the async LINQ of .NET 10 shadows
+        Assert.HasCount(1, graph.OrderBy(t => t.Object.ToString()).Skip(1).Take(1).ToList());
+    }
+
+    [TestMethod]
+    public async Task ShouldEnumerateGraphAsyncWithConfiguration()
+    {
+        RDFGraph graph = new RDFGraph([
+            new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFResource("http://obj/")),
+            new RDFTriple(new RDFResource("http://subj/"),new RDFResource("http://pred/"),new RDFPlainLiteral("lit"))
+        ]);
+
+        //Consumers detaching the iteration from their synchronization context still see every triple
+        int z = 0;
+        await foreach (RDFTriple t in graph.ConfigureAwait(false)) z++;
+        Assert.AreEqual(2, z);
+
+        //A token cancelled before the iteration stops it at the first triple
+        using CancellationTokenSource cts = new CancellationTokenSource();
+        await cts.CancelAsync();
+        await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () =>
+        {
+            await foreach (RDFTriple t in graph.WithCancellation(cts.Token)) z++;
+        });
     }
 
     [TestMethod]

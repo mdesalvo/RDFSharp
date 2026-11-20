@@ -35,7 +35,7 @@ namespace RDFSharp.Store
     /// RDFMemoryStore represents an in-memory RDF store engine.
     /// </summary>
 #if NET8_0_OR_GREATER
-    public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IAsyncEnumerable<RDFQuadruple>, IDisposable, IAsyncDisposable
+    public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable, IAsyncDisposable
 #else
     public sealed class RDFMemoryStore : RDFStore, IEnumerable<RDFQuadruple>, IDisposable
 #endif
@@ -168,6 +168,18 @@ namespace RDFSharp.Store
         /// </summary>
         public IAsyncEnumerator<RDFQuadruple> GetAsyncEnumerator(CancellationToken cancellationToken = default)
             => GetQuadruplesAsync(cancellationToken).GetAsyncEnumerator(cancellationToken);
+
+        /// <summary>
+        /// Asynchronously iterates the store's quadruples, stopping when the given token is cancelled
+        /// </summary>
+        public ConfiguredCancelableAsyncEnumerable<RDFQuadruple> WithCancellation(CancellationToken cancellationToken)
+            => GetQuadruplesAsync().WithCancellation(cancellationToken);
+
+        /// <summary>
+        /// Asynchronously iterates the store's quadruples, resuming or not on the caller's synchronization context
+        /// </summary>
+        public ConfiguredCancelableAsyncEnumerable<RDFQuadruple> ConfigureAwait(bool continueOnCapturedContext)
+            => GetQuadruplesAsync().ConfigureAwait(continueOnCapturedContext);
 #endif
 
         /// <summary>
@@ -347,7 +359,7 @@ namespace RDFSharp.Store
 
             //Drive the intersection from the SMALLEST id-set and probe the others with O(1) hash lookups, so the
             //cost is bound by the most selective accessor instead of by the first-declared one. We never copy
-            //the larger sets, and we materialize an RDFQuadruple only for the surviving (intersected) ids.
+            //the larger sets: an RDFQuadruple is materialized only for the surviving (intersected) ids.
             int driverIndex = 0;
             HashSet<long> smallestSet = idxSets[0];
             for (int i = 1; i < idxSets.Count; i++)
