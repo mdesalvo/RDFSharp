@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using RDFSharp.Query;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RDFSharp.Test.Store;
@@ -1861,6 +1863,47 @@ public class RDFMemoryStoreTest
         int z = 0;
         await foreach (RDFQuadruple q in store) z++;
         Assert.AreEqual(2, z);
+    }
+
+    [TestMethod]
+    public void ShouldQueryMemoryStoreWithLinqOperators()
+    {
+        RDFMemoryStore store = new RDFMemoryStore([
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")),
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFPlainLiteral("lit"))
+        ]);
+
+        //Since .NET 10 these operators also exist for async sequences: a store must still bind them unambiguously
+        List<RDFPatternMember> objects = store.Where(q => q.Object is RDFResource)
+                                              .Select(q => q.Object)
+                                              .ToList();
+        Assert.HasCount(1, objects);
+        Assert.AreEqual(new RDFResource("ex:o"), objects[0]);
+
+        //Paging and ordering are among the operators the async LINQ of .NET 10 shadows
+        Assert.HasCount(1, store.OrderBy(q => q.Object.ToString()).Skip(1).Take(1).ToList());
+    }
+
+    [TestMethod]
+    public async Task ShouldEnumerateMemoryStoreAsyncWithConfiguration()
+    {
+        RDFMemoryStore store = new RDFMemoryStore([
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")),
+            new RDFQuadruple(new RDFContext("ex:c"), new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFPlainLiteral("lit"))
+        ]);
+
+        //Consumers detaching the iteration from their synchronization context still see every quadruple
+        int z = 0;
+        await foreach (RDFQuadruple q in store.ConfigureAwait(false)) z++;
+        Assert.AreEqual(2, z);
+
+        //A token cancelled before the iteration stops it at the first quadruple
+        using CancellationTokenSource cts = new CancellationTokenSource();
+        await cts.CancelAsync();
+        await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () =>
+        {
+            await foreach (RDFQuadruple q in store.WithCancellation(cts.Token)) z++;
+        });
     }
 
     [TestMethod]

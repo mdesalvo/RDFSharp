@@ -34,7 +34,7 @@ namespace RDFSharp.Model
     /// RDFGraph represents an Uri-named collection of triples
     /// </summary>
 #if NET8_0_OR_GREATER
-    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IAsyncEnumerable<RDFTriple>, IDisposable, IAsyncDisposable
+    public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable, IAsyncDisposable
 #else
     public sealed class RDFGraph : RDFDataSource, IEquatable<RDFGraph>, IEnumerable<RDFTriple>, IDisposable
 #endif
@@ -167,6 +167,18 @@ namespace RDFSharp.Model
         /// </summary>
         public IAsyncEnumerator<RDFTriple> GetAsyncEnumerator(CancellationToken cancellationToken=default)
             => GetTriplesAsync(cancellationToken).GetAsyncEnumerator(cancellationToken);
+
+        /// <summary>
+        /// Asynchronously iterates the graph's triples, stopping when the given token is cancelled
+        /// </summary>
+        public ConfiguredCancelableAsyncEnumerable<RDFTriple> WithCancellation(CancellationToken cancellationToken)
+            => GetTriplesAsync().WithCancellation(cancellationToken);
+
+        /// <summary>
+        /// Asynchronously iterates the graph's triples, resuming or not on the caller's synchronization context
+        /// </summary>
+        public ConfiguredCancelableAsyncEnumerable<RDFTriple> ConfigureAwait(bool continueOnCapturedContext)
+            => GetTriplesAsync().ConfigureAwait(continueOnCapturedContext);
 #endif
 
         /// <summary>
@@ -398,7 +410,7 @@ namespace RDFSharp.Model
 
             //Drive the intersection from the SMALLEST id-set and probe the others with O(1) hash lookups, so the
             //cost is bound by the most selective accessor instead of by the first-declared one. We never copy
-            //the larger sets, and we materialize an RDFTriple only for the surviving (intersected) ids.
+            //the larger sets: an RDFTriple is materialized only for the surviving (intersected) ids.
             int driverIndex = 0;
             HashSet<long> smallestSet = idxSets[0];
             for (int i = 1; i < idxSets.Count; i++)
