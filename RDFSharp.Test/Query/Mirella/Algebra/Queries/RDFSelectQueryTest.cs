@@ -39,6 +39,11 @@ public class RDFSelectQueryTest
     [TestInitialize]
     public void Initialize() { server = WireMockServer.Start(); }
 
+    //Every test starts its own mock endpoint: releasing it here keeps one host alive at a time,
+    //since each leaked host holds a file watcher and exhausts the inotify instances of Linux machines
+    [TestCleanup]
+    public void Cleanup() { server?.Stop(); server?.Dispose(); }
+
     #region Tests
     [TestMethod]
     public void ShouldCreateSelectQuery()
@@ -2404,7 +2409,7 @@ public class RDFSelectQueryTest
     [TestMethod]
     public void ShouldCreateSelectQueryFromStringAndPreserveItThroughRoundTrip()
     {
-        //Building a query, printing it, and parsing the print back must yield the very same printed form
+        //Building a query, printing it and parsing the print back must yield the very same printed form
         RDFSelectQuery originalQuery = new RDFSelectQuery()
             .AddPatternGroup(new RDFPatternGroup()
                 .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))))

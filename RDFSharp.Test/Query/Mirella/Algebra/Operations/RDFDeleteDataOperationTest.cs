@@ -36,6 +36,11 @@ public class RDFDeleteDataOperationTest
     [TestInitialize]
     public void Initialize() { server = WireMockServer.Start(); }
 
+    //Every test starts its own mock endpoint: releasing it here keeps one host alive at a time,
+    //since each leaked host holds a file watcher and exhausts the inotify instances of Linux machines
+    [TestCleanup]
+    public void Cleanup() { server?.Stop(); server?.Dispose(); }
+
     #region Tests
     [TestMethod]
     public void ShouldCreateDeleteDataOperation()
