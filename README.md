@@ -6,7 +6,7 @@ RDFSharp is a modular .NET library made up of 3 layers:
 <ul>
     <li>Create and manage <b>RDF models</b> (resources, literals, triples, graphs, namespaces, datatypes, ...)</li>
     <li>Exchange them using standard <b>RDF formats</b> (N-Triples, TriX, Turtle, RDF/Xml)</li>
-    <li>Create and validate <b>SHACL shapes</b> (shape graphs, shapes, targets, constraints, reports, ...)</b></li>
+    <li>Create and validate <b>SHACL shapes</b> (shape graphs, shapes, targets, constraints, reports, ...)</li>
 </ul>
 
 <b><a href="https://github.com/mdesalvo/RDFSharp/releases/download/v4.0.0/RDFSharp.Store-4.0.pdf">RDFSharp.Store</a></b>
