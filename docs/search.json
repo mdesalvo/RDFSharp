@@ -1,0 +1,5 @@
+---
+layout: null
+permalink: /search.json
+---
+[{% assign first = true %}{% for p in site.pages %}{% if p.title and p.permalink and p.layout != null %}{% unless first %},{% endunless %}{% assign first = false %}{"title":{{ p.title | jsonify }},"url":{{ p.url | relative_url | jsonify }},"text":{{ p.content | strip_html | strip_newlines | truncate: 8000 | jsonify }}}{% endif %}{% endfor %}]

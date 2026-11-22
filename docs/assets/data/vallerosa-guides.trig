@@ -1,0 +1,27 @@
+# What two wine guides said about the Vallerosa wines in their 2025 editions, one named graph per guide.
+# The running example of the RDFSharp manual: https://mdesalvo.github.io/RDFSharp/vallerosa/
+# Both guides are fictional. They do not always agree, and neither of them reviewed every wine.
+
+@prefix vr:  <https://vallerosa.example/vocab#> .
+@prefix vrd: <https://vallerosa.example/id/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Guida ai Calici, an Italian guide
+
+<https://guidacalici.example/2025> {
+    vrd:rosso-2021      vr:score 88 .
+    vrd:riserva-2019    vr:score 94 .
+    vrd:bianco-2023     vr:score 86 .
+    vrd:vinsanto-2015   vr:score 95 .
+    vrd:vermentino-2023 vr:score 89 .
+}
+
+# WineScope, an international guide
+
+<https://winescope.example/2025> {
+    vrd:rosso-2021      vr:score 90 .
+    vrd:riserva-2019    vr:score 92 .
+    vrd:vinsanto-2015   vr:score 96 .
+    vrd:vermentino-2023 vr:score 87 .
+    vrd:rosato-2024     vr:score 84 .
+}

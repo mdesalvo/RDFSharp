@@ -3,6 +3,7 @@ name: windows
 on:
   push:
     branches: [ main ]
+    paths-ignore: [ 'docs/**' ]
 
 jobs:
   windows:

@@ -1,0 +1,142 @@
+# The Vallerosa catalog (ABox): the cooperative, its producers, its areas, its grapes and its wines.
+# The running example of the RDFSharp manual: https://mdesalvo.github.io/RDFSharp/vallerosa/
+# Every name, place and wine in this file is fictional, except the grape varieties and the two real regions.
+
+@prefix vr:   <https://vallerosa.example/vocab#> .
+@prefix vrd:  <https://vallerosa.example/id/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dbr:  <http://dbpedia.org/resource/> .
+
+# The cooperative
+
+vrd:vallerosa a vr:Cooperative ;
+    rdfs:label "Vallerosa Wine Cooperative"@en, "Cantina Cooperativa di Vallerosa"@it .
+
+# Areas, from the country down to the three subzones of the valley
+
+vrd:italy a vr:Area ;
+    rdfs:label "Italy"@en, "Italia"@it .
+
+vrd:tuscany a vr:Area ;
+    rdfs:label "Tuscany"@en, "Toscana"@it ;
+    vr:partOf vrd:italy .
+
+vrd:valle-rosa a vr:Area ;
+    rdfs:label "Rose Valley"@en, "Valle Rosa"@it ;
+    vr:partOf vrd:tuscany .
+
+vrd:poggio a vr:Area ;
+    rdfs:label "Hilltop"@en, "Poggio"@it ;
+    vr:partOf vrd:valle-rosa .
+
+vrd:colle-nord a vr:Area ;
+    rdfs:label "North Hill"@en, "Colle Nord"@it ;
+    vr:partOf vrd:valle-rosa .
+
+vrd:piana a vr:Area ;
+    rdfs:label "The Plain"@en, "Piana"@it ;
+    vr:partOf vrd:valle-rosa .
+
+# Producers
+
+vrd:poggio-alto a vr:Producer ;
+    rdfs:label "Fattoria Poggio Alto" ;
+    vr:memberOf vrd:vallerosa ;
+    vr:locatedIn vrd:poggio .
+
+vrd:le-crete a vr:Producer ;
+    rdfs:label "Tenuta Le Crete" ;
+    vr:memberOf vrd:vallerosa ;
+    vr:locatedIn vrd:colle-nord .
+
+vrd:tre-ulivi a vr:Producer ;
+    rdfs:label "Cantina dei Tre Ulivi" ;
+    vr:memberOf vrd:vallerosa ;
+    vr:locatedIn vrd:piana .
+
+# Grape varieties, each one linked to its DBpedia resource
+
+vrd:sangiovese a vr:Grape ;
+    rdfs:label "Sangiovese" ;
+    owl:sameAs dbr:Sangiovese .
+
+vrd:canaiolo a vr:Grape ;
+    rdfs:label "Canaiolo" ;
+    owl:sameAs dbr:Canaiolo .
+
+vrd:trebbiano a vr:Grape ;
+    rdfs:label "Trebbiano" ;
+    owl:sameAs dbr:Trebbiano .
+
+vrd:malvasia a vr:Grape ;
+    rdfs:label "Malvasia" ;
+    owl:sameAs dbr:Malvasia .
+
+vrd:vermentino a vr:Grape ;
+    rdfs:label "Vermentino" ;
+    owl:sameAs dbr:Vermentino .
+
+# Wines
+
+vrd:rosso-2021 a vr:RedWine ;
+    rdfs:label "Rosso di Vallerosa"@it, "Vallerosa Red"@en ;
+    vr:producedBy vrd:poggio-alto ;
+    vr:vintage "2021"^^xsd:gYear ;
+    vr:alcohol 13.5 ;
+    vr:price 14.50 ;
+    vr:organic false ;
+    vr:grape vrd:sangiovese, vrd:canaiolo ;
+    vr:blend ( vrd:sangiovese vrd:canaiolo ) .
+
+vrd:riserva-2019 a vr:RedWine ;
+    rdfs:label "Vallerosa Riserva"@it, "Vallerosa Reserve"@en ;
+    vr:producedBy vrd:poggio-alto ;
+    vr:vintage "2019"^^xsd:gYear ;
+    vr:alcohol 14.0 ;
+    vr:price 32.00 ;
+    vr:organic false ;
+    vr:grape vrd:sangiovese ;
+    vr:blend ( vrd:sangiovese ) .
+
+vrd:bianco-2023 a vr:WhiteWine ;
+    rdfs:label "Bianco delle Crete"@it, "Le Crete White"@en ;
+    vr:producedBy vrd:le-crete ;
+    vr:vintage "2023"^^xsd:gYear ;
+    vr:alcohol 12.0 ;
+    vr:price 11.00 ;
+    vr:organic true ;
+    vr:grape vrd:trebbiano, vrd:malvasia ;
+    vr:blend ( vrd:trebbiano vrd:malvasia ) .
+
+vrd:vinsanto-2015 a vr:SweetWine ;
+    rdfs:label "Vin Santo della Valle"@it, "Valley Vin Santo"@en ;
+    vr:producedBy vrd:le-crete ;
+    vr:vintage "2015"^^xsd:gYear ;
+    vr:alcohol 16.0 ;
+    vr:price 38.00 ;
+    vr:organic false ;
+    vr:grape vrd:trebbiano, vrd:malvasia ;
+    vr:blend ( vrd:malvasia vrd:trebbiano ) .
+
+vrd:vermentino-2023 a vr:WhiteWine ;
+    rdfs:label "Vermentino della Piana"@it, "Vermentino of the Plain"@en ;
+    vr:producedBy vrd:tre-ulivi ;
+    vr:vintage "2023"^^xsd:gYear ;
+    vr:alcohol 12.5 ;
+    vr:price 13.00 ;
+    vr:organic true ;
+    vr:grape vrd:vermentino ;
+    vr:blend ( vrd:vermentino ) .
+
+vrd:rosato-2024 a vr:RoseWine ;
+    rdfs:label "Rosa di Valle"@it, "Valley Rosé"@en ;
+    vr:producedBy vrd:tre-ulivi ;
+    vr:vintage "2024"^^xsd:gYear ;
+    vr:alcohol 12.0 ;
+    vr:price 10.00 ;
+    vr:organic false ;
+    vr:grape vrd:sangiovese ;
+    vr:blend ( vrd:sangiovese ) .

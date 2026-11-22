@@ -1,0 +1,49 @@
+# The manual's index. The order here is the reading order: the pager at the foot of every page follows it.
+- group: Welcome
+  pages:
+    - { title: RDFSharp, url: / }
+    - { title: Getting started, url: /getting-started/ }
+    - { title: Meet Vallerosa, url: /vallerosa/ }
+    - { title: How it fits together, url: /architecture/ }
+- group: Model
+  pages:
+    - { title: Model at a glance, url: /model/, overview: true }
+    - { title: Resources, literals and triples, url: /model/triples/, blurb: "Name things with IRIs, state facts about them as triples, choose between resources and literals." }
+    - { title: Graphs, url: /model/graphs/, blurb: "Collect triples in a graph, select and remove them, merge graphs from different producers." }
+    - { title: RDF formats, url: /model/formats/, blurb: "Write and read Turtle, N-Triples, TriX and RDF/XML." }
+    - { title: Namespaces and vocabularies, url: /model/namespaces/, blurb: "Short prefixes for long IRIs and the built-in vocabularies of the Semantic Web." }
+    - { title: Datatypes and facets, url: /model/datatypes/, blurb: "Typed values, invalid values refused, custom datatypes with facets." }
+    - { title: Containers and collections, url: /model/containers/, blurb: "Bags, sequences and ordered lists: the blend of a wine, the awards it won." }
+    - { title: Reification, url: /model/reification/, blurb: "Record who said something instead of stating it as a fact." }
+    - { title: SHACL shapes, url: /model/shacl-shapes/, blurb: "Write down what a correct catalog entry looks like." }
+    - { title: SHACL validation, url: /model/shacl-validation/, blurb: "Check data against the shapes and read the report." }
+- group: Store
+  pages:
+    - { title: Store at a glance, url: /store/, overview: true }
+    - { title: Contexts and quadruples, url: /store/quadruples/, blurb: "Give every triple a context, so each fact remembers its source." }
+    - { title: Memory stores, url: /store/stores/, blurb: "Keep the catalog and the guides in one store, side by side." }
+    - { title: Store formats, url: /store/formats/, blurb: "Write and read N-Quads, TriX and TriG." }
+    - { title: Persistent stores, url: /store/extensions/, blurb: "Move the store onto a database without changing the code that uses it." }
+- group: Query
+  pages:
+    - { title: Query at a glance, url: /query/, overview: true }
+    - { title: Variables and patterns, url: /query/patterns/, blurb: "Variables, patterns, optional parts, unions and differences." }
+    - { title: Filters, url: /query/filters/, blurb: "Keep only the solutions that pass a test." }
+    - { title: Modifiers, url: /query/modifiers/, blurb: "Sort, page and deduplicate results." }
+    - { title: Property paths, url: /query/property-paths/, blurb: "Walk chains of links of any length in one step." }
+    - { title: Subqueries, url: /query/subqueries/, blurb: "Queries inside queries." }
+    - { title: Aggregates, url: /query/aggregates/, blurb: "Count, sum, average and group." }
+    - { title: Values, url: /query/values/, blurb: "Give a variable a fixed list of values." }
+    - { title: Bind and expressions, url: /query/expressions/, blurb: "Compute new values: arithmetic, strings, dates, conditions." }
+    - { title: GeoSPARQL, url: /query/geosparql/, blurb: "Distances, buffers and topology on geometries." }
+    - { title: Query forms, url: /query/query-forms/, blurb: "SELECT, ASK, CONSTRUCT and DESCRIBE." }
+    - { title: Parsing SPARQL, url: /query/parser/, blurb: "Turn SPARQL text into query objects and back." }
+    - { title: Federations, url: /query/federations/, blurb: "Query several data sources as one." }
+    - { title: SPARQL endpoints, url: /query/endpoints/, blurb: "Ask remote SPARQL services such as DBpedia." }
+    - { title: Tips and tricks, url: /query/tips/, blurb: "How the engine works and how to help it." }
+    - { title: Insert and delete, section: Updates, url: /query/insert-delete/, blurb: "Add and remove data with SPARQL Update." }
+    - { title: Load and manage graphs, url: /query/graph-management/, blurb: "Load, clear, create, drop, copy and move graphs." }
+    - { title: Operation sets, url: /query/operation-sets/, blurb: "Several updates applied as one unit." }
+- group: Beyond
+  pages:
+    - { title: Going further, url: /going-further/ }
