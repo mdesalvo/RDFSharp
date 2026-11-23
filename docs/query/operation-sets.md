@@ -25,12 +25,12 @@ using RDFSharp.Store;
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl")
+RDFGraph catalog = (await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl"))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(catalog);
-RDFMemoryStore store = catalogStore.UnionWith(
-    RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig"));
+await catalogStore.MergeGraphAsync(catalog);
+RDFMemoryStore store = await catalogStore.UnionWithAsync(
+    await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig"));
 
 RDFContext catalogContext = new RDFContext("https://vallerosa.example/catalog");
 Console.WriteLine(store.QuadruplesCount);
@@ -172,11 +172,11 @@ RDFOperationSet rollover = new RDFOperationSet()
 Nothing has run yet: building the set only collects its operations, which stay available in `rollover.Operations`. Applying it runs them one after the other on the same store and returns the results in a list that follows the same order: the first result belongs to the first operation.
 
 ```csharp
-IReadOnlyList<RDFOperationResult> results = rollover.ApplyToStore(store);
+IReadOnlyList<RDFOperationResult> results = await rollover.ApplyToStoreAsync(store);
 for (int index = 0; index < results.Count; index++)
     Console.WriteLine($"{rollover.Operations[index].GetType().Name} {results[index].InsertResultsCount} {results[index].DeleteResultsCount}");
 Console.WriteLine(store.QuadruplesCount);
-foreach (RDFGraph graph in store.ExtractGraphs())
+foreach (RDFGraph graph in await store.ExtractGraphsAsync())
     Console.WriteLine($"{graph.Context} {graph.TriplesCount}");
 ```
 
@@ -239,7 +239,7 @@ RDFOperationSet failing = new RDFOperationSet()
 
 try
 {
-    failing.ApplyToGraph(scratch);
+    await failing.ApplyToGraphAsync(scratch);
 }
 catch (RDFQueryException)
 {

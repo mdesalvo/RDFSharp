@@ -45,7 +45,7 @@ GROUP BY ?producer
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable producer = new RDFVariable("producer");
@@ -59,7 +59,7 @@ RDFSelectQuery winesPerProducer = new RDFSelectQuery()
     .AddProjectionVariable(producer)
     .AddProjectionVariable(wines);
 
-RDFSelectQueryResult counted = winesPerProducer.ApplyToGraph(catalog);
+RDFSelectQueryResult counted = await winesPerProducer.ApplyToGraphAsync(catalog);
 foreach (DataRow row in counted.SelectResults.Rows)
     Console.WriteLine($"{row["?PRODUCER"]} | {row["?WINES"]}");
 ```
@@ -99,9 +99,9 @@ GROUP BY ?subzone
 ```csharp
 catalog.SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(catalog);
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
-RDFMemoryStore store = catalogStore.UnionWith(guides);
+await catalogStore.MergeGraphAsync(catalog);
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFMemoryStore store = await catalogStore.UnionWithAsync(guides);
 
 RDFVariable subzone = new RDFVariable("subzone");
 RDFVariable score = new RDFVariable("score");
@@ -117,7 +117,7 @@ RDFSelectQuery scorePerSubzone = new RDFSelectQuery()
     .AddProjectionVariable(subzone)
     .AddProjectionVariable(averageScore);
 
-RDFSelectQueryResult averaged = scorePerSubzone.ApplyToStore(store);
+RDFSelectQueryResult averaged = await scorePerSubzone.ApplyToStoreAsync(store);
 ```
 
 </div>
@@ -153,7 +153,7 @@ GROUP BY ?shop
 ```
 
 ```csharp
-RDFGraph sales = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-sales.ttl");
+RDFGraph sales = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-sales.ttl");
 
 RDFVariable sale = new RDFVariable("sale");
 RDFVariable shop = new RDFVariable("shop");
@@ -172,7 +172,7 @@ RDFSelectQuery bottlesPerShop = new RDFSelectQuery()
     .AddProjectionVariable(totalBottles)
     .AddProjectionVariable(deliveries);
 
-RDFSelectQueryResult perShop = bottlesPerShop.ApplyToGraph(sales);
+RDFSelectQueryResult perShop = await bottlesPerShop.ApplyToGraphAsync(sales);
 ```
 
 </div>
@@ -224,7 +224,7 @@ RDFSelectQuery bigShops = new RDFSelectQuery()
     .AddProjectionVariable(shop)
     .AddProjectionVariable(totalBottles);
 
-RDFSelectQueryResult bigShopsResult = bigShops.ApplyToGraph(sales);
+RDFSelectQueryResult bigShopsResult = await bigShops.ApplyToGraphAsync(sales);
 ```
 
 </div>
@@ -269,7 +269,7 @@ RDFSelectQuery producerSummary = new RDFSelectQuery()
     .AddProjectionVariable(anyLabel)
     .AddProjectionVariable(allLabels);
 
-RDFSelectQueryResult summary = producerSummary.ApplyToGraph(catalog);
+RDFSelectQueryResult summary = await producerSummary.ApplyToGraphAsync(catalog);
 ```
 
 <div class="result" markdown="1">
@@ -298,7 +298,7 @@ RDFSelectQuery overall = new RDFSelectQuery()
         .AddAggregator(new RDFCountAggregator(soldWine, wineKinds).Distinct()))
     .AddProjectionVariable(shopCount)
     .AddProjectionVariable(wineKinds);
-RDFSelectQueryResult totals = overall.ApplyToGraph(sales);
+RDFSelectQueryResult totals = await overall.ApplyToGraphAsync(sales);
 ```
 
 <div class="result" markdown="1">

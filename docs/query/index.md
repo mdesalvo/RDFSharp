@@ -6,8 +6,6 @@ tagline: Ask questions, change answers
 lede: "The Query layer is Mirella, the SPARQL 1.1 engine of RDFSharp. It answers queries and applies updates over graphs, stores, federations and remote endpoints, whether you compose them in C# or write them as SPARQL text."
 ---
 
-> The catalog is described, stored and checked. Now the cooperative wants answers: what to recommend, what sells where, how the guides judged each producer. At year end, it wants to change the data with the same language it uses to read it.
-{: .story}
 
 ## What you find here
 

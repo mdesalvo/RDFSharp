@@ -10,19 +10,19 @@ lede: A shapes graph is applied to a data graph and answers with a report. You r
 
 ## Apply the shapes
 
-`Validate` is an extension method of `RDFShapesGraph`: it takes the **data graph** to check and returns an `RDFValidationReport`. The shapes are the ones that the [previous chapter]({{ '/model/shacl-shapes/' | relative_url }}) saved in `vallerosa-shapes.ttl` and the data graph is the catalog.
+`ValidateAsync` is an extension method of `RDFShapesGraph`: it takes the **data graph** to check and returns an `RDFValidationReport`. The shapes are the ones that the [previous chapter]({{ '/model/shacl-shapes/' | relative_url }}) saved in `vallerosa-shapes.ttl` and the data graph is the catalog.
 
 One detail decides whether the check means anything. The shape of the wine targets the class `vr:Wine`, but the catalog only says that `vrd:rosso-2021` is a `vr:RedWine`. That a red wine is a wine is written in the vocabulary file, as `rdfs:subClassOf`, so the vocabulary must be in the data graph too. The catalog goes in together with it:
 
 ```csharp
 using RDFSharp.Model;
 
-RDFShapesGraph shapes = RDFShapesGraph.FromRDFGraph(RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl"));
-RDFGraph vocabulary = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-vocab.ttl");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
-RDFGraph data = vocabulary.UnionWith(catalog);
+RDFShapesGraph shapes = await RDFShapesGraph.FromRDFGraphAsync(await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl"));
+RDFGraph vocabulary = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-vocab.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph data = await vocabulary.UnionWithAsync(catalog);
 
-RDFValidationReport report = shapes.Validate(data);
+RDFValidationReport report = await shapes.ValidateAsync(data);
 Console.WriteLine(report.Conforms);
 Console.WriteLine(report.ResultsCount);
 ```
@@ -63,11 +63,11 @@ Four things are wrong and none of them is a syntax error:
 The import is a graph on its own. By itself it passes and that is a trap:
 
 ```csharp
-RDFGraph imported = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "import.ttl");
-Console.WriteLine(shapes.Validate(imported).Conforms);
+RDFGraph imported = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "import.ttl");
+Console.WriteLine((await shapes.ValidateAsync(imported)).Conforms);
 
-RDFGraph candidate = data.UnionWith(imported);
-RDFValidationReport badReport = shapes.Validate(candidate);
+RDFGraph candidate = await data.UnionWithAsync(imported);
+RDFValidationReport badReport = await shapes.ValidateAsync(candidate);
 Console.WriteLine(badReport.Conforms);
 Console.WriteLine(badReport.ResultsCount);
 ```
@@ -147,12 +147,12 @@ Read the four results as the four mistakes: the missing vintage, the alcohol of 
 
 ## The report as RDF
 
-The report is RDF as well, as SHACL defines a vocabulary for it. `ToRDFGraph` gives the graph and from there the usual serializers can write it, so a report can be sent back to the producer who made the mistake:
+The report is RDF as well, as SHACL defines a vocabulary for it. `ToRDFGraphAsync` gives the graph and from there the usual serializers can write it, so a report can be sent back to the producer who made the mistake:
 
 ```csharp
-RDFGraph reportGraph = badReport.ToRDFGraph().SetContext(new Uri("https://vallerosa.example/report"));
+RDFGraph reportGraph = (await badReport.ToRDFGraphAsync()).SetContext(new Uri("https://vallerosa.example/report"));
 Console.WriteLine(reportGraph.TriplesCount);
-reportGraph.ToFile(RDFModelEnums.RDFFormats.Turtle, "report.ttl");
+await reportGraph.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "report.ttl");
 ```
 
 <div class="result" markdown="1">
@@ -230,8 +230,8 @@ vrd:nero-2024 a vr:RedWine ;
 ```
 
 ```csharp
-RDFGraph fixedImport = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "import-fixed.ttl");
-RDFValidationReport goodReport = shapes.Validate(data.UnionWith(fixedImport));
+RDFGraph fixedImport = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "import-fixed.ttl");
+RDFValidationReport goodReport = await shapes.ValidateAsync(await data.UnionWithAsync(fixedImport));
 Console.WriteLine(goodReport.Conforms);
 Console.WriteLine(goodReport.ResultsCount);
 ```
@@ -247,4 +247,4 @@ True
 
 The catalog with the corrected wine conforms and the import can go on to the website. A process that applies the shapes at every import has a simple rule: when `Conforms` is false, the data does not move on and the report goes back to whoever sent it.
 
-`ValidateAsync` and `ToRDFGraphAsync` are the asynchronous twins, for a validation that should not block. With a shapes graph in a file and a report that goes back as RDF, the cooperative has the whole loop: rules that anybody can read, data that is checked before it is published and a report that explains itself.
+`ValidateAsync` and `ToRDFGraphAsync` also have synchronous forms, `Validate` and `ToRDFGraph`. With a shapes graph in a file and a report that goes back as RDF, the cooperative has the whole loop: rules that anybody can read, data that is checked before it is published and a report that explains itself.

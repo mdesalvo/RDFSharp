@@ -35,7 +35,7 @@ using RDFSharp.Store;
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl")
+RDFGraph catalog = (await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl"))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
 Console.WriteLine(catalog.TriplesCount);   // 143
 ```
@@ -85,11 +85,11 @@ RDFInsertDataOperation insertVintage = new RDFInsertDataOperation()
     .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "grape"), new RDFResource(vrd + "sangiovese")))
     .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "grape"), new RDFResource(vrd + "canaiolo")));
 
-RDFOperationResult vintageResult = insertVintage.ApplyToGraph(catalog);
+RDFOperationResult vintageResult = await insertVintage.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{vintageResult.InsertResultsCount} {catalog.TriplesCount}");
 foreach (DataRow row in vintageResult.InsertResults.Rows)
     Console.WriteLine($"{row["?PREDICATE"]} | {row["?OBJECT"]}");
-Console.WriteLine(insertVintage.ApplyToGraph(catalog).InsertResultsCount);
+Console.WriteLine((await insertVintage.ApplyToGraphAsync(catalog)).InsertResultsCount);
 ```
 
 </div>
@@ -146,7 +146,7 @@ RDFInsertWhereOperation pairWithSteak = new RDFInsertWhereOperation()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto"))));
 
-RDFOperationResult pairingResult = pairWithSteak.ApplyToGraph(catalog);
+RDFOperationResult pairingResult = await pairWithSteak.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{pairingResult.InsertResultsCount} {catalog.TriplesCount}");
 foreach (DataRow row in pairingResult.InsertResults.Rows)
     Console.WriteLine($"{row["?SUBJECT"]} | {row["?PREDICATE"]} | {row["?OBJECT"]}");
@@ -192,7 +192,7 @@ RDFDeleteDataOperation stopQuoting = new RDFDeleteDataOperation()
     .AddDeleteTemplate(new RDFPattern(rosato, new RDFResource(vr + "price"),
         new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
 
-RDFOperationResult quotingResult = stopQuoting.ApplyToGraph(catalog);
+RDFOperationResult quotingResult = await stopQuoting.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{quotingResult.DeleteResultsCount} {catalog.TriplesCount}");
 ```
 
@@ -256,7 +256,7 @@ RDFDeleteWhereOperation forgetRosato = new RDFDeleteWhereOperation()
         .AddPattern(new RDFPattern(list, RDFVocabulary.RDF.FIRST, head))
         .AddPattern(new RDFPattern(list, RDFVocabulary.RDF.REST, tail)));
 
-RDFOperationResult forgetResult = forgetRosato.ApplyToGraph(catalog);
+RDFOperationResult forgetResult = await forgetRosato.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{forgetResult.DeleteResultsCount} {catalog.TriplesCount}");
 foreach (DataRow row in forgetResult.DeleteResults.Rows)
     Console.WriteLine(row["?PREDICATE"]);
@@ -317,7 +317,7 @@ RDFDeleteInsertWhereOperation raisePrices = new RDFDeleteInsertWhereOperation()
         .AddBind(new RDFBind(new RDFMultiplyExpression(price,
             new RDFTypedLiteral("1.05", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), newPrice)));
 
-RDFOperationResult raiseResult = raisePrices.ApplyToGraph(catalog);
+RDFOperationResult raiseResult = await raisePrices.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{raiseResult.DeleteResultsCount} {raiseResult.InsertResultsCount} {catalog.TriplesCount}");
 foreach (DataRow row in raiseResult.InsertResults.Rows)
     Console.WriteLine($"{row["?SUBJECT"]} | {row["?OBJECT"]}");
@@ -373,10 +373,10 @@ DELETE WHERE {
 
 ```csharp
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl")
+await catalogStore.MergeGraphAsync((await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl"))
     .SetContext(new Uri("https://vallerosa.example/catalog")));
-RDFMemoryStore store = catalogStore.UnionWith(
-    RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig"));
+RDFMemoryStore store = await catalogStore.UnionWithAsync(
+    await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig"));
 
 RDFVariable guide = new RDFVariable("guide");
 RDFVariable score = new RDFVariable("score");
@@ -389,7 +389,7 @@ RDFDeleteWhereOperation forgetScores = new RDFDeleteWhereOperation()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(guide, rosato, scoreProperty, score)));
 
-RDFOperationResult scoresResult = forgetScores.ApplyToStore(store);
+RDFOperationResult scoresResult = await forgetScores.ApplyToStoreAsync(store);
 Console.WriteLine($"{scoresResult.DeleteResultsCount} {store.QuadruplesCount}");
 foreach (DataRow row in scoresResult.DeleteResults.Rows)
     Console.WriteLine($"{row["?CONTEXT"]} | {row["?OBJECT"]}");
@@ -408,5 +408,5 @@ https://winescope.example/2025 | 84^^http://www.w3.org/2001/XMLSchema#integer
 
 The result tables of a store carry a `?CONTEXT` column as well. Only WineScope had tasted the rosé, so one quadruple goes: the store drops from 153 to 152. On a store a template or a pattern without a context belongs to the default context of the library, which is not the one of the catalog, so name the context whenever you work on a store.
 
-> Every operation is also available as `ApplyToGraphAsync` and `ApplyToStoreAsync`. Against a SPARQL Update endpoint it becomes a request instead of a result: the [endpoints]({{ '/query/endpoints/' | relative_url }}) page explains how.
+> Every operation also has the synchronous forms `ApplyToGraph` and `ApplyToStore`. Against a SPARQL Update endpoint it becomes a request instead of a result: the [endpoints]({{ '/query/endpoints/' | relative_url }}) page explains how.
 {: .tip}

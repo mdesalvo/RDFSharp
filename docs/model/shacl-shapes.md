@@ -129,14 +129,14 @@ The `RDFPropertyConstraint` is the link between the two kinds of shape: the focu
 
 ## The shapes graph as RDF
 
-SHACL shapes are RDF and `ToRDFGraph` shows it: the shapes graph becomes an ordinary graph that every serializer of the [formats chapter]({{ '/model/formats/' | relative_url }}) can write. `RDFShapesGraph.FromRDFGraph` goes the other way, so the rules can be kept in a file, read by anybody and loaded at startup. The file that this code writes is published with the case as [vallerosa-shapes.ttl]({{ '/assets/data/vallerosa-shapes.ttl' | relative_url }}).
+SHACL shapes are RDF and `ToRDFGraphAsync` shows it: the shapes graph becomes an ordinary graph that every serializer of the [formats chapter]({{ '/model/formats/' | relative_url }}) can write. `RDFShapesGraph.FromRDFGraphAsync` goes the other way, so the rules can be kept in a file, read by anybody and loaded at startup. The file that this code writes is published with the case as [vallerosa-shapes.ttl]({{ '/assets/data/vallerosa-shapes.ttl' | relative_url }}).
 
 ```csharp
-RDFGraph shapesGraph = shapes.ToRDFGraph().SetContext(new Uri("https://vallerosa.example/shapes"));
+RDFGraph shapesGraph = (await shapes.ToRDFGraphAsync()).SetContext(new Uri("https://vallerosa.example/shapes"));
 Console.WriteLine(shapesGraph.TriplesCount);
-shapesGraph.ToFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl");
+await shapesGraph.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl");
 
-RDFShapesGraph fromFile = RDFShapesGraph.FromRDFGraph(RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl"));
+RDFShapesGraph fromFile = await RDFShapesGraph.FromRDFGraphAsync(await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl"));
 Console.WriteLine(fromFile.ShapesCount);
 ```
 
@@ -159,10 +159,10 @@ Console.WriteLine(fromFile.ShapesCount);
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @base <https://vallerosa.example/shapes>.
 
-_:c73d429e10954d1585054d0813c721c7 rdf:first "IT"; 
-                                   rdf:rest _:e0d21a97289744e1b3009782da768af8; 
+_:4b3fac568bcc461aa5f2189415f7c906 rdf:first "IT"; 
+                                   rdf:rest _:ffcf39e1cc504632be52193da1ef018c; 
                                    a rdf:List. 
-_:e0d21a97289744e1b3009782da768af8 rdf:first "EN"; 
+_:ffcf39e1cc504632be52193da1ef018c rdf:first "EN"; 
                                    rdf:rest rdf:nil; 
                                    a rdf:List. 
 vr:WineAlcoholShape a sh:PropertyShape; 
@@ -174,7 +174,7 @@ vr:WineAlcoholShape a sh:PropertyShape;
                     sh:severity sh:Violation. 
 vr:WineLabelShape a sh:PropertyShape; 
                   sh:deactivated "false"^^xsd:boolean; 
-                  sh:languageIn _:c73d429e10954d1585054d0813c721c7; 
+                  sh:languageIn _:4b3fac568bcc461aa5f2189415f7c906; 
                   sh:path rdfs:label; 
                   sh:severity sh:Violation; 
                   sh:uniqueLang "true"^^xsd:boolean. 

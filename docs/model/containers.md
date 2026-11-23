@@ -2,7 +2,7 @@
 title: Containers and collections
 permalink: /model/containers/
 tagline: Groups of things in RDF, with and without an order
-lede: "A triple has one object, but a blend has two grapes and a wine may have won several prizes. RDF has two ways to group values into one: closed lists, called collections, or open groups, called containers."
+lede: "A triple has one object. To state several values as one group, RDF puts them in closed lists (collections) or in open groups (containers)."
 ---
 
 > The catalog lists the grapes of every wine twice: unordered with `vr:grape` and in order of share with `vr:blend`. The cooperative now writes a blend by hand to see what the order costs. It also adds a thing the catalog never had: the awards of the Valley Vin Santo.
@@ -74,7 +74,7 @@ RDFGraph wines = new RDFGraph()
     .AddCollection(blend)
     .AddTriple(new RDFTriple(rosso, new RDFResource(vr + "blend"), blend.ReificationSubject));
 Console.WriteLine(wines.TriplesCount);
-wines.ToFile(RDFModelEnums.RDFFormats.Turtle, "blend.ttl");
+await wines.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "blend.ttl");
 ```
 
 <div class="result" markdown="1">
@@ -120,14 +120,14 @@ The order of the blend is the order of the chain: you reach Canaiolo only by pas
 Reading a list back is walking this chain. The catalog stores the blend of every wine as such a list and the Vin Santo is the one whose blend does not follow the order of its `vr:grape` triples:
 
 ```csharp
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 RDFResource vinsanto = new RDFResource(vrd + "vinsanto-2015");
 
-RDFResource cell = (RDFResource)catalog.SelectTriples(s: vinsanto, p: new RDFResource(vr + "blend"))[0].Object;
+RDFResource cell = (RDFResource)(await catalog.SelectTriplesAsync(s: vinsanto, p: new RDFResource(vr + "blend")))[0].Object;
 while (!cell.Equals(RDFVocabulary.RDF.NIL))
 {
-    Console.WriteLine(catalog.SelectTriples(s: cell, p: RDFVocabulary.RDF.FIRST)[0].Object);
-    cell = (RDFResource)catalog.SelectTriples(s: cell, p: RDFVocabulary.RDF.REST)[0].Object;
+    Console.WriteLine((await catalog.SelectTriplesAsync(s: cell, p: RDFVocabulary.RDF.FIRST))[0].Object);
+    cell = (RDFResource)(await catalog.SelectTriplesAsync(s: cell, p: RDFVocabulary.RDF.REST))[0].Object;
 }
 ```
 
@@ -157,7 +157,7 @@ RDFGraph sweet = new RDFGraph()
     .AddContainer(awards)
     .AddTriple(new RDFTriple(vinsanto, new RDFResource(vr + "awards"), awards.ReificationSubject));
 Console.WriteLine(sweet.TriplesCount);
-sweet.ToFile(RDFModelEnums.RDFFormats.Turtle, "awards.ttl");
+await sweet.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "awards.ttl");
 ```
 
 <div class="result" markdown="1">

@@ -5,8 +5,6 @@ tagline: From an empty project to a first answer
 lede: Install the package, describe a wine with a few triples, save them as Turtle, then load the whole Vallerosa catalog and ask it a question.
 ---
 
-> The Vallerosa cooperative has decided to publish its catalog as RDF. Before anything else, someone has to describe the first wine.
-{: .story}
 
 ## Install the package
 
@@ -62,7 +60,7 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFResource rosso = new RDFResource(vrd + "rosso-2021");
 RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
 
-RDFGraph catalog = new RDFGraph()
+RDFGraph firstWine = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
     .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
     .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Red", "en")))
@@ -85,7 +83,7 @@ A graph writes itself to any of the standard formats. For the prefixes to appear
 RDFNamespaceRegister.AddNamespace(vr);
 RDFNamespaceRegister.AddNamespace(vrd);
 
-catalog.ToFile(RDFModelEnums.RDFFormats.Turtle, "catalog.ttl");
+await firstWine.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "catalog.ttl");
 ```
 
 <div class="result" data-label="catalog.ttl" markdown="1">
@@ -113,7 +111,7 @@ The same four triples come back, grouped under their subject. The graph's contex
 Writing every triple by hand is how you learn, not how you work. The complete catalog of the cooperative is ready as a Turtle file: download [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}) next to your project and load it.
 
 ```csharp
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 Console.WriteLine(catalog.TriplesCount);   // 143
 ```
 
@@ -151,7 +149,7 @@ RDFSelectQuery query = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(label);
 
-RDFSelectQueryResult result = query.ApplyToGraph(catalog);
+RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 foreach (DataRow row in result.SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?LABEL"]}");
 ```

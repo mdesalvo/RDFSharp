@@ -50,7 +50,7 @@ vrd:bottega-arno-geom geo:asWKT "POINT(11.2558 43.7696)"^^geo:wktLiteral .
 In C#, the GeoSPARQL terms are ready in `RDFVocabulary.GEOSPARQL` (`HAS_GEOMETRY`, `AS_WKT`) and a WKT literal is a typed literal with the datatype `GEOSPARQL_WKT`:
 
 ```csharp
-RDFGraph sales = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-sales.ttl");
+RDFGraph sales = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-sales.ttl");
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
@@ -107,7 +107,7 @@ RDFSelectQuery distances = new RDFSelectQuery()
     .AddProjectionVariable(name)
     .AddProjectionVariable(km);
 
-RDFSelectQueryResult result = distances.ApplyToGraph(sales);
+RDFSelectQueryResult result = await distances.ApplyToGraphAsync(sales);
 ```
 
 </div>
@@ -263,8 +263,8 @@ WHERE {
 ```
 
 ```csharp
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
-RDFGraph map = catalog.UnionWith(sales);
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph map = await catalog.UnionWithAsync(sales);
 
 RDFVariable a = new RDFVariable("a"), b = new RDFVariable("b");
 RDFVariable ga = new RDFVariable("ga"), gb = new RDFVariable("gb");
@@ -341,7 +341,7 @@ RDFSelectQuery whereIsIt = new RDFSelectQuery()
     .AddProjectionVariable(subzone)
     .AddProjectionVariable(label);
 
-RDFSelectQueryResult found = whereIsIt.ApplyToGraph(map);
+RDFSelectQueryResult found = await whereIsIt.ApplyToGraphAsync(map);
 ```
 
 </div>

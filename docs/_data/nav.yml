@@ -1,7 +1,7 @@
 # The manual's index. The order here is the reading order: the pager at the foot of every page follows it.
 - group: Welcome
   pages:
-    - { title: RDFSharp, url: / }
+    - { title: RDFSharp at a glance, url: / }
     - { title: Getting started, url: /getting-started/ }
     - { title: Meet Vallerosa, url: /vallerosa/ }
     - { title: How it fits together, url: /architecture/ }

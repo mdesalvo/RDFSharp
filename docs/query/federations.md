@@ -30,8 +30,8 @@ A **federation** is an `RDFFederation`: you build it empty and add the members o
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
 
 RDFFederation cellar = new RDFFederation()
     .AddGraph(catalog)
@@ -47,7 +47,7 @@ Console.WriteLine(cellar.DataSourcesCount);
 
 </div>
 
-The question is: which wines have an English label and what scores did the guides give them? The label lives in the catalog and the score in the guides. A federation has no query language of its own: you write an ordinary query and apply it with `ApplyToFederation`.
+The question is: which wines have an English label and what scores did the guides give them? The label lives in the catalog and the score in the guides. A federation has no query language of its own: you write an ordinary query and apply it with `ApplyToFederationAsync`.
 
 ```csharp
 RDFVariable wine = new RDFVariable("wine");
@@ -66,7 +66,7 @@ RDFSelectQuery scores = new RDFSelectQuery()
     .AddModifier(new RDFOrderByModifier(label, RDFQueryEnums.RDFOrderByFlavors.ASC))
     .AddModifier(new RDFOrderByModifier(score, RDFQueryEnums.RDFOrderByFlavors.ASC));
 
-RDFSelectQueryResult answer = scores.ApplyToFederation(cellar);
+RDFSelectQueryResult answer = await scores.ApplyToFederationAsync(cellar);
 foreach (DataRow row in answer.SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?LABEL"]} | {row["?SCORE"]}");
 ```
@@ -91,8 +91,8 @@ foreach (DataRow row in answer.SelectResults.Rows)
 Ten rows: one for each score of the guides. Four wines are scored by both guides and two by a single guide. Neither source can say as much by itself. Ask the same query of the catalog alone or of the guides alone and each answers with nothing:
 
 ```csharp
-Console.WriteLine(scores.ApplyToGraph(catalog).SelectResultsCount);
-Console.WriteLine(scores.ApplyToStore(guides).SelectResultsCount);
+Console.WriteLine((await scores.ApplyToGraphAsync(catalog)).SelectResultsCount);
+Console.WriteLine((await scores.ApplyToStoreAsync(guides)).SelectResultsCount);
 ```
 
 <div class="result" markdown="1">
@@ -113,7 +113,7 @@ A federation is a data source like the others, so it can be a member of another 
 ```csharp
 RDFFederation yearbook = new RDFFederation().AddFederation(cellar);
 Console.WriteLine(yearbook.DataSourcesCount);
-Console.WriteLine(scores.ApplyToFederation(yearbook).SelectResultsCount);
+Console.WriteLine((await scores.ApplyToFederationAsync(yearbook)).SelectResultsCount);
 cellar.AddFederation(yearbook);
 Console.WriteLine(cellar.DataSourcesCount);
 ```
@@ -197,7 +197,7 @@ RDFSelectQuery sameAs = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(grape, RDFVocabulary.OWL.SAME_AS, dbpediaGrape)))
     .AddProjectionVariable(dbpediaGrape);
-RDFSelectQueryResult sameAsResult = sameAs.ApplyToFederation(cellar);
+RDFSelectQueryResult sameAsResult = await sameAs.ApplyToFederationAsync(cellar);
 
 foreach (DataRow sameAsRow in sameAsResult.SelectResults.Rows)
 {
@@ -206,7 +206,7 @@ foreach (DataRow sameAsRow in sameAsResult.SelectResults.Rows)
         .AddPatternGroup(new RDFPatternGroup()
             .AddPattern(new RDFPattern(dbpediaResource, originProperty, origin)))
         .AddProjectionVariable(origin);
-    RDFSelectQueryResult originResult = originQuery.ApplyToFederation(withDbpedia);
+    RDFSelectQueryResult originResult = await originQuery.ApplyToFederationAsync(withDbpedia);
     Console.WriteLine($"{dbpediaResource} | {originResult.SelectResults.Rows[0]["?ORIGIN"]}");
 }
 ```
@@ -263,7 +263,7 @@ RDFSelectQuery origins = new RDFSelectQuery()
     .AddModifier(new RDFDistinctModifier())
     .AddModifier(new RDFOrderByModifier(name, RDFQueryEnums.RDFOrderByFlavors.ASC));
 
-RDFSelectQueryResult originsResult = origins.ApplyToGraph(catalog);
+RDFSelectQueryResult originsResult = await origins.ApplyToGraphAsync(catalog);
 foreach (DataRow row in originsResult.SelectResults.Rows)
     Console.WriteLine($"{row["?NAME"]} | {row["?ORIGIN"]}");
 ```
@@ -294,8 +294,8 @@ RDFSelectQuery allOrigins = new RDFSelectQuery()
         .AddPattern(new RDFPattern(dbpediaGrape, originProperty, origin)), dbpediaOptions))
     .AddProjectionVariable(name)
     .AddProjectionVariable(origin);
-Console.WriteLine(allOrigins.ApplyToGraph(catalog).SelectResultsCount);
-Console.WriteLine(origins.ApplyToFederation(cellar).SelectResultsCount);
+Console.WriteLine((await allOrigins.ApplyToGraphAsync(catalog)).SelectResultsCount);
+Console.WriteLine((await origins.ApplyToFederationAsync(cellar)).SelectResultsCount);
 ```
 
 <div class="result" markdown="1">

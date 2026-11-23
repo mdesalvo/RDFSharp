@@ -41,7 +41,7 @@ WHERE {
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 string whitesText = @"
 PREFIX vr:   <https://vallerosa.example/vocab#>
@@ -57,7 +57,7 @@ WHERE {
 
 RDFSelectQuery whites = RDFSelectQuery.FromString(whitesText);
 
-RDFSelectQueryResult whitesResult = whites.ApplyToGraph(catalog);
+RDFSelectQueryResult whitesResult = await whites.ApplyToGraphAsync(catalog);
 foreach (DataRow row in whitesResult.SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?LABEL"]} | {row["?ALCOHOL"]}");
 ```
@@ -109,7 +109,7 @@ The printed text is a faithful form: parsing it again gives a query that prints 
 ```csharp
 RDFSelectQuery reparsed = RDFSelectQuery.FromString(whites.ToString());
 Console.WriteLine(reparsed.ToString() == whites.ToString());
-Console.WriteLine(reparsed.ApplyToGraph(catalog).SelectResultsCount);
+Console.WriteLine((await reparsed.ApplyToGraphAsync(catalog)).SelectResultsCount);
 ```
 
 <div class="result" markdown="1">
@@ -141,16 +141,16 @@ foreach (string text in texts)
     switch (parsed)
     {
         case RDFSelectQuery select:
-            Console.WriteLine($"SELECT, rows: {select.ApplyToGraph(catalog).SelectResultsCount}");
+            Console.WriteLine($"SELECT, rows: {(await select.ApplyToGraphAsync(catalog)).SelectResultsCount}");
             break;
         case RDFAskQuery ask:
-            Console.WriteLine($"ASK: {ask.ApplyToGraph(catalog).AskResult}");
+            Console.WriteLine($"ASK: {(await ask.ApplyToGraphAsync(catalog)).AskResult}");
             break;
         case RDFDescribeQuery describe:
-            Console.WriteLine($"DESCRIBE, triples: {describe.ApplyToGraph(catalog).DescribeResultsCount}");
+            Console.WriteLine($"DESCRIBE, triples: {(await describe.ApplyToGraphAsync(catalog)).DescribeResultsCount}");
             break;
         case RDFConstructQuery construct:
-            Console.WriteLine($"CONSTRUCT, triples: {construct.ApplyToGraph(catalog).ConstructResultsCount}");
+            Console.WriteLine($"CONSTRUCT, triples: {(await construct.ApplyToGraphAsync(catalog)).ConstructResultsCount}");
             break;
     }
 }
@@ -192,9 +192,9 @@ GROUP BY ?subzone
 ```csharp
 catalog.SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(catalog);
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
-RDFMemoryStore store = catalogStore.UnionWith(guides);
+await catalogStore.MergeGraphAsync(catalog);
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFMemoryStore store = await catalogStore.UnionWithAsync(guides);
 
 RDFSelectQuery scorePerSubzone = RDFSelectQuery.FromString(@"
 PREFIX vr: <https://vallerosa.example/vocab#>
@@ -207,7 +207,7 @@ WHERE {
 }
 GROUP BY ?subzone");
 
-RDFSelectQueryResult averaged = scorePerSubzone.ApplyToStore(store);
+RDFSelectQueryResult averaged = await scorePerSubzone.ApplyToStoreAsync(store);
 foreach (DataRow row in averaged.SelectResults.Rows)
     Console.WriteLine($"{row["?SUBZONE"]} | {row["?AVERAGESCORE"]}");
 ```
@@ -281,7 +281,7 @@ RDFQueryOptions options = new RDFQueryOptions
 
 RDFAskQuery relativeAsk = RDFAskQuery.FromString("ASK { <rosso-2021> ?property ?value }", options);
 Console.WriteLine(relativeAsk);
-Console.WriteLine(relativeAsk.ApplyToGraph(catalog).AskResult);
+Console.WriteLine((await relativeAsk.ApplyToGraphAsync(catalog)).AskResult);
 ```
 
 <div class="result" markdown="1">
@@ -308,7 +308,7 @@ RDFQueryOptions elsewhere = new RDFQueryOptions
 
 RDFAskQuery relativeAskWithBase = RDFAskQuery.FromString(
     "BASE <https://vallerosa.example/id/> ASK { <rosso-2021> ?property ?value }", elsewhere);
-Console.WriteLine(relativeAskWithBase.ApplyToGraph(catalog).AskResult);
+Console.WriteLine((await relativeAskWithBase.ApplyToGraphAsync(catalog)).AskResult);
 ```
 
 <div class="result" markdown="1">
@@ -368,7 +368,7 @@ PREFIX vrd: <https://vallerosa.example/id/>
 DELETE WHERE { vrd:vermentino-2023 vr:price ?price } ;
 INSERT DATA { vrd:vermentino-2023 vr:price 12.00 }");
 
-IReadOnlyList<RDFOperationResult> outcomes = promotion.ApplyToGraph(catalog);
+IReadOnlyList<RDFOperationResult> outcomes = await promotion.ApplyToGraphAsync(catalog);
 Console.WriteLine(catalog.TriplesCount);
 foreach (RDFOperationResult outcome in outcomes)
     Console.WriteLine($"{outcome.DeleteResultsCount} deleted, {outcome.InsertResultsCount} inserted");

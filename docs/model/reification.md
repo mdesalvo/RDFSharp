@@ -2,7 +2,7 @@
 title: Reification
 permalink: /model/reification/
 tagline: Saying who said it without saying that it is true
-lede: A triple states a fact. Reification turns a triple into something you can talk about, so the catalog can record that somebody claims a statement without asserting it.
+lede: A triple states a fact. Reification turns a triple into something you can talk about, so a graph can record that somebody claims a statement without asserting it.
 ---
 
 > The sommelier Giulia Neri says that the Vallerosa Reserve goes well with wild boar stew. The cooperative likes the advice but is not ready to print it in the catalog as a fact: it wants to keep who said it.
@@ -53,7 +53,7 @@ The triple exists as an object in memory, in no graph. Its `ReificationSubject` 
 ```csharp
 RDFGraph reified = pairing.ReifyTriple();
 Console.WriteLine(reified.TriplesCount);
-Console.WriteLine(reified.ContainsTriple(pairing));
+Console.WriteLine(await reified.ContainsTripleAsync(pairing));
 foreach (RDFTriple triple in reified)
     Console.WriteLine($"{triple.Predicate} | {triple.Object}");
 ```
@@ -87,14 +87,14 @@ RDFGraph catalog = new RDFGraph()
 
 RDFGraph annotated = pairing.ReifyTriple(new List<(RDFResource, RDFPatternMember)> {
     (RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("Tannins that stand up to game", "en")) });
-catalog = catalog.UnionWith(annotated)
+catalog = (await catalog.UnionWithAsync(annotated))
     .AddTriple(new RDFTriple(giulia, claims, pairing.ReificationSubject))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
 
 Console.WriteLine(catalog.TriplesCount);
-Console.WriteLine(catalog.ContainsTriple(pairing));
-Console.WriteLine(catalog.SelectTriples(s: riserva, p: new RDFResource(vr + "pairsWith")).Count);
-foreach (RDFTriple triple in catalog.SelectTriples(p: claims))
+Console.WriteLine(await catalog.ContainsTripleAsync(pairing));
+Console.WriteLine((await catalog.SelectTriplesAsync(s: riserva, p: new RDFResource(vr + "pairsWith"))).Count);
+foreach (RDFTriple triple in await catalog.SelectTriplesAsync(p: claims))
     Console.WriteLine($"{triple.Subject} | {triple.Object}");
 ```
 

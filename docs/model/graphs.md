@@ -90,12 +90,12 @@ https://rdfsharp.codeplex.com/
 
 ## Look inside
 
-`ContainsTriple` tells whether a triple is in the graph and `TriplesCount` tells how many there are. A graph is also a sequence of triples, so `foreach` walks it:
+`ContainsTripleAsync` tells whether a triple is in the graph and `TriplesCount` tells how many there are. A graph is also a sequence of triples, so `foreach` walks it:
 
 ```csharp
 RDFTriple rossoPrice = new RDFTriple(rosso, hasPrice, new RDFTypedLiteral("14.50", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
-Console.WriteLine(fromPoggioAlto.ContainsTriple(rossoPrice));
-Console.WriteLine(fromTreUlivi.ContainsTriple(rossoPrice));
+Console.WriteLine(await fromPoggioAlto.ContainsTripleAsync(rossoPrice));
+Console.WriteLine(await fromTreUlivi.ContainsTripleAsync(rossoPrice));
 
 foreach (RDFTriple triple in fromTreUlivi)
     if (triple.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
@@ -113,7 +113,7 @@ Valley Rosé@EN
 
 </div>
 
-The triple you pass to `ContainsTriple` does not have to be the object that went in: two triples with the same subject, predicate and object are the same triple.
+The triple you pass to `ContainsTripleAsync` does not have to be the object that went in: two triples with the same subject, predicate and object are the same triple.
 
 ## Merge the contributions
 
@@ -121,14 +121,14 @@ The three **set operations** take the graph they are called on and another one a
 
 | Method | Gives |
 |---|---|
-| `UnionWith` | the triples of both graphs |
-| `IntersectWith` | the triples found in both |
-| `DifferenceWith` | the triples of this graph that are not in the other |
+| `UnionWithAsync` | the triples of both graphs |
+| `IntersectWithAsync` | the triples found in both |
+| `DifferenceWithAsync` | the triples of this graph that are not in the other |
 
 The catalog is the union of the two contributions:
 
 ```csharp
-RDFGraph merged = fromPoggioAlto.UnionWith(fromTreUlivi);
+RDFGraph merged = await fromPoggioAlto.UnionWithAsync(fromTreUlivi);
 Console.WriteLine(merged.TriplesCount);
 Console.WriteLine(merged.Context);
 RDFGraph catalog = merged.SetContext(new Uri("https://vallerosa.example/catalog"));
@@ -150,12 +150,12 @@ Nine and nine make seventeen, not eighteen: the sentence about the cooperative a
 The other two operations tell what the wineries have in common and what only one of them says:
 
 ```csharp
-RDFGraph shared = fromPoggioAlto.IntersectWith(fromTreUlivi);
+RDFGraph shared = await fromPoggioAlto.IntersectWithAsync(fromTreUlivi);
 Console.WriteLine(shared.TriplesCount);
 foreach (RDFTriple triple in shared)
     Console.WriteLine(triple);
 
-RDFGraph onlyPoggio = catalog.DifferenceWith(fromTreUlivi);
+RDFGraph onlyPoggio = await catalog.DifferenceWithAsync(fromTreUlivi);
 Console.WriteLine(onlyPoggio.TriplesCount);
 Console.WriteLine(onlyPoggio.Equals(fromPoggioAlto));
 ```
@@ -177,10 +177,10 @@ The operations return graphs, so they chain: `a.IntersectWith(b).UnionWith(c)` r
 
 ## Find triples
 
-`SelectTriples` answers the question "which triples look like this?". It takes four optional arguments, one for each part of a triple: `s` for the subject, `p` for the predicate, `o` for an object that is a resource and `l` for an object that is a literal. An argument you leave out matches anything and the ones you give must all hold.
+`SelectTriplesAsync` answers the question "which triples look like this?". It takes four optional arguments, one for each part of a triple: `s` for the subject, `p` for the predicate, `o` for an object that is a resource and `l` for an object that is a literal. An argument you leave out matches anything and the ones you give must all hold.
 
 ```csharp
-foreach (RDFTriple triple in catalog.SelectTriples(s: rosso))
+foreach (RDFTriple triple in await catalog.SelectTriplesAsync(s: rosso))
     Console.WriteLine($"{triple.Predicate} | {triple.Object}");
 ```
 
@@ -198,7 +198,7 @@ https://vallerosa.example/vocab#price | 14.50^^http://www.w3.org/2001/XMLSchema#
 Everything the catalog says about the Vallerosa Red. By predicate, every producer link of the catalog:
 
 ```csharp
-foreach (RDFTriple triple in catalog.SelectTriples(p: producedBy))
+foreach (RDFTriple triple in await catalog.SelectTriplesAsync(p: producedBy))
     Console.WriteLine($"{triple.Subject} | {triple.Object}");
 ```
 
@@ -216,11 +216,11 @@ https://vallerosa.example/id/rosato-2024 | https://vallerosa.example/id/tre-uliv
 By object, the red wines. By literal, whatever costs exactly 13.00:
 
 ```csharp
-foreach (RDFTriple triple in catalog.SelectTriples(o: redWine))
+foreach (RDFTriple triple in await catalog.SelectTriplesAsync(o: redWine))
     Console.WriteLine(triple.Subject);
 
 RDFTypedLiteral thirteen = new RDFTypedLiteral("13.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
-foreach (RDFTriple triple in catalog.SelectTriples(l: thirteen))
+foreach (RDFTriple triple in await catalog.SelectTriplesAsync(l: thirteen))
     Console.WriteLine($"{triple.Subject} | {triple.Predicate}");
 ```
 
@@ -254,7 +254,7 @@ An object that is a resource and an object that is a literal exclude each other,
 ```csharp
 try
 {
-    catalog.SelectTriples(o: redWine, l: thirteen);
+    await catalog.SelectTriplesAsync(o: redWine, l: thirteen);
 }
 catch (RDFModelException ex)
 {
@@ -272,15 +272,15 @@ Cannot access a graph when both object and literals are given: they must be mutu
 
 ## Remove triples
 
-The rosé is sold out. `RemoveTriple` removes one triple and `RemoveTriples` removes all those that match the same four arguments of `SelectTriples`. First the price of the rosé, a single triple, then everything else that has the rosé as subject:
+The rosé is sold out. `RemoveTripleAsync` removes one triple and `RemoveTriplesAsync` removes all those that match the same four arguments of `SelectTriplesAsync`. First the price of the rosé, a single triple, then everything else that has the rosé as subject:
 
 ```csharp
-catalog.RemoveTriple(new RDFTriple(rosato, hasPrice, new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+await catalog.RemoveTripleAsync(new RDFTriple(rosato, hasPrice, new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
 Console.WriteLine(catalog.TriplesCount);
 
-catalog.RemoveTriples(s: rosato);
+await catalog.RemoveTriplesAsync(s: rosato);
 Console.WriteLine(catalog.TriplesCount);
-Console.WriteLine(catalog.SelectTriples(s: rosato).Count);
+Console.WriteLine((await catalog.SelectTriplesAsync(s: rosato)).Count);
 ```
 
 <div class="result" markdown="1">
@@ -293,21 +293,21 @@ Console.WriteLine(catalog.SelectTriples(s: rosato).Count);
 
 </div>
 
-> Mind the arguments of `RemoveTriples`: a call with none of them matches every triple and empties the graph, exactly like `ClearTriples()`.
+> Mind the arguments of `RemoveTriplesAsync`: a call with none of them matches every triple and empties the graph, exactly like `ClearTriplesAsync()`.
 {: .warn}
 
 ## Move a graph through a table
 
-A graph converts to a `DataTable` with one row for each triple and the columns `?SUBJECT`, `?PREDICATE` and `?OBJECT`. The table is named after the context of the graph. `RDFGraph.FromDataTable` does the opposite and reads the context back from the name of the table.
+A graph converts to a `DataTable` with one row for each triple and the columns `?SUBJECT`, `?PREDICATE` and `?OBJECT`. The table is named after the context of the graph. `RDFGraph.FromDataTableAsync` does the opposite and reads the context back from the name of the table.
 
 ```csharp
-DataTable table = catalog.ToDataTable();
+DataTable table = await catalog.ToDataTableAsync();
 Console.WriteLine(table.TableName);
 foreach (DataColumn column in table.Columns)
     Console.WriteLine(column.ColumnName);
 Console.WriteLine(table.Rows.Count);
 
-RDFGraph restored = RDFGraph.FromDataTable(table);
+RDFGraph restored = await RDFGraph.FromDataTableAsync(table);
 Console.WriteLine(restored.Context);
 Console.WriteLine(restored.Equals(catalog));
 ```
@@ -326,11 +326,11 @@ True
 
 </div>
 
-The cells are the text of each term, so the table is a good bridge to a grid control or to a spreadsheet export. The text of a literal keeps its language tag or its datatype, which is what lets `FromDataTable` rebuild the same triples.
+The cells are the text of each term, so the table is a good bridge to a grid control or to a spreadsheet export. The text of a literal keeps its language tag or its datatype, which is what lets `FromDataTableAsync` rebuild the same triples.
 
-## Without blocking
+## Synchronous forms
 
-Every operation that reads or writes a graph has a twin that returns a `Task` and carries the suffix `Async`: `AddTripleAsync`, `SelectTriplesAsync`, `UnionWithAsync`, `ToDataTableAsync`, `FromFileAsync` and the others. They are available on every target of the library.
+Every `...Async` method of this chapter also has a synchronous form without the suffix, such as `SelectTriples`, `UnionWith` or `FromFile`, for code that cannot await. The count has both forms too: `TriplesCount` and `TriplesCountAsync`.
 
 ```csharp
 long total = await catalog.TriplesCountAsync;

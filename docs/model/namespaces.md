@@ -76,7 +76,7 @@ RDFGraph grape = new RDFGraph()
     .AddTriple(new RDFTriple(vermentinoGrape, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vermentino")))
     .AddTriple(new RDFTriple(vermentinoGrape, RDFVocabulary.OWL.SAME_AS, new RDFResource("http://dbpedia.org/resource/Vermentino")));
 
-grape.ToFile(RDFModelEnums.RDFFormats.Turtle, "grape-before.ttl");
+await grape.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "grape-before.ttl");
 ```
 
 <div class="result" data-label="grape-before.ttl" markdown="1">
@@ -144,7 +144,7 @@ The register can also ask the `prefix.cc` service, a public directory of prefixe
 Write the same grape again. Nothing changed in the graph, only in the register:
 
 ```csharp
-grape.ToFile(RDFModelEnums.RDFFormats.Turtle, "grape-after.ttl");
+await grape.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "grape-after.ttl");
 ```
 
 <div class="result" data-label="grape-after.ttl" markdown="1">
@@ -168,7 +168,7 @@ Now `vr:` and `vrd:` appear and only the prefixes that the file really uses are 
 
 ```csharp
 RDFNamespaceRegister.AddNamespace(new RDFNamespace("dbr", "http://dbpedia.org/resource/"));
-grape.ToFile(RDFModelEnums.RDFFormats.Turtle, "grape-dbr.ttl");
+await grape.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "grape-dbr.ttl");
 ```
 
 <div class="result" data-label="grape-dbr.ttl" markdown="1">
@@ -289,7 +289,7 @@ The cooperative does not change the default: a graph that has to be named gets `
 
 ## Where a namespace can be read
 
-The IRI of a namespace is a name, not always an address that serves RDF. A **dereference URI** is the address to use when somebody asks for the namespace as RDF, for example through `RDFGraph.FromUri`. By default it is the IRI itself. The vocabulary of the cooperative is published as a file of this manual, so that is the address to give it:
+The IRI of a namespace is a name, not always an address that serves RDF. A **dereference URI** is the address to use when somebody asks for the namespace as RDF, for example through `RDFGraph.FromUriAsync`. By default it is the IRI itself. The vocabulary of the cooperative is published as a file of this manual, so that is the address to give it:
 
 ```csharp
 vr.SetDereferenceUri(new Uri("https://mdesalvo.github.io/RDFSharp/assets/data/vallerosa-vocab.ttl"));

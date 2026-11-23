@@ -8,11 +8,6 @@ lede: "RDFSharp is a lightweight .NET library for RDF data: model it, store it w
   <h1>RDF, SPARQL and SHACL, <em>in plain C#</em></h1>
   <p>RDFSharp lets a .NET application speak RDF. You build graphs from resources and literals, keep them in stores that remember where each fact came from, ask them questions in SPARQL and check them against SHACL shapes. Every page of this manual shows it on one real case, the catalog of a wine cooperative that grows chapter after chapter.</p>
   {% include hero-graph.html %}
-  <div class="btns">
-    <a class="btn primary" href="{{ '/getting-started/' | relative_url }}">Get started</a>
-    <a class="btn" href="{{ '/vallerosa/' | relative_url }}">Meet Vallerosa</a>
-    <a class="btn" href="{{ '/architecture/' | relative_url }}">How it fits together</a>
-  </div>
 </div>
 
 ## Three layers, one library
@@ -46,7 +41,7 @@ WHERE {
 ```
 
 ```csharp
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFVariable wine = new RDFVariable("wine");
@@ -67,7 +62,7 @@ RDFSelectQuery query = new RDFSelectQuery()
     .AddProjectionVariable(label)
     .AddProjectionVariable(price);
 
-RDFSelectQueryResult result = query.ApplyToGraph(catalog);
+RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 ```
 
 </div>

@@ -44,7 +44,7 @@ WHERE {
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable producer = new RDFVariable("producer");
@@ -68,7 +68,7 @@ RDFSelectQuery priceWithVat = new RDFSelectQuery()
     .AddProjectionVariable(price)
     .AddProjectionVariable(withVat);
 
-RDFSelectQueryResult vat = priceWithVat.ApplyToGraph(catalog);
+RDFSelectQueryResult vat = await priceWithVat.ApplyToGraphAsync(catalog);
 foreach (DataRow row in vat.SelectResults.Rows)
     Console.WriteLine($"{row["?LABEL"]} | {row["?PRICE"]} | {row["?WITHVAT"]}");
 ```
@@ -148,7 +148,7 @@ RDFSelectQuery upperCase = new RDFSelectQuery()
     .AddProjectionVariable(label)
     .AddProjectionVariable(shout, new RDFUpperCaseExpression(label));
 
-RDFSelectQueryResult upperCaseResult = upperCase.ApplyToGraph(catalog);
+RDFSelectQueryResult upperCaseResult = await upperCase.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -235,7 +235,7 @@ RDFSelectQuery ages = new RDFSelectQuery()
     .AddProjectionVariable(vintage)
     .AddProjectionVariable(age);
 
-RDFSelectQueryResult agesResult = ages.ApplyToGraph(catalog);
+RDFSelectQueryResult agesResult = await ages.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -275,7 +275,7 @@ RDFResource novello = new RDFResource(vrd + "novello-2025");
 RDFGraph harvest = new RDFGraph()
     .AddTriple(new RDFTriple(novello, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
     .AddTriple(new RDFTriple(novello, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")));
-RDFGraph catalogAndHarvest = catalog.UnionWith(harvest);
+RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
 
 RDFVariable organic = new RDFVariable("organic");
 RDFVariable declared = new RDFVariable("declared");
@@ -293,7 +293,7 @@ RDFSelectQuery organicOrNot = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(declared);
 
-RDFSelectQueryResult organicOrNotResult = organicOrNot.ApplyToGraph(catalogAndHarvest);
+RDFSelectQueryResult organicOrNotResult = await organicOrNot.ApplyToGraphAsync(catalogAndHarvest);
 ```
 
 </div>

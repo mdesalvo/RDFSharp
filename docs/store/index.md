@@ -6,8 +6,6 @@ tagline: Remember where every fact came from
 lede: "A graph knows what is said, a store also knows who said it. The Store layer adds a context to every triple, keeps many sources side by side and moves them from memory to a database when they grow."
 ---
 
-> The wine guides have started to write about Vallerosa. Their scores are worth publishing next to the catalog, but they must never be confused with it, nor with each other.
-{: .story}
 
 ## What you find here
 

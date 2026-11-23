@@ -35,9 +35,9 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFNamespaceRegister.AddNamespace(vr);
 RDFNamespaceRegister.AddNamespace(vrd);
 
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
-RDFMemoryStore scores = guides[s: new RDFResource(vrd + "rosso-2021")]
-    .UnionWith(guides[s: new RDFResource(vrd + "vinsanto-2015")]);
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFMemoryStore scores = await guides[s: new RDFResource(vrd + "rosso-2021")]
+    .UnionWithAsync(guides[s: new RDFResource(vrd + "vinsanto-2015")]);
 Console.WriteLine(scores.QuadruplesCount);
 ```
 
@@ -51,10 +51,10 @@ Console.WriteLine(scores.QuadruplesCount);
 
 ## N-Quads
 
-`ToFile` writes a store to a file in the format you name. `FromFile` reads it back into a new memory store.
+`ToFileAsync` writes a store to a file in the format you name. `FromFileAsync` reads it back into a new memory store.
 
 ```csharp
-scores.ToFile(RDFStoreEnums.RDFFormats.NQuads, "scores.nq");
+await scores.ToFileAsync(RDFStoreEnums.RDFFormats.NQuads, "scores.nq");
 Console.WriteLine(File.ReadAllText("scores.nq"));
 ```
 
@@ -72,9 +72,9 @@ Console.WriteLine(File.ReadAllText("scores.nq"));
 Every line is one quadruple: subject, predicate, object, context, closed by a dot. Note the order, which is the one of the standard: the context comes last, the opposite of the way RDFSharp prints a quadruple.
 
 ```csharp
-RDFMemoryStore fromNQuads = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.NQuads, "scores.nq");
+RDFMemoryStore fromNQuads = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "scores.nq");
 Console.WriteLine(fromNQuads.QuadruplesCount);
-Console.WriteLine(fromNQuads.ContainsQuadruple(new RDFQuadruple(
+Console.WriteLine(await fromNQuads.ContainsQuadrupleAsync(new RDFQuadruple(
     new RDFContext("https://winescope.example/2025"),
     new RDFResource(vrd + "rosso-2021"),
     new RDFResource(vr + "score"),
@@ -95,7 +95,7 @@ True
 TriX is the XML one. Every context becomes a `graph` element that starts with the IRI of the context.
 
 ```csharp
-scores.ToFile(RDFStoreEnums.RDFFormats.TriX, "scores.trix");
+await scores.ToFileAsync(RDFStoreEnums.RDFFormats.TriX, "scores.trix");
 Console.WriteLine(File.ReadAllText("scores.trix"));
 ```
 
@@ -138,7 +138,7 @@ Console.WriteLine(File.ReadAllText("scores.trix"));
 Resources are `uri` elements, literals are `plainLiteral` or `typedLiteral` according to their kind. A blank node would be an `id`. Reading is the same call with the same enumeration value:
 
 ```csharp
-RDFMemoryStore fromTriX = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriX, "scores.trix");
+RDFMemoryStore fromTriX = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriX, "scores.trix");
 Console.WriteLine(fromTriX.QuadruplesCount);
 ```
 
@@ -155,7 +155,7 @@ Console.WriteLine(fromTriX.QuadruplesCount);
 TriG is Turtle with a block for each context. The registered prefixes shorten every IRI of the data. The context itself stays in full before its block.
 
 ```csharp
-scores.ToFile(RDFStoreEnums.RDFFormats.TriG, "scores.trig");
+await scores.ToFileAsync(RDFStoreEnums.RDFFormats.TriG, "scores.trig");
 Console.WriteLine(File.ReadAllText("scores.trig"));
 ```
 
@@ -185,16 +185,16 @@ The file the cooperative started from, [vallerosa-guides.trig]({{ '/assets/data/
 
 ## Streams
 
-Files are the common case but not the only one: a web response or a message queue gives a stream and does not give a path. `ToStream` and `FromStream` take the place of `ToFile` and `FromFile`. Both close the stream when they finish, so keep the bytes if you need them again.
+Files are the common case but not the only one: a web response or a message queue gives a stream and does not give a path. `ToStreamAsync` and `FromStreamAsync` take the place of `ToFileAsync` and `FromFileAsync`. Both close the stream when they finish, so keep the bytes if you need them again.
 
 ```csharp
 MemoryStream outgoing = new MemoryStream();
-scores.ToStream(RDFStoreEnums.RDFFormats.NQuads, outgoing);
+await scores.ToStreamAsync(RDFStoreEnums.RDFFormats.NQuads, outgoing);
 byte[] bytes = outgoing.ToArray();
 Console.WriteLine(Encoding.ASCII.GetString(bytes).Split('\n').Length - 1);
 
 MemoryStream incoming = new MemoryStream(bytes);
-RDFMemoryStore fromStream = RDFMemoryStore.FromStream(RDFStoreEnums.RDFFormats.NQuads, incoming);
+RDFMemoryStore fromStream = await RDFMemoryStore.FromStreamAsync(RDFStoreEnums.RDFFormats.NQuads, incoming);
 Console.WriteLine(fromStream.QuadruplesCount);
 ```
 
@@ -207,16 +207,16 @@ Console.WriteLine(fromStream.QuadruplesCount);
 
 </div>
 
-The first number is the count of lines of the N-Quads text, one for each quadruple. Each method has an `Async` twin: `ToFileAsync`, `FromFileAsync`, `ToStreamAsync` and `FromStreamAsync`.
+The first number is the count of lines of the N-Quads text, one for each quadruple. Each method also has a synchronous form without the suffix: `ToFile`, `FromFile`, `ToStream` and `FromStream`.
 
 ## From the Web
 
-A partner can also publish its store at an address. `RDFMemoryStore.FromUri` asks that address for a store and reads whatever comes back. It sends an `Accept` header that lists the three media types of the table above and picks the parser from the `Content-Type` of the answer. When the server states none, it reads the body as N-Quads. The second parameter is a timeout in milliseconds, 20 seconds by default.
+A partner can also publish its store at an address. `RDFMemoryStore.FromUriAsync` asks that address for a store and reads whatever comes back. It sends an `Accept` header that lists the three media types of the table above and picks the parser from the `Content-Type` of the answer. When the server states none, it reads the body as N-Quads. The second parameter is a timeout in milliseconds, 20 seconds by default.
 
 ```csharp
 try
 {
-    RDFMemoryStore partner = RDFMemoryStore.FromUri(new Uri("https://partner.example/vallerosa-scores"), 5000);
+    RDFMemoryStore partner = await RDFMemoryStore.FromUriAsync(new Uri("https://partner.example/vallerosa-scores"), 5000);
     Console.WriteLine(partner.QuadruplesCount);
 }
 catch (RDFStoreException)
@@ -233,9 +233,9 @@ The partner does not answer.
 
 </div>
 
-The address `partner.example` is reserved for examples and never answers, so the call fails with an `RDFStoreException` as it should whenever the network, the server or the content cannot be read. `FromUriAsync` is the asynchronous form.
+The address `partner.example` is reserved for examples and never answers, so the call fails with an `RDFStoreException` as it should whenever the network, the server or the content cannot be read. `FromUri` is the synchronous form.
 
-> `FromFile`, `FromStream` and `FromUri` take an optional last parameter, `enableDatatypeDiscovery`. When it is `true`, the datatypes that the data declares are registered in the library as the data is read, which matters for the custom datatypes of the [Datatypes and facets]({{ '/model/datatypes/' | relative_url }}) chapter.
+> `FromFileAsync`, `FromStreamAsync` and `FromUriAsync` take an optional last parameter, `enableDatatypeDiscovery`. When it is `true`, the datatypes that the data declares are registered in the library as the data is read, which matters for the custom datatypes of the [Datatypes and facets]({{ '/model/datatypes/' | relative_url }}) chapter.
 {: .tip}
 
 > **Where next.** [Persistent stores]({{ '/store/extensions/' | relative_url }}) moves the cooperative's store from memory onto a database.

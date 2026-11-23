@@ -12,7 +12,7 @@ lede: A store is a collection of quadruples. The memory store keeps them in the 
 
 A store is to quadruples what a graph is to triples: a set, with no duplicates and no order. `RDFStore` is the abstract class that says what every store can do and `RDFMemoryStore` is the implementation that lives in the memory of your process. The persistent ones, which keep the same promises on a database, are the subject of [the last page of this chapter]({{ '/store/extensions/' | relative_url }}).
 
-Everything on this page works through `RDFStore`, so it works the same on every store. What belongs to `RDFMemoryStore` alone is the enumeration, the set operations and the readers such as `FromFile`. Start with a small store that holds the two scores of the Vallerosa Red.
+Everything on this page works through `RDFStore`, so it works the same on every store. What belongs to `RDFMemoryStore` alone is the enumeration, the set operations and the readers such as `FromFileAsync`. Start with a small store that holds the two scores of the Vallerosa Red.
 
 ```csharp
 using System.Data;
@@ -34,10 +34,10 @@ RDFQuadruple scoreInWinescope = new RDFQuadruple(winescope, rosso, score,
     new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
 
 RDFMemoryStore draft = new RDFMemoryStore();
-draft.AddQuadruple(scoreInCalici).AddQuadruple(scoreInWinescope);
-draft.AddQuadruple(scoreInCalici);
+await (await draft.AddQuadrupleAsync(scoreInCalici)).AddQuadrupleAsync(scoreInWinescope);
+await draft.AddQuadrupleAsync(scoreInCalici);
 Console.WriteLine(draft.QuadruplesCount);
-Console.WriteLine(draft.ContainsQuadruple(scoreInWinescope));
+Console.WriteLine(await draft.ContainsQuadrupleAsync(scoreInWinescope));
 ```
 
 <div class="result" markdown="1">
@@ -49,22 +49,22 @@ True
 
 </div>
 
-Adding the first quadruple a second time changes nothing: the count is still 2. `AddQuadruple` returns the store, so calls chain. The other ways to put a quadruple in are the constructor that takes a list and `MergeGraph`, which comes a few paragraphs below.
+Adding the first quadruple a second time changes nothing: the count is still 2. `AddQuadruple` returns the store, so calls chain. The other ways to put a quadruple in are the constructor that takes a list and `MergeGraphAsync`, which comes a few paragraphs below.
 
 ## Removing quadruples
 
-`RemoveQuadruple` takes one quadruple out. `RemoveQuadruples` takes out every quadruple that matches a pattern. `ClearQuadruples` empties the store.
+`RemoveQuadrupleAsync` takes one quadruple out. `RemoveQuadruplesAsync` takes out every quadruple that matches a pattern. `ClearQuadruplesAsync` empties the store.
 
 ```csharp
-draft.RemoveQuadruple(scoreInWinescope);
-Console.WriteLine(draft.ContainsQuadruple(scoreInWinescope));
+await draft.RemoveQuadrupleAsync(scoreInWinescope);
+Console.WriteLine(await draft.ContainsQuadrupleAsync(scoreInWinescope));
 Console.WriteLine(draft.QuadruplesCount);
 
-draft.AddQuadruple(scoreInWinescope);
-draft.RemoveQuadruples(c: guidaCalici);
+await draft.AddQuadrupleAsync(scoreInWinescope);
+await draft.RemoveQuadruplesAsync(c: guidaCalici);
 Console.WriteLine(draft.QuadruplesCount);
 
-draft.ClearQuadruples();
+await draft.ClearQuadruplesAsync();
 Console.WriteLine(draft.QuadruplesCount);
 ```
 
@@ -83,14 +83,14 @@ The pattern is made of five optional parameters named `c`, `s`, `p`, `o` and `l`
 
 ## Merging a graph
 
-The catalog is a graph, not a set of quadruples. `MergeGraph` turns every triple of a graph into a quadruple whose context is the context of the graph, which is why a graph meant for a store needs a context of its own. The file has none, so the catalog gets it with `SetContext`.
+The catalog is a graph, not a set of quadruples. `MergeGraphAsync` turns every triple of a graph into a quadruple whose context is the context of the graph, which is why a graph meant for a store needs a context of its own. The file has none, so the catalog gets it with `SetContext`.
 
 ```csharp
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl")
+RDFGraph catalog = (await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl"))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
 
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(catalog);
+await catalogStore.MergeGraphAsync(catalog);
 Console.WriteLine(catalogStore.QuadruplesCount);
 ```
 
@@ -106,13 +106,13 @@ All 143 triples of the catalog are now quadruples of one context. Duplicates are
 
 ## Loading the guides
 
-The two guides come ready as a file in TriG, the variant of Turtle with room for named graphs: download [vallerosa-guides.trig]({{ '/assets/data/vallerosa-guides.trig' | relative_url }}) and read it with `RDFMemoryStore.FromFile`. The [next page]({{ '/store/formats/' | relative_url }}) is about the formats. A store of its own comes out, with one context for each guide. `UnionWith` then builds the store that holds both.
+The two guides come ready as a file in TriG, the variant of Turtle with room for named graphs: download [vallerosa-guides.trig]({{ '/assets/data/vallerosa-guides.trig' | relative_url }}) and read it with `RDFMemoryStore.FromFileAsync`. The [next page]({{ '/store/formats/' | relative_url }}) is about the formats. A store of its own comes out, with one context for each guide. `UnionWithAsync` then builds the store that holds both.
 
 ```csharp
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
 Console.WriteLine(guides.QuadruplesCount);
 
-RDFMemoryStore store = catalogStore.UnionWith(guides);
+RDFMemoryStore store = await catalogStore.UnionWithAsync(guides);
 Console.WriteLine(store.QuadruplesCount);
 ```
 
@@ -125,10 +125,10 @@ Console.WriteLine(store.QuadruplesCount);
 
 </div>
 
-143 plus 10 makes 153, as it should: the sources do not overlap, since no quadruple is shared. To see how the store is divided, ask for its graphs back with `ExtractGraphs`. It gives one `RDFGraph` for each context, which is also the way to list the contexts of a store.
+143 plus 10 makes 153, as it should: the sources do not overlap, since no quadruple is shared. To see how the store is divided, ask for its graphs back with `ExtractGraphsAsync`. It gives one `RDFGraph` for each context, which is also the way to list the contexts of a store.
 
 ```csharp
-foreach (RDFGraph graph in store.ExtractGraphs())
+foreach (RDFGraph graph in await store.ExtractGraphsAsync())
     Console.WriteLine($"{graph.Context} {graph.TriplesCount}");
 ```
 
@@ -144,10 +144,10 @@ https://winescope.example/2025 5
 
 ## Searching
 
-`SelectQuadruples` takes the same five parameters as `RemoveQuadruples` and returns the list of quadruples that satisfy all the given ones. What the Vallerosa Red is known for in WineScope, by context and subject:
+`SelectQuadruplesAsync` takes the same five parameters as `RemoveQuadruplesAsync` and returns the list of quadruples that satisfy all the given ones. What the Vallerosa Red is known for in WineScope, by context and subject:
 
 ```csharp
-List<RDFQuadruple> inWinescope = store.SelectQuadruples(c: winescope, s: rosso);
+List<RDFQuadruple> inWinescope = await store.SelectQuadruplesAsync(c: winescope, s: rosso);
 foreach (RDFQuadruple quadruple in inWinescope)
     Console.WriteLine(quadruple);
 ```
@@ -164,11 +164,11 @@ The five parameters combine freely. Here is who gave a 90 and which wines are re
 
 ```csharp
 RDFTypedLiteral ninety = new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-foreach (RDFQuadruple quadruple in store.SelectQuadruples(l: ninety))
+foreach (RDFQuadruple quadruple in await store.SelectQuadruplesAsync(l: ninety))
     Console.WriteLine(quadruple);
 
 RDFResource redWine = new RDFResource(vr + "RedWine");
-foreach (RDFQuadruple quadruple in store.SelectQuadruples(p: RDFVocabulary.RDF.TYPE, o: redWine))
+foreach (RDFQuadruple quadruple in await store.SelectQuadruplesAsync(p: RDFVocabulary.RDF.TYPE, o: redWine))
     Console.WriteLine(quadruple);
 ```
 
@@ -189,7 +189,7 @@ Console.WriteLine(store[s: rosso].QuadruplesCount);
 
 try
 {
-    store.SelectQuadruples(o: rosso, l: new RDFPlainLiteral("Vallerosa Red", "en"));
+    await store.SelectQuadruplesAsync(o: rosso, l: new RDFPlainLiteral("Vallerosa Red", "en"));
 }
 catch (RDFStoreException ex)
 {
@@ -209,7 +209,7 @@ Cannot access a store when both object and literals are given: they must be mutu
 The 13 quadruples of the Vallerosa Red are 11 from the catalog plus the two scores. Now the question of the story. Every score is a quadruple with the predicate `vr:score` whose context is the guide. Sorted by wine, the answer reads off the list:
 
 ```csharp
-List<RDFQuadruple> scores = store.SelectQuadruples(p: score);
+List<RDFQuadruple> scores = await store.SelectQuadruplesAsync(p: score);
 foreach (RDFQuadruple quadruple in scores
     .OrderBy(q => q.Subject.ToString(), StringComparer.Ordinal)
     .ThenBy(q => q.Context.ToString(), StringComparer.Ordinal))
@@ -237,7 +237,7 @@ Four wines appear twice and two appear once: Guida ai Calici reviewed the white 
 
 ## Iterating and converting
 
-A memory store is an `IEnumerable<RDFQuadruple>`, so `foreach` walks it. The `QuadruplesEnumerator` property gives the same walk as an enumerator. `ToDataTable` writes the store into a table of four columns, one row per quadruple. `RDFMemoryStore.FromDataTable` reads such a table back.
+A memory store is an `IEnumerable<RDFQuadruple>`, so `foreach` walks it. The `QuadruplesEnumerator` property gives the same walk as an enumerator. `ToDataTableAsync` writes the store into a table of four columns, one row per quadruple. `RDFMemoryStore.FromDataTableAsync` reads such a table back.
 
 ```csharp
 int walked = 0;
@@ -245,11 +245,11 @@ foreach (RDFQuadruple quadruple in guides)
     walked++;
 Console.WriteLine(walked);
 
-DataTable table = guides.ToDataTable();
+DataTable table = await guides.ToDataTableAsync();
 foreach (DataColumn column in table.Columns)
     Console.WriteLine(column.ColumnName);
 
-RDFMemoryStore fromTable = RDFMemoryStore.FromDataTable(table);
+RDFMemoryStore fromTable = await RDFMemoryStore.FromDataTableAsync(table);
 Console.WriteLine(fromTable.QuadruplesCount);
 ```
 
@@ -268,13 +268,13 @@ Console.WriteLine(fromTable.QuadruplesCount);
 
 ## Set operations
 
-Because a store is a set, two stores can be combined as sets. `UnionWith` has already merged the catalog and the guides. `DifferenceWith` takes away what another store holds, `IntersectWith` keeps what both hold. Each one builds a new memory store and leaves the two operands alone.
+Because a store is a set, two stores can be combined as sets. `UnionWithAsync` has already merged the catalog and the guides. `DifferenceWithAsync` takes away what another store holds, `IntersectWithAsync` keeps what both hold. Each one builds a new memory store and leaves the two operands alone.
 
 ```csharp
-RDFMemoryStore guidesAgain = store.DifferenceWith(catalogStore);
+RDFMemoryStore guidesAgain = await store.DifferenceWithAsync(catalogStore);
 Console.WriteLine(guidesAgain.QuadruplesCount);
 
-RDFMemoryStore common = guides.IntersectWith(catalogStore);
+RDFMemoryStore common = await guides.IntersectWithAsync(catalogStore);
 Console.WriteLine(common.QuadruplesCount);
 ```
 
@@ -289,9 +289,9 @@ Console.WriteLine(common.QuadruplesCount);
 
 Taking the catalog away from the whole leaves the 10 quadruples of the guides. The guides and the catalog have nothing in common, so their intersection is empty.
 
-## The same calls, asynchronously
+## Synchronous forms
 
-Every operation of this page has a twin with the `Async` suffix: `AddQuadrupleAsync`, `MergeGraphAsync`, `SelectQuadruplesAsync`, `ExtractGraphsAsync`, `ToFileAsync`, `FromFileAsync` and so on, with `QuadruplesCountAsync` for the count. On a memory store they run the same work on another thread of the pool: that keeps a user interface responsive, but on a server it only moves the work from one thread to another. The persistent stores, which wait on a database, are where the twins matter.
+Every `...Async` method of this page also has a synchronous form without the suffix, such as `MergeGraph`, `SelectQuadruples` or `FromFile`, with `QuadruplesCount` and `QuadruplesCountAsync` for the count. On a memory store the asynchronous forms run the same work on another thread of the pool: that keeps a user interface responsive, but on a server it only moves the work from one thread to another. The persistent stores, which wait on a database, are where they matter.
 
 ```csharp
 RDFMemoryStore asyncStore = new RDFMemoryStore();

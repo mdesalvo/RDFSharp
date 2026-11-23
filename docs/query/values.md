@@ -34,7 +34,7 @@ WHERE {
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable grape = new RDFVariable("grape");
@@ -53,7 +53,7 @@ RDFSelectQuery byGrape = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(grape);
 
-RDFSelectQueryResult byGrapeResult = byGrape.ApplyToGraph(catalog);
+RDFSelectQueryResult byGrapeResult = await byGrape.ApplyToGraphAsync(catalog);
 foreach (DataRow row in byGrapeResult.SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?GRAPE"]}");
 ```
@@ -106,7 +106,7 @@ RDFSelectQuery byGrapeAtTheEnd = new RDFSelectQuery()
     .AddProjectionVariable(label)
     .AddProjectionVariable(grape);
 
-RDFSelectQueryResult atTheEndResult = byGrapeAtTheEnd.ApplyToGraph(catalog);
+RDFSelectQueryResult atTheEndResult = await byGrapeAtTheEnd.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -169,7 +169,7 @@ RDFSelectQuery byGrapeAndKind = new RDFSelectQuery()
     .AddProjectionVariable(grape)
     .AddProjectionVariable(kind);
 
-RDFSelectQueryResult pairsResult = byGrapeAndKind.ApplyToGraph(catalog);
+RDFSelectQueryResult pairsResult = await byGrapeAndKind.ApplyToGraphAsync(catalog);
 ```
 
 </div>

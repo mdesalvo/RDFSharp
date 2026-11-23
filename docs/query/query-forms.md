@@ -39,7 +39,7 @@ WHERE {
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
@@ -57,7 +57,7 @@ RDFSelectQuery organicWhites = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(label);
 
-RDFSelectQueryResult organicWhitesResult = organicWhites.ApplyToGraph(catalog);
+RDFSelectQueryResult organicWhitesResult = await organicWhites.ApplyToGraphAsync(catalog);
 foreach (DataRow row in organicWhitesResult.SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?LABEL"]}");
 ```
@@ -96,7 +96,7 @@ RDFAskQuery organicWhiteExists = new RDFAskQuery()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "WhiteWine")))
         .AddPattern(new RDFPattern(wine, organic, isOrganic)));
 
-RDFAskQueryResult whiteAnswer = organicWhiteExists.ApplyToGraph(catalog);
+RDFAskQueryResult whiteAnswer = await organicWhiteExists.ApplyToGraphAsync(catalog);
 Console.WriteLine(whiteAnswer.AskResult);
 ```
 
@@ -118,7 +118,7 @@ RDFAskQuery organicRoseExists = new RDFAskQuery()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RoseWine")))
         .AddPattern(new RDFPattern(wine, organic, isOrganic)));
 
-RDFAskQueryResult roseAnswer = organicRoseExists.ApplyToGraph(catalog);
+RDFAskQueryResult roseAnswer = await organicRoseExists.ApplyToGraphAsync(catalog);
 Console.WriteLine(roseAnswer.AskResult);
 ```
 
@@ -199,7 +199,7 @@ RDFConstructQuery partnerExport = new RDFConstructQuery()
             new RDFStrExpression(wine),
             new RDFConstantExpression(new RDFPlainLiteral("-offer")))), offer)));
 
-RDFConstructQueryResult exported = partnerExport.ApplyToGraph(catalog);
+RDFConstructQueryResult exported = await partnerExport.ApplyToGraphAsync(catalog);
 Console.WriteLine(exported.ConstructResultsCount);
 ```
 
@@ -213,18 +213,18 @@ Console.WriteLine(exported.ConstructResultsCount);
 
 </div>
 
-The `RDFConstructQueryResult` keeps the filled templates in the `ConstructResults` table, one row for each triple. Six wines make six products, six offers and three producers: 45 triples in all. A table of triples is not what a partner shop wants, so `ToRDFGraph()` turns it into an `RDFGraph` and from there it is a file in any of the [RDF formats]({{ '/model/formats/' | relative_url }}). Register the namespaces first so that the prefixes appear. Give the graph a context with `SetContext`: it becomes the `@base` of the Turtle file.
+The `RDFConstructQueryResult` keeps the filled templates in the `ConstructResults` table, one row for each triple. Six wines make six products, six offers and three producers: 45 triples in all. A table of triples is not what a partner shop wants, so `ToRDFGraphAsync()` turns it into an `RDFGraph` and from there it is a file in any of the [RDF formats]({{ '/model/formats/' | relative_url }}). Register the namespaces first so that the prefixes appear. Give the graph a context with `SetContext`: it becomes the `@base` of the Turtle file.
 
 ```csharp
 RDFNamespaceRegister.AddNamespace(schema);
 RDFNamespaceRegister.AddNamespace(vr);
 RDFNamespaceRegister.AddNamespace(vrd);
 
-RDFGraph partner = exported.ToRDFGraph()
+RDFGraph partner = (await exported.ToRDFGraphAsync())
     .SetContext(new Uri("https://vallerosa.example/export/partner"));
 Console.WriteLine(partner.TriplesCount);
 
-partner.ToFile(RDFModelEnums.RDFFormats.Turtle, "partner-export.ttl");
+await partner.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "partner-export.ttl");
 ```
 
 <div class="result" markdown="1">
@@ -311,12 +311,12 @@ DESCRIBE vrd:poggio-alto
 RDFDescribeQuery aboutPoggioAlto = new RDFDescribeQuery()
     .AddDescribeTerm(new RDFResource(vrd + "poggio-alto"));
 
-RDFDescribeQueryResult described = aboutPoggioAlto.ApplyToGraph(catalog);
+RDFDescribeQueryResult described = await aboutPoggioAlto.ApplyToGraphAsync(catalog);
 Console.WriteLine(described.DescribeResultsCount);
 
-RDFGraph producerGraph = described.ToRDFGraph()
+RDFGraph producerGraph = (await described.ToRDFGraphAsync())
     .SetContext(new Uri("https://vallerosa.example/export/poggio-alto"));
-producerGraph.ToFile(RDFModelEnums.RDFFormats.Turtle, "poggio-alto.ttl");
+await producerGraph.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "poggio-alto.ttl");
 ```
 
 </div>
@@ -348,7 +348,7 @@ vrd:rosso-2021 vr:producedBy vrd:poggio-alto.
 
 </div>
 
-The first four triples are what the catalog says about the producer: its class, its name, where it is and the cooperative it belongs to. The last two are what the catalog says of it from the other side, the two wines that name it as their producer. `RDFDescribeQueryResult` keeps them in `DescribeResults` and gives the same `ToRDFGraph()` as a CONSTRUCT.
+The first four triples are what the catalog says about the producer: its class, its name, where it is and the cooperative it belongs to. The last two are what the catalog says of it from the other side, the two wines that name it as their producer. `RDFDescribeQueryResult` keeps them in `DescribeResults` and gives the same `ToRDFGraphAsync()` as a CONSTRUCT.
 
 The term to describe can also be a variable that patterns bind, as in `DESCRIBE ?producer WHERE { ... }`. Describing the producers of the Hilltop subzone gives the same six rows, because only one producer sits there:
 
@@ -358,7 +358,7 @@ RDFDescribeQuery aboutHilltop = new RDFDescribeQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(producer, new RDFResource(vr + "locatedIn"), new RDFResource(vrd + "poggio"))));
 
-Console.WriteLine(aboutHilltop.ApplyToGraph(catalog).DescribeResultsCount);
+Console.WriteLine((await aboutHilltop.ApplyToGraphAsync(catalog)).DescribeResultsCount);
 ```
 
 <div class="result" markdown="1">
@@ -385,7 +385,7 @@ Both result types have the same four methods, for a file path and for a stream, 
 The partner shop wants the list of organic whites too. The result of the SELECT of this page goes to a file:
 
 ```csharp
-organicWhitesResult.ToSparqlXmlResult("organic-whites.srx");
+await organicWhitesResult.ToSparqlXmlResultAsync("organic-whites.srx");
 ```
 
 <div class="result" data-label="organic-whites.srx" markdown="1">
@@ -423,7 +423,7 @@ organicWhitesResult.ToSparqlXmlResult("organic-whites.srx");
 The `head` lists the variables and each `result` carries one `binding` for each of them: a `uri` for a resource and a `literal` for a value, with its `datatype` or its `xml:lang`. Reading the file gives back a table with the same columns and the same rows:
 
 ```csharp
-RDFSelectQueryResult reread = RDFSelectQueryResult.FromSparqlXmlResult("organic-whites.srx");
+RDFSelectQueryResult reread = await RDFSelectQueryResult.FromSparqlXmlResultAsync("organic-whites.srx");
 foreach (DataRow row in reread.SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?LABEL"]}");
 ```
@@ -440,8 +440,8 @@ foreach (DataRow row in reread.SelectResults.Rows)
 An ASK result is the same document with a `boolean` in place of the `results`. It reads back as an `RDFAskQueryResult`:
 
 ```csharp
-whiteAnswer.ToSparqlXmlResult("organic-white-exists.srx");
-bool again = RDFAskQueryResult.FromSparqlXmlResult("organic-white-exists.srx").AskResult;
+await whiteAnswer.ToSparqlXmlResultAsync("organic-white-exists.srx");
+bool again = (await RDFAskQueryResult.FromSparqlXmlResultAsync("organic-white-exists.srx")).AskResult;
 Console.WriteLine(again);
 ```
 
@@ -459,11 +459,11 @@ A stream is how a result travels without touching the disk, for example in the b
 byte[] payload;
 using (MemoryStream buffer = new MemoryStream())
 {
-    organicWhitesResult.ToSparqlXmlResult(buffer);
+    await organicWhitesResult.ToSparqlXmlResultAsync(buffer);
     payload = buffer.ToArray();
 }
 
-RDFSelectQueryResult received = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(payload));
+RDFSelectQueryResult received = await RDFSelectQueryResult.FromSparqlXmlResultAsync(new MemoryStream(payload));
 Console.WriteLine(received.SelectResultsCount);
 ```
 
@@ -483,7 +483,7 @@ When the library queries a remote service, it asks for this format in the reques
 |---|---|---|---|---|
 | SELECT | `RDFSelectQuery` | `RDFSelectQueryResult` | `SelectResults`, a table | no |
 | ASK | `RDFAskQuery` | `RDFAskQueryResult` | `AskResult`, a `bool` | no |
-| CONSTRUCT | `RDFConstructQuery` | `RDFConstructQueryResult` | `ConstructResults`, a table of triples | `ToRDFGraph()` |
-| DESCRIBE | `RDFDescribeQuery` | `RDFDescribeQueryResult` | `DescribeResults`, a table of triples | `ToRDFGraph()` |
+| CONSTRUCT | `RDFConstructQuery` | `RDFConstructQueryResult` | `ConstructResults`, a table of triples | `ToRDFGraphAsync()` |
+| DESCRIBE | `RDFDescribeQuery` | `RDFDescribeQueryResult` | `DescribeResults`, a table of triples | `ToRDFGraphAsync()` |
 
-Every form applies to a graph with `ApplyToGraph`, to a store with `ApplyToStore`, to a federation with `ApplyToFederation` and to a SPARQL endpoint with `ApplyToSPARQLEndpoint`. The next chapter shows how to build any of the four from SPARQL text instead of C#.
+Every form applies to a graph with `ApplyToGraphAsync`, to a store with `ApplyToStoreAsync`, to a federation with `ApplyToFederationAsync` and to a SPARQL endpoint with `ApplyToSPARQLEndpointAsync`. The next chapter shows how to build any of the four from SPARQL text instead of C#.

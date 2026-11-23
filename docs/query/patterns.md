@@ -24,7 +24,7 @@ A **variable** is a named placeholder: the query engine fills it with every valu
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable producer = new RDFVariable("producer");
@@ -65,7 +65,7 @@ RDFSelectQuery query = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(label);
 
-RDFSelectQueryResult result = query.ApplyToGraph(catalog);
+RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 foreach (DataRow row in result.SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?LABEL"]}");
 ```
@@ -85,7 +85,7 @@ foreach (DataRow row in result.SelectResults.Rows)
 
 </div>
 
-Three things to notice. The projection, which says which variables come out, is explicit: `?producer` takes part in the join but it is not a column of the result. A pattern is built from resources, literals and variables and the constructor refuses anything else with an `RDFQueryException`. Last, `ApplyToGraph` is the call that runs the query: it returns an `RDFSelectQueryResult` whose `SelectResults` is a plain `DataTable`. The other forms of query and their results are the subject of [Query forms]({{ '/query/query-forms/' | relative_url }}).
+Three things to notice. The projection, which says which variables come out, is explicit: `?producer` takes part in the join but it is not a column of the result. A pattern is built from resources, literals and variables and the constructor refuses anything else with an `RDFQueryException`. Last, `ApplyToGraphAsync` is the call that runs the query: it returns an `RDFSelectQueryResult` whose `SelectResults` is a plain `DataTable`. The other forms of query and their results are the subject of [Query forms]({{ '/query/query-forms/' | relative_url }}).
 
 The rows below this one are all printed by the same loop, so from here on only the tables are shown.
 
@@ -93,7 +93,7 @@ The rows below this one are all printed by the same loop, so from here on only t
 
 A pattern group drops every row for which one of its patterns finds nothing. An **optional** pattern changes that: the row stays and the variables that the optional pattern would have filled stay **unbound**. In SPARQL this is `OPTIONAL { ... }`. In C# it is `Optional()` on the pattern, a left join in database terms.
 
-All six wines of the catalog carry the organic flag, so the difference would not show. The harvest of 2025 has started and the cooperative has registered a new wine, `vrd:novello-2025`, whose flag nobody has declared yet. It lives in a small graph of its own, joined to the catalog by `UnionWith`, so that the catalog stays untouched.
+All six wines of the catalog carry the organic flag, so the difference would not show. The harvest of 2025 has started and the cooperative has registered a new wine, `vrd:novello-2025`, whose flag nobody has declared yet. It lives in a small graph of its own, joined to the catalog by `UnionWithAsync`, so that the catalog stays untouched.
 
 <div class="pair" markdown="1">
 
@@ -112,7 +112,7 @@ RDFResource novello = new RDFResource(vrd + "novello-2025");
 RDFGraph harvest = new RDFGraph()
     .AddTriple(new RDFTriple(novello, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
     .AddTriple(new RDFTriple(novello, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")));
-RDFGraph catalogAndHarvest = catalog.UnionWith(harvest);
+RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
 
 RDFVariable organic = new RDFVariable("organic");
 RDFSelectQuery organicFlags = new RDFSelectQuery()
@@ -122,7 +122,7 @@ RDFSelectQuery organicFlags = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(organic);
 
-RDFSelectQueryResult flags = organicFlags.ApplyToGraph(catalogAndHarvest);
+RDFSelectQueryResult flags = await organicFlags.ApplyToGraphAsync(catalogAndHarvest);
 ```
 
 </div>
@@ -173,7 +173,7 @@ RDFSelectQuery redsAndWhites = new RDFSelectQuery()
                 .Union(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, whiteWine))))
     .AddProjectionVariable(wine);
 
-RDFSelectQueryResult both = redsAndWhites.ApplyToGraph(catalog);
+RDFSelectQueryResult both = await redsAndWhites.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -213,7 +213,7 @@ RDFSelectQuery conventional = new RDFSelectQuery()
             wineProducedBy.Minus(new RDFPattern(wine, new RDFResource(vr + "organic"), yes))))
     .AddProjectionVariable(wine);
 
-RDFSelectQueryResult notOrganic = conventional.ApplyToGraph(catalog);
+RDFSelectQueryResult notOrganic = await conventional.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -262,7 +262,7 @@ RDFSelectQuery redsAndWhitesNamed = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(label);
 
-RDFSelectQueryResult named = redsAndWhitesNamed.ApplyToGraph(catalog);
+RDFSelectQueryResult named = await redsAndWhitesNamed.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -288,14 +288,14 @@ Every wine comes twice, once for each language of its label. [Filters]({{ '/quer
 
 A store keeps quadruples, so a pattern on a store can say a fourth thing: **where** the triple was stated. The context goes in the first position of the constructor, ahead of the subject and it is either an `RDFContext` for a fixed source or a variable that the engine fills with the contexts it finds.
 
-The store of this section is the one of the Store chapters: the catalog merged into the context `https://vallerosa.example/catalog`, plus the two guides of [vallerosa-guides.trig]({{ '/assets/data/vallerosa-guides.trig' | relative_url }}). `ApplyToStore` is the counterpart of `ApplyToGraph`.
+The store of this section is the one of the Store chapters: the catalog merged into the context `https://vallerosa.example/catalog`, plus the two guides of [vallerosa-guides.trig]({{ '/assets/data/vallerosa-guides.trig' | relative_url }}). `ApplyToStoreAsync` is the counterpart of `ApplyToGraphAsync`.
 
 ```csharp
 catalog.SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(catalog);
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
-RDFMemoryStore store = catalogStore.UnionWith(guides);
+await catalogStore.MergeGraphAsync(catalog);
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFMemoryStore store = await catalogStore.UnionWithAsync(guides);
 
 RDFVariable guide = new RDFVariable("guide");
 RDFVariable score = new RDFVariable("score");
@@ -308,7 +308,7 @@ RDFSelectQuery scoresByGuide = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(score);
 
-RDFSelectQueryResult guideScores = scoresByGuide.ApplyToStore(store);
+RDFSelectQueryResult guideScores = await scoresByGuide.ApplyToStoreAsync(store);
 ```
 
 <div class="result" markdown="1">
@@ -339,7 +339,7 @@ RDFSelectQuery winescopeScores = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(score);
 
-RDFSelectQueryResult winescopeResult = winescopeScores.ApplyToStore(store);
+RDFSelectQueryResult winescopeResult = await winescopeScores.ApplyToStoreAsync(store);
 ```
 
 <div class="result" markdown="1">

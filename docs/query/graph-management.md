@@ -30,12 +30,12 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
 
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl")
+RDFGraph catalog = (await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl"))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(catalog);
-RDFMemoryStore store = catalogStore.UnionWith(
-    RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig"));
+await catalogStore.MergeGraphAsync(catalog);
+RDFMemoryStore store = await catalogStore.UnionWithAsync(
+    await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig"));
 
 Uri guidaCalici = new Uri("https://guidacalici.example/2025");
 Uri winescope = new Uri("https://winescope.example/2025");
@@ -68,8 +68,8 @@ CREATE SILENT GRAPH <https://vallerosa.example/archive/winescope-2025>
 RDFCreateOperation createCalici = new RDFCreateOperation(archiveCalici).Silent();
 RDFCreateOperation createWinescope = new RDFCreateOperation(archiveWinescope).Silent();
 
-RDFOperationResult createResult = createCalici.ApplyToStore(store);
-createWinescope.ApplyToStore(store);
+RDFOperationResult createResult = await createCalici.ApplyToStoreAsync(store);
+await createWinescope.ApplyToStoreAsync(store);
 Console.WriteLine($"{createResult.InsertResultsCount} {createResult.DeleteResultsCount} {store.QuadruplesCount}");
 ```
 
@@ -99,7 +99,7 @@ RDFCopyOperation copyCalici = new RDFCopyOperation()
     .SetFromContext(guidaCalici)
     .SetToContext(archiveCalici);
 
-RDFOperationResult copyResult = copyCalici.ApplyToStore(store);
+RDFOperationResult copyResult = await copyCalici.ApplyToStoreAsync(store);
 Console.WriteLine($"{copyResult.InsertResultsCount} {copyResult.DeleteResultsCount} {store.QuadruplesCount}");
 ```
 
@@ -128,7 +128,7 @@ CLEAR GRAPH <https://guidacalici.example/2025>
 ```csharp
 RDFClearOperation clearCalici = new RDFClearOperation(guidaCalici);
 
-RDFOperationResult clearResult = clearCalici.ApplyToStore(store);
+RDFOperationResult clearResult = await clearCalici.ApplyToStoreAsync(store);
 Console.WriteLine($"{clearResult.InsertResultsCount} {clearResult.DeleteResultsCount} {store.QuadruplesCount}");
 ```
 
@@ -160,9 +160,9 @@ RDFMoveOperation moveWinescope = new RDFMoveOperation()
     .SetFromContext(winescope)
     .SetToContext(archiveWinescope);
 
-RDFOperationResult moveResult = moveWinescope.ApplyToStore(store);
+RDFOperationResult moveResult = await moveWinescope.ApplyToStoreAsync(store);
 Console.WriteLine($"{moveResult.InsertResultsCount} {moveResult.DeleteResultsCount} {store.QuadruplesCount}");
-foreach (RDFGraph graph in store.ExtractGraphs())
+foreach (RDFGraph graph in await store.ExtractGraphsAsync())
     Console.WriteLine($"{graph.Context} {graph.TriplesCount}");
 ```
 
@@ -197,14 +197,14 @@ ADD <https://vallerosa.example/archive/winescope-2025>
 ```csharp
 Uri audit = new Uri("https://vallerosa.example/archive/guides-2025");
 
-RDFOperationResult addCalici = new RDFAddOperation()
+RDFOperationResult addCalici = await new RDFAddOperation()
     .SetFromContext(archiveCalici)
     .SetToContext(audit)
-    .ApplyToStore(store);
-RDFOperationResult addWinescope = new RDFAddOperation()
+    .ApplyToStoreAsync(store);
+RDFOperationResult addWinescope = await new RDFAddOperation()
     .SetFromContext(archiveWinescope)
     .SetToContext(audit)
-    .ApplyToStore(store);
+    .ApplyToStoreAsync(store);
 Console.WriteLine($"{addCalici.InsertResultsCount} {addWinescope.InsertResultsCount} {store.QuadruplesCount}");
 ```
 
@@ -227,7 +227,7 @@ DROP GRAPH <https://vallerosa.example/archive/guides-2025>
 ```
 
 ```csharp
-RDFOperationResult dropResult = new RDFDropOperation(audit).ApplyToStore(store);
+RDFOperationResult dropResult = await new RDFDropOperation(audit).ApplyToStoreAsync(store);
 Console.WriteLine($"{dropResult.DeleteResultsCount} {store.QuadruplesCount}");
 ```
 
@@ -259,7 +259,7 @@ RDFLoadOperation loadScores = new RDFLoadOperation(new Uri("https://guidacalici.
     .SetContext(new Uri("https://guidacalici.example/2026"))
     .Silent();
 
-RDFOperationResult loadResult = loadScores.ApplyToStore(store);
+RDFOperationResult loadResult = await loadScores.ApplyToStoreAsync(store);
 Console.WriteLine($"{loadResult.InsertResultsCount} {store.QuadruplesCount}");
 ```
 
@@ -275,19 +275,19 @@ Console.WriteLine($"{loadResult.InsertResultsCount} {store.QuadruplesCount}");
 
 The guides of the manual are fictional and their addresses lead nowhere, so the load fails and `SILENT` turns the failure into an empty result: no quadruple arrives and the store is untouched. Without `Silent()` the same call throws an `RDFStoreException`. When the address does answer, the store loads what the server sends if it declares itself as N-Quads, TriX or TriG and the context given to `SetContext` takes every quadruple of the document, even when the document names several graphs. Without `SetContext` the quadruples keep their own contexts.
 
-The operation speaks HTTP and HTTPS only. It cannot load a `file:` address, so a document on your disk is read the way the Store chapters read it, with `RDFMemoryStore.FromFile` and added with `UnionWith`.
+The operation speaks HTTP and HTTPS only. It cannot load a `file:` address, so a document on your disk is read the way the Store chapters read it, with `RDFMemoryStore.FromFileAsync` and added with `UnionWithAsync`.
 
 ## On a graph
 
 A graph has no contexts, so these operations lose most of their meaning on one. `CLEAR` and `DROP` empty the graph and `CREATE` has nothing to do. `COPY`, `MOVE` and `ADD` need two graphs to tell apart and refuse to run, with an error that says why. `SILENT` is what turns that error into an empty result.
 
 ```csharp
-RDFOperationResult silentResult = copyCalici.Silent().ApplyToGraph(catalog);
+RDFOperationResult silentResult = await copyCalici.Silent().ApplyToGraphAsync(catalog);
 Console.WriteLine(silentResult.InsertResultsCount);
 
 try
 {
-    new RDFMoveOperation().SetFromContext(winescope).SetToContext(archiveWinescope).ApplyToGraph(catalog);
+    await new RDFMoveOperation().SetFromContext(winescope).SetToContext(archiveWinescope).ApplyToGraphAsync(catalog);
 }
 catch (RDFQueryException exception)
 {

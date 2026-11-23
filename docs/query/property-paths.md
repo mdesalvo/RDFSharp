@@ -48,7 +48,7 @@ using System.Data;
 
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFResource tuscany = new RDFResource(vrd + "tuscany");
@@ -62,7 +62,7 @@ RDFSelectQuery tuscanWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(winesOfTuscany))
     .AddProjectionVariable(wine);
 
-RDFSelectQueryResult tuscan = tuscanWines.ApplyToGraph(catalog);
+RDFSelectQueryResult tuscan = await tuscanWines.ApplyToGraphAsync(catalog);
 foreach (DataRow row in tuscan.SelectResults.Rows)
     Console.WriteLine(row["?WINE"]);
 ```
@@ -129,7 +129,7 @@ RDFSelectQuery above = new RDFSelectQuery()
             .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "partOf")).OneOrMore())))
     .AddProjectionVariable(area);
 
-RDFSelectQueryResult aboveResult = above.ApplyToGraph(catalog);
+RDFSelectQueryResult aboveResult = await above.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -169,7 +169,7 @@ RDFSelectQuery winesOfProducer = new RDFSelectQuery()
             .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "producedBy")).Inverse())))
     .AddProjectionVariable(wine);
 
-RDFSelectQueryResult winesResult = winesOfProducer.ApplyToGraph(catalog);
+RDFSelectQueryResult winesResult = await winesOfProducer.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -213,7 +213,7 @@ RDFSelectQuery neighbours = new RDFSelectQuery()
             }))))
     .AddProjectionVariable(neighbour);
 
-RDFSelectQueryResult neighboursResult = neighbours.ApplyToGraph(catalog);
+RDFSelectQueryResult neighboursResult = await neighbours.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -252,8 +252,8 @@ WHERE {
 ```
 
 ```csharp
-RDFGraph vocab = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-vocab.ttl");
-RDFGraph vocabAndCatalog = vocab.UnionWith(catalog);
+RDFGraph vocab = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-vocab.ttl");
+RDFGraph vocabAndCatalog = await vocab.UnionWithAsync(catalog);
 
 RDFSelectQuery allWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(
@@ -262,7 +262,7 @@ RDFSelectQuery allWines = new RDFSelectQuery()
             .AddStep(RDFPropertyPathStep.Link(RDFVocabulary.RDFS.SUB_CLASS_OF).ZeroOrMore())))
     .AddProjectionVariable(wine);
 
-RDFSelectQueryResult allWinesResult = allWines.ApplyToGraph(vocabAndCatalog);
+RDFSelectQueryResult allWinesResult = await allWines.ApplyToGraphAsync(vocabAndCatalog);
 Console.WriteLine(vocabAndCatalog.TriplesCount);
 ```
 
@@ -300,7 +300,7 @@ RDFSelectQuery otherFacts = new RDFSelectQuery()
             }))))
     .AddProjectionVariable(value);
 
-RDFSelectQueryResult otherFactsResult = otherFacts.ApplyToGraph(catalog);
+RDFSelectQueryResult otherFactsResult = await otherFacts.ApplyToGraphAsync(catalog);
 ```
 
 <div class="result" markdown="1">

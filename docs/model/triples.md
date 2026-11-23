@@ -2,7 +2,7 @@
 title: Resources, literals and triples
 permalink: /model/triples/
 tagline: The three bricks every RDF statement is built from
-lede: Name a thing with a resource, describe it with a literal and join them in a triple. Here the cooperative describes one wine by hand, from the first IRI to the last year.
+lede: Name a thing with a resource, describe it with a literal and join them in a triple.
 ---
 
 > Cantina dei Tre Ulivi is the first winery to hand over its data and the cooperative decides to type the Vermentino of the Plain 2023 in by hand, triple by triple. Nothing teaches the model better than describing a wine one statement at a time.

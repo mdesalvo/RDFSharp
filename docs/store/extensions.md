@@ -46,13 +46,13 @@ using RDFSharp.Model;
 using RDFSharp.Query;
 using RDFSharp.Store;
 
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl")
+RDFGraph catalog = (await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl"))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
 
 RDFMemoryStore memory = new RDFMemoryStore();
-memory.MergeGraph(catalog);
-memory = memory.UnionWith(guides);
+await memory.MergeGraphAsync(catalog);
+memory = await memory.UnionWithAsync(guides);
 Console.WriteLine(memory.QuadruplesCount);
 ```
 
@@ -64,14 +64,14 @@ Console.WriteLine(memory.QuadruplesCount);
 
 </div>
 
-A SQLite store is built from a connection string. If the file does not exist the store creates it, with the table it needs, so the first run of a program and the hundredth need no different code. Moving the data is a loop over the graphs of the memory store, one `MergeGraph` each.
+A SQLite store is built from a connection string. If the file does not exist the store creates it, with the table it needs, so the first run of a program and the hundredth need no different code. Moving the data is a loop over the graphs of the memory store, one `MergeGraphAsync` each.
 
 ```csharp
 RDFSQLiteStore sqlite = new RDFSQLiteStore("Data Source=vallerosa.db");
 Console.WriteLine(sqlite.QuadruplesCount);
 
-foreach (RDFGraph graph in memory.ExtractGraphs())
-    sqlite.MergeGraph(graph);
+foreach (RDFGraph graph in await memory.ExtractGraphsAsync())
+    await sqlite.MergeGraphAsync(graph);
 Console.WriteLine(sqlite.QuadruplesCount);
 ```
 
@@ -84,7 +84,7 @@ Console.WriteLine(sqlite.QuadruplesCount);
 
 </div>
 
-The store was empty and holds 153 quadruples after the move, the same number as the memory store. `MergeGraph` is the right tool here and not a loop of `AddQuadruple`: the SQLite store inserts the whole graph inside one transaction, instead of opening one for every quadruple.
+The store was empty and holds 153 quadruples after the move, the same number as the memory store. `MergeGraphAsync` is the right tool here and not a loop of `AddQuadruple`: the SQLite store inserts the whole graph inside one transaction, instead of opening one for every quadruple.
 
 ## The same code, a different store
 
@@ -97,10 +97,10 @@ RDFResource rosso = new RDFResource(vrd + "rosso-2021");
 RDFResource score = new RDFResource(vr + "score");
 RDFContext winescope = new RDFContext("https://winescope.example/2025");
 
-foreach (RDFQuadruple quadruple in sqlite.SelectQuadruples(c: winescope, s: rosso, p: score))
+foreach (RDFQuadruple quadruple in await sqlite.SelectQuadruplesAsync(c: winescope, s: rosso, p: score))
     Console.WriteLine(quadruple);
 
-foreach (RDFGraph graph in sqlite.ExtractGraphs())
+foreach (RDFGraph graph in await sqlite.ExtractGraphsAsync())
     Console.WriteLine($"{graph.Context} {graph.TriplesCount}");
 ```
 
@@ -139,7 +139,7 @@ RDFSelectQuery query = new RDFSelectQuery()
     .AddProjectionVariable(guide)
     .AddProjectionVariable(value);
 
-RDFSelectQueryResult result = query.ApplyToStore(sqlite);
+RDFSelectQueryResult result = await query.ApplyToStoreAsync(sqlite);
 foreach (System.Data.DataRow row in result.SelectResults.Rows)
     Console.WriteLine($"{row["?GUIDE"]} | {row["?VALUE"]}");
 ```
@@ -155,7 +155,7 @@ https://guidacalici.example/2025 | 88^^http://www.w3.org/2001/XMLSchema#integer
 
 </div>
 
-The four-argument `RDFPattern` puts the context first. The query is the one you would run on `memory`: only the argument of `ApplyToStore` changes.
+The four-argument `RDFPattern` puts the context first. The query is the one you would run on `memory`: only the argument of `ApplyToStoreAsync` changes.
 
 ## It is still there tomorrow
 
@@ -179,8 +179,8 @@ Console.WriteLine(reopened.QuadruplesCount);
 The formats work on any store too. A persistent store can write a backup file. A memory store can read it:
 
 ```csharp
-reopened.ToFile(RDFStoreEnums.RDFFormats.NQuads, "vallerosa-backup.nq");
-RDFMemoryStore restored = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.NQuads, "vallerosa-backup.nq");
+await reopened.ToFileAsync(RDFStoreEnums.RDFFormats.NQuads, "vallerosa-backup.nq");
+RDFMemoryStore restored = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "vallerosa-backup.nq");
 Console.WriteLine(restored.QuadruplesCount);
 ```
 

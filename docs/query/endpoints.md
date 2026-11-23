@@ -26,7 +26,7 @@ RDFNamespace dbo = new RDFNamespace("dbo", "http://dbpedia.org/ontology/");
 RDFSPARQLEndpoint dbpedia = new RDFSPARQLEndpoint(new Uri("https://dbpedia.org/sparql"));
 ```
 
-The first question is a `SELECT`: which grapes does DBpedia place in Tuscany? A query goes to an endpoint with `ApplyToSPARQLEndpoint` and the result is the same `RDFSelectQueryResult` you know from local data.
+The first question is a `SELECT`: which grapes does DBpedia place in Tuscany? A query goes to an endpoint with `ApplyToSPARQLEndpointAsync` and the result is the same `RDFSelectQueryResult` you know from local data.
 
 <div class="pair" markdown="1">
 
@@ -56,7 +56,7 @@ RDFSelectQuery tuscanGrapes = new RDFSelectQuery()
     .AddModifier(new RDFDistinctModifier())
     .AddModifier(new RDFOrderByModifier(grape, RDFQueryEnums.RDFOrderByFlavors.ASC));
 
-RDFSelectQueryResult tuscanGrapesResult = tuscanGrapes.ApplyToSPARQLEndpoint(dbpedia);
+RDFSelectQueryResult tuscanGrapesResult = await tuscanGrapes.ApplyToSPARQLEndpointAsync(dbpedia);
 foreach (DataRow row in tuscanGrapesResult.SelectResults.Rows)
     Console.WriteLine(row["?GRAPE"]);
 ```
@@ -92,8 +92,8 @@ RDFAskQuery greekOrigin = new RDFAskQuery()
         .AddPattern(new RDFPattern(grape, wineRegion, tuscany))
         .AddPattern(new RDFPattern(grape, origin, new RDFResource(dbr + "Greece"))));
 
-Console.WriteLine(italianOrigin.ApplyToSPARQLEndpoint(dbpedia).AskResult);
-Console.WriteLine(greekOrigin.ApplyToSPARQLEndpoint(dbpedia).AskResult);
+Console.WriteLine((await italianOrigin.ApplyToSPARQLEndpointAsync(dbpedia)).AskResult);
+Console.WriteLine((await greekOrigin.ApplyToSPARQLEndpointAsync(dbpedia)).AskResult);
 ```
 
 <div class="result" markdown="1">
@@ -114,7 +114,7 @@ A SPARQL service may hold several graphs and the standard lets a client choose w
 ```csharp
 RDFSPARQLEndpoint dbpediaGraph = new RDFSPARQLEndpoint(new Uri("https://dbpedia.org/sparql"))
     .AddDefaultGraphUri("http://dbpedia.org");
-Console.WriteLine(tuscanGrapes.ApplyToSPARQLEndpoint(dbpediaGraph).SelectResultsCount);
+Console.WriteLine((await tuscanGrapes.ApplyToSPARQLEndpointAsync(dbpediaGraph)).SelectResultsCount);
 ```
 
 <div class="result" markdown="1">
@@ -125,9 +125,9 @@ Console.WriteLine(tuscanGrapes.ApplyToSPARQLEndpoint(dbpediaGraph).SelectResults
 
 </div>
 
-## Asynchronous calls, POST and raw queries
+## POST and raw queries
 
-Every `ApplyToSPARQLEndpoint` has an `Async` twin that returns a task, so the calling thread, for example the one of a user interface, does not wait for the network. By default the query goes out as a `GET` with the text in the address. Long queries can overflow the length that servers accept for an address: the query option `QueryMethod` moves them into the body of a `POST`.
+Every `ApplyToSPARQLEndpointAsync` also has a synchronous form, `ApplyToSPARQLEndpoint`, which keeps the calling thread waiting for the network. By default the query goes out as a `GET` with the text in the address. Long queries can overflow the length that servers accept for an address: the query option `QueryMethod` moves them into the body of a `POST`.
 
 ```csharp
 RDFSelectQueryResult asyncResult = await tuscanGrapes.ApplyToSPARQLEndpointAsync(dbpedia);
@@ -137,7 +137,7 @@ RDFSPARQLEndpointQueryOptions postOptions = new RDFSPARQLEndpointQueryOptions(
     20000,
     RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException,
     RDFQueryEnums.RDFSPARQLEndpointQueryMethods.Post);
-RDFSelectQueryResult postResult = tuscanGrapes.ApplyToSPARQLEndpoint(dbpedia, postOptions);
+RDFSelectQueryResult postResult = await tuscanGrapes.ApplyToSPARQLEndpointAsync(dbpedia, postOptions);
 Console.WriteLine(postResult.SelectResultsCount);
 ```
 
@@ -150,10 +150,10 @@ Console.WriteLine(postResult.SelectResultsCount);
 
 </div>
 
-Sometimes the query is already text: written by a person or copied from a tool. The static `ApplyRawToSPARQLEndpoint` of each query type sends it as it is. The text uses a lower-case `?origin` and the column still comes back in the library's form:
+Sometimes the query is already text: written by a person or copied from a tool. The static `ApplyRawToSPARQLEndpointAsync` of each query type sends it as it is. The text uses a lower-case `?origin` and the column still comes back in the library's form:
 
 ```csharp
-RDFSelectQueryResult rawResult = RDFSelectQuery.ApplyRawToSPARQLEndpoint(
+RDFSelectQueryResult rawResult = await RDFSelectQuery.ApplyRawToSPARQLEndpointAsync(
     "SELECT ?origin WHERE { <http://dbpedia.org/resource/Sangiovese> <http://dbpedia.org/ontology/origin> ?origin }",
     dbpedia);
 foreach (DataColumn column in rawResult.SelectResults.Columns)
@@ -188,7 +188,7 @@ The two behaviors on error deserve a look. The address below is a port where not
 RDFSPARQLEndpoint offline = new RDFSPARQLEndpoint(new Uri("http://localhost:3031/sparql"));
 try
 {
-    tuscanGrapes.ApplyToSPARQLEndpoint(offline);
+    await tuscanGrapes.ApplyToSPARQLEndpointAsync(offline);
 }
 catch (RDFQueryException exception)
 {
@@ -197,7 +197,7 @@ catch (RDFQueryException exception)
 
 RDFSPARQLEndpointQueryOptions quietOptions = new RDFSPARQLEndpointQueryOptions(
     2000, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult);
-RDFSelectQueryResult quietResult = tuscanGrapes.ApplyToSPARQLEndpoint(offline, quietOptions);
+RDFSelectQueryResult quietResult = await tuscanGrapes.ApplyToSPARQLEndpointAsync(offline, quietOptions);
 Console.WriteLine($"{quietResult.SelectResultsCount} rows, {quietResult.SelectResults.Columns.Count} columns");
 ```
 
@@ -216,7 +216,7 @@ The text after "because" comes from the system and changes with it. The empty re
 RDFSPARQLEndpoint slow = new RDFSPARQLEndpoint(new Uri("http://localhost:3030/slow/sparql"));
 try
 {
-    tuscanGrapes.ApplyToSPARQLEndpoint(slow, new RDFSPARQLEndpointQueryOptions(500));
+    await tuscanGrapes.ApplyToSPARQLEndpointAsync(slow, new RDFSPARQLEndpointQueryOptions(500));
 }
 catch (RDFQueryException exception)
 {
@@ -241,8 +241,8 @@ RDFSPARQLEndpoint shop = new RDFSPARQLEndpoint(new Uri("http://localhost:3030/va
     .SetBearerAuthorizationHeader("eyJhbGciOiJIUzI1NiJ9");
 RDFSPARQLEndpoint shopBasic = new RDFSPARQLEndpoint(new Uri("http://localhost:3030/vallerosa/sparql"))
     .SetBasicAuthorizationHeader("ZGVtbzpkZW1v");
-RDFSelectQuery.ApplyRawToSPARQLEndpoint("SELECT ?wine WHERE { ?wine a <https://vallerosa.example/vocab#RedWine> }", shop);
-RDFSelectQuery.ApplyRawToSPARQLEndpoint("SELECT ?wine WHERE { ?wine a <https://vallerosa.example/vocab#RedWine> }", shopBasic);
+await RDFSelectQuery.ApplyRawToSPARQLEndpointAsync("SELECT ?wine WHERE { ?wine a <https://vallerosa.example/vocab#RedWine> }", shop);
+await RDFSelectQuery.ApplyRawToSPARQLEndpointAsync("SELECT ?wine WHERE { ?wine a <https://vallerosa.example/vocab#RedWine> }", shopBasic);
 ```
 
 <div class="result" markdown="1" data-label="What the test listener received">
@@ -258,14 +258,14 @@ Authorization: Basic ZGVtbzpkZW1v
 
 ## Updates on an endpoint
 
-The same endpoint class receives SPARQL Update, as long as the service exposes an update address: the cooperative runs a Fuseki server and archives there the 2025 editions of the guides, with the contexts of [operation sets]({{ '/query/operation-sets/' | relative_url }}). An operation is sent with `ApplyToSPARQLUpdateEndpoint` and the answer is a boolean: `true` when the endpoint accepted it. Nothing here touches a real service: a test listener on the same machine stands in for the server and records what arrives.
+The same endpoint class receives SPARQL Update, as long as the service exposes an update address: the cooperative runs a Fuseki server and archives there the 2025 editions of the guides, with the contexts of [operation sets]({{ '/query/operation-sets/' | relative_url }}). An operation is sent with `ApplyToSPARQLUpdateEndpointAsync` and the answer is a boolean: `true` when the endpoint accepted it. Nothing here touches a real service: a test listener on the same machine stands in for the server and records what arrives.
 
 ```csharp
 RDFSPARQLEndpoint fuseki = new RDFSPARQLEndpoint(new Uri("http://localhost:3030/vallerosa/update"));
 RDFCopyOperation archiveCalici = new RDFCopyOperation()
     .SetFromContext(new Uri("https://guidacalici.example/2025"))
     .SetToContext(new Uri("https://vallerosa.example/archive/guidacalici-2025"));
-bool archived = archiveCalici.ApplyToSPARQLUpdateEndpoint(fuseki);
+bool archived = await archiveCalici.ApplyToSPARQLUpdateEndpointAsync(fuseki);
 Console.WriteLine(archived);
 ```
 
@@ -284,7 +284,7 @@ An update always travels as a `POST`. The options of an update are `RDFSPARQLEnd
 ```csharp
 RDFSPARQLEndpointOperationOptions formOptions = new RDFSPARQLEndpointOperationOptions(
     10000, RDFQueryEnums.RDFSPARQLEndpointOperationContentTypes.X_WWW_FormUrlencoded);
-Console.WriteLine(archiveCalici.ApplyToSPARQLUpdateEndpoint(fuseki, formOptions));
+Console.WriteLine(await archiveCalici.ApplyToSPARQLUpdateEndpointAsync(fuseki, formOptions));
 ```
 
 <div class="result" markdown="1" data-label="What the test listener received">
@@ -306,7 +306,7 @@ RDFCopyOperation archiveWinescope = new RDFCopyOperation()
 RDFOperationSet archive = new RDFOperationSet()
     .AddOperation(archiveCalici)
     .AddOperation(archiveWinescope);
-Console.WriteLine(archive.ApplyToSPARQLUpdateEndpoint(fuseki));
+Console.WriteLine(await archive.ApplyToSPARQLUpdateEndpointAsync(fuseki));
 ```
 
 <div class="result" markdown="1" data-label="What the test listener received">
@@ -321,7 +321,7 @@ COPY <https://winescope.example/2025> TO <https://vallerosa.example/archive/wine
 
 </div>
 
-The endpoint's default and named graphs and its authorization header travel with the update too. With `AddDefaultGraphUri` the request carries a `using-graph-uri` parameter in the address, or in the body for the form content type. The async twin is `ApplyToSPARQLUpdateEndpointAsync`.
+The endpoint's default and named graphs and its authorization header travel with the update too. With `AddDefaultGraphUri` the request carries a `using-graph-uri` parameter in the address, or in the body for the form content type. The synchronous form is `ApplyToSPARQLUpdateEndpoint`.
 
 ```csharp
 RDFSPARQLEndpoint secured = new RDFSPARQLEndpoint(new Uri("http://localhost:3030/vallerosa/update"))
@@ -349,10 +349,10 @@ RDFCopyOperation silentArchive = new RDFCopyOperation()
     .SetFromContext(new Uri("https://guidacalici.example/2025"))
     .SetToContext(new Uri("https://vallerosa.example/archive/guidacalici-2025"))
     .Silent();
-Console.WriteLine(silentArchive.ApplyToSPARQLUpdateEndpoint(broken));
+Console.WriteLine(await silentArchive.ApplyToSPARQLUpdateEndpointAsync(broken));
 try
 {
-    archiveCalici.ApplyToSPARQLUpdateEndpoint(broken);
+    await archiveCalici.ApplyToSPARQLUpdateEndpointAsync(broken);
 }
 catch (RDFQueryException exception)
 {
@@ -379,7 +379,7 @@ Endpoints answer in the standard **SPARQL Query Results XML Format**. RDFSharp s
 RDFSPARQLEndpoint jsonOnly = new RDFSPARQLEndpoint(new Uri("http://localhost:3030/json/sparql"));
 try
 {
-    RDFSelectQuery.ApplyRawToSPARQLEndpoint("SELECT ?wine WHERE { ?wine a <https://vallerosa.example/vocab#RedWine> }", jsonOnly);
+    await RDFSelectQuery.ApplyRawToSPARQLEndpointAsync("SELECT ?wine WHERE { ?wine a <https://vallerosa.example/vocab#RedWine> }", jsonOnly);
 }
 catch (RDFQueryException exception)
 {
@@ -395,14 +395,14 @@ Cannot read given "SPARQL Query Results XML Format" source because: Data at the 
 
 </div>
 
-`CONSTRUCT` and `DESCRIBE` do not return rows: they ask for `application/turtle` or `text/turtle` and read the answer as an RDF graph, which you obtain with `ToRDFGraph`.
+`CONSTRUCT` and `DESCRIBE` do not return rows: they ask for `application/turtle` or `text/turtle` and read the answer as an RDF graph, which you obtain with `ToRDFGraphAsync`.
 
 ```csharp
 RDFConstructQuery sangioveseOrigin = new RDFConstructQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFResource(dbr + "Sangiovese"), origin, new RDFVariable("country"))))
     .AddTemplate(new RDFPattern(new RDFResource(dbr + "Sangiovese"), origin, new RDFVariable("country")));
-RDFGraph origins = sangioveseOrigin.ApplyToSPARQLEndpoint(dbpedia).ToRDFGraph();
+RDFGraph origins = await (await sangioveseOrigin.ApplyToSPARQLEndpointAsync(dbpedia)).ToRDFGraphAsync();
 Console.WriteLine(origins.TriplesCount);
 foreach (RDFTriple triple in origins)
     Console.WriteLine(triple);

@@ -152,7 +152,7 @@ Console.WriteLine(delivery.TriplesCount);
 
 delivery.AddTriple(new RDFTriple(nero, hasAlcohol, new RDFTypedLiteral("13.5", abv)));
 Console.WriteLine(delivery.TriplesCount);
-Console.WriteLine(delivery.SelectTriples(s: nero)[0].Object);
+Console.WriteLine((await delivery.SelectTriplesAsync(s: nero))[0].Object);
 ```
 
 <div class="result" markdown="1">
@@ -196,7 +196,7 @@ A datatype is knowledge too and `AddDatatype` writes it into a graph: its IRI as
 RDFGraph vocabulary = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/vocab"))
     .AddDatatype(abv);
-vocabulary.ToFile(RDFModelEnums.RDFFormats.Turtle, "abv.ttl");
+await vocabulary.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "abv.ttl");
 Console.WriteLine(vocabulary.TriplesCount);
 ```
 
@@ -233,4 +233,4 @@ vr:abv a rdfs:Datatype;
 
 </div>
 
-The names that start with `_:` are blank resources, invented anew at every run. The reader of the file does not need the datatype in its register: `RDFGraph.FromFile`, `FromStream` and `FromUri` take a last argument, `enableDatatypeDiscovery` and when it is `true` the library finds the datatype definitions in the data and registers them before it moves on.
+The names that start with `_:` are blank resources, invented anew at every run. The reader of the file does not need the datatype in its register: `RDFGraph.FromFileAsync`, `FromStreamAsync` and `FromUriAsync` take a last argument, `enableDatatypeDiscovery` and when it is `true` the library finds the datatype definitions in the data and registers them before it moves on.

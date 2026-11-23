@@ -39,7 +39,7 @@ WHERE {
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
@@ -59,7 +59,7 @@ RDFSelectQuery lightWhites = new RDFSelectQuery()
     .AddProjectionVariable(label)
     .AddProjectionVariable(alcohol);
 
-RDFSelectQueryResult lightWhitesResult = lightWhites.ApplyToGraph(catalog);
+RDFSelectQueryResult lightWhitesResult = await lightWhites.ApplyToGraphAsync(catalog);
 foreach (DataRow row in lightWhitesResult.SelectResults.Rows)
     Console.WriteLine($"{row["?LABEL"]} | {row["?ALCOHOL"]}");
 ```
@@ -104,7 +104,7 @@ RDFSelectQuery conventionalReds = new RDFSelectQuery()
             new RDFPatternGroup().AddPattern(new RDFPattern(wine, organicProperty, yes)))))))
     .AddProjectionVariable(wine);
 
-RDFSelectQueryResult conventionalResult = conventionalReds.ApplyToGraph(catalog);
+RDFSelectQueryResult conventionalResult = await conventionalReds.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -142,7 +142,7 @@ RDFResource novello = new RDFResource(vrd + "novello-2025");
 RDFGraph harvest = new RDFGraph()
     .AddTriple(new RDFTriple(novello, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
     .AddTriple(new RDFTriple(novello, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")));
-RDFGraph catalogAndHarvest = catalog.UnionWith(harvest);
+RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
 
 RDFVariable organic = new RDFVariable("organic");
 RDFSelectQuery undeclared = new RDFSelectQuery()
@@ -152,7 +152,7 @@ RDFSelectQuery undeclared = new RDFSelectQuery()
         .AddFilter(new RDFFilter(new RDFNotExpression(new RDFBoundExpression(organic)))))
     .AddProjectionVariable(wine);
 
-RDFSelectQueryResult undeclaredResult = undeclared.ApplyToGraph(catalogAndHarvest);
+RDFSelectQueryResult undeclaredResult = await undeclared.ApplyToGraphAsync(catalogAndHarvest);
 ```
 
 </div>
@@ -208,7 +208,7 @@ RDFSelectQuery strongWines = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(alcohol);
 
-RDFSelectQueryResult strongResult = strongWines.ApplyToGraph(catalog);
+RDFSelectQueryResult strongResult = await strongWines.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -261,7 +261,7 @@ RDFSelectQuery lightAndCheap = new RDFSelectQuery()
     .AddProjectionVariable(alcohol)
     .AddProjectionVariable(price);
 
-RDFSelectQueryResult lightAndCheapResult = lightAndCheap.ApplyToGraph(catalog);
+RDFSelectQueryResult lightAndCheapResult = await lightAndCheap.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -299,8 +299,8 @@ RDFSelectQuery twoGrapes = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(grape);
 
-RDFSelectQueryResult vallerosaNamedResult = vallerosaNamed.ApplyToGraph(catalog);
-RDFSelectQueryResult twoGrapesResult = twoGrapes.ApplyToGraph(catalog);
+RDFSelectQueryResult vallerosaNamedResult = await vallerosaNamed.ApplyToGraphAsync(catalog);
+RDFSelectQueryResult twoGrapesResult = await twoGrapes.ApplyToGraphAsync(catalog);
 ```
 
 <div class="result" markdown="1">

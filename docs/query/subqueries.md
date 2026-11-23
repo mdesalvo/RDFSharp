@@ -14,12 +14,12 @@ This page runs on a store that holds the catalog and the two guides: the catalog
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl")
+RDFGraph catalog = (await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl"))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
-catalogStore.MergeGraph(catalog);
-RDFMemoryStore guides = RDFMemoryStore.FromFile(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
-RDFMemoryStore store = catalogStore.UnionWith(guides);
+await catalogStore.MergeGraphAsync(catalog);
+RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
+RDFMemoryStore store = await catalogStore.UnionWithAsync(guides);
 ```
 
 ## Why a second query
@@ -81,7 +81,7 @@ RDFSelectQuery bestWines = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(score);
 
-RDFSelectQueryResult best = bestWines.ApplyToStore(store);
+RDFSelectQueryResult best = await bestWines.ApplyToStoreAsync(store);
 foreach (DataRow row in best.SelectResults.Rows)
     Console.WriteLine($"{row["?PRODUCER"]} | {row["?WINE"]} | {row["?SCORE"]}");
 ```
@@ -153,7 +153,7 @@ RDFSelectQuery winesWithAcclaim = new RDFSelectQuery()
     .AddProjectionVariable(wine)
     .AddProjectionVariable(acclaimed);
 
-RDFSelectQueryResult acclaimedResult = winesWithAcclaim.ApplyToStore(store);
+RDFSelectQueryResult acclaimedResult = await winesWithAcclaim.ApplyToStoreAsync(store);
 ```
 
 </div>

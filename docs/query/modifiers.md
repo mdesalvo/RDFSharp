@@ -12,7 +12,7 @@ Every example on this page runs on [vallerosa-catalog.ttl]({{ '/assets/data/vall
 
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
@@ -65,7 +65,7 @@ RDFSelectQuery cheapestFirst = new RDFSelectQuery()
     .AddProjectionVariable(label)
     .AddProjectionVariable(price);
 
-RDFSelectQueryResult cheapest = cheapestFirst.ApplyToGraph(catalog);
+RDFSelectQueryResult cheapest = await cheapestFirst.ApplyToGraphAsync(catalog);
 foreach (DataRow row in cheapest.SelectResults.Rows)
     Console.WriteLine($"{row["?LABEL"]} | {row["?PRICE"]}");
 ```
@@ -121,7 +121,7 @@ RDFSelectQuery byStrength = new RDFSelectQuery()
     .AddProjectionVariable(alcohol)
     .AddProjectionVariable(price);
 
-RDFSelectQueryResult byStrengthResult = byStrength.ApplyToGraph(catalog);
+RDFSelectQueryResult byStrengthResult = await byStrength.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -171,7 +171,7 @@ RDFSelectQuery topThree = new RDFSelectQuery()
     .AddProjectionVariable(label)
     .AddProjectionVariable(price);
 
-RDFSelectQueryResult top = topThree.ApplyToGraph(catalog);
+RDFSelectQueryResult top = await topThree.ApplyToGraphAsync(catalog);
 ```
 
 </div>
@@ -197,7 +197,7 @@ RDFSelectQuery nextThree = new RDFSelectQuery()
     .AddProjectionVariable(label)
     .AddProjectionVariable(price);
 
-RDFSelectQueryResult next = nextThree.ApplyToGraph(catalog);
+RDFSelectQueryResult next = await nextThree.ApplyToGraphAsync(catalog);
 ```
 
 <div class="result" markdown="1">
@@ -234,7 +234,7 @@ RDFSelectQuery distinctProducers = new RDFSelectQuery()
     .AddModifier(new RDFDistinctModifier())
     .AddProjectionVariable(producer);
 
-RDFSelectQueryResult distinctResult = distinctProducers.ApplyToGraph(catalog);
+RDFSelectQueryResult distinctResult = await distinctProducers.ApplyToGraphAsync(catalog);
 ```
 
 </div>

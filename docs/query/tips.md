@@ -17,7 +17,7 @@ using RDFSharp.Query;   // variables, patterns, queries
 
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
@@ -56,8 +56,8 @@ RDFSelectQuery narrowFirst = new RDFSelectQuery()
         .AddPattern(wineLabel))
     .AddProjectionVariable(wine);
 
-Console.WriteLine(broadFirst.ApplyToGraph(catalog).SelectResultsCount);
-Console.WriteLine(narrowFirst.ApplyToGraph(catalog).SelectResultsCount);
+Console.WriteLine((await broadFirst.ApplyToGraphAsync(catalog)).SelectResultsCount);
+Console.WriteLine((await narrowFirst.ApplyToGraphAsync(catalog)).SelectResultsCount);
 ```
 
 <div class="result" markdown="1">
@@ -85,7 +85,7 @@ RDFSelectQuery withoutProjection = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(wineLabel)
         .AddPattern(new RDFPattern(wine, producedBy, producer)));
-RDFSelectQueryResult wide = withoutProjection.ApplyToGraph(catalog);
+RDFSelectQueryResult wide = await withoutProjection.ApplyToGraphAsync(catalog);
 foreach (DataColumn column in wide.SelectResults.Columns)
     Console.WriteLine(column.ColumnName);
 ```
@@ -108,7 +108,7 @@ RDFSelectQuery withProjection = new RDFSelectQuery()
         .AddPattern(wineLabel)
         .AddPattern(new RDFPattern(wine, producedBy, producer)))
     .AddProjectionVariable(label);
-RDFSelectQueryResult narrow = withProjection.ApplyToGraph(catalog);
+RDFSelectQueryResult narrow = await withProjection.ApplyToGraphAsync(catalog);
 foreach (DataColumn column in narrow.SelectResults.Columns)
     Console.WriteLine(column.ColumnName);
 ```
@@ -133,7 +133,7 @@ RDFSelectQuery labelledPoggioWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(wineLabel))
     .AddSubQuery(poggioWinesWithPrice);
-RDFSelectQueryResult labelled = labelledPoggioWines.ApplyToGraph(catalog);
+RDFSelectQueryResult labelled = await labelledPoggioWines.ApplyToGraphAsync(catalog);
 foreach (DataColumn column in labelled.SelectResults.Columns)
     Console.WriteLine(column.ColumnName);
 ```
@@ -158,7 +158,7 @@ RDFSelectQuery everything = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))));
 Console.WriteLine(everything);
-Console.WriteLine(everything.ApplyToGraph(catalog).SelectResultsCount);
+Console.WriteLine((await everything.ApplyToGraphAsync(catalog)).SelectResultsCount);
 ```
 
 <div class="result" markdown="1">
@@ -193,8 +193,8 @@ RDFSelectQuery averagePrice = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPattern(winePrice))
     .AddModifier(new RDFGroupByModifier().AddAggregator(new RDFAvgAggregator(price, average)));
 
-Console.WriteLine("typed: " + averagePrice.ApplyToGraph(catalog).SelectResults.Rows[0]["?AVERAGE"]);
-Console.WriteLine("plain: " + averagePrice.ApplyToGraph(importedPrices).SelectResults.Rows[0]["?AVERAGE"]);
+Console.WriteLine("typed: " + (await averagePrice.ApplyToGraphAsync(catalog)).SelectResults.Rows[0]["?AVERAGE"]);
+Console.WriteLine("plain: " + (await averagePrice.ApplyToGraphAsync(importedPrices)).SelectResults.Rows[0]["?AVERAGE"]);
 ```
 
 <div class="result" markdown="1">
@@ -216,8 +216,8 @@ RDFSelectQuery under13 = new RDFSelectQuery()
             RDFQueryEnums.RDFComparisonFlavors.LessThan, price,
             new RDFConstantExpression(new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))))
     .AddProjectionVariable(wine);
-Console.WriteLine("typed: " + under13.ApplyToGraph(catalog).SelectResultsCount);
-Console.WriteLine("plain: " + under13.ApplyToGraph(importedPrices).SelectResultsCount);
+Console.WriteLine("typed: " + (await under13.ApplyToGraphAsync(catalog)).SelectResultsCount);
+Console.WriteLine("plain: " + (await under13.ApplyToGraphAsync(importedPrices)).SelectResultsCount);
 
 RDFVariable withVat = new RDFVariable("withVat");
 RDFSelectQuery priceWithVat = new RDFSelectQuery()
@@ -227,7 +227,7 @@ RDFSelectQuery priceWithVat = new RDFSelectQuery()
             new RDFTypedLiteral("1.22", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), withVat)))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(withVat);
-foreach (DataRow row in priceWithVat.ApplyToGraph(importedPrices).SelectResults.Rows)
+foreach (DataRow row in (await priceWithVat.ApplyToGraphAsync(importedPrices)).SelectResults.Rows)
     Console.WriteLine($"{row["?WINE"]} | {row["?WITHVAT"]}");
 ```
 

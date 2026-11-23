@@ -2,7 +2,7 @@
 title: RDF formats
 permalink: /model/formats/
 tagline: Write a graph to a file or a stream and read it back
-lede: RDFSharp speaks four RDF formats. Here the same three triples about a wine go through all of them and the register of namespaces decides how readable the result is.
+lede: RDFSharp reads and writes four RDF formats. The register of namespaces decides how readable the result is.
 ---
 
 > Cantina dei Tre Ulivi sends its wines to the cooperative as N-Triples, the format its software produces. A partner shop that sells the Vallerosa wines asks for the same data as RDF/XML, so the cooperative reads one format and writes the other.
@@ -39,13 +39,13 @@ RDFGraph wine = new RDFGraph()
 
 ## Write to a file
 
-`ToFile` takes the format and a path and creates or replaces the file. One call for each format:
+`ToFileAsync` takes the format and a path and creates or replaces the file. One call for each format:
 
 ```csharp
-wine.ToFile(RDFModelEnums.RDFFormats.NTriples, "vermentino.nt");
-wine.ToFile(RDFModelEnums.RDFFormats.Turtle, "vermentino.ttl");
-wine.ToFile(RDFModelEnums.RDFFormats.TriX, "vermentino.trix");
-wine.ToFile(RDFModelEnums.RDFFormats.RdfXml, "vermentino.rdf");
+await wine.ToFileAsync(RDFModelEnums.RDFFormats.NTriples, "vermentino.nt");
+await wine.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "vermentino.ttl");
+await wine.ToFileAsync(RDFModelEnums.RDFFormats.TriX, "vermentino.trix");
+await wine.ToFileAsync(RDFModelEnums.RDFFormats.RdfXml, "vermentino.rdf");
 ```
 
 These are the four files. Pick a tab for each of them:
@@ -121,10 +121,10 @@ Two details come from the library, not from the formats. The language tag is upp
 
 ## Read from a file
 
-`RDFGraph.FromFile` is the mirror of `ToFile`: the format you name must be the one of the file. The winery's N-Triples arrive like this:
+`RDFGraph.FromFileAsync` is the mirror of `ToFileAsync`: the format you name must be the one of the file. The winery's N-Triples arrive like this:
 
 ```csharp
-RDFGraph received = RDFGraph.FromFile(RDFModelEnums.RDFFormats.NTriples, "vermentino.nt");
+RDFGraph received = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.NTriples, "vermentino.nt");
 Console.WriteLine(received.TriplesCount);
 Console.WriteLine(received.Context);
 Console.WriteLine(received.Equals(wine));
@@ -143,9 +143,9 @@ True
 All three triples are there and the graph is equal to the original, but its context is the default one: a file of N-Triples carries no name for the graph, so a graph that comes from one has to be named by whoever reads it. The three other formats bring the context back:
 
 ```csharp
-RDFGraph fromTurtle = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vermentino.ttl");
-RDFGraph fromTrix = RDFGraph.FromFile(RDFModelEnums.RDFFormats.TriX, "vermentino.trix");
-RDFGraph fromRdfXml = RDFGraph.FromFile(RDFModelEnums.RDFFormats.RdfXml, "vermentino.rdf");
+RDFGraph fromTurtle = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vermentino.ttl");
+RDFGraph fromTrix = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.TriX, "vermentino.trix");
+RDFGraph fromRdfXml = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.RdfXml, "vermentino.rdf");
 Console.WriteLine(fromTurtle.Context);
 Console.WriteLine(fromTrix.Context);
 Console.WriteLine(fromRdfXml.Context);
@@ -166,7 +166,7 @@ A path that does not point to a file is refused with a message that names it:
 ```csharp
 try
 {
-    RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "missing.ttl");
+    await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "missing.ttl");
 }
 catch (RDFModelException ex)
 {
@@ -186,28 +186,28 @@ That is the whole exchange with the partner shop: the cooperative reads the wine
 
 ```csharp
 received.SetContext(new Uri("https://vallerosa.example/catalog"));
-received.ToFile(RDFModelEnums.RDFFormats.RdfXml, "for-the-shop.rdf");
+await received.ToFileAsync(RDFModelEnums.RDFFormats.RdfXml, "for-the-shop.rdf");
 ```
 
 ## Streams
 
-A file is only one place to put a graph. `ToStream` and `FromStream` work on any `Stream`: a memory buffer to send over a connection, a file opened by hand, the body of a web response.
+A file is only one place to put a graph. `ToStreamAsync` and `FromStreamAsync` work on any `Stream`: a memory buffer to send over a connection, a file opened by hand, the body of a web response.
 
 ```csharp
 using (MemoryStream buffer = new MemoryStream())
 {
-    wine.ToStream(RDFModelEnums.RDFFormats.RdfXml, buffer);
+    await wine.ToStreamAsync(RDFModelEnums.RDFFormats.RdfXml, buffer);
     using (MemoryStream input = new MemoryStream(buffer.ToArray()))
     {
-        RDFGraph fromStream = RDFGraph.FromStream(RDFModelEnums.RDFFormats.RdfXml, input);
+        RDFGraph fromStream = await RDFGraph.FromStreamAsync(RDFModelEnums.RDFFormats.RdfXml, input);
         Console.WriteLine(fromStream.TriplesCount);
     }
 }
 
 using (FileStream output = new FileStream("stream.nt", FileMode.Create))
-    wine.ToStream(RDFModelEnums.RDFFormats.NTriples, output);
+    await wine.ToStreamAsync(RDFModelEnums.RDFFormats.NTriples, output);
 using (FileStream input = new FileStream("stream.nt", FileMode.Open))
-    Console.WriteLine(RDFGraph.FromStream(RDFModelEnums.RDFFormats.NTriples, input).TriplesCount);
+    Console.WriteLine((await RDFGraph.FromStreamAsync(RDFModelEnums.RDFFormats.NTriples, input)).TriplesCount);
 ```
 
 <div class="result" markdown="1">
@@ -219,13 +219,13 @@ using (FileStream input = new FileStream("stream.nt", FileMode.Open))
 
 </div>
 
-The asynchronous twins are `ToFileAsync`, `FromFileAsync`, `ToStreamAsync` and `FromStreamAsync`.
+Each method also has a synchronous form without the suffix: `ToFile`, `FromFile`, `ToStream` and `FromStream`.
 
 ## Read from a URI
 
 `RDFGraph.FromUri(new Uri("https://..."))` dereferences an address: the library asks the server for an RDF representation, looks at the content type of the answer and picks the matching reader. It understands `application/rdf+xml`, `text/turtle` (and the two older Turtle names), `application/n-triples` and `application/trix`. The call waits 20 seconds by default and `FromUriAsync` does not block. Any failure of the network or of the parsing comes out as an `RDFModelException` whose message starts with `Cannot read RDF graph from Uri`.
 
-One fact helps in practice. A namespace of the register can carry a **dereference URI**, an address to use instead of its own when the namespace IRI does not serve RDF: `FromUri` looks the address up in the register before it asks.
+One fact helps in practice. A namespace of the register can carry a **dereference URI**, an address to use instead of its own when the namespace IRI does not serve RDF: `FromUriAsync` looks the address up in the register before it asks.
 
 This chapter does not call the network, so no example shows one. The cooperative has no use for it either: its partners send files.
 
@@ -236,7 +236,7 @@ The Turtle and RDF/XML writers choose their prefixes from the register of namesp
 ```csharp
 RDFNamespaceRegister.RemoveByPrefix("vr");
 RDFNamespaceRegister.RemoveByPrefix("vrd");
-wine.ToFile(RDFModelEnums.RDFFormats.Turtle, "unprefixed.ttl");
+await wine.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "unprefixed.ttl");
 ```
 
 <div class="result" data-label="unprefixed.ttl" markdown="1">

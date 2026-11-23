@@ -5,8 +5,6 @@ tagline: Where the story continues
 lede: The Vallerosa catalog is on the Web, validated, stored with its sources and queried from every side. Here is where to go next.
 ---
 
-> At year end the cooperative looks at what it has built: a catalog that anyone can read, two guides that sit side by side without overwriting each other and a set of queries that answer the questions it used to answer by hand. It now wants the data to reason on its own.
-{: .story}
 
 ## Ontologies and reasoning: OWLSharp
 
