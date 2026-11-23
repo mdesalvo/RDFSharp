@@ -186,14 +186,15 @@ main {
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-.page { margin-bottom: 28px; }
+/* The page head (title, tagline, lede) is closed by a rule, so the lede reads as a summary and not as the first paragraph. */
+.page { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
 .eyebrow { font-size: 12.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
 .page h1, .hero h1 {
   font: 400 clamp(34px, 8vw, 50px)/1.08 var(--display);
   margin: 6px 0 10px; text-wrap: balance;
 }
 .tagline { margin: 0 0 14px; font: italic 19px/1.45 var(--display); color: var(--accent); }
-.lede { margin: 0; font-size: 18.5px; line-height: 1.6; color: var(--soft); }
+.lede { margin: 0; padding-left: 14px; border-left: 3px solid var(--accent); font-size: 18px; line-height: 1.55; color: var(--soft); }
 
 /* ── Prose ─────────────────────────────────────────────── */
 
@@ -277,8 +278,8 @@ main {
 .prose blockquote.warn { background: var(--warn-bg); border-color: var(--warn); }
 /* The thread of the case: what happens at Vallerosa in this chapter. A labelled aside, not an introduction:
    the lede above it speaks of the library, this box only of the case. */
-.prose blockquote.story { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 10px 16px 12px; font-size: 15px; line-height: 1.55; color: var(--soft); }
-.prose blockquote.story::before { content: "At Vallerosa"; display: block; margin-bottom: 4px; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.prose blockquote.story { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--literal); border-radius: 0 10px 10px 0; padding: 10px 16px 12px; font-size: 15px; line-height: 1.55; color: var(--soft); }
+.prose blockquote.story::before { content: "At Vallerosa"; display: block; margin-bottom: 4px; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--literal); }
 
 /* Cards: only where a block is a door to somewhere else. */
 .cards { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 0 0 26px; }

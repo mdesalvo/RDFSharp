@@ -2,170 +2,68 @@
 title: Getting started
 permalink: /getting-started/
 tagline: From an empty project to a first answer
-lede: Install the package, describe a wine with a few triples, save them as Turtle, then load the whole Vallerosa catalog and ask it a question.
+lede: Three steps to a console program that loads RDF data and asks it a SPARQL question.
 ---
 
+## 1. Install
 
-## Install the package
+RDFSharp is one NuGet package for `netstandard2.0`, `net8.0` and `net10.0`.
 
-RDFSharp is one NuGet package. It targets `netstandard2.0`, `net8.0` and `net10.0`, so it runs on .NET Framework as well as on every modern .NET.
-
-```shell
+```
 dotnet new console -n Vallerosa
 cd Vallerosa
 dotnet add package RDFSharp
 ```
 
-The three layers live in three namespaces. Each chapter of this manual says which ones it needs; this page needs two.
+## 2. Get the data
+
+Download [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}) into the project folder. It is the catalog that every example of this manual uses: [Meet Vallerosa]({{ '/vallerosa/' | relative_url }}) tells what is inside.
+
+## 3. Ask a question
+
+Replace `Program.cs` with this program. It loads the catalog and asks for the red wines under 20 euros with their English names.
 
 ```csharp
-using RDFSharp.Model;   // resources, literals, triples, graphs, SHACL
-using RDFSharp.Query;   // SPARQL queries and updates
-```
+using System.Data;
+using RDFSharp.Model;
+using RDFSharp.Query;
 
-## Describe the first wine
-
-A wine of the catalog is a **resource**: something with a name on the Web, an IRI. What we know about it is a set of **triples**, each one saying *subject, predicate, object*. The object can be another resource or a **literal**, a value such as a year or a name.
-
-The Rosso di Vallerosa 2021 is a red wine, it has an English name, a vintage and a producer. Four triples:
-
-```mermaid
-flowchart LR
-  rosso([vrd:rosso-2021]):::res -- rdf:type --> red([vr:RedWine]):::res
-  rosso -- rdfs:label --> name["#quot;Vallerosa Red#quot;@en"]:::lit
-  rosso -- vr:vintage --> year["#quot;2021#quot;^^xsd:gYear"]:::lit
-  rosso -- vr:producedBy --> poggio([vrd:poggio-alto]):::res
-```
-
-Here they are in Turtle, the most readable of the RDF formats, next to the same triples built in C#.
-
-<div class="pair" markdown="1">
-
-```turtle
-@prefix vr:   <https://vallerosa.example/vocab#> .
-@prefix vrd:  <https://vallerosa.example/id/> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
-
-vrd:rosso-2021 a vr:RedWine ;
-    rdfs:label "Vallerosa Red"@en ;
-    vr:vintage "2021"^^xsd:gYear ;
-    vr:producedBy vrd:poggio-alto .
-```
-
-```csharp
-RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
-RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-
-RDFResource rosso = new RDFResource(vrd + "rosso-2021");
-RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
-
-RDFGraph firstWine = new RDFGraph()
-    .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
-    .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Red", "en")))
-    .AddTriple(new RDFTriple(rosso, new RDFResource(vr + "vintage"),
-        new RDFTypedLiteral("2021", RDFModelEnums.RDFDatatypes.XSD_GYEAR)))
-    .AddTriple(new RDFTriple(rosso, new RDFResource(vr + "producedBy"), poggioAlto));
-```
-
-</div>
-
-Two details of the C# side are worth a look:
-- the vocabulary of RDF itself is ready in `RDFVocabulary`, so `rdf:type` is `RDFVocabulary.RDF.TYPE` and `rdfs:label` is `RDFVocabulary.RDFS.LABEL`
-- `SetContext` gives the graph its own name: the cooperative's catalog lives at `https://vallerosa.example/catalog`
-
-## Save it as Turtle
-
-A graph writes itself to any of the standard formats. For the prefixes to appear in the file, register the two namespaces first: RDFSharp keeps a register of known prefixes and the serializers use it.
-
-```csharp
-RDFNamespaceRegister.AddNamespace(vr);
-RDFNamespaceRegister.AddNamespace(vrd);
-
-await firstWine.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "catalog.ttl");
-```
-
-<div class="result" data-label="catalog.ttl" markdown="1">
-
-```turtle
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-@prefix vr: <https://vallerosa.example/vocab#>.
-@prefix vrd: <https://vallerosa.example/id/>.
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-@base <https://vallerosa.example/catalog>.
-
-vrd:rosso-2021 a vr:RedWine; 
-               rdfs:label "Vallerosa Red"@EN; 
-               vr:producedBy vrd:poggio-alto; 
-               vr:vintage "2021Z"^^xsd:gYear. 
-```
-
-</div>
-
-The same four triples come back, grouped under their subject. The graph's context became the `@base` of the file. Two values look different from what went in. Language tags are case insensitive and RDFSharp writes them in upper case. The year comes out as `2021Z`, with a time zone that the input did not have.
-
-## Load the whole catalog
-
-Writing every triple by hand is how you learn, not how you work. The complete catalog of the cooperative is ready as a Turtle file: download [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}) next to your project and load it.
-
-```csharp
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
-Console.WriteLine(catalog.TriplesCount);   // 143
-```
 
-[Meet Vallerosa](../vallerosa/) tells what is inside: three producers, six wines, five grape varieties and the areas of the valley.
-
-## Ask a question
-
-Which wines does Fattoria Poggio Alto make and what are they called in English? In SPARQL that is a pattern with two variables. In C# the same pattern is built from `RDFVariable`, `RDFPattern` and `RDFSelectQuery`.
-
-<div class="pair" markdown="1">
-
-```sparql
-PREFIX vr:   <https://vallerosa.example/vocab#>
-PREFIX vrd:  <https://vallerosa.example/id/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?wine ?label
-WHERE {
-  ?wine vr:producedBy vrd:poggio-alto ;
-        rdfs:label ?label .
-  FILTER (LANGMATCHES(LANG(?label), "en"))
-}
-```
-
-```csharp
+RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
+RDFVariable price = new RDFVariable("price");
 
 RDFSelectQuery query = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), poggioAlto))
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
+        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en"))))))
-    .AddProjectionVariable(wine)
-    .AddProjectionVariable(label);
+            new RDFConstantExpression(new RDFPlainLiteral("en")))))
+        .AddFilter(new RDFFilter(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessThan,
+            price, new RDFConstantExpression(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))))
+    .AddProjectionVariable(label)
+    .AddProjectionVariable(price);
 
 RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 foreach (DataRow row in result.SelectResults.Rows)
-    Console.WriteLine($"{row["?WINE"]} | {row["?LABEL"]}");
+    Console.WriteLine($"{row["?LABEL"]} | {row["?PRICE"]}");
+```
+
+Run it with `dotnet run`:
+
+<div class="result" markdown="1">
+
+```
+Vallerosa Red@EN | 14.50^^http://www.w3.org/2001/XMLSchema#decimal
 ```
 
 </div>
 
-<div class="result" markdown="1">
+The same question in SPARQL is on the [home page]({{ '/' | relative_url }}). The answer is a `DataTable` with one column for each projected variable, named in upper case.
 
-| ?WINE | ?LABEL |
-|---|---|
-| `https://vallerosa.example/id/rosso-2021` | `Vallerosa Red@EN` |
-| `https://vallerosa.example/id/riserva-2019` | `Vallerosa Reserve@EN` |
+## Next
 
-</div>
-
-The results come back as a `DataTable` (add `using System.Data;`), one column per projected variable. The query engine writes variable names in upper case, so the columns are `?WINE` and `?LABEL`.
-
-> **Where next.** [How it fits together](../architecture/) gives the map of the library in one page. If you prefer to go straight to the code, the [Model](../model/triples/) chapters start from resources and literals and build up to SHACL validation.
-{: .tip}
+[How it fits together]({{ '/architecture/' | relative_url }}) is the map of the library. The [Model]({{ '/model/' | relative_url }}) chapters start from resources, literals and triples.

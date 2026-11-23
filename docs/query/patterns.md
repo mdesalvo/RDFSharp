@@ -8,7 +8,7 @@ lede: A query is a drawing of the triples you expect to find, with holes where t
 > The cooperative wants a first list for its website: every wine with the name of its producer. Then it asks for the organic flag where there is one and for reds and whites together.
 {: .story}
 
-This page runs on [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}), loaded as in [Getting started]({{ '/getting-started/' | relative_url }}) and at the end on a store that holds the catalog and the two guides, built as in [Memory stores]({{ '/store/stores/' | relative_url }}). It needs three namespaces of the library:
+This page runs on [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}), loaded as in [Getting started]({{ '/getting-started/' | relative_url }}) with `RDFGraph.FromFileAsync` and at the end on a store that holds the catalog and the two guides, built as in [Memory stores]({{ '/store/stores/' | relative_url }}). It needs three namespaces of the library:
 
 ```csharp
 using System.Data;

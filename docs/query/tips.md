@@ -8,7 +8,7 @@ lede: The engine is straightforward once you know a few of its habits. Here is w
 > The cooperative's questions have grown and one of them misbehaves: an average of prices that comes out empty. It is not a bug in the query. It comes from a habit of the engine that is worth knowing, like the others on this page.
 {: .story}
 
-This page works on [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}), loaded as in [Getting started]({{ '/getting-started/' | relative_url }}).
+This page works on [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}), loaded as in [Getting started]({{ '/getting-started/' | relative_url }}) with `RDFGraph.FromFileAsync`.
 
 ```csharp
 using System.Data;
