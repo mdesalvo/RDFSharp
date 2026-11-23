@@ -406,4 +406,4 @@ Each class below is built from variables, constants and other expressions as in 
 > One point to remember when you build a query with a calculation: `RDFNowExpression`, `RDFRandExpression` and the UUID expressions give a different value every time they are evaluated.
 {: .tip}
 
-A query ends as a table, a truth value or a graph, according to its form. The next page tells how: [Query forms]({{ '/query/query-forms/' | relative_url }}).
+A query ends as a table, a truth value or a graph, according to its form: [Query forms]({{ '/query/query-forms/' | relative_url }}) tells how.
