@@ -1,5 +1,5 @@
 title: RDFSharp
-description: Lightweight and friendly .NET library for Semantic Web applications (RDF, SPARQL, SHACL)
+description: Lightweight and friendly .NET library for RDF data, with SPARQL queries and SHACL validation
 url: https://mdesalvo.github.io
 baseurl: /RDFSharp
 markdown: kramdown

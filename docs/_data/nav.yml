@@ -11,7 +11,7 @@
     - { title: Resources, literals and triples, url: /model/triples/, blurb: "Name things with IRIs, state facts about them as triples, choose between resources and literals." }
     - { title: Graphs, url: /model/graphs/, blurb: "Collect triples in a graph, select and remove them, merge graphs from different producers." }
     - { title: RDF formats, url: /model/formats/, blurb: "Write and read Turtle, N-Triples, TriX and RDF/XML." }
-    - { title: Namespaces and vocabularies, url: /model/namespaces/, blurb: "Short prefixes for long IRIs and the built-in vocabularies of the Semantic Web." }
+    - { title: Namespaces and vocabularies, url: /model/namespaces/, blurb: "Short prefixes for long IRIs and the standard vocabularies built into the library." }
     - { title: Datatypes and facets, url: /model/datatypes/, blurb: "Typed values, invalid values refused, custom datatypes with facets." }
     - { title: Containers and collections, url: /model/containers/, blurb: "Bags, sequences and ordered lists: the blend of a wine, the awards it won." }
     - { title: Reification, url: /model/reification/, blurb: "Record who said something instead of stating it as a fact." }

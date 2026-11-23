@@ -2,7 +2,7 @@
 title: RDF formats
 permalink: /model/formats/
 tagline: Write a graph to a file or a stream and read it back
-lede: RDFSharp speaks four RDF formats. Here the same wine goes through all of them and the register of namespaces decides how readable the result is.
+lede: RDFSharp speaks four RDF formats. Here the same three triples about a wine go through all of them and the register of namespaces decides how readable the result is.
 ---
 
 > Cantina dei Tre Ulivi sends its wines to the cooperative as N-Triples, the format its software produces. A partner shop that sells the Vallerosa wines asks for the same data as RDF/XML, so the cooperative reads one format and writes the other.

@@ -40,7 +40,7 @@ The report has two properties that you will use all the time: `Conforms` is true
 
 ## A sloppy import
 
-This is what the import file says. It is a wine in Turtle, the way a producer would send it:
+This is what the import file says. It describes a wine in Turtle, the way a producer would send it:
 
 ```turtle
 # import.ttl

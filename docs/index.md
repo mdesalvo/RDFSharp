@@ -1,11 +1,11 @@
 ---
 title: RDFSharp
 permalink: /
-lede: "RDFSharp is a lightweight .NET library for Semantic Web applications: model RDF data, store it with its provenance, query it with SPARQL and validate it with SHACL."
+lede: "RDFSharp is a lightweight .NET library for RDF data: model it, store it with its provenance, query it with SPARQL and validate it with SHACL."
 ---
 
 <div class="hero" markdown="0">
-  <h1>The Semantic Web, <em>in plain C#</em></h1>
+  <h1>RDF, SPARQL and SHACL, <em>in plain C#</em></h1>
   <p>RDFSharp lets a .NET application speak RDF. You build graphs from resources and literals, keep them in stores that remember where each fact came from, ask them questions in SPARQL and check them against SHACL shapes. Every page of this manual shows it on one real case, the catalog of a wine cooperative that grows chapter after chapter.</p>
   {% include hero-graph.html %}
   <div class="btns">

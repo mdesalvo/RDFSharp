@@ -2,10 +2,10 @@
 title: Resources, literals and triples
 permalink: /model/triples/
 tagline: The three bricks every RDF statement is built from
-lede: Name a thing with a resource, describe it with a literal and join them in a triple. Here the cooperative writes one wine by hand, from the first IRI to the last year.
+lede: Name a thing with a resource, describe it with a literal and join them in a triple. Here the cooperative describes one wine by hand, from the first IRI to the last year.
 ---
 
-> Cantina dei Tre Ulivi is the first winery to hand over its data and the cooperative decides to type the Vermentino of the Plain 2023 in by hand, triple by triple. Nothing teaches the model better than building a wine from its bricks.
+> Cantina dei Tre Ulivi is the first winery to hand over its data and the cooperative decides to type the Vermentino of the Plain 2023 in by hand, triple by triple. Nothing teaches the model better than describing a wine one statement at a time.
 {: .story}
 
 This chapter needs one namespace of the library, plus the two prefixes of the case:
@@ -186,7 +186,7 @@ Cannot create RDFTriple because given "pred" parameter is a blank resource
 
 Every error raised by the model layer is an `RDFModelException`, so one `catch` is enough to guard a whole import.
 
-## The whole wine
+## The whole description
 
 The Vermentino and its producer make ten triples: nine about the wine and one that gives the winery its name. Here they are as a picture:
 
@@ -204,7 +204,7 @@ flowchart LR
   tu -- rdfs:label --> tname["#quot;Cantina dei Tre Ulivi#quot;"]:::lit
 ```
 
-The stadiums are resources and the boxes are literals: the arrows to the right of the wine end in a resource or in a value and that is exactly the difference between the two flavors. The same wine in Turtle and in C#:
+The stadiums are resources and the boxes are literals: the arrows to the right of the wine end in a resource or in a value and that is exactly the difference between the two flavors. The same triples in Turtle and in C#:
 
 <div class="pair" markdown="1">
 

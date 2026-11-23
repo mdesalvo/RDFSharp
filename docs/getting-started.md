@@ -2,7 +2,7 @@
 title: Getting started
 permalink: /getting-started/
 tagline: From an empty project to a first answer
-lede: Install the package, write a wine into a graph, save it as Turtle, then load the whole Vallerosa catalog and ask it a question.
+lede: Install the package, describe a wine with a few triples, save them as Turtle, then load the whole Vallerosa catalog and ask it a question.
 ---
 
 > The Vallerosa cooperative has decided to publish its catalog as linked data. Before anything else, someone has to write the first wine down.
