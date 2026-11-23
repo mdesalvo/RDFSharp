@@ -64,7 +64,6 @@ RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 
 </div>
 
-The Reserve costs 32 euros and the other wines are not red, so one row comes back. [Getting started](getting-started/) walks through this example from an empty project.
 
 ## Three layers, one library
 
