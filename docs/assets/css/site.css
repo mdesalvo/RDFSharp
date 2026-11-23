@@ -1,31 +1,31 @@
 /* The RDFSharp manual. Layout: one reading column beside a fixed index from 1000px, a drawer below it, and an
    "On this page" rail on very wide screens. The visual language is the RDF graph notation itself: resources are violet
    ellipses (the project's own violet), literals are teal boxes, predicates are labelled arrows. Logo, diagrams and the
-   web behind the page all speak it; everything else stays on a quiet graphite ground so the code reads first. */
+   web behind the page all speak it; everything else sits on a deep indigo ground so the code reads first. */
 
 :root {
-  --night: #0e0d14;
-  --surface: #15141e;
-  --raised: #1d1b29;
-  --line: #2c2940;
-  --ink: #eeedf5;
-  --soft: #b5b2c9;
-  --faint: #8b88a3;
-  --accent: #a48af7;
-  --accent-strong: #8b6cf0;
-  --literal: #4fd1c5;
-  --ok: #4fd1c5;
+  --night: #16133a;
+  --surface: #1f1b4d;
+  --raised: #28235e;
+  --line: #3a3477;
+  --ink: #f5f3ff;
+  --soft: #d2ccf5;
+  --faint: #a7a0d6;
+  --accent: #b9a2ff;
+  --accent-strong: #9b7bff;
+  --literal: #5eead4;
+  --ok: #5eead4;
   --warm: #f5c06a;
-  --glow: rgba(164, 138, 247, .13);
-  --code-bg: #0a0910;
+  --glow: rgba(185, 162, 255, .16);
+  --code-bg: #0f0c2b;
   --code-ink: #e6e4f0;
-  --inline-bg: #221f33;
+  --inline-bg: #2e2866;
   --tip: var(--ok); --tip-bg: rgba(79, 209, 197, .08);
   --warn: var(--warm); --warn-bg: rgba(245, 192, 106, .09);
-  --shadow: 0 10px 30px rgba(0, 0, 0, .4);
-  --web-node: 164, 138, 247;
-  --web-lit: 79, 209, 197;
-  --web-edge: 139, 136, 163;
+  --shadow: 0 10px 30px rgba(8, 5, 30, .45);
+  --web-node: 185, 162, 255;
+  --web-lit: 94, 234, 212;
+  --web-edge: 167, 160, 214;
 
   --display: Fraunces, "Iowan Old Style", Georgia, serif;
   --text: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -200,7 +200,9 @@ main {
 /* ── Prose ─────────────────────────────────────────────── */
 
 .prose > :first-child { margin-top: 0; }
-.prose h2 { font: 400 clamp(26px, 5.6vw, 32px)/1.2 var(--display); margin: 52px 0 12px; text-wrap: balance; }
+/* A section heading cuts the page: a full rule above it, with a short accent stroke where the heading starts. */
+.prose h2 { position: relative; font: 400 clamp(26px, 5.6vw, 32px)/1.2 var(--display); margin: 64px 0 16px; padding-top: 24px; border-top: 1px solid var(--line); text-wrap: balance; }
+.prose h2::before { content: ""; position: absolute; top: -2px; left: 0; width: 56px; height: 3px; border-radius: 2px; background: var(--accent); }
 .prose h3 { font-size: 18px; line-height: 1.35; margin: 30px 0 8px; }
 .prose p, .prose ul, .prose ol { margin: 0 0 16px; }
 

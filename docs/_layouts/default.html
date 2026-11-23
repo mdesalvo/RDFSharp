@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% if page.url == "/" %}RDFSharp · the manual{% else %}{{ page.title | strip_html }} · RDFSharp{% endif %}</title>
   <meta name="description" content="{{ page.lede | default: site.description | strip_html | escape }}">
-  <meta name="theme-color" content="#13111c">
+  <meta name="theme-color" content="#16133a">
   <link rel="icon" href="{{ '/assets/images/favicon.svg' | relative_url }}" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
 {%- endfor -%}
 {%- assign eyebrow = page.eyebrow -%}
 {%- unless eyebrow -%}
-  {%- comment -%} "Query · 4 of 17": the place among the chapters of the group, the overview not counted. {%- endcomment -%}
+  {%- comment -%} The name of the group the chapter belongs to, the overview excluded. {%- endcomment -%}
   {%- for g in site.data.nav -%}
     {%- if g.group != "Welcome" and g.group != "Beyond" -%}
       {%- assign total = 0 -%}{%- assign n = 0 -%}{%- assign at = 0 -%}
@@ -37,7 +37,7 @@
           {%- if p.url == page.url -%}{%- assign at = total -%}{%- endif -%}
         {%- endunless -%}
       {%- endfor -%}
-      {%- if at > 0 -%}{%- capture eyebrow -%}{{ g.group }} · {{ at }} of {{ total }}{%- endcapture -%}{%- endif -%}
+      {%- if at > 0 -%}{%- assign eyebrow = g.group -%}{%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 {%- endunless -%}
