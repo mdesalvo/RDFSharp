@@ -12,13 +12,14 @@ Vallerosa, its producers and its wines are fictional; the grape varieties and th
 
 ## The files
 
-The whole case fits in four files. Every chapter loads one of them or builds a piece of them by hand.
+The whole case fits in five files. Every chapter loads one of them or builds a piece of them by hand.
 
 <div class="cards">
-  <a class="card" href="{{ '/assets/data/vallerosa-vocab.ttl' | relative_url }}"><span class="kind">Turtle · 122 triples</span><h3>vallerosa-vocab.ttl</h3><p>The vocabulary: classes such as <code>vr:Wine</code> and properties such as <code>vr:producedBy</code>, with their domains and ranges.</p></a>
+  <a class="card" href="{{ '/assets/data/vallerosa-vocab.ttl' | relative_url }}"><span class="kind">Turtle · 135 triples</span><h3>vallerosa-vocab.ttl</h3><p>The vocabulary: classes such as <code>vr:Wine</code> and properties such as <code>vr:producedBy</code>, with their domains and ranges.</p></a>
   <a class="card" href="{{ '/assets/data/vallerosa-catalog.ttl' | relative_url }}"><span class="kind">Turtle · 143 triples</span><h3>vallerosa-catalog.ttl</h3><p>The catalog: the cooperative, its areas, producers, grape varieties and six wines.</p></a>
   <a class="card" href="{{ '/assets/data/vallerosa-guides.trig' | relative_url }}"><span class="kind">TriG · 10 quadruples</span><h3>vallerosa-guides.trig</h3><p>What two wine guides scored in 2025, one named graph per guide. The Store chapters start here.</p></a>
   <a class="card" href="{{ '/assets/data/vallerosa-sales.ttl' | relative_url }}"><span class="kind">Turtle · 108 triples</span><h3>vallerosa-sales.ttl</h3><p>The map and the ledger: the cellar and the subzones as geometries, six partner shops and what they bought in 2025.</p></a>
+  <a class="card" href="{{ '/assets/data/vallerosa-shapes.ttl' | relative_url }}"><span class="kind">Turtle · 47 triples</span><h3>vallerosa-shapes.ttl</h3><p>The rules of the catalog as SHACL shapes: what every wine must state. Written in the SHACL shapes chapter, applied in the validation chapter.</p></a>
 </div>
 
 Two namespaces cover everything of the cooperative's own:
@@ -114,10 +115,14 @@ The vocabulary stays at the level of RDF Schema: classes, a small hierarchy, pro
 | `vr:organic` | `vr:Wine` | `xsd:boolean` |
 | `vr:score` | `vr:Wine` | `xsd:integer` |
 | `vr:pairsWith` | `vr:Wine` | `vr:Dish` |
+| `vr:awards` | `vr:Wine` | `rdf:Bag` |
+| `vr:claims` | `vr:Person` | `rdf:Statement` |
 | `vr:soldTo` | `vr:Sale` | `vr:Shop` |
 | `vr:soldWine` | `vr:Sale` | `vr:Wine` |
 | `vr:bottles` | `vr:Sale` | `xsd:integer` |
 | `vr:date` | `vr:Sale` | `xsd:date` |
+
+One datatype of its own completes the vocabulary: `vr:abv`, alcohol by volume, a decimal from 0 to 20 that the [datatypes chapter](../model/datatypes/) builds with its facets.
 
 The catalog only ever says `vr:producedBy`; nobody writes `vr:produces`, its mirror image. Saying that one is the inverse of the other, or that `vr:partOf` is transitive, is a job for OWL and lies beyond RDF Schema. Here, when the cooperative needs those answers, it asks SPARQL to walk the links.
 

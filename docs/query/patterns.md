@@ -93,7 +93,7 @@ The rows below this one are all printed by the same loop, so from here on only t
 
 A pattern group drops every row for which one of its patterns finds nothing. An **optional** pattern changes that: the row stays and the variables that the optional pattern would have filled stay **unbound**. In SPARQL this is `OPTIONAL { ... }`. In C# it is `Optional()` on the pattern, a left join in database terms.
 
-All six wines of the catalog carry the organic flag, so the difference would not show. The harvest of 2025 has just started and the cooperative has registered a new wine, `vrd:novello-2025`, whose flag nobody has declared yet. It lives in a small graph of its own, joined to the catalog by `UnionWith`, so that the catalog stays untouched.
+All six wines of the catalog carry the organic flag, so the difference would not show. The harvest of 2025 has started and the cooperative has registered a new wine, `vrd:novello-2025`, whose flag nobody has declared yet. It lives in a small graph of its own, joined to the catalog by `UnionWith`, so that the catalog stays untouched.
 
 <div class="pair" markdown="1">
 
@@ -354,7 +354,7 @@ RDFSelectQueryResult winescopeResult = winescopeScores.ApplyToStore(store);
 
 </div>
 
-A pattern with no context at all, the three-position constructor, looks into every context of the store at once. This is why the same patterns work on a graph and on a store: on a store they simply read across all sources unless you pin one down.
+A pattern with no context at all, the three-position constructor, looks into every context of the store at once. This is why the same patterns work on a graph and on a store: on a store they read across all sources unless you pin one down.
 
 > On a graph, use the three-position constructor: the graph is the only source there is. The four-position constructor is for stores, where the context is a real part of the question.
 {: .tip}

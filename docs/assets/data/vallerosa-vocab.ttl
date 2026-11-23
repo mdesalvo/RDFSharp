@@ -130,6 +130,18 @@ vr:pairsWith a rdf:Property ;
     rdfs:domain vr:Wine ;
     rdfs:range vr:Dish .
 
+vr:awards a rdf:Property ;
+    rdfs:label "awards"@en ;
+    rdfs:comment "The prizes a wine has won, kept in an open container."@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range rdf:Bag .
+
+vr:claims a rdf:Property ;
+    rdfs:label "claims"@en ;
+    rdfs:comment "Links a person to a statement that the person makes, without asserting it."@en ;
+    rdfs:domain vr:Person ;
+    rdfs:range rdf:Statement .
+
 vr:soldTo a rdf:Property ;
     rdfs:label "sold to"@en ;
     rdfs:domain vr:Sale ;
@@ -149,3 +161,9 @@ vr:date a rdf:Property ;
     rdfs:label "date"@en ;
     rdfs:domain vr:Sale ;
     rdfs:range xsd:date .
+
+# Datatypes
+
+vr:abv a rdfs:Datatype ;
+    rdfs:label "alcohol by volume"@en ;
+    rdfs:comment "A decimal from 0 to 20. Its facets are built in the Datatypes and facets chapter of the manual."@en .

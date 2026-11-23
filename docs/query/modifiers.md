@@ -2,7 +2,7 @@
 title: Modifiers
 permalink: /query/modifiers/
 tagline: Sorting, slicing and deduplicating the answer
-lede: Patterns and filters decide which rows are in the answer. Modifiers decide how the answer is presented: in what order, how many rows, starting from where and without repetitions.
+lede: "Patterns and filters decide which rows are in the answer. Modifiers decide how the answer is presented: in what order, how many rows, starting from where and without repetitions."
 ---
 
 > The cooperative prints a price list for the partner shops: every wine from the cheapest to the dearest. The sales team also wants the three most expensive wines at a glance.
@@ -251,5 +251,5 @@ RDFSelectQueryResult distinctResult = distinctProducers.ApplyToGraph(catalog);
 
 Without the modifier the table has six rows, one for each wine. Distinct looks at the projected columns only, so projecting one more variable, the wine, would bring the repetitions back.
 
-> The Select query is the only form that accepts all five modifiers. The other query forms take the same classes but not `RDFDistinctModifier`, because they do not project variables: [Query forms]({{ '/query/query-forms/' | relative_url }}) tells which form takes what.
+> SELECT is the only query form that accepts all five modifiers. The other query forms take the same classes but not `RDFDistinctModifier`, because they do not project variables: [Query forms]({{ '/query/query-forms/' | relative_url }}) tells which form takes what.
 {: .tip}

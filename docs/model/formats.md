@@ -225,9 +225,9 @@ The asynchronous twins are `ToFileAsync`, `FromFileAsync`, `ToStreamAsync` and `
 
 `RDFGraph.FromUri(new Uri("https://..."))` dereferences an address: the library asks the server for an RDF representation, looks at the content type of the answer and picks the matching reader. It understands `application/rdf+xml`, `text/turtle` (and the two older Turtle names), `application/n-triples` and `application/trix`. The call waits 20 seconds by default and `FromUriAsync` does not block. Any failure of the network or of the parsing comes out as an `RDFModelException` whose message starts with `Cannot read RDF graph from Uri`.
 
-Two facts help in practice. An answer with a content type the library does not know gives an empty graph, not an error, so check `TriplesCount` when the source is not yours. A namespace of the register can carry a **dereference URI**, an address to use instead of its own when the namespace IRI does not serve RDF: `FromUri` looks the address up in the register before it asks.
+One fact helps in practice. A namespace of the register can carry a **dereference URI**, an address to use instead of its own when the namespace IRI does not serve RDF: `FromUri` looks the address up in the register before it asks.
 
-This manual does not run a call to the network, so no example shows one. The cooperative has no use for it either: its partners send files.
+This chapter does not call the network, so no example shows one. The cooperative has no use for it either: its partners send files.
 
 ## Prefixes come from the register
 

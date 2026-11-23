@@ -24,4 +24,4 @@ A quadruple is a triple with a fourth element, its context: the name of the sour
 
 ## Where the data comes from
 
-The examples load [vallerosa-guides.trig]({{ '/assets/data/vallerosa-guides.trig' | relative_url }}), with one named graph per guide, and put the catalog in its own context next to them.
+The examples load [vallerosa-guides.trig]({{ '/assets/data/vallerosa-guides.trig' | relative_url }}), with one named graph per guide. The catalog goes into its own context next to them.

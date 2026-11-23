@@ -10,14 +10,14 @@ lede: A shapes graph is applied to a data graph and answers with a report. You r
 
 ## Apply the shapes
 
-`Validate` is an extension method of `RDFShapesGraph`: it takes the **data graph** to check and returns an `RDFValidationReport`. The shapes are the ones that the [previous chapter]({{ '/model/shacl-shapes/' | relative_url }}) saved in `shapes-graph.ttl` and the data graph is the catalog.
+`Validate` is an extension method of `RDFShapesGraph`: it takes the **data graph** to check and returns an `RDFValidationReport`. The shapes are the ones that the [previous chapter]({{ '/model/shacl-shapes/' | relative_url }}) saved in `vallerosa-shapes.ttl` and the data graph is the catalog.
 
 One detail decides whether the check means anything. The shape of the wine targets the class `vr:Wine`, but the catalog only says that `vrd:rosso-2021` is a `vr:RedWine`. That a red wine is a wine is written in the vocabulary file, as `rdfs:subClassOf`, so the vocabulary must be in the data graph too. The catalog goes in together with it:
 
 ```csharp
 using RDFSharp.Model;
 
-RDFShapesGraph shapes = RDFShapesGraph.FromRDFGraph(RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "shapes-graph.ttl"));
+RDFShapesGraph shapes = RDFShapesGraph.FromRDFGraph(RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl"));
 RDFGraph vocabulary = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-vocab.ttl");
 RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 RDFGraph data = vocabulary.UnionWith(catalog);
@@ -209,7 +209,7 @@ _:b5fbedc39b71401d914c10b59efe3baf a sh:ValidationResult;
 
 </div>
 
-One `sh:ValidationReport` with `sh:conforms false` and four `sh:result`, each a `sh:ValidationResult` with the same facts that the loop printed. This time the path is a plain IRI, `sh:resultPath vr:vintage` and the names with `_:` are blank resources that change at every run. A report that conforms is a single `sh:ValidationReport` with `sh:conforms true` and no result.
+One `sh:ValidationReport` with `sh:conforms false` and four `sh:result`, each a `sh:ValidationResult` with the same facts that the loop printed. This time the path is a plain IRI (`sh:resultPath vr:vintage`). The names with `_:` are blank resources that change at every run. A report that conforms is a single `sh:ValidationReport` with `sh:conforms true` and no result.
 
 ## Fix it and validate again
 

@@ -2,7 +2,7 @@
 title: Containers and collections
 permalink: /model/containers/
 tagline: Groups of things in RDF, with and without an order
-lede: A triple has one object, but a blend has two grapes and a wine may have won several prizes. RDF has two ways to group values into one: collections, which are closed lists and containers, which are open.
+lede: "A triple has one object, but a blend has two grapes and a wine may have won several prizes. RDF has two ways to group values into one: closed lists, called collections, or open groups, called containers."
 ---
 
 > The catalog lists the grapes of every wine twice: unordered with `vr:grape` and in order of share with `vr:blend`. The cooperative now writes a blend by hand to see what the order costs. It also adds a thing the catalog never had: the awards of the Valley Vin Santo.
@@ -187,7 +187,7 @@ vrd:vinsanto-2015 vr:awards _:e493c35ac08745178e7633e6f4c71cb7.
 
 Four triples: the link, the type `rdf:Bag` and one `rdf:_N` property for each item. The property names are what carry the position, so a container of three items has `rdf:_1`, `rdf:_2` and `rdf:_3` and that is also why a container can be extended by anyone who knows the next number.
 
-Two choices of this example are the cooperative's, not the library's. `vr:awards` is a property that the vocabulary does not have yet and that the cooperative adds for the occasion. The prizes are literals, which is the simplest form: if the awards had a date and a jury, each would be a resource of its own and the container would hold resources.
+Two choices of this example are the cooperative's, not the library's. `vr:awards` is the property of the vocabulary for prizes, with a bag as its range. The prizes are literals, which is the simplest form: if the awards had a date and a jury, each would be a resource of its own and the container would hold resources.
 
 The graph methods that put the groups into a graph have asynchronous twins: `AddCollectionAsync` and `AddContainerAsync`.
 

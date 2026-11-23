@@ -2,7 +2,7 @@
 title: Values
 permalink: /query/values/
 tagline: Handing the query a table of its own
-lede: Sometimes the list of things to look for is known before the query runs: three grapes, two producers, a few pairs. VALUES writes that list inside the query as a small table that joins with the rest.
+lede: "Sometimes the list of things to look for is known before the query runs: three grapes, two producers, a few pairs. VALUES writes that list inside the query as a small table that joins with the rest."
 ---
 
 > A partner shop wants the wines made from Sangiovese or Vermentino, the two grapes of its tasting night. The grapes come from the shop as a fixed list: nothing in the catalog says that these two belong together.

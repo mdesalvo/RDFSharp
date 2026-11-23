@@ -2,7 +2,7 @@
 title: Property paths
 permalink: /query/property-paths/
 tagline: Walking chains of links in one step
-lede: A property path describes a route through the graph: follow this link, then that one, as many times as needed. It replaces a pile of patterns with one line and it reaches things that a fixed number of patterns cannot.
+lede: "A property path describes a route through the graph: follow this link, then that one, as many times as needed. It replaces a pile of patterns with one line and it reaches things that a fixed number of patterns cannot."
 ---
 
 > The cooperative wants every wine of Tuscany. A wine knows its producer, a producer knows its subzone and a subzone is part of a valley that is part of a region: the answer is at the end of a chain of unknown length.
@@ -44,6 +44,8 @@ WHERE {
 ```
 
 ```csharp
+using System.Data;
+
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = RDFGraph.FromFile(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
@@ -80,7 +82,7 @@ foreach (DataRow row in tuscan.SelectResults.Rows)
 
 </div>
 
-All six wines, as expected: every producer is in the valley and the valley is in Tuscany. The star is what makes the query robust. Poggio is two links away from Tuscany and a producer in a larger area could be one link away and the same path answers for both. The same route to the North Hill instead of Tuscany finds only what lives there, because the star accepts zero links:
+All six wines, as expected: every producer is in the valley and the valley is in Tuscany. The star is what makes the query robust. Poggio is two links away from Tuscany, a producer in a larger area could be one link away: the same path answers for both. The same route to the North Hill instead of Tuscany finds only what lives there, because the star accepts zero links:
 
 ```csharp
 RDFPropertyPath winesOfNorthHill = new RDFPropertyPath(wine, new RDFResource(vrd + "colle-nord"))
@@ -142,7 +144,7 @@ RDFSelectQueryResult aboveResult = above.ApplyToGraph(catalog);
 
 </div>
 
-With `ZeroOrMore()` in place of `OneOrMore()` the table gains a first row, `https://vallerosa.example/id/poggio` and the other three stay. Note that the path starts from a resource and ends at a variable: either end can be fixed or free.
+With `ZeroOrMore()` in place of `OneOrMore()` the table gains a first row (`https://vallerosa.example/id/poggio`) and the other three stay. Note that the path starts from a resource and ends at a variable: either end can be fixed or free.
 
 ## Inverse and alternative
 
@@ -234,7 +236,7 @@ RDFSelectQueryResult neighboursResult = neighbours.ApplyToGraph(catalog);
 
 The vocabulary says that `vr:RedWine`, `vr:WhiteWine`, `vr:RoseWine` and `vr:SweetWine` are subclasses of `vr:Wine` and the catalog says only what each wine is: a red, a sweet one. A plain pattern for `?wine a vr:Wine` finds nothing, because no wine is declared of that class directly. Walking the type and then the subclass links by hand finds them all.
 
-The graph for this query is the union of the vocabulary and the catalog, which together have 265 triples:
+The graph for this query is the union of the vocabulary and the catalog, which together have 278 triples:
 
 <div class="pair" markdown="1">
 

@@ -79,16 +79,16 @@ foreach (DataRow row in vat.SelectResults.Rows)
 
 | ?LABEL | ?PRICE | ?WITHVAT |
 |---|---|---|
-| `Vallerosa Red@EN` | `14.50^^http://www.w3.org/2001/XMLSchema#decimal` | `17.69^^http://www.w3.org/2001/XMLSchema#double` |
-| `Vallerosa Reserve@EN` | `32.00^^http://www.w3.org/2001/XMLSchema#decimal` | `39.04^^http://www.w3.org/2001/XMLSchema#double` |
-| `Le Crete White@EN` | `11.00^^http://www.w3.org/2001/XMLSchema#decimal` | `13.42^^http://www.w3.org/2001/XMLSchema#double` |
-| `Valley Vin Santo@EN` | `38.00^^http://www.w3.org/2001/XMLSchema#decimal` | `46.36^^http://www.w3.org/2001/XMLSchema#double` |
-| `Vermentino of the Plain@EN` | `13.00^^http://www.w3.org/2001/XMLSchema#decimal` | `15.86^^http://www.w3.org/2001/XMLSchema#double` |
-| `Valley Rosé@EN` | `10.00^^http://www.w3.org/2001/XMLSchema#decimal` | `12.2^^http://www.w3.org/2001/XMLSchema#double` |
+| `Vallerosa Red@EN` | `14.50^^http://www.w3.org/2001/XMLSchema#decimal` | `17.69^^http://www.w3.org/2001/XMLSchema#decimal` |
+| `Vallerosa Reserve@EN` | `32.00^^http://www.w3.org/2001/XMLSchema#decimal` | `39.04^^http://www.w3.org/2001/XMLSchema#decimal` |
+| `Le Crete White@EN` | `11.00^^http://www.w3.org/2001/XMLSchema#decimal` | `13.42^^http://www.w3.org/2001/XMLSchema#decimal` |
+| `Valley Vin Santo@EN` | `38.00^^http://www.w3.org/2001/XMLSchema#decimal` | `46.36^^http://www.w3.org/2001/XMLSchema#decimal` |
+| `Vermentino of the Plain@EN` | `13.00^^http://www.w3.org/2001/XMLSchema#decimal` | `15.86^^http://www.w3.org/2001/XMLSchema#decimal` |
+| `Valley Rosé@EN` | `10.00^^http://www.w3.org/2001/XMLSchema#decimal` | `12.2^^http://www.w3.org/2001/XMLSchema#decimal` |
 
 </div>
 
-The Vallerosa Red, at 14.50 euros, becomes 17.69: the 14.50 times 122 is 1769, which rounds to itself and the division brings it back to cents. The results of the division are doubles, so the last column prints `12.2` and not `12.20`.
+The Vallerosa Red, at 14.50 euros, becomes 17.69: the 14.50 times 122 is 1769, which rounds to itself and the division brings it back to cents. Decimal arithmetic keeps the result a decimal, written in its shortest form, so the last column prints `12.2` and not `12.20`.
 
 ## Expressions in the projection
 
@@ -403,7 +403,7 @@ Each class below is built from variables, constants and other expressions as in 
 | Term | `RDFUUIDExpression`, `RDFStrUUIDExpression` | `UUID`, `STRUUID` | a fresh IRI or a fresh string, made from a random identifier |
 | Term | `RDFConstantExpression`, `RDFVariableExpression` | the constant, the variable | a fixed term, the value of a variable |
 
-> Two points to remember when you build a query with a calculation. The division of the VAT example gave an `xsd:double`, so compare or print its result with that in mind. `RDFNowExpression`, `RDFRandExpression` and the UUID expressions give a different value every time they are evaluated.
+> One point to remember when you build a query with a calculation: `RDFNowExpression`, `RDFRandExpression` and the UUID expressions give a different value every time they are evaluated.
 {: .tip}
 
 A query ends as a table, a truth value or a graph, according to its form. The next page tells how: [Query forms]({{ '/query/query-forms/' | relative_url }}).

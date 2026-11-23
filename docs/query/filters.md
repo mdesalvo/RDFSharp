@@ -2,7 +2,7 @@
 title: Filters
 permalink: /query/filters/
 tagline: Keeping only the rows that pass a test
-lede: A pattern finds everything that has the right shape. A filter keeps the rows whose values also pass a test: a comparison, a language, a regular expression, the presence of other triples.
+lede: "A pattern finds everything that has the right shape. A filter keeps the rows whose values also pass a test: a comparison, a language, a regular expression, the presence of other triples."
 ---
 
 > The website wants a short list for people who prefer light wines: the whites under 13 degrees of alcohol, named in English. Later the cooperative adds tests on the organic flag and on the strength of the reds.
@@ -280,6 +280,8 @@ RDFSelectQueryResult lightAndCheapResult = lightAndCheap.ApplyToGraph(catalog);
 A regular expression and a list of terms, the two filters that people reach for after the comparison. The wines whose label starts with "Vallerosa", whatever the case and the wines made from Vermentino or Canaiolo:
 
 ```csharp
+using System.Text.RegularExpressions;
+
 RDFVariable producer = new RDFVariable("producer");
 RDFSelectQuery vallerosaNamed = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
@@ -296,6 +298,9 @@ RDFSelectQuery twoGrapes = new RDFSelectQuery()
             new List<RDFPatternMember> { new RDFResource(vrd + "vermentino"), new RDFResource(vrd + "canaiolo") }))))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(grape);
+
+RDFSelectQueryResult vallerosaNamedResult = vallerosaNamed.ApplyToGraph(catalog);
+RDFSelectQueryResult twoGrapesResult = twoGrapes.ApplyToGraph(catalog);
 ```
 
 <div class="result" markdown="1">

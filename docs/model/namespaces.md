@@ -2,7 +2,7 @@
 title: Namespaces and vocabularies
 permalink: /model/namespaces/
 tagline: Short names for long IRIs and a register that remembers them
-lede: A namespace gives an IRI prefix a short name. The register of namespaces keeps those names and the serializers use them and the built-in vocabularies save you from typing the standard IRIs.
+lede: A namespace gives an IRI prefix a short name. The register of namespaces keeps those names for the serializers. The built-in vocabularies save you from typing the standard IRIs.
 ---
 
 > The cooperative's two namespaces, `vr:` for the vocabulary and `vrd:` for the data, have been typed in every example so far. Now they become official: they go into the register of the library and every file the cooperative writes from then on speaks in prefixes.

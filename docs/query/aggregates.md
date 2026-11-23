@@ -2,7 +2,7 @@
 title: Aggregates
 permalink: /query/aggregates/
 tagline: Counting, summing and averaging groups of rows
-lede: An aggregate turns many rows into one number: how many, how much, the average, the highest. Grouping decides which rows go together. Having keeps only the groups worth reading.
+lede: "An aggregate turns many rows into one number: how many, how much, the average, the highest. Grouping decides which rows go together. Having keeps only the groups worth reading."
 ---
 
 > The cooperative closes its books: how many wines each producer makes, how well each subzone is scored on average, how many bottles each partner shop took in 2025.
@@ -80,7 +80,7 @@ Each producer makes two wines. The count comes out as an `xsd:integer`, the sum 
 
 ## The average score of each subzone
 
-The average crosses three kinds of facts: the producer of a wine and the subzone of a producer, both in the catalog and the score of a wine, in a guide. A store holds them side by side and a pattern with no context reads them all. Each subzone is the group and the average runs on every score that a guide gave to the wines made there:
+The average crosses three kinds of facts. The producer of a wine and the subzone of a producer are in the catalog, the score of a wine is in a guide. A store holds them side by side and a pattern with no context reads them all. Each subzone is the group and the average runs on every score that a guide gave to the wines made there:
 
 <div class="pair" markdown="1">
 
@@ -241,7 +241,7 @@ RDFSelectQueryResult bigShopsResult = bigShops.ApplyToGraph(sales);
 
 ## The rest of the family
 
-Minimum, maximum, a sample and a concatenation work as the others. The two flavors of `RDFMinAggregator` and `RDFMaxAggregator`, `Numeric` and `String`, say how the values are compared: use `Numeric` for prices and scores, where 9 is less than 10 and `String` for names. The cheapest and the dearest wine of each producer, one label picked from the group and all of them in one string:
+Minimum, maximum, a sample and a concatenation work as the others. The two flavors of `RDFMinAggregator` and `RDFMaxAggregator`, `Numeric` and `String`, say how the values are compared: use `Numeric` for prices and scores, where 9 is less than 10. Use `String` for names. The cheapest and the dearest wine of each producer, one label picked from the group and all of them in one string:
 
 ```csharp
 RDFVariable price = new RDFVariable("price");
@@ -298,6 +298,7 @@ RDFSelectQuery overall = new RDFSelectQuery()
         .AddAggregator(new RDFCountAggregator(soldWine, wineKinds).Distinct()))
     .AddProjectionVariable(shopCount)
     .AddProjectionVariable(wineKinds);
+RDFSelectQueryResult totals = overall.ApplyToGraph(sales);
 ```
 
 <div class="result" markdown="1">

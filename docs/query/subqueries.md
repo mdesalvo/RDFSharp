@@ -2,7 +2,7 @@
 title: Subqueries
 permalink: /query/subqueries/
 tagline: A query inside a query
-lede: Some questions have two steps: first compute something, then use it. A subquery is a full SELECT that runs first and hands its columns to the query around it.
+lede: "Some questions have two steps: first compute something, then use it. A subquery is a full SELECT that runs first and hands its columns to the query around it."
 ---
 
 > Which wine does each producer take pride in? The cooperative wants the best-scored wine of every winery for its brochure. One step finds the top score of each producer, the other finds the wine that earned it.

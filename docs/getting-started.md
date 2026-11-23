@@ -39,7 +39,7 @@ flowchart LR
   rosso -- vr:producedBy --> poggio([vrd:poggio-alto]):::res
 ```
 
-Here they are in Turtle, the most readable of the RDF formats, and built in C#.
+Here they are in Turtle, the most readable of the RDF formats, next to the same triples built in C#.
 
 <div class="pair" markdown="1">
 
@@ -121,7 +121,7 @@ Console.WriteLine(catalog.TriplesCount);   // 143
 
 ## Ask a question
 
-Which wines does Fattoria Poggio Alto make, and what are they called in English? In SPARQL that is a pattern with two variables. In C# the same pattern is built from `RDFVariable`, `RDFPattern` and `RDFSelectQuery`.
+Which wines does Fattoria Poggio Alto make and what are they called in English? In SPARQL that is a pattern with two variables. In C# the same pattern is built from `RDFVariable`, `RDFPattern` and `RDFSelectQuery`.
 
 <div class="pair" markdown="1">
 

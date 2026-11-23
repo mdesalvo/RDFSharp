@@ -2,7 +2,7 @@
 title: Load and manage graphs
 permalink: /query/graph-management/
 tagline: Moving whole contexts around instead of single triples
-lede: Seven operations work on named graphs as a whole: one loads a remote document and the others create, empty, drop, copy, move and merge the contexts of a store.
+lede: "Seven operations work on named graphs as a whole: one loads a remote document and the others create, empty, drop, copy, move and merge the contexts of a store."
 ---
 
 > The guides of 2025 are old news: their editions of 2026 are about to arrive. The cooperative archives what each guide said into a context of its own, so that the original contexts are free for the new scores.
@@ -179,11 +179,11 @@ https://vallerosa.example/archive/guidacalici-2025 5
 
 </div>
 
-Five quadruples came in and five went out, so the store still holds 153. Its three contexts are the catalog and the two archives and the two original contexts of the guides are gone for good: a context with no quadruples does not exist in a memory store, which is why `CREATE` has nothing to do there.
+Five quadruples came in and five went out, so the store still holds 153. Its three contexts are the catalog and the two archives. The two original contexts of the guides are gone for good: a context with no quadruples does not exist in a memory store, which is why `CREATE` has nothing to do there.
 
 ## Add and drop
 
-`ADD` is `COPY` without the emptying of the target: the target keeps what it had and receives the source on top. An auditor wants both archives in one place, in a context made for the occasion and drops it when the audit is over.
+`ADD` is `COPY` without the emptying of the target: the target keeps what it had and receives the source on top. An auditor wants both archives in one place, in a context made for the occasion, then drops it when the audit is over.
 
 <div class="pair" markdown="1">
 

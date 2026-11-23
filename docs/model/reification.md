@@ -14,7 +14,7 @@ Every triple in a graph is asserted: the graph says it. If the cooperative adds 
 
 What the cooperative knows is something else: *Giulia Neri claims that* the Reserve goes with the stew. To say that, a triple must become the **object of another triple** and RDF does not let a triple be a term. The way out is **reification**: describe the triple with other triples, give that description a name and talk about the name.
 
-Three names are new at Vallerosa in this chapter: `vrd:giulia-neri` is a `vr:Person`, `vrd:wild-boar-stew` is a `vr:Dish` and `vr:claims` is the property that links a person to what that person says.
+Two names are new at Vallerosa in this chapter: `vrd:giulia-neri` is a `vr:Person` and `vrd:wild-boar-stew` is a `vr:Dish`. The property that links a person to what that person says is `vr:claims`, from the vocabulary.
 
 ```csharp
 using RDFSharp.Model;
