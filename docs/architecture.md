@@ -34,7 +34,7 @@ flowchart BT
 - a **federation** groups other data sources and lets one query span all of them as if they were one
 - a **SPARQL endpoint** is a remote service, such as DBpedia, that answers queries over HTTP
 
-Every query has one method per kind: `ApplyToGraph`, `ApplyToStore`, `ApplyToFederation` and `ApplyToSPARQLEndpoint`. The query itself does not change. At Vallerosa, the same question about wine scores runs first on the catalog graph, then on the store with the two guides, then on a federation that adds DBpedia.
+Every query has one method per kind: `ApplyToGraph`, `ApplyToStore`, `ApplyToFederation` and `ApplyToSPARQLEndpoint`. The query itself does not change. At Vallerosa a question about wine scores finds nothing on the catalog graph, which holds no scores. It answers on the store that adds the two guides or on a federation of the catalog and the guides.
 
 ## Where the data comes from and where it goes
 
@@ -63,7 +63,7 @@ RDFGraph graph = new RDFGraph()
 
 **Two registers.** `RDFNamespaceRegister` knows the prefixes in use and lets the serializers write `vr:Wine` instead of the full IRI. `RDFDatatypeRegister` knows the datatypes, the standard ones and those you define. Both are shared by the whole application.
 
-**Synchronous and asynchronous.** Every `ApplyTo...` method of queries and operations has an `...Async` twin returning a `Task`, for applications that must not block while a remote endpoint answers.
+**Synchronous and asynchronous.** Every `ApplyTo...` method of queries and operations has an `...Async` twin returning a `Task`, so that the calling thread, for example the one of a user interface, does not wait for the answer.
 
 **Three exceptions.** Each layer reports misuse with its own exception: `RDFModelException`, `RDFStoreException` and `RDFQueryException`. A triple whose predicate is a blank node, for example, is refused with an `RDFModelException` the moment you try to build it.
 

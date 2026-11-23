@@ -29,7 +29,7 @@ RDFPatternGroup priceList = new RDFPatternGroup()
 
 ## What a modifier is
 
-A modifier works on the table of rows that the patterns and filters have produced. It does not change what the rows say, only which ones are kept and in what order. You add it to the query with `AddModifier`, after the pattern groups. The order of the `AddModifier` calls does not matter: the query always applies them in the order that SPARQL prescribes, that is sort first, then skip, then keep.
+A modifier works on the table of rows that the patterns and filters have produced. The four of this page do not change what the rows say, only which ones are kept and in what order (grouping, which does, has [its own page]({{ '/query/aggregates/' | relative_url }})). You add them to the query with `AddModifier`, after the pattern groups. The query applies them in the order that SPARQL prescribes, whatever the order of the calls: sort first, then deduplicate, then skip, then keep. The order of the calls matters only between two sorts, as the next sections show.
 
 | SPARQL | Class | What it does | How many per query |
 |---|---|---|---|

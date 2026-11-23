@@ -14,7 +14,7 @@ RDF Schema says what classes and properties exist. It cannot say that `vr:produc
 
 [OWLSharp](https://github.com/mdesalvo/OWLSharp) does this on top of RDFSharp. Its manual starts from the same Vallerosa files and grows the vocabulary into an ontology.
 
-## Big data: RDFSharp.Extensions
+## Databases: RDFSharp.Extensions
 
 When the catalog outgrows memory, [RDFSharp.Extensions](https://github.com/mdesalvo/RDFSharp.Extensions) keeps quadruples on Azure Table, Firebird, MongoDB, MySQL, Neo4j, Oracle, PostgreSQL, SQLite or SQL Server, behind the same `RDFStore` API. The [Persistent stores](../store/extensions/) chapter shows the switch.
 
@@ -29,6 +29,7 @@ RDFSharp implements W3C recommendations; when in doubt about what something mean
 | [Turtle](https://www.w3.org/TR/turtle/), [N-Triples](https://www.w3.org/TR/n-triples/), [TriG](https://www.w3.org/TR/trig/), [N-Quads](https://www.w3.org/TR/n-quads/), [RDF/XML](https://www.w3.org/TR/rdf-syntax-grammar/) | the formats |
 | [SPARQL 1.1 Query](https://www.w3.org/TR/sparql11-query/) and [Update](https://www.w3.org/TR/sparql11-update/) | queries and operations |
 | [SHACL](https://www.w3.org/TR/shacl/) | shapes and validation |
+| [GeoSPARQL](https://www.ogc.org/standard/geosparql/) (OGC) | geometries and spatial functions |
 
 ## Help and contributions
 

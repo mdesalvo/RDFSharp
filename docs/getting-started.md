@@ -5,7 +5,7 @@ tagline: From an empty project to a first answer
 lede: Install the package, describe a wine with a few triples, save them as Turtle, then load the whole Vallerosa catalog and ask it a question.
 ---
 
-> The Vallerosa cooperative has decided to publish its catalog as linked data. Before anything else, someone has to write the first wine down.
+> The Vallerosa cooperative has decided to publish its catalog as RDF. Before anything else, someone has to describe the first wine.
 {: .story}
 
 ## Install the package
@@ -25,9 +25,9 @@ using RDFSharp.Model;   // resources, literals, triples, graphs, SHACL
 using RDFSharp.Query;   // SPARQL queries and updates
 ```
 
-## Write the first wine
+## Describe the first wine
 
-A wine of the catalog is a **resource**: something with a name on the Web, an IRI. What we know about it is a set of **triples**, each one saying *subject, predicate, object*. The object can be another resource or a **literal**, a plain value such as a year or a name.
+A wine of the catalog is a **resource**: something with a name on the Web, an IRI. What we know about it is a set of **triples**, each one saying *subject, predicate, object*. The object can be another resource or a **literal**, a value such as a year or a name.
 
 The Rosso di Vallerosa 2021 is a red wine, it has an English name, a vintage and a producer. Four triples:
 
@@ -106,7 +106,7 @@ vrd:rosso-2021 a vr:RedWine;
 
 </div>
 
-The same four triples come back, grouped under their subject. The graph's context became the `@base` of the file. Two values look different from what went in, both on purpose: language tags are case insensitive and RDFSharp writes them in upper case, while an `xsd:gYear` without a time zone is normalized to UTC, hence `2021Z`.
+The same four triples come back, grouped under their subject. The graph's context became the `@base` of the file. Two values look different from what went in. Language tags are case insensitive and RDFSharp writes them in upper case. The year comes out as `2021Z`, with a time zone that the input did not have.
 
 ## Load the whole catalog
 

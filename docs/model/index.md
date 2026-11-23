@@ -6,7 +6,7 @@ tagline: Describe the data, exchange it, check it
 lede: "The Model layer is where RDF data takes shape: resources, literals and triples gathered in graphs, written in the standard formats and validated against SHACL shapes. Everything else in RDFSharp builds on it."
 ---
 
-> The cooperative starts from nothing: no database, no website, only six wines and the will to describe them well. By the end of this layer its catalog is a graph with its own vocabulary, it travels in any RDF format and nothing reaches the website without passing a quality check.
+> The cooperative starts from nothing: no database, no website, only six wines and the will to describe them well. By the end of this layer its catalog is a graph with its own vocabulary, it travels in the standard RDF formats and nothing reaches the website without passing a quality check.
 {: .story}
 
 ## What you find here

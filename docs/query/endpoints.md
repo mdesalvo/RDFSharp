@@ -127,7 +127,7 @@ Console.WriteLine(tuscanGrapes.ApplyToSPARQLEndpoint(dbpediaGraph).SelectResults
 
 ## Asynchronous calls, POST and raw queries
 
-Every `ApplyToSPARQLEndpoint` has an `Async` twin that returns a task, which is the right choice in a web application where a thread should not wait for the network. By default the query goes out as a `GET` with the text in the address. Long queries can overflow the length that servers accept for an address: the query option `QueryMethod` moves them into the body of a `POST`.
+Every `ApplyToSPARQLEndpoint` has an `Async` twin that returns a task, so the calling thread, for example the one of a user interface, does not wait for the network. By default the query goes out as a `GET` with the text in the address. Long queries can overflow the length that servers accept for an address: the query option `QueryMethod` moves them into the body of a `POST`.
 
 ```csharp
 RDFSelectQueryResult asyncResult = await tuscanGrapes.ApplyToSPARQLEndpointAsync(dbpedia);

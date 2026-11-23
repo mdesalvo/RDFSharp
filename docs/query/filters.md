@@ -14,7 +14,7 @@ This page runs on [vallerosa-catalog.ttl]({{ '/assets/data/vallerosa-catalog.ttl
 
 In SPARQL a `FILTER` holds a condition that is true or false for each row. In RDFSharp the condition is an **expression**, an object that computes a value from variables and constants and `RDFFilter` wraps one that gives a boolean. There is no class per kind of filter: a comparison is an `RDFComparisonExpression`, a language test an `RDFLangMatchesExpression`, a negation an `RDFNotExpression` and so on. The same expressions serve in [Bind and expressions]({{ '/query/expressions/' | relative_url }}) to compute new values.
 
-Two details save time. A constant is written with `RDFConstantExpression`, which wraps a resource or a literal. A number must be a typed literal of the right datatype: the alcohol of the catalog is an `xsd:decimal`, so the threshold is one too.
+Two details save time. A constant is written with `RDFConstantExpression`, which wraps a resource or a literal. A number must be a typed literal with a numeric datatype. Numbers compare by value across `xsd:integer`, `xsd:decimal` and `xsd:double`. The page writes the threshold as a decimal like the alcohol of the catalog.
 
 ## The whites under 13 degrees
 
@@ -322,7 +322,7 @@ RDFSelectQueryResult twoGrapesResult = twoGrapes.ApplyToGraph(catalog);
 
 </div>
 
-The producer pattern comes first so that the labels of the grapes, which also begin with capitals, do not enter the match. The other tests all follow the same shape, an expression class inside `RDFFilter`:
+The producer pattern keeps the query on wines: without it the label of the cooperative, "Vallerosa Wine Cooperative", would match too. The other tests all follow the same shape, an expression class inside `RDFFilter`:
 
 | Expression class | SPARQL | What it asks at Vallerosa |
 |---|---|---|

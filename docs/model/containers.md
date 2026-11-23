@@ -17,7 +17,7 @@ RDF has no array. To say that a wine is made of Sangiovese **and** Canaiolo, you
 | Class | `RDFCollection` | `RDFContainer` |
 | Meaning | a closed list: these items and no more | an open group: these items so far |
 | Order | always kept | depends on the type |
-| Duplicates | refused | depend on the type |
+| Duplicates in RDFSharp | refused | depend on the type |
 | In RDF | `rdf:first` and `rdf:rest` cells ending in `rdf:nil` | one resource with `rdf:_1`, `rdf:_2`... |
 
 A container has a type, chosen with `RDFModelEnums.RDFContainerTypes`:
@@ -28,7 +28,7 @@ A container has a type, chosen with `RDFModelEnums.RDFContainerTypes`:
 | `Seq` | `rdf:Seq` | meaningful | allowed |
 | `Alt` | `rdf:Alt` | none: the items are alternatives | refused |
 
-Both kinds also declare what their items are, with `RDFModelEnums.RDFItemTypes`: `Resource` or `Literal`.
+RDF itself allows the same item twice in a list or in a container: refusing duplicates is a choice of RDFSharp, which `AddItem` applies without an error. Both kinds also declare what their items are, with `RDFModelEnums.RDFItemTypes`: `Resource` or `Literal`.
 
 ## A collection: the blend
 

@@ -354,7 +354,7 @@ RDFSelectQueryResult winescopeResult = winescopeScores.ApplyToStore(store);
 
 </div>
 
-A pattern with no context at all, the three-position constructor, looks into every context of the store at once. This is why the same patterns work on a graph and on a store: on a store they read across all sources unless you pin one down.
+A pattern with no context at all, the three-position constructor, looks into every context of the store at once. This is why the same patterns work on a graph and on a store: on a store they read across all sources unless you pin one down. A SPARQL service behaves differently: there a pattern outside `GRAPH` sees only the default graph. Keep it in mind when the same query moves from a store to an [endpoint]({{ '/query/endpoints/' | relative_url }}).
 
 > On a graph, use the three-position constructor: the graph is the only source there is. The four-position constructor is for stores, where the context is a real part of the question.
 {: .tip}

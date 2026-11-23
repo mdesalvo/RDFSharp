@@ -5,7 +5,7 @@ tagline: One cooperative, one catalog, every feature
 lede: Every example of this manual works on the same data, the catalog of a small wine cooperative in Tuscany. Here are its people, its places, its wines and the vocabulary that describes them.
 ---
 
-> Three family wineries in a Tuscan valley sell their wines under one name, Vallerosa. They want their catalog on the Web as linked data: open to partner shops, readable by the wine guides, checked before anything goes out. This manual follows them as they build it.
+> Three family wineries in a Tuscan valley sell their wines under one name, Vallerosa. They want their catalog on the Web as RDF: open to partner shops, readable by the wine guides, checked before anything goes out. This manual follows them as they build it.
 {: .story}
 
 Vallerosa, its producers and its wines are fictional; the grape varieties and the two regions are real. Every IRI lives under `vallerosa.example`, a domain reserved for examples that will never resolve to a real site.
@@ -157,7 +157,7 @@ The two guides do not always agree. WineScope gives the Vallerosa Red 90 where G
 
 | Layer | What happens at Vallerosa |
 |---|---|
-| Model | The first wines are written down by hand, saved as Turtle and exchanged with the producers in other formats. The cooperative gets its own namespaces and an alcohol datatype that refuses impossible values. Blends become ordered lists, awards a bag. A sommelier's pairing advice is recorded as a claim rather than a fact. SHACL shapes catch a sloppy import before it reaches the website. |
+| Model | The first wines are described by hand, saved as Turtle and exchanged with the producers in other formats. The cooperative gets its own namespaces and an alcohol datatype that refuses impossible values. Blends become ordered lists, awards a bag. A sommelier's pairing advice is recorded as a claim rather than a fact. SHACL shapes catch a sloppy import before it reaches the website. |
 | Store | The catalog and the two guides move into one store, each in its own context. The store is saved as TriG and N-Quads, then moved onto a database. |
 | Query | The cooperative asks questions of growing difficulty: whites under 13 degrees, every wine of Tuscany at any depth, the average score per subzone, the best wine of each producer, prices with VAT. It measures how far each shop is from the cellar, builds an export for a partner shop, asks DBpedia about its grapes and closes the year with a batch of updates. |
 

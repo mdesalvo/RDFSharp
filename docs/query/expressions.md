@@ -18,7 +18,7 @@ A few habits cover almost every case:
 - the constructors take a variable or an expression where a value is expected, so `new RDFUpperCaseExpression(label)` and `new RDFUpperCaseExpression(otherExpression)` both exist
 - a fixed value is an `RDFConstantExpression` around a resource or a literal. The arithmetic classes also take a typed literal directly
 - a number is a typed literal with its datatype, as in `new RDFTypedLiteral("122", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)`
-- an expression that cannot be computed for a row, for example because a variable is unbound or has the wrong type, gives no value: the row is not dropped, but the variable that should have received the result stays unbound
+- an expression that cannot be computed for a row, for example because a variable is unbound or has the wrong type, gives no value. In a `BIND` or in the projection the row stays and the variable that should have received the result is unbound. In a filter the error counts as false and the row goes
 
 ## Bind: the price with VAT
 

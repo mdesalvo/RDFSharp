@@ -193,7 +193,7 @@ main {
   margin: 6px 0 10px; text-wrap: balance;
 }
 .tagline { margin: 0 0 14px; font: italic 19px/1.45 var(--display); color: var(--accent); }
-.lede { margin: 0; font-size: 18.5px; line-height: 1.6; color: var(--soft); max-width: 90ch; }
+.lede { margin: 0; font-size: 18.5px; line-height: 1.6; color: var(--soft); }
 
 /* ── Prose ─────────────────────────────────────────────── */
 
@@ -201,7 +201,7 @@ main {
 .prose h2 { font: 400 clamp(26px, 5.6vw, 32px)/1.2 var(--display); margin: 52px 0 12px; text-wrap: balance; }
 .prose h3 { font-size: 18px; line-height: 1.35; margin: 30px 0 8px; }
 .prose p, .prose ul, .prose ol { margin: 0 0 16px; }
-.prose p, .prose li { max-width: 100ch; }
+
 .prose ul, .prose ol { padding-left: 1.3em; }
 .prose li { margin: 4px 0; }
 .prose li::marker { color: var(--faint); }
@@ -328,7 +328,7 @@ div.card { background: none; }
 /* Home. */
 .hero { margin-bottom: 12px; }
 .hero h1 em { font-style: italic; color: var(--accent); }
-.hero p { font-size: 19px; color: var(--soft); max-width: 72ch; margin: 0 0 22px; }
+.hero p { font-size: 19px; color: var(--soft); margin: 0 0 22px; }
 .hero .figure { margin: 10px 0 30px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--surface) 70%, transparent); overflow-x: auto; }
 /* On a phone a drawn graph keeps a readable size and scrolls sideways inside its frame. */
 .hero .figure svg { min-width: 620px; }

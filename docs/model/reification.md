@@ -12,7 +12,7 @@ lede: A triple states a fact. Reification turns a triple into something you can 
 
 Every triple in a graph is asserted: the graph says it. If the cooperative adds `vrd:riserva-2019 vr:pairsWith vrd:wild-boar-stew`, the catalog says that the Reserve goes with wild boar stew, with no author and no doubt attached. A query for the pairings of the Reserve would return the stew as if the cooperative had decided it.
 
-What the cooperative knows is something else: *Giulia Neri claims that* the Reserve goes with the stew. To say that, a triple must become the **object of another triple** and RDF does not let a triple be a term. The way out is **reification**: describe the triple with other triples, give that description a name and talk about the name.
+What the cooperative knows is something else: *Giulia Neri claims that* the Reserve goes with the stew. To say that, a triple must become the **object of another triple** and RDF 1.1 does not let a triple be a term. The way out is **reification**: describe the triple with other triples, give that description a name and talk about the name.
 
 Two names are new at Vallerosa in this chapter: `vrd:giulia-neri` is a `vr:Person` and `vrd:wild-boar-stew` is a `vr:Dish`. The property that links a person to what that person says is `vr:claims`, from the vocabulary.
 
@@ -127,7 +127,7 @@ If the cooperative one day decides to endorse the advice, it adds the triple its
 
 ## RDF 1.2: triple terms
 
-RDF 1.2 makes this pattern part of the model. A statement that you talk about without asserting it is a **triple term** and what talks about it is a **reifier**, linked to the term by `rdf:reifies`. `ReifyTripleTerm` builds that form: the same representative is the reifier and the triple term is a second blank resource that carries the three parts as `rdf:ttSubject`, `rdf:ttPredicate` and `rdf:ttObject`. The annotations hang on the reifier:
+RDF 1.2 makes this pattern part of the model. A statement that you talk about without asserting it is a **triple term** and what talks about it is a **reifier**, linked to the term by `rdf:reifies`. `ReifyTripleTerm` builds that form: the same representative is the reifier. A graph of RDFSharp holds no triple terms of its own, so the library writes the term in the encoding that RDF 1.2 defines for that case: a second blank resource that carries the three parts as `rdf:ttSubject`, `rdf:ttPredicate` and `rdf:ttObject`. The annotations hang on the reifier:
 
 ```csharp
 RDFGraph asTerm = pairing.ReifyTripleTerm(new List<(RDFResource, RDFPatternMember)> {

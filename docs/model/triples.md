@@ -47,7 +47,7 @@ The `vrd + "..."` form is a convenience of `RDFNamespace`: it glues the namespac
 
 ## Plain literals
 
-A **literal** is a value written down as it is: a name, a year, a price. The simplest kind is the `RDFPlainLiteral`, a piece of text. It can carry a **language tag**, which says in which language people read it.
+A **literal** is a value written down as it is: a name, a year, a price. The simplest kind is the `RDFPlainLiteral`, a piece of text. It can carry a **language tag**, which says in which language people read it. The name comes from RDF 1.0. Since RDF 1.1 every literal has a datatype (`xsd:string` for bare text, `rdf:langString` for text with a tag): RDFSharp still calls these literals plain, to tell them from the typed ones of the next section.
 
 ```csharp
 RDFPlainLiteral producerName = new RDFPlainLiteral("Cantina dei Tre Ulivi");
@@ -118,7 +118,7 @@ true^^http://www.w3.org/2001/XMLSchema#boolean
 
 </div>
 
-Two things happen here. The first is that the library **checks the value against its datatype** when it builds the literal, so a typed literal that exists is a well formed one. The next chapters show what the check refuses. The second is the `Z` on the year: a year without a time zone is normalized to UTC, as every date-like value is.
+Two things happen here. The first is that the library **checks the value against its datatype** when it builds the literal, so a typed literal that exists is a well formed one. The next chapters show what the check refuses. The second is the `Z` on the year: the library writes a year without a time zone as a year in UTC, which in XML Schema is not the same value. Keep it in mind when you compare years with data from other tools.
 
 The datatype is part of the identity of a literal. The text `12.5` and the decimal `12.5` are two different literals:
 

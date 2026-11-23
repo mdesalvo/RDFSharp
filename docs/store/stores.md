@@ -291,7 +291,7 @@ Taking the catalog away from the whole leaves the 10 quadruples of the guides. T
 
 ## The same calls, asynchronously
 
-Every operation of this page has a twin with the `Async` suffix: `AddQuadrupleAsync`, `MergeGraphAsync`, `SelectQuadruplesAsync`, `ExtractGraphsAsync`, `ToFileAsync`, `FromFileAsync` and so on, with `QuadruplesCountAsync` for the count. On a memory store they run the same work on a thread pool thread, which keeps a user interface or a web request free. The persistent stores, which wait on a database, gain the most.
+Every operation of this page has a twin with the `Async` suffix: `AddQuadrupleAsync`, `MergeGraphAsync`, `SelectQuadruplesAsync`, `ExtractGraphsAsync`, `ToFileAsync`, `FromFileAsync` and so on, with `QuadruplesCountAsync` for the count. On a memory store they run the same work on another thread of the pool: that keeps a user interface responsive, but on a server it only moves the work from one thread to another. The persistent stores, which wait on a database, are where the twins matter.
 
 ```csharp
 RDFMemoryStore asyncStore = new RDFMemoryStore();
