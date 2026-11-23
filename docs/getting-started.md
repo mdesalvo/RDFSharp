@@ -61,6 +61,3 @@ Vallerosa Red@EN | 14.50^^http://www.w3.org/2001/XMLSchema#decimal
 ```
 
 </div>
-
-The answer is an `RDFSelectQueryResult`. Its `SelectResults` property is a `DataTable` with one column for each projected variable, here `?LABEL` and `?PRICE`.
-
