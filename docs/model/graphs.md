@@ -349,7 +349,7 @@ Console.WriteLine(ofRosso.Count);
 
 </div>
 
-On `net8.0` the graph is also an `IAsyncEnumerable<RDFTriple>`, so you can walk it with `await foreach`. This one is not available on `netstandard2.0`:
+On `net8.0` and later the graph is also an `IAsyncEnumerable<RDFTriple>`, so you can walk it with `await foreach`. This one is not available on `netstandard2.0`:
 
 ```csharp
 await catalog.AddTripleAsync(new RDFTriple(rosso, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Rosso di Vallerosa", "it")));

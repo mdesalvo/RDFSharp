@@ -8,7 +8,7 @@ lede: Install the package, describe a wine with a few triples, save them as Turt
 
 ## Install the package
 
-RDFSharp is one NuGet package. It targets `netstandard2.0` and `net8.0`, so it runs on .NET Framework as well as on every modern .NET.
+RDFSharp is one NuGet package. It targets `netstandard2.0`, `net8.0` and `net10.0`, so it runs on .NET Framework as well as on every modern .NET.
 
 ```shell
 dotnet new console -n Vallerosa

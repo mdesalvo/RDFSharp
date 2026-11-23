@@ -47,4 +47,4 @@ A `SELECT` answers with a `DataTable`, an `ASK` with a boolean, a `CONSTRUCT` or
 | **Registers** | `RDFNamespaceRegister` gives prefixes to the serializers, `RDFDatatypeRegister` knows the datatypes. Both are global |
 | **Async** | operations have an `...Async` twin that returns a `Task`. The examples of this manual use it |
 | **Exceptions** | one per layer: `RDFModelException`, `RDFStoreException`, `RDFQueryException` |
-| **Targets** | `netstandard2.0` and `net8.0`. A few extras, such as `IAsyncDisposable`, need `net8.0` |
+| **Targets** | `netstandard2.0`, `net8.0` and `net10.0`. A few extras, such as `IAsyncDisposable`, need `net8.0` or later |
