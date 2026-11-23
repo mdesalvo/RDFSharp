@@ -68,7 +68,7 @@ The Reserve costs 32 euros and the other wines are not red, so one row comes bac
 
 ## Three layers, one library
 
-RDFSharp ships as a single NuGet package targeting `netstandard2.0`, `net8.0` and `net10.0`. Inside it, three layers build on each other.
+RDFSharp ships as a NuGet package targeting `netstandard2.0`, `net8.0` and `net10.0`. Inside it, three layers build on each other.
 
 <div class="cards three">
   <a class="card" href="{{ '/model/' | relative_url }}"><span class="kind">Model</span><h3>Describe the data</h3><p>Resources, literals, triples and graphs. Namespaces and datatypes. The standard RDF formats. SHACL shapes to say what good data looks like.</p></a>
