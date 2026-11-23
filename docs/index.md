@@ -11,9 +11,23 @@ lede: "RDFSharp is a lightweight .NET library for RDF data: model it, store it w
 
 ## A first taste
 
-The cooperative wants its red wines under 20 euros, with their English names. Here is the question built in C# with RDFSharp's query engine, next to the same question in SPARQL.
+The cooperative wants its red wines under 20 euros, with their English names. Here is the question in SPARQL and the same question built in C# with RDFSharp's query engine.
 
 <div class="pair" markdown="1">
+
+```sparql
+PREFIX vr:   <https://vallerosa.example/vocab#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?label ?price
+WHERE {
+  ?wine a vr:RedWine ;
+        rdfs:label ?label ;
+        vr:price ?price .
+  FILTER (LANGMATCHES(LANG(?label), "en"))
+  FILTER (?price < 20)
+}
+```
 
 ```csharp
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
@@ -38,20 +52,6 @@ RDFSelectQuery query = new RDFSelectQuery()
     .AddProjectionVariable(price);
 
 RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
-```
-
-```sparql
-PREFIX vr:   <https://vallerosa.example/vocab#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?label ?price
-WHERE {
-  ?wine a vr:RedWine ;
-        rdfs:label ?label ;
-        vr:price ?price .
-  FILTER (LANGMATCHES(LANG(?label), "en"))
-  FILTER (?price < 20)
-}
 ```
 
 </div>
