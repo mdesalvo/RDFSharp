@@ -206,15 +206,18 @@
     });
     toc.hidden = false;
     document.body.classList.add('has-toc');
-    var spy = new IntersectionObserver(function (seen) {
-      seen.forEach(function (e) {
-        if (e.isIntersecting) {
-          var at = Array.prototype.indexOf.call(heads, e.target);
-          links.forEach(function (a, i) { a.classList.toggle('here', i === at); });
-        }
-      });
-    }, { rootMargin: '0px 0px -70% 0px' });
-    heads.forEach(function (h) { spy.observe(h); });
+    // The section being read is the last one whose heading has passed the upper third of the window. At the foot of
+    // the page the last section wins: its heading may never climb that far, because the page ends before it can.
+    var mark = function () {
+      var at = 0;
+      var line = window.innerHeight / 3;
+      heads.forEach(function (h, i) { if (h.getBoundingClientRect().top <= line) at = i; });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) at = heads.length - 1;
+      links.forEach(function (a, i) { a.classList.toggle('here', i === at); });
+    };
+    window.addEventListener('scroll', mark, { passive: true });
+    window.addEventListener('resize', mark);
+    mark();
   }
 
   // Search over search.json: a title match ranks above a body match, each hit shows where it matched and the arrow
