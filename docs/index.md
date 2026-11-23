@@ -7,38 +7,13 @@ lede: "RDFSharp is a lightweight .NET library for RDF data: model it, store it w
 <div class="hero" markdown="0">
   <h1>RDF, SPARQL and SHACL, <em>in plain C#</em></h1>
   <p>RDFSharp lets a .NET application speak RDF. You build graphs from resources and literals, keep them in stores that remember where each fact came from, ask them questions in SPARQL and check them against SHACL shapes. Every page of this manual shows it on one real case, the catalog of a wine cooperative that grows chapter after chapter.</p>
-  {% include hero-graph.html %}
-</div>
-
-## Three layers, one library
-
-RDFSharp ships as a single NuGet package targeting `netstandard2.0`, `net8.0` and `net10.0`. Inside it, three layers build on each other.
-
-<div class="cards three">
-  <a class="card" href="{{ '/model/' | relative_url }}"><span class="kind">Model</span><h3>Describe the data</h3><p>Resources, literals, triples and graphs. Namespaces and datatypes. The standard RDF formats. SHACL shapes to say what good data looks like.</p></a>
-  <a class="card" href="{{ '/store/' | relative_url }}"><span class="kind">Store</span><h3>Remember where it came from</h3><p>Quadruples add a context to every triple, so the same fact told by two sources stays two facts. In memory or on a database.</p></a>
-  <a class="card" href="{{ '/query/' | relative_url }}"><span class="kind">Query</span><h3>Ask and change it</h3><p>SPARQL 1.1 queries and updates, composed in C# or parsed from text, over graphs, stores, federations and remote endpoints.</p></a>
 </div>
 
 ## A first taste
 
-The cooperative wants its red wines under 20 euros, with their English names. Here is the question in SPARQL and the same question built in C# with RDFSharp's query engine.
+The cooperative wants its red wines under 20 euros, with their English names. Here is the question built in C# with RDFSharp's query engine, next to the same question in SPARQL.
 
 <div class="pair" markdown="1">
-
-```sparql
-PREFIX vr:   <https://vallerosa.example/vocab#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?label ?price
-WHERE {
-  ?wine a vr:RedWine ;
-        rdfs:label ?label ;
-        vr:price ?price .
-  FILTER (LANGMATCHES(LANG(?label), "en"))
-  FILTER (?price < 20)
-}
-```
 
 ```csharp
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
@@ -65,6 +40,20 @@ RDFSelectQuery query = new RDFSelectQuery()
 RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 ```
 
+```sparql
+PREFIX vr:   <https://vallerosa.example/vocab#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?label ?price
+WHERE {
+  ?wine a vr:RedWine ;
+        rdfs:label ?label ;
+        vr:price ?price .
+  FILTER (LANGMATCHES(LANG(?label), "en"))
+  FILTER (?price < 20)
+}
+```
+
 </div>
 
 <div class="result" markdown="1">
@@ -76,6 +65,16 @@ RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 </div>
 
 The Reserve costs 32 euros and the other wines are not red, so one row comes back. [Getting started](getting-started/) walks through this example from an empty project.
+
+## Three layers, one library
+
+RDFSharp ships as a single NuGet package targeting `netstandard2.0`, `net8.0` and `net10.0`. Inside it, three layers build on each other.
+
+<div class="cards three">
+  <a class="card" href="{{ '/model/' | relative_url }}"><span class="kind">Model</span><h3>Describe the data</h3><p>Resources, literals, triples and graphs. Namespaces and datatypes. The standard RDF formats. SHACL shapes to say what good data looks like.</p></a>
+  <a class="card" href="{{ '/store/' | relative_url }}"><span class="kind">Store</span><h3>Remember where it came from</h3><p>Quadruples add a context to every triple, so the same fact told by two sources stays two facts. In memory or on a database.</p></a>
+  <a class="card" href="{{ '/query/' | relative_url }}"><span class="kind">Query</span><h3>Ask and change it</h3><p>SPARQL 1.1 queries and updates, composed in C# or parsed from text, over graphs, stores, federations and remote endpoints.</p></a>
+</div>
 
 ## The family
 

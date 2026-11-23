@@ -170,7 +170,9 @@
         panes.forEach(function (p, i) { p.classList.toggle('on', i === at); tabs.children[i].setAttribute('aria-selected', i === at ? 'true' : 'false'); });
       }
     };
+    // A C# manual opens every pair on C#, unless the reader has already picked another language.
     entry.show(panes[0].getAttribute('data-label'));
+    entry.show(names.csharp);
     if (preferred) { entry.show(preferred); }
     pairs.push(entry);
   });

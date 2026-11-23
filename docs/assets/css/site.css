@@ -119,7 +119,7 @@ a:hover { color: var(--literal); }
 .side {
   position: fixed; z-index: 40; top: var(--top); bottom: 0; left: 0;
   width: min(var(--side-w), 86vw);
-  overflow-y: auto; overscroll-behavior: contain;
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent;
   padding: 18px 14px 40px max(14px, env(safe-area-inset-left, 0px));
   background: var(--surface);
   border-right: 1px solid var(--line);
@@ -172,10 +172,11 @@ a:hover { color: var(--literal); }
 /* ── On this page: a rail on very wide screens only ────── */
 
 .toc { display: none; }
-.toc-title { margin: 0 0 8px; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
-.toc a { display: block; padding: 3px 0 3px 12px; border-left: 2px solid var(--line); color: var(--soft); text-decoration: none; font-size: 13.5px; line-height: 1.45; }
-.toc a:hover { color: var(--ink); }
-.toc a.here { color: var(--ink); border-left-color: var(--accent); }
+.toc-title { margin: 0 0 10px; padding: 0 4px; font-size: 11.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.toc a { display: block; padding: 6px 10px; border-radius: 8px; color: var(--soft); text-decoration: none; font-size: 13.5px; line-height: 1.4; }
+.toc a + a { margin-top: 2px; }
+.toc a:hover { color: var(--ink); background: var(--raised); }
+.toc a.here { color: var(--ink); font-weight: 600; background: var(--glow); box-shadow: inset 3px 0 0 var(--accent); }
 
 /* ── Reading column ────────────────────────────────────── */
 
@@ -331,9 +332,6 @@ div.card { background: none; }
 .hero { margin-bottom: 12px; }
 .hero h1 em { font-style: italic; color: var(--accent); }
 .hero p { font-size: 19px; color: var(--soft); margin: 0 0 22px; }
-.hero .figure { margin: 10px 0 30px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--surface) 70%, transparent); overflow-x: auto; }
-/* On a phone a drawn graph keeps a readable size and scrolls sideways inside its frame. */
-.hero .figure svg { min-width: 620px; }
 .mermaid.figure { overflow-x: auto; text-align: center; }
 .mermaid.figure svg { display: inline-block; width: auto; max-width: none; }
 
@@ -393,6 +391,7 @@ div.card { background: none; }
   .toc:not([hidden]) {
     display: block; position: fixed; top: calc(var(--top) + 40px); right: 24px; width: var(--toc-w);
     max-height: calc(100vh - var(--top) - 80px); overflow-y: auto;
+    padding: 14px 10px 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow);
   }
   body.has-toc main { margin-left: calc(var(--side-w) + max(0px, (100vw - var(--side-w) - var(--toc-w) - 48px - 1180px) / 2)); }
 }
