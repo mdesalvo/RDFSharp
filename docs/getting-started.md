@@ -62,8 +62,5 @@ Vallerosa Red@EN | 14.50^^http://www.w3.org/2001/XMLSchema#decimal
 
 </div>
 
-The same question in SPARQL is on the [home page]({{ '/' | relative_url }}). The answer is a `DataTable` with one column for each projected variable, named in upper case.
+The answer is a `DataTable` with one column for each projected variable, named in upper case.
 
-## Next
-
-[RDFSharp at a glance]({{ '/' | relative_url }}) is the map of the library. The [Model]({{ '/model/' | relative_url }}) chapters start from resources, literals and triples.
