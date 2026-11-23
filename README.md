@@ -23,5 +23,5 @@ RDFSharp is a modular .NET library made up of 3 layers:
 </ul>
 <hr/>
 The project also delivers a <a href="https://github.com/mdesalvo/OWLSharp">library</a> for working with <b>OWL2 ontologies</b>!
-
-<b>📖 <a href="https://mdesalvo.github.io/RDFSharp/">Learn RDFSharp at Vallerosa</a></b>: follow a small wine cooperative as its catalog grows from a single triple to validated, federated, queryable linked data.
+<hr/>
+<b><a href="https://mdesalvo.github.io/RDFSharp/">Learn RDFSharp</a></b>: follow a small wine cooperative as its catalog grows from a single triple to validated, federated, queryable linked data.
