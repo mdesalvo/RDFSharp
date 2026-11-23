@@ -1,14 +1,11 @@
 ---
 title: Graphs
 permalink: /model/graphs/
-tagline: A named set of triples you can search, combine and trim
-lede: A graph is where triples live. It tells you whether a triple is in, finds the ones you describe, merges with other graphs and gives them back as a table.
+tagline: RDFGraph, an indexed set of triples
+lede: An RDFGraph is a set of triples with a context IRI. It indexes every triple by subject, predicate, object and literal, so it can find, remove and combine triples without scanning them.
 ---
 
-> Each winery of the cooperative sends its own wines and the catalog is the sum of what arrives. When the last bottles of the rosé are sold, the wine leaves the catalog the same way it came in: by one call.
-{: .story}
-
-This chapter works with the namespace `RDFSharp.Model` and with `System.Data`. The shorthands below are the ones that every example of the chapter reuses:
+The examples use the Vallerosa catalog, loaded once at the top of the page:
 
 ```csharp
 using System.Data;
@@ -16,264 +13,117 @@ using RDFSharp.Model;
 
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
+RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
+catalog.SetContext(new Uri("https://vallerosa.example/catalog"));
 
-RDFResource producedBy = new RDFResource(vr + "producedBy");
-RDFResource hasPrice = new RDFResource(vr + "price");
-RDFResource cooperative = new RDFResource(vrd + "vallerosa");
-RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
-RDFResource treUlivi = new RDFResource(vrd + "tre-ulivi");
 RDFResource rosso = new RDFResource(vrd + "rosso-2021");
-RDFResource riserva = new RDFResource(vrd + "riserva-2019");
-RDFResource vermentino = new RDFResource(vrd + "vermentino-2023");
-RDFResource rosato = new RDFResource(vrd + "rosato-2024");
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource price = new RDFResource(vr + "price");
 RDFResource redWine = new RDFResource(vr + "RedWine");
 ```
 
-## Create a graph
+## The API
 
-An `RDFGraph` is a set of triples with a name. The name is its **context**, an absolute IRI that says where the information comes from. You give it with `SetContext` and `AddTriple` fills the graph. A triple added twice is stored once.
+| Member | Returns | Does |
+|---|---|---|
+| `new RDFGraph()`, `new RDFGraph(List<RDFTriple>)` | | an empty graph, or one filled with the given triples |
+| `Context` | `Uri` | the name of the graph, the library's default context until `SetContext` |
+| `SetContext(Uri)` | the graph | renames the graph |
+| `AddTriple(RDFTriple)` | the graph | adds a triple; a duplicate or a `null` is ignored |
+| `TriplesCount`, `TriplesCountAsync` | `long` | the number of triples |
+| `ContainsTriple(RDFTriple)` | `bool` | whether the triple is in the graph |
+| `SelectTriples(s, p, o, l)` | `List<RDFTriple>` | the triples that match the selectors |
+| `this[s, p, o, l]` | `RDFGraph` | the same triples, as a new graph |
+| `RemoveTriple(RDFTriple)` | the graph | removes one triple |
+| `RemoveTriples(s, p, o, l)` | the graph | removes the triples that match the selectors |
+| `ClearTriples()` | | empties the graph |
+| `UnionWith`, `IntersectWith`, `DifferenceWith` | `RDFGraph` | set operations, into a new graph |
+| `TriplesEnumerator`, `TriplesEnumeratorAsync` | enumerators | walk the triples; the graph is also `IEnumerable<RDFTriple>` |
+| `ToDataTable()`, `RDFGraph.FromDataTable(DataTable)` | `DataTable`, `RDFGraph` | a graph as a table of three columns and back |
+| `ToFile`, `ToStream`, `FromFile`, `FromStream`, `FromUri` | | the RDF formats, see [RDF formats]({{ '/model/formats/' | relative_url }}) |
+| `AddContainer`, `AddCollection`, `AddDatatype` | the graph | write a container, a collection or a datatype as triples |
 
-The two wineries each send a graph with their own wines: for each wine its class, its English label, its producer and its price. Both also restate who the cooperative is.
+Every method that reads or changes the graph also has an `...Async` form, which the examples use. The methods that return the graph can be chained.
 
-```csharp
-RDFGraph fromPoggioAlto = new RDFGraph()
-    .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(cooperative, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Cooperative")))
-    .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDF.TYPE, redWine))
-    .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Red", "en")))
-    .AddTriple(new RDFTriple(rosso, producedBy, poggioAlto))
-    .AddTriple(new RDFTriple(rosso, hasPrice, new RDFTypedLiteral("14.50", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))
-    .AddTriple(new RDFTriple(riserva, RDFVocabulary.RDF.TYPE, redWine))
-    .AddTriple(new RDFTriple(riserva, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Reserve", "en")))
-    .AddTriple(new RDFTriple(riserva, producedBy, poggioAlto))
-    .AddTriple(new RDFTriple(riserva, hasPrice, new RDFTypedLiteral("32.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+## The selectors: s, p, o, l
 
-RDFGraph fromTreUlivi = new RDFGraph()
-    .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(cooperative, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Cooperative")))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "WhiteWine")))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vermentino of the Plain", "en")))
-    .AddTriple(new RDFTriple(vermentino, producedBy, treUlivi))
-    .AddTriple(new RDFTriple(vermentino, hasPrice, new RDFTypedLiteral("13.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))
-    .AddTriple(new RDFTriple(rosato, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RoseWine")))
-    .AddTriple(new RDFTriple(rosato, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Valley Rosé", "en")))
-    .AddTriple(new RDFTriple(rosato, producedBy, treUlivi))
-    .AddTriple(new RDFTriple(rosato, hasPrice, new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+`SelectTriples`, the indexer and `RemoveTriples` take the same four optional parameters. Each one fixes one position of the triple:
 
-Console.WriteLine(fromPoggioAlto.Context);
-Console.WriteLine(fromPoggioAlto.TriplesCount);
-```
+| Selector | Type | Fixes |
+|---|---|---|
+| `s` | `RDFResource` | the subject |
+| `p` | `RDFResource` | the predicate |
+| `o` | `RDFResource` | the object, when it is a resource |
+| `l` | `RDFLiteral` | the object, when it is a literal |
 
-<div class="result" markdown="1">
+The rules are four:
+- a selector left `null` matches anything
+- the selectors given must all hold: they combine with AND
+- `o` and `l` exclude each other, because a triple has one object
+- no selector at all selects every triple
 
-```
-https://vallerosa.example/catalog
-9
-```
+A selector matches an RDF term exactly, not a value: the literal `"13"^^xsd:decimal` does not select a price written `"13.00"^^xsd:decimal`. A blank resource can be a subject or object selector like any other resource.
 
-</div>
-
-A graph can also start from a list of triples: `new RDFGraph(List<RDFTriple>)`. One that never met `SetContext` takes the default context of the library, which the Turtle serializer writes as the `@base` of a file (the [formats]({{ '/model/formats/' | relative_url }}) chapter shows it):
-
-```csharp
-RDFGraph untouched = new RDFGraph();
-Console.WriteLine(untouched.Context);
-```
-
-<div class="result" markdown="1">
-
-```
-https://rdfsharp.codeplex.com/
-```
-
-</div>
-
-## Look inside
-
-`ContainsTripleAsync` tells whether a triple is in the graph and `TriplesCount` tells how many there are. A graph is also a sequence of triples, so `foreach` walks it:
-
-```csharp
-RDFTriple rossoPrice = new RDFTriple(rosso, hasPrice, new RDFTypedLiteral("14.50", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
-Console.WriteLine(await fromPoggioAlto.ContainsTripleAsync(rossoPrice));
-Console.WriteLine(await fromTreUlivi.ContainsTripleAsync(rossoPrice));
-
-foreach (RDFTriple triple in fromTreUlivi)
-    if (triple.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
-        Console.WriteLine(triple.Object);
-```
-
-<div class="result" markdown="1">
-
-```
-True
-False
-Vermentino of the Plain@EN
-Valley Rosé@EN
-```
-
-</div>
-
-The same walk is available as an enumerator: `TriplesEnumerator` hands out the triples one at a time, for code that drives the iteration itself.
-
-```csharp
-IEnumerator<RDFTriple> walker = fromTreUlivi.TriplesEnumerator;
-int labels = 0;
-while (walker.MoveNext())
-    if (walker.Current.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
-        labels++;
-Console.WriteLine(labels);
-```
-
-<div class="result" markdown="1">
-
-```
-2
-```
-
-</div>
-
-The triple you pass to `ContainsTripleAsync` does not have to be the object that went in: two triples with the same subject, predicate and object are the same triple.
-
-## Merge the contributions
-
-The three **set operations** take the graph they are called on and another one and give back a new graph. Neither of the two is changed.
-
-| Method | Gives |
-|---|---|
-| `UnionWithAsync` | the triples of both graphs |
-| `IntersectWithAsync` | the triples found in both |
-| `DifferenceWithAsync` | the triples of this graph that are not in the other |
-
-The catalog is the union of the two contributions:
-
-```csharp
-RDFGraph merged = await fromPoggioAlto.UnionWithAsync(fromTreUlivi);
-Console.WriteLine(merged.TriplesCount);
-Console.WriteLine(merged.Context);
-RDFGraph catalog = merged.SetContext(new Uri("https://vallerosa.example/catalog"));
-Console.WriteLine(catalog.Context);
-```
-
-<div class="result" markdown="1">
-
-```
-17
-https://rdfsharp.codeplex.com/
-https://vallerosa.example/catalog
-```
-
-</div>
-
-Nine and nine make seventeen, not eighteen: the sentence about the cooperative arrives from both wineries and a graph keeps it once. A new graph does not inherit the context of its parents, so the merged one starts in the default context and gets its name back with `SetContext`.
-
-The other two operations tell what the wineries have in common and what only one of them says:
-
-```csharp
-RDFGraph shared = await fromPoggioAlto.IntersectWithAsync(fromTreUlivi);
-Console.WriteLine(shared.TriplesCount);
-foreach (RDFTriple triple in shared)
-    Console.WriteLine(triple);
-
-RDFGraph onlyPoggio = await catalog.DifferenceWithAsync(fromTreUlivi);
-Console.WriteLine(onlyPoggio.TriplesCount);
-Console.WriteLine(onlyPoggio.Equals(fromPoggioAlto));
-```
-
-<div class="result" markdown="1">
-
-```
-1
-https://vallerosa.example/id/vallerosa http://www.w3.org/1999/02/22-rdf-syntax-ns#type https://vallerosa.example/vocab#Cooperative
-8
-False
-```
-
-</div>
-
-What Poggio Alto alone says is eight triples, one less than it sent: the ninth is the shared one, which the other winery says too. That is also why the difference is not equal to the original contribution.
-
-The operations return graphs, so they chain: `a.IntersectWith(b).UnionWith(c)` reads left to right.
-
-## Find triples
-
-`SelectTriplesAsync` answers the question "which triples look like this?". It takes four optional arguments, one for each part of a triple: `s` for the subject, `p` for the predicate, `o` for an object that is a resource and `l` for an object that is a literal. An argument you leave out matches anything and the ones you give must all hold.
+What the cooperative states about the Vallerosa Red, by subject:
 
 ```csharp
 foreach (RDFTriple triple in await catalog.SelectTriplesAsync(s: rosso))
-    Console.WriteLine($"{triple.Predicate} | {triple.Object}");
+    Console.WriteLine($"{triple.Predicate} {triple.Object}");
 ```
 
 <div class="result" markdown="1">
 
 ```
-http://www.w3.org/1999/02/22-rdf-syntax-ns#type | https://vallerosa.example/vocab#RedWine
-http://www.w3.org/2000/01/rdf-schema#label | Vallerosa Red@EN
-https://vallerosa.example/vocab#producedBy | https://vallerosa.example/id/poggio-alto
-https://vallerosa.example/vocab#price | 14.50^^http://www.w3.org/2001/XMLSchema#decimal
+http://www.w3.org/1999/02/22-rdf-syntax-ns#type https://vallerosa.example/vocab#RedWine
+http://www.w3.org/2000/01/rdf-schema#label Rosso di Vallerosa@IT
+http://www.w3.org/2000/01/rdf-schema#label Vallerosa Red@EN
+https://vallerosa.example/vocab#producedBy https://vallerosa.example/id/poggio-alto
+https://vallerosa.example/vocab#vintage 2021Z^^http://www.w3.org/2001/XMLSchema#gYear
+https://vallerosa.example/vocab#alcohol 13.5^^http://www.w3.org/2001/XMLSchema#decimal
+https://vallerosa.example/vocab#price 14.50^^http://www.w3.org/2001/XMLSchema#decimal
+https://vallerosa.example/vocab#organic false^^http://www.w3.org/2001/XMLSchema#boolean
+https://vallerosa.example/vocab#grape https://vallerosa.example/id/sangiovese
+https://vallerosa.example/vocab#grape https://vallerosa.example/id/canaiolo
+https://vallerosa.example/vocab#blend bnode:fcd4437d772d47abb00d3e11aec73d10
 ```
 
 </div>
 
-Everything the catalog says about the Vallerosa Red. By predicate, every producer link of the catalog:
+The last triple points to a blank node: the first cell of the blend list, whose name changes at every load. The red wines, by predicate and object. The wines of Fattoria Poggio Alto, by predicate and object again. A price, by predicate and literal:
 
 ```csharp
-foreach (RDFTriple triple in await catalog.SelectTriplesAsync(p: producedBy))
-    Console.WriteLine($"{triple.Subject} | {triple.Object}");
-```
+List<RDFTriple> reds = await catalog.SelectTriplesAsync(p: RDFVocabulary.RDF.TYPE, o: redWine);
+List<RDFTriple> ofPoggioAlto = await catalog.SelectTriplesAsync(p: producedBy, o: poggioAlto);
+List<RDFTriple> priced13 = await catalog.SelectTriplesAsync(p: price, l: new RDFTypedLiteral("13.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
+List<RDFTriple> priced13Short = await catalog.SelectTriplesAsync(p: price, l: new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
+List<RDFTriple> everything = await catalog.SelectTriplesAsync();
 
-<div class="result" markdown="1">
-
-```
-https://vallerosa.example/id/rosso-2021 | https://vallerosa.example/id/poggio-alto
-https://vallerosa.example/id/riserva-2019 | https://vallerosa.example/id/poggio-alto
-https://vallerosa.example/id/vermentino-2023 | https://vallerosa.example/id/tre-ulivi
-https://vallerosa.example/id/rosato-2024 | https://vallerosa.example/id/tre-ulivi
-```
-
-</div>
-
-By object, the red wines. By literal, whatever costs exactly 13.00:
-
-```csharp
-foreach (RDFTriple triple in await catalog.SelectTriplesAsync(o: redWine))
-    Console.WriteLine(triple.Subject);
-
-RDFTypedLiteral thirteen = new RDFTypedLiteral("13.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
-foreach (RDFTriple triple in await catalog.SelectTriplesAsync(l: thirteen))
-    Console.WriteLine($"{triple.Subject} | {triple.Predicate}");
-```
-
-<div class="result" markdown="1">
-
-```
-https://vallerosa.example/id/rosso-2021
-https://vallerosa.example/id/riserva-2019
-https://vallerosa.example/id/vermentino-2023 | https://vallerosa.example/vocab#price
-```
-
-</div>
-
-When you want a graph rather than a list, use the indexer: it takes the same four arguments and returns the matching triples as a new `RDFGraph`. That graph is ready for the next operation, for example to save only the wines of one winery:
-
-```csharp
-RDFGraph ofTreUlivi = catalog[p: producedBy, o: treUlivi];
-Console.WriteLine(ofTreUlivi.TriplesCount);
+Console.WriteLine(reds.Count);
+Console.WriteLine(ofPoggioAlto.Count);
+Console.WriteLine(priced13[0].Subject);
+Console.WriteLine(priced13Short.Count);
+Console.WriteLine(everything.Count);
 ```
 
 <div class="result" markdown="1">
 
 ```
 2
+2
+https://vallerosa.example/id/vermentino-2023
+0
+143
 ```
 
 </div>
 
-An object that is a resource and an object that is a literal exclude each other, because a triple has one object only. Asking for both is an error:
+The price written `13` finds nothing: the catalog writes `13.00` and the two are different literals. Giving both `o` and `l` is an error:
 
 ```csharp
 try
 {
-    await catalog.SelectTriplesAsync(o: redWine, l: thirteen);
+    await catalog.SelectTriplesAsync(o: redWine, l: new RDFPlainLiteral("red"));
 }
 catch (RDFModelException ex)
 {
@@ -289,102 +139,173 @@ Cannot access a graph when both object and literals are given: they must be mutu
 
 </div>
 
-## Remove triples
+**How a selection runs.** Each selector given is a lookup in one of the four indexes, which returns the identifiers of the matching triples. The graph intersects those sets starting from the smallest one, so the cost depends on the most selective selector and not on the size of the graph. A selection without selectors is the only one that reads every triple.
 
-The rosé is sold out. `RemoveTripleAsync` removes one triple and `RemoveTriplesAsync` removes all those that match the same four arguments of `SelectTriplesAsync`. First the price of the rosé, a single triple, then everything else that has the rosé as subject:
+## The three forms of a selection
+
+The same selectors give three results:
+
+| Call | Result | The graph |
+|---|---|---|
+| `SelectTriples(...)` | a `List<RDFTriple>` | is unchanged |
+| `graph[...]` | a new `RDFGraph` with the matching triples | is unchanged |
+| `RemoveTriples(...)` | the graph itself, without the matching triples | loses them |
+
+The indexer is the form to use when the result goes on as a graph, for example to a file or to a set operation. The new graph has the library's default context, not the one of the source: give it its own with `SetContext`.
 
 ```csharp
-await catalog.RemoveTripleAsync(new RDFTriple(rosato, hasPrice, new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
-Console.WriteLine(catalog.TriplesCount);
-
-await catalog.RemoveTriplesAsync(s: rosato);
-Console.WriteLine(catalog.TriplesCount);
-Console.WriteLine((await catalog.SelectTriplesAsync(s: rosato)).Count);
+RDFGraph prices = catalog[p: price].SetContext(new Uri("https://vallerosa.example/prices"));
+Console.WriteLine(prices.Context);
+Console.WriteLine(prices.TriplesCount);
 ```
 
 <div class="result" markdown="1">
 
 ```
-16
-13
-0
+https://vallerosa.example/prices
+6
 ```
 
 </div>
 
-> Mind the arguments of `RemoveTriplesAsync`: a call with none of them matches every triple and empties the graph, exactly like `ClearTriplesAsync()`.
-{: .warn}
+`RemoveTriples` with no selector matches every triple and empties the graph, exactly like `ClearTriples`.
 
-## Move a graph through a table
+## Building a graph
 
-A graph converts to a `DataTable` with one row for each triple and the columns `?SUBJECT`, `?PREDICATE` and `?OBJECT`. The table is named after the context of the graph. `RDFGraph.FromDataTableAsync` does the opposite and reads the context back from the name of the table.
+A graph starts empty or from a list of triples and grows with `AddTriple`. A triple added twice is stored once: the graph is a set.
 
 ```csharp
-DataTable table = await catalog.ToDataTableAsync();
-Console.WriteLine(table.TableName);
-foreach (DataColumn column in table.Columns)
-    Console.WriteLine(column.ColumnName);
-Console.WriteLine(table.Rows.Count);
+RDFTriple rossoProducer = new RDFTriple(rosso, producedBy, poggioAlto);
+RDFTriple rossoType = new RDFTriple(rosso, RDFVocabulary.RDF.TYPE, redWine);
 
-RDFGraph restored = await RDFGraph.FromDataTableAsync(table);
-Console.WriteLine(restored.Context);
-Console.WriteLine(restored.Equals(catalog));
+RDFGraph draft = new RDFGraph()
+    .SetContext(new Uri("https://vallerosa.example/draft"))
+    .AddTriple(rossoProducer)
+    .AddTriple(rossoType)
+    .AddTriple(rossoProducer);
+
+Console.WriteLine(draft.TriplesCount);
+Console.WriteLine(draft);
+Console.WriteLine(new RDFGraph().Context);
 ```
 
 <div class="result" markdown="1">
 
 ```
-https://vallerosa.example/catalog
-?SUBJECT
-?PREDICATE
-?OBJECT
-13
-https://vallerosa.example/catalog
+2
+https://vallerosa.example/draft
+https://rdfsharp.codeplex.com/
+```
+
+</div>
+
+`ToString` gives the context. A graph that never met `SetContext` keeps the library's default context, which the Turtle writer turns into the `@base` of a file: name every graph you write.
+
+## Membership and equality
+
+`ContainsTriple` asks the index, so it costs the same on any graph. The triple you pass does not have to be the object that went in: two triples with the same subject, predicate and object are the same triple. `Equals` compares two graphs by their triples and ignores their contexts.
+
+```csharp
+Console.WriteLine(await catalog.ContainsTripleAsync(new RDFTriple(rosso, producedBy, poggioAlto)));
+Console.WriteLine(draft.Equals(catalog[s: rosso, p: producedBy].UnionWith(catalog[s: rosso, p: RDFVocabulary.RDF.TYPE])));
+```
+
+<div class="result" markdown="1">
+
+```
+True
 True
 ```
 
 </div>
 
-The cells are the text of each term, so the table is a good bridge to a grid control or to a spreadsheet export. The text of a literal keeps its language tag or its datatype, which is what lets `FromDataTableAsync` rebuild the same triples.
+## Set operations
 
-## Synchronous forms
+`UnionWith`, `IntersectWith` and `DifferenceWith` take the graph they are called on and another one. Each builds a new graph and leaves both operands as they were. The new graph has the default context.
 
-Every `...Async` method of this chapter also has a synchronous form without the suffix, such as `SelectTriples`, `UnionWith` or `FromFile`, for code that cannot await. The count has both forms too: `TriplesCount` and `TriplesCountAsync`.
+| Method | Gives |
+|---|---|
+| `a.UnionWith(b)` | the triples of `a` and of `b` |
+| `a.IntersectWith(b)` | the triples found in both |
+| `a.DifferenceWith(b)` | the triples of `a` that are not in `b` |
+
+The cooperative merges what each winery sends. Both wineries restate the type of the cooperative, so the union keeps that triple once:
 
 ```csharp
-long total = await catalog.TriplesCountAsync;
-Console.WriteLine(total);
+RDFResource cooperative = new RDFResource(vrd + "vallerosa");
+RDFTriple cooperativeType = new RDFTriple(cooperative, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Cooperative"));
 
-List<RDFTriple> ofRosso = await catalog.SelectTriplesAsync(s: rosso);
-Console.WriteLine(ofRosso.Count);
+RDFGraph fromPoggioAlto = catalog[p: producedBy, o: poggioAlto]
+    .AddTriple(cooperativeType);
+RDFGraph fromTreUlivi = catalog[p: producedBy, o: new RDFResource(vrd + "tre-ulivi")]
+    .AddTriple(cooperativeType);
+
+Console.WriteLine((await fromPoggioAlto.UnionWithAsync(fromTreUlivi)).TriplesCount);
+Console.WriteLine((await fromPoggioAlto.IntersectWithAsync(fromTreUlivi)).TriplesCount);
+Console.WriteLine((await fromPoggioAlto.DifferenceWithAsync(fromTreUlivi)).TriplesCount);
 ```
 
 <div class="result" markdown="1">
 
 ```
-13
-4
+5
+1
+2
 ```
 
 </div>
 
-On `net8.0` and later the graph is also an `IAsyncEnumerable<RDFTriple>`, so you can walk it with `await foreach`. This one is not available on `netstandard2.0`:
+## Walking the triples
+
+A graph is an `IEnumerable<RDFTriple>`, so `foreach` walks it. `TriplesEnumerator` gives the same walk as an enumerator, for code that drives it with `MoveNext`. On `net8.0` and later the graph is also an `IAsyncEnumerable<RDFTriple>`: `await foreach` walks it, directly or through `TriplesEnumeratorAsync`. A cancellation token goes in with `WithCancellation`. The order of the walk is the order of the index, not the order of insertion.
 
 ```csharp
-await catalog.AddTripleAsync(new RDFTriple(rosso, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Rosso di Vallerosa", "it")));
+IEnumerator<RDFTriple> walker = draft.TriplesEnumerator;
+while (walker.MoveNext())
+    Console.WriteLine(walker.Current.Predicate);
 
+int labels = 0;
 await foreach (RDFTriple triple in catalog.TriplesEnumeratorAsync)
-    if (triple.Subject.Equals(rosso) && triple.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
-        Console.WriteLine(triple.Object);
+    if (triple.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
+        labels++;
+Console.WriteLine(labels);
 ```
 
 <div class="result" markdown="1">
 
 ```
-Vallerosa Red@EN
-Rosso di Vallerosa@IT
+https://vallerosa.example/vocab#producedBy
+http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+34
 ```
 
 </div>
 
-The catalog is now what the cooperative wanted: the wines of the two wineries in one graph. The next chapter writes it to files that other people can read.
+## A graph as a table
+
+`ToDataTable` writes one row for each triple in the columns `?SUBJECT`, `?PREDICATE` and `?OBJECT`. It names the table after the context. `RDFGraph.FromDataTable` reads such a table back and takes the context from its name. A literal keeps its language tag or its datatype in the cell, which is what lets the triples come back unchanged.
+
+```csharp
+DataTable table = await draft.ToDataTableAsync();
+Console.WriteLine(table.TableName);
+foreach (DataRow row in table.Rows)
+    Console.WriteLine($"{row["?SUBJECT"]} | {row["?PREDICATE"]} | {row["?OBJECT"]}");
+
+RDFGraph back = await RDFGraph.FromDataTableAsync(table);
+Console.WriteLine(back.Equals(draft));
+```
+
+<div class="result" markdown="1">
+
+```
+https://vallerosa.example/draft
+https://vallerosa.example/id/rosso-2021 | https://vallerosa.example/vocab#producedBy | https://vallerosa.example/id/poggio-alto
+https://vallerosa.example/id/rosso-2021 | http://www.w3.org/1999/02/22-rdf-syntax-ns#type | https://vallerosa.example/vocab#RedWine
+True
+```
+
+</div>
+
+## Disposing
+
+A graph is `IDisposable`. On `net8.0` and later it is also `IAsyncDisposable`. Disposing it releases its indexes at once: worth doing for a large graph that is no longer needed.
