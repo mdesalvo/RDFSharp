@@ -66,4 +66,4 @@ The same question in SPARQL is on the [home page]({{ '/' | relative_url }}). The
 
 ## Next
 
-[How it fits together]({{ '/architecture/' | relative_url }}) is the map of the library. The [Model]({{ '/model/' | relative_url }}) chapters start from resources, literals and triples.
+[RDFSharp at a glance]({{ '/' | relative_url }}) is the map of the library. The [Model]({{ '/model/' | relative_url }}) chapters start from resources, literals and triples.

@@ -4,7 +4,6 @@
     - { title: RDFSharp at a glance, url: / }
     - { title: Getting started, url: /getting-started/ }
     - { title: Meet Vallerosa, url: /vallerosa/ }
-    - { title: How it fits together, url: /architecture/ }
 - group: Model
   pages:
     - { title: Model at a glance, url: /model/, overview: true }

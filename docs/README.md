@@ -20,7 +20,7 @@ Then open http://localhost:4000/RDFSharp/. The `jekyll/jekyll:pages` image carri
 | `_includes/` | the logo and the hand-drawn graph of the home page |
 | `assets/css/site.css`, `assets/js/site.js` | the whole look and behaviour, no framework |
 | `assets/data/` | the Vallerosa files every example works on |
-| `index.md`, `getting-started.md`, `vallerosa.md`, `architecture.md`, `going-further.md` | the pages outside the three layers |
+| `index.md`, `getting-started.md`, `vallerosa.md`, `going-further.md` | the pages outside the three layers |
 | `model/`, `store/`, `query/` | one Markdown file per page of each layer |
 
 A new page needs a file and a line in `nav.yml`. Its front matter:

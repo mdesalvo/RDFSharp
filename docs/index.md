@@ -64,16 +64,38 @@ RDFSelectQueryResult result = await query.ApplyToGraphAsync(catalog);
 
 </div>
 
-
 ## Three layers, one library
 
 RDFSharp ships as a NuGet package targeting `netstandard2.0`, `net8.0` and `net10.0`. Inside it, three layers build on each other.
 
 <div class="cards three">
-  <a class="card" href="{{ '/model/' | relative_url }}"><span class="kind">Model</span><h3>Describe the data</h3><p>Resources, literals, triples and graphs. Namespaces and datatypes. The standard RDF formats. SHACL shapes to say what good data looks like.</p></a>
-  <a class="card" href="{{ '/store/' | relative_url }}"><span class="kind">Store</span><h3>Remember where it came from</h3><p>Quadruples add a context to every triple, so the same fact told by two sources stays two facts. In memory or on a database.</p></a>
-  <a class="card" href="{{ '/query/' | relative_url }}"><span class="kind">Query</span><h3>Ask and change it</h3><p>SPARQL 1.1 queries and updates, composed in C# or parsed from text, over graphs, stores, federations and remote endpoints.</p></a>
+  <a class="card" href="{{ '/model/' | relative_url }}"><span class="kind">RDFSharp.Model</span><h3>Describe the data</h3><p>Resources, literals, triples and graphs. Namespaces and datatypes. The standard RDF formats. SHACL shapes to say what good data looks like.</p></a>
+  <a class="card" href="{{ '/store/' | relative_url }}"><span class="kind">RDFSharp.Store</span><h3>Remember where it came from</h3><p>Quadruples add a context to every triple, so the same fact told by two sources stays two facts. In memory or on a database.</p></a>
+  <a class="card" href="{{ '/query/' | relative_url }}"><span class="kind">RDFSharp.Query</span><h3>Ask and change it</h3><p>SPARQL 1.1 queries and updates, composed in C# or parsed from text, over graphs, stores, federations and remote endpoints.</p></a>
 </div>
+
+## Data sources
+
+A query runs on any `RDFDataSource`, with one method per kind: `ApplyToGraphAsync`, `ApplyToStoreAsync`, `ApplyToFederationAsync`, `ApplyToSPARQLEndpointAsync`.
+
+```mermaid
+flowchart BT
+  g[RDFGraph] --> ds[RDFDataSource]
+  st[RDFStore] --> ds
+  fed[RDFFederation] --> ds
+  ep[RDFSPARQLEndpoint] --> ds
+  mem[RDFMemoryStore] --> st
+  ext[Extensions stores<br>SQLite, PostgreSQL, Neo4j, ...] --> st
+```
+
+| Kind | Holds |
+|---|---|
+| graph | triples, in memory |
+| store | quadruples, in memory or on a database through [RDFSharp.Extensions](https://github.com/mdesalvo/RDFSharp.Extensions) |
+| federation | other data sources, queried as one |
+| SPARQL endpoint | a remote service, such as DBpedia |
+
+A `SELECT` answers with a `DataTable`, an `ASK` with a boolean, a `CONSTRUCT` or a `DESCRIBE` with a graph.
 
 ## The family
 
