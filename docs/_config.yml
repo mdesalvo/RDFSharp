@@ -1,0 +1,15 @@
+title: RDFSharp
+description: Lightweight and friendly .NET library for Semantic Web applications (RDF, SPARQL, SHACL)
+url: https://mdesalvo.github.io
+baseurl: /RDFSharp
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+exclude:
+  - README.md
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default

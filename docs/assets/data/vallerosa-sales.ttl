@@ -1,0 +1,149 @@
+# The Vallerosa map and sales ledger: where the cellar and its subzones lie, the partner shops and what they bought in 2025.
+# The running example of the RDFSharp manual: https://mdesalvo.github.io/RDFSharp/vallerosa/
+# Geometries are GeoSPARQL WKT literals in WGS84, longitude first. Shops are fictional, their cities are real.
+
+@prefix vr:   <https://vallerosa.example/vocab#> .
+@prefix vrd:  <https://vallerosa.example/id/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+
+# The cellar, where every delivery starts
+
+vrd:vallerosa geo:hasGeometry vrd:vallerosa-geom .
+vrd:vallerosa-geom geo:asWKT "POINT(11.33 43.34)"^^geo:wktLiteral .
+
+# The three subzones of the valley, sharing their borders
+
+vrd:poggio geo:hasGeometry vrd:poggio-geom .
+vrd:poggio-geom geo:asWKT "POLYGON((11.25 43.32, 11.29 43.32, 11.30 43.35, 11.29 43.38, 11.25 43.38, 11.25 43.32))"^^geo:wktLiteral .
+
+vrd:colle-nord geo:hasGeometry vrd:colle-nord-geom .
+vrd:colle-nord-geom geo:asWKT "POLYGON((11.30 43.35, 11.37 43.35, 11.37 43.38, 11.29 43.38, 11.30 43.35))"^^geo:wktLiteral .
+
+vrd:piana geo:hasGeometry vrd:piana-geom .
+vrd:piana-geom geo:asWKT "POLYGON((11.29 43.32, 11.37 43.32, 11.37 43.35, 11.30 43.35, 11.29 43.32))"^^geo:wktLiteral .
+
+# Partner shops
+
+vrd:enoteca-del-campo a vr:Shop ;
+    rdfs:label "Enoteca del Campo" ;
+    rdfs:comment "A wine shop in Siena."@en ;
+    geo:hasGeometry vrd:enoteca-del-campo-geom .
+vrd:enoteca-del-campo-geom geo:asWKT "POINT(11.3308 43.3188)"^^geo:wktLiteral .
+
+vrd:bottega-arno a vr:Shop ;
+    rdfs:label "Bottega Arno" ;
+    rdfs:comment "A wine shop in Florence."@en ;
+    geo:hasGeometry vrd:bottega-arno-geom .
+vrd:bottega-arno-geom geo:asWKT "POINT(11.2558 43.7696)"^^geo:wktLiteral .
+
+vrd:cantinetta-torre a vr:Shop ;
+    rdfs:label "Cantinetta della Torre" ;
+    rdfs:comment "A wine shop in Pisa."@en ;
+    geo:hasGeometry vrd:cantinetta-torre-geom .
+vrd:cantinetta-torre-geom geo:asWKT "POINT(10.4017 43.7228)"^^geo:wktLiteral .
+
+vrd:due-torri a vr:Shop ;
+    rdfs:label "Vineria Due Torri" ;
+    rdfs:comment "A wine shop in Bologna."@en ;
+    geo:hasGeometry vrd:due-torri-geom .
+vrd:due-torri-geom geo:asWKT "POINT(11.3426 44.4949)"^^geo:wktLiteral .
+
+vrd:sette-colli a vr:Shop ;
+    rdfs:label "Enoteca Sette Colli" ;
+    rdfs:comment "A wine shop in Rome."@en ;
+    geo:hasGeometry vrd:sette-colli-geom .
+vrd:sette-colli-geom geo:asWKT "POINT(12.4964 41.9028)"^^geo:wktLiteral .
+
+vrd:navigli a vr:Shop ;
+    rdfs:label "Enoteca dei Navigli" ;
+    rdfs:comment "A wine shop in Milan."@en ;
+    geo:hasGeometry vrd:navigli-geom .
+vrd:navigli-geom geo:asWKT "POINT(9.1900 45.4642)"^^geo:wktLiteral .
+
+# Sales of 2025
+
+vrd:sale-2025-001 a vr:Sale ;
+    vr:soldTo vrd:enoteca-del-campo ;
+    vr:soldWine vrd:rosso-2021 ;
+    vr:bottles 120 ;
+    vr:date "2025-03-14"^^xsd:date .
+
+vrd:sale-2025-002 a vr:Sale ;
+    vr:soldTo vrd:enoteca-del-campo ;
+    vr:soldWine vrd:riserva-2019 ;
+    vr:bottles 36 ;
+    vr:date "2025-03-14"^^xsd:date .
+
+vrd:sale-2025-003 a vr:Sale ;
+    vr:soldTo vrd:enoteca-del-campo ;
+    vr:soldWine vrd:vinsanto-2015 ;
+    vr:bottles 24 ;
+    vr:date "2025-11-20"^^xsd:date .
+
+vrd:sale-2025-004 a vr:Sale ;
+    vr:soldTo vrd:bottega-arno ;
+    vr:soldWine vrd:rosso-2021 ;
+    vr:bottles 90 ;
+    vr:date "2025-04-02"^^xsd:date .
+
+vrd:sale-2025-005 a vr:Sale ;
+    vr:soldTo vrd:bottega-arno ;
+    vr:soldWine vrd:bianco-2023 ;
+    vr:bottles 60 ;
+    vr:date "2025-05-21"^^xsd:date .
+
+vrd:sale-2025-006 a vr:Sale ;
+    vr:soldTo vrd:bottega-arno ;
+    vr:soldWine vrd:vermentino-2023 ;
+    vr:bottles 48 ;
+    vr:date "2025-06-10"^^xsd:date .
+
+vrd:sale-2025-007 a vr:Sale ;
+    vr:soldTo vrd:cantinetta-torre ;
+    vr:soldWine vrd:vermentino-2023 ;
+    vr:bottles 72 ;
+    vr:date "2025-05-30"^^xsd:date .
+
+vrd:sale-2025-008 a vr:Sale ;
+    vr:soldTo vrd:cantinetta-torre ;
+    vr:soldWine vrd:rosato-2024 ;
+    vr:bottles 60 ;
+    vr:date "2025-06-18"^^xsd:date .
+
+vrd:sale-2025-009 a vr:Sale ;
+    vr:soldTo vrd:due-torri ;
+    vr:soldWine vrd:riserva-2019 ;
+    vr:bottles 24 ;
+    vr:date "2025-09-12"^^xsd:date .
+
+vrd:sale-2025-010 a vr:Sale ;
+    vr:soldTo vrd:due-torri ;
+    vr:soldWine vrd:rosso-2021 ;
+    vr:bottles 48 ;
+    vr:date "2025-09-12"^^xsd:date .
+
+vrd:sale-2025-011 a vr:Sale ;
+    vr:soldTo vrd:sette-colli ;
+    vr:soldWine vrd:riserva-2019 ;
+    vr:bottles 30 ;
+    vr:date "2025-10-08"^^xsd:date .
+
+vrd:sale-2025-012 a vr:Sale ;
+    vr:soldTo vrd:sette-colli ;
+    vr:soldWine vrd:vinsanto-2015 ;
+    vr:bottles 12 ;
+    vr:date "2025-12-01"^^xsd:date .
+
+vrd:sale-2025-013 a vr:Sale ;
+    vr:soldTo vrd:navigli ;
+    vr:soldWine vrd:riserva-2019 ;
+    vr:bottles 18 ;
+    vr:date "2025-10-22"^^xsd:date .
+
+vrd:sale-2025-014 a vr:Sale ;
+    vr:soldTo vrd:navigli ;
+    vr:soldWine vrd:bianco-2023 ;
+    vr:bottles 24 ;
+    vr:date "2025-10-22"^^xsd:date .

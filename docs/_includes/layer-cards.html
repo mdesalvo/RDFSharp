@@ -1,0 +1,9 @@
+{%- comment -%} One card per page of a layer, in reading order, from nav.yml: the overview never drifts from the index. {%- endcomment -%}
+{%- for g in site.data.nav -%}{%- if g.group == include.group -%}
+<div class="cards">
+{%- for p in g.pages offset: 1 %}
+  {%- if p.section %}</div><h3 class="cards-section">{{ p.section }}</h3><div class="cards">{% endif %}
+  <a class="card" href="{{ p.url | relative_url }}"><span class="kind">{{ forloop.index }}</span><h3>{{ p.title }}</h3><p>{{ p.blurb }}</p></a>
+{%- endfor %}
+</div>
+{%- endif -%}{%- endfor -%}

@@ -1,0 +1,50 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix vr: <https://vallerosa.example/vocab#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@base <https://vallerosa.example/shapes>.
+
+_:c73d429e10954d1585054d0813c721c7 rdf:first "IT"; 
+                                   rdf:rest _:e0d21a97289744e1b3009782da768af8; 
+                                   a rdf:List. 
+_:e0d21a97289744e1b3009782da768af8 rdf:first "EN"; 
+                                   rdf:rest rdf:nil; 
+                                   a rdf:List. 
+vr:WineAlcoholShape a sh:PropertyShape; 
+                    sh:datatype xsd:decimal; 
+                    sh:deactivated "false"^^xsd:boolean; 
+                    sh:maxInclusive "20"^^xsd:decimal; 
+                    sh:minInclusive "5"^^xsd:decimal; 
+                    sh:path vr:alcohol; 
+                    sh:severity sh:Violation. 
+vr:WineLabelShape a sh:PropertyShape; 
+                  sh:deactivated "false"^^xsd:boolean; 
+                  sh:languageIn _:c73d429e10954d1585054d0813c721c7; 
+                  sh:path rdfs:label; 
+                  sh:severity sh:Violation; 
+                  sh:uniqueLang "true"^^xsd:boolean. 
+vr:WinePriceShape a sh:PropertyShape; 
+                  sh:deactivated "false"^^xsd:boolean; 
+                  sh:minExclusive "0"^^xsd:decimal; 
+                  sh:path vr:price; 
+                  sh:severity sh:Violation. 
+vr:WineProducerShape a sh:PropertyShape; 
+                     sh:class vr:Producer; 
+                     sh:deactivated "false"^^xsd:boolean; 
+                     sh:minCount "1"^^xsd:integer; 
+                     sh:path vr:producedBy; 
+                     sh:severity sh:Violation. 
+vr:WineShape a sh:NodeShape; 
+             sh:deactivated "false"^^xsd:boolean; 
+             sh:message "A wine of the catalog does not follow the rules of the cooperative"@EN; 
+             sh:property vr:WineVintageShape, vr:WineAlcoholShape, vr:WineLabelShape, vr:WineProducerShape, vr:WinePriceShape; 
+             sh:severity sh:Violation; 
+             sh:targetClass vr:Wine. 
+vr:WineVintageShape a sh:PropertyShape; 
+                    sh:datatype xsd:gYear; 
+                    sh:deactivated "false"^^xsd:boolean; 
+                    sh:maxCount "1"^^xsd:integer; 
+                    sh:minCount "1"^^xsd:integer; 
+                    sh:path vr:vintage; 
+                    sh:severity sh:Violation. 

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.url == "/" %}RDFSharp · the manual{% else %}{{ page.title | strip_html }} · RDFSharp{% endif %}</title>
+  <meta name="description" content="{{ page.lede | default: site.description | strip_html | escape }}">
+  <meta name="theme-color" content="#13111c">
+  <link rel="icon" href="{{ '/assets/images/favicon.svg' | relative_url }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+</head>
+<body>
+<canvas class="web" aria-hidden="true"></canvas>
+{%- comment -%} The reading order is the order of nav.yml: it gives the pager its neighbours and the eyebrow its place in the group. {%- endcomment -%}
+{%- assign all = "" | split: "" -%}
+{%- for g in site.data.nav -%}{%- for p in g.pages -%}{%- assign all = all | push: p -%}{%- endfor -%}{%- endfor -%}
+{%- assign prev = nil -%}{%- assign next = nil -%}
+{%- for p in all -%}
+  {%- if p.url == page.url -%}
+    {%- assign i = forloop.index0 -%}
+    {%- if i > 0 -%}{%- assign j = i | minus: 1 -%}{%- assign prev = all[j] -%}{%- endif -%}
+    {%- assign k = i | plus: 1 -%}{%- assign next = all[k] -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign eyebrow = page.eyebrow -%}
+{%- unless eyebrow -%}
+  {%- comment -%} "Query · 4 of 17": the place among the chapters of the group, the overview not counted. {%- endcomment -%}
+  {%- for g in site.data.nav -%}
+    {%- if g.group != "Welcome" and g.group != "Beyond" -%}
+      {%- assign total = 0 -%}{%- assign n = 0 -%}{%- assign at = 0 -%}
+      {%- for p in g.pages -%}
+        {%- unless p.overview -%}
+          {%- assign total = total | plus: 1 -%}
+          {%- if p.url == page.url -%}{%- assign at = total -%}{%- endif -%}
+        {%- endunless -%}
+      {%- endfor -%}
+      {%- if at > 0 -%}{%- capture eyebrow -%}{{ g.group }} · {{ at }} of {{ total }}{%- endcapture -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endunless -%}
+
+<header class="top">
+  <button class="menu" aria-label="Open the menu" aria-controls="side" aria-expanded="false"><span></span><span></span><span></span></button>
+  <a class="brand" href="{{ '/' | relative_url }}"><span class="mark">{% include logo.html %}</span><span>RDFSharp</span></a>
+  <a class="pkg" href="https://www.nuget.org/packages/RDFSharp" title="RDFSharp on NuGet">NuGet</a>
+  <a class="gh" href="https://github.com/mdesalvo/RDFSharp" aria-label="RDFSharp on GitHub" title="RDFSharp on GitHub"><svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+</header>
+
+<div class="shade" hidden></div>
+
+<aside class="side" id="side">
+  <div class="search">
+    <input id="q" type="search" placeholder="Search the manual  /" autocomplete="off" aria-label="Search the manual">
+    <div id="hits" hidden></div>
+  </div>
+  <nav>
+    {%- for g in site.data.nav %}
+    {%- assign inside = false -%}
+    {%- for p in g.pages -%}{%- if p.url == page.url -%}{%- assign inside = true -%}{%- endif -%}{%- endfor %}
+    <details class="group"{% if inside or g.group == "Welcome" %} open{% endif %}>
+      <summary>{{ g.group }}</summary>
+      {%- for p in g.pages %}
+      {%- if p.section %}<div class="section">{{ p.section }}</div>{% endif %}
+      <a href="{{ p.url | relative_url }}"{% if p.url == page.url %} class="here" aria-current="page"{% endif %}>{{ p.title }}</a>
+      {%- endfor %}
+    </details>
+    {%- endfor %}
+  </nav>
+</aside>
+
+<aside class="toc" hidden><div class="toc-title">On this page</div><nav></nav></aside>
+
+<main>
+  {%- if page.url != "/" %}
+  <header class="page">
+    {%- if eyebrow and eyebrow != "" %}<div class="eyebrow">{{ eyebrow }}</div>{% endif %}
+    <h1>{{ page.title }}</h1>
+    {%- if page.tagline %}<p class="tagline">{{ page.tagline }}</p>{% endif %}
+    {%- if page.lede %}<p class="lede">{{ page.lede }}</p>{% endif %}
+  </header>
+  {%- endif %}
+
+  <article class="prose">
+{{ content }}
+  </article>
+
+  {%- if prev or next %}
+  <nav class="pager">
+    {%- if prev %}<a class="prev" href="{{ prev.url | relative_url }}"><small>Previous</small>{{ prev.title }}</a>{% else %}<span></span>{% endif %}
+    {%- if next %}<a class="next" href="{{ next.url | relative_url }}"><small>Next</small>{{ next.title }}</a>{% endif %}
+  </nav>
+  {%- endif %}
+  <footer class="foot"><span class="mark">{% include logo.html %}</span>RDFSharp is open source under the Apache 2.0 license.<br><a href="https://github.com/mdesalvo/RDFSharp/edit/main/docs/{{ page.path }}">Improve this page on GitHub</a></footer>
+</main>
+
+<script>window.RDFSHARP_SEARCH = "{{ '/search.json' | relative_url }}";</script>
+<script src="{{ '/assets/js/site.js' | relative_url }}"></script>
+</body>
+</html>

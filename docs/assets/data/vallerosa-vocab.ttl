@@ -1,0 +1,169 @@
+# The Vallerosa vocabulary (TBox).
+# The running example of the RDFSharp manual: https://mdesalvo.github.io/RDFSharp/vallerosa/
+# It stays at the RDFS level on purpose: the OWLSharp manual picks it up and grows it into an OWL2 ontology.
+
+@prefix vr:   <https://vallerosa.example/vocab#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# Classes
+
+vr:Cooperative a rdfs:Class ;
+    rdfs:label "Cooperative"@en, "Cooperativa"@it ;
+    rdfs:comment "A group of wine producers who sell under a common name."@en .
+
+vr:Producer a rdfs:Class ;
+    rdfs:label "Producer"@en, "Produttore"@it ;
+    rdfs:comment "A winery that makes and bottles its own wines."@en .
+
+vr:Area a rdfs:Class ;
+    rdfs:label "Area"@en, "Zona"@it ;
+    rdfs:comment "A geographic area: a country, a region, a valley or a subzone of it."@en .
+
+vr:Grape a rdfs:Class ;
+    rdfs:label "Grape variety"@en, "Vitigno"@it .
+
+vr:Wine a rdfs:Class ;
+    rdfs:label "Wine"@en, "Vino"@it ;
+    rdfs:comment "A wine of a given vintage, as it is sold in the bottle."@en .
+
+vr:RedWine a rdfs:Class ;
+    rdfs:subClassOf vr:Wine ;
+    rdfs:label "Red wine"@en, "Vino rosso"@it .
+
+vr:WhiteWine a rdfs:Class ;
+    rdfs:subClassOf vr:Wine ;
+    rdfs:label "White wine"@en, "Vino bianco"@it .
+
+vr:RoseWine a rdfs:Class ;
+    rdfs:subClassOf vr:Wine ;
+    rdfs:label "Rosé wine"@en, "Vino rosato"@it .
+
+vr:SweetWine a rdfs:Class ;
+    rdfs:subClassOf vr:Wine ;
+    rdfs:label "Sweet wine"@en, "Vino dolce"@it .
+
+vr:Dish a rdfs:Class ;
+    rdfs:label "Dish"@en, "Piatto"@it .
+
+vr:Person a rdfs:Class ;
+    rdfs:label "Person"@en, "Persona"@it .
+
+vr:Shop a rdfs:Class ;
+    rdfs:label "Wine shop"@en, "Enoteca"@it ;
+    rdfs:comment "A partner shop that buys from the cooperative and sells to the public."@en .
+
+vr:Sale a rdfs:Class ;
+    rdfs:label "Sale"@en, "Vendita"@it ;
+    rdfs:comment "One delivery of bottles of one wine to one shop."@en .
+
+# Properties
+
+vr:memberOf a rdf:Property ;
+    rdfs:label "member of"@en ;
+    rdfs:domain vr:Producer ;
+    rdfs:range vr:Cooperative .
+
+vr:locatedIn a rdf:Property ;
+    rdfs:label "located in"@en ;
+    rdfs:domain vr:Producer ;
+    rdfs:range vr:Area .
+
+vr:partOf a rdf:Property ;
+    rdfs:label "part of"@en ;
+    rdfs:domain vr:Area ;
+    rdfs:range vr:Area .
+
+vr:producedBy a rdf:Property ;
+    rdfs:label "produced by"@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range vr:Producer .
+
+vr:produces a rdf:Property ;
+    rdfs:label "produces"@en ;
+    rdfs:domain vr:Producer ;
+    rdfs:range vr:Wine .
+
+vr:grape a rdf:Property ;
+    rdfs:label "grape"@en ;
+    rdfs:comment "A grape variety the wine is made from."@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range vr:Grape .
+
+vr:blend a rdf:Property ;
+    rdfs:label "blend"@en ;
+    rdfs:comment "The grape varieties of the wine as an ordered list, the largest share first."@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range rdf:List .
+
+vr:vintage a rdf:Property ;
+    rdfs:label "vintage"@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range xsd:gYear .
+
+vr:alcohol a rdf:Property ;
+    rdfs:label "alcohol"@en ;
+    rdfs:comment "Alcohol by volume, in percent."@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range xsd:decimal .
+
+vr:price a rdf:Property ;
+    rdfs:label "price"@en ;
+    rdfs:comment "Cellar door price of one bottle in euros, VAT excluded."@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range xsd:decimal .
+
+vr:organic a rdf:Property ;
+    rdfs:label "organic"@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range xsd:boolean .
+
+vr:score a rdf:Property ;
+    rdfs:label "score"@en ;
+    rdfs:comment "A score out of 100 given to the wine by a guide."@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range xsd:integer .
+
+vr:pairsWith a rdf:Property ;
+    rdfs:label "pairs with"@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range vr:Dish .
+
+vr:awards a rdf:Property ;
+    rdfs:label "awards"@en ;
+    rdfs:comment "The prizes a wine has won, kept in an open container."@en ;
+    rdfs:domain vr:Wine ;
+    rdfs:range rdf:Bag .
+
+vr:claims a rdf:Property ;
+    rdfs:label "claims"@en ;
+    rdfs:comment "Links a person to a statement that the person makes, without asserting it."@en ;
+    rdfs:domain vr:Person ;
+    rdfs:range rdf:Statement .
+
+vr:soldTo a rdf:Property ;
+    rdfs:label "sold to"@en ;
+    rdfs:domain vr:Sale ;
+    rdfs:range vr:Shop .
+
+vr:soldWine a rdf:Property ;
+    rdfs:label "sold wine"@en ;
+    rdfs:domain vr:Sale ;
+    rdfs:range vr:Wine .
+
+vr:bottles a rdf:Property ;
+    rdfs:label "bottles"@en ;
+    rdfs:domain vr:Sale ;
+    rdfs:range xsd:integer .
+
+vr:date a rdf:Property ;
+    rdfs:label "date"@en ;
+    rdfs:domain vr:Sale ;
+    rdfs:range xsd:date .
+
+# Datatypes
+
+vr:abv a rdfs:Datatype ;
+    rdfs:label "alcohol by volume"@en ;
+    rdfs:comment "A decimal from 0 to 20. Its facets are built in the Datatypes and facets chapter of the manual."@en .
