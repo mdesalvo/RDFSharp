@@ -311,7 +311,7 @@ Console.WriteLine(names.Count);
 
 </div>
 
-The Vallerosa Red has two labels, one in English and one in Italian. On `net8.0` and later a memory store is also an `IAsyncEnumerable<RDFQuadruple>`, so it can be walked with `await foreach`. A cancellation token goes in through `WithCancellation`:
+The Vallerosa Red has two labels, one in English and one in Italian. On `net8.0` and later a memory store is also an `IAsyncEnumerable<RDFQuadruple>`, so it can be walked with `await foreach`, directly or through `QuadruplesEnumeratorAsync`. A cancellation token goes in through `WithCancellation`:
 
 ```csharp
 int streamed = 0;

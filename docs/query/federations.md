@@ -47,6 +47,8 @@ Console.WriteLine(cellar.DataSourcesCount);
 
 </div>
 
+`DataSourcesEnumerator` walks the members of a federation one by one.
+
 The question is: which wines have an English label and what scores did the guides give them? The label lives in the catalog and the score in the guides. A federation has no query language of its own: you write an ordinary query and apply it with `ApplyToFederationAsync`.
 
 ```csharp

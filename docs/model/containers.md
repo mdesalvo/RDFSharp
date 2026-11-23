@@ -62,7 +62,7 @@ Console.WriteLine(blend.ItemsCount);
 
 </div>
 
-Four items went in and two stayed. The second Sangiovese is a duplicate and the Merlot is a literal where the collection wants resources: `AddItem` ignores both without an error. `RemoveItem` and `ClearItems` take items out and enumerating the collection gives the items in order.
+Four items went in and two stayed. The second Sangiovese is a duplicate and the Merlot is a literal where the collection wants resources: `AddItem` ignores both without an error. `RemoveItem` and `ClearItems` take items out. Enumerating the collection, or walking its `ItemsEnumerator`, gives the items in order. A container has the same `ItemsEnumerator`.
 
 ## How a graph stores it
 

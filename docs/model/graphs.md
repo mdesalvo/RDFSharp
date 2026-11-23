@@ -113,6 +113,25 @@ Valley Rosé@EN
 
 </div>
 
+The same walk is available as an enumerator: `TriplesEnumerator` hands out the triples one at a time, for code that drives the iteration itself.
+
+```csharp
+IEnumerator<RDFTriple> walker = fromTreUlivi.TriplesEnumerator;
+int labels = 0;
+while (walker.MoveNext())
+    if (walker.Current.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
+        labels++;
+Console.WriteLine(labels);
+```
+
+<div class="result" markdown="1">
+
+```
+2
+```
+
+</div>
+
 The triple you pass to `ContainsTripleAsync` does not have to be the object that went in: two triples with the same subject, predicate and object are the same triple.
 
 ## Merge the contributions

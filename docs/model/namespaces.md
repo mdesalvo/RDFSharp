@@ -191,7 +191,7 @@ vrd:vermentino a vr:Grape;
 
 The register is global to the process, so what you add once serves every graph you write afterwards, in Turtle and in RDF/XML.
 
-To see the whole register, enumerate it. To remove a namespace, use `RemoveByPrefix` or `RemoveByUri`. The standard ones are protected and a removal of them does nothing:
+To see the whole register, enumerate it or walk `RDFNamespaceRegister.NamespacesEnumerator`. To remove a namespace, use `RemoveByPrefix` or `RemoveByUri`. The standard ones are protected and a removal of them does nothing:
 
 ```csharp
 foreach (RDFNamespace ns in RDFNamespaceRegister.Instance)

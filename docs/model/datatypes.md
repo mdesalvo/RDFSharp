@@ -10,7 +10,7 @@ lede: Every typed literal is checked against its datatype before it exists. You 
 
 ## The built-in datatypes
 
-A **datatype** says what kind of value a literal holds and which spellings of it are valid. RDFSharp knows 52 of them, all listed in the enumeration `RDFModelEnums.RDFDatatypes`: the XML Schema ones (strings, booleans, the many kinds of number, dates and times, binary data, IRIs), plus a few of RDF (`rdf:HTML`, `rdf:JSON`, `rdf:XMLLiteral`), GeoSPARQL (`geo:wktLiteral`, `geo:gmlLiteral`), OWL and the time ontology. The register of datatypes holds them all and finds one by enumeration value or by IRI.
+A **datatype** says what kind of value a literal holds and which spellings of it are valid. RDFSharp knows 52 of them, all listed in the enumeration `RDFModelEnums.RDFDatatypes`: the XML Schema ones (strings, booleans, the many kinds of number, dates and times, binary data, IRIs), plus a few of RDF (`rdf:HTML`, `rdf:JSON`, `rdf:XMLLiteral`), GeoSPARQL (`geo:wktLiteral`, `geo:gmlLiteral`), OWL and the time ontology. The register of datatypes holds them all, finds one by enumeration value or by IRI and walks them with `RDFDatatypeRegister.DatatypesEnumerator`.
 
 ```csharp
 using RDFSharp.Model;
