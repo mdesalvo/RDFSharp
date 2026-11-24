@@ -653,5 +653,62 @@ public class RDFMinInclusiveConstraintTest
         Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_INCLUSIVE_CONSTRAINT_COMPONENT));
         Assert.IsTrue(validationReport.Results[0].SourceShape.Equals(new RDFResource("ex:PropShape")));
     }
+
+    [TestMethod]
+    public void ShouldConformPropertyShapeWhenPlainLiteralIsAboveMinInclusiveByCodePoint()
+    {
+        //DataGraph: Alice has an initial that follows the lower bound in code-point order
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), new RDFResource("ex:initial"), new RDFPlainLiteral("\u00C4")));
+
+        //ShapesGraph: "\u00C4" (U+00C4) follows "a" (U+0061) in code-point order
+        RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+        //The node shape targets Alice and delegates the check of her initial to the property shape
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:InitialShape"));
+        nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+        //The property shape requires the initial to be at least "a"
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:initial")));
+        propShape.AddConstraint(new RDFMinInclusiveConstraint(new RDFPlainLiteral("a")));
+        nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
+        shapesGraph.AddShape(nodeShape);
+        shapesGraph.AddShape(propShape);
+
+        //Validate: the code-point difference must not be mistaken for a comparison type error
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        //"\u00C4" is not below "a", so the data graph conforms
+        Assert.IsTrue(validationReport.Conforms);
+    }
+
+    [TestMethod]
+    public void ShouldNotConformPropertyShapeWhenPlainLiteralIsBelowMinInclusiveByCodePoint()
+    {
+        //DataGraph: Alice has an initial that precedes the lower bound in code-point order
+        RDFGraph dataGraph = new RDFGraph().SetContext(new Uri("ex:DataGraph"));
+        dataGraph.AddTriple(new RDFTriple(new RDFResource("ex:Alice"), new RDFResource("ex:initial"), new RDFPlainLiteral("a")));
+
+        //ShapesGraph: "a" (U+0061) precedes "\u00C4" (U+00C4) in code-point order
+        RDFShapesGraph shapesGraph = new RDFShapesGraph(new RDFResource("ex:ShapesGraph"));
+        //The node shape targets Alice and delegates the check of her initial to the property shape
+        RDFNodeShape nodeShape = new RDFNodeShape(new RDFResource("ex:InitialShape"));
+        nodeShape.AddTarget(new RDFTargetNode(new RDFResource("ex:Alice")));
+        //The property shape requires the initial to be at least "\u00C4"
+        RDFPropertyShape propShape = new RDFPropertyShape(new RDFResource("ex:PropShape"), RDFTestUtilities.ShaclPath(new RDFResource("ex:initial")));
+        propShape.AddConstraint(new RDFMinInclusiveConstraint(new RDFPlainLiteral("\u00C4")));
+        nodeShape.AddConstraint(new RDFPropertyConstraint(propShape));
+        shapesGraph.AddShape(nodeShape);
+        shapesGraph.AddShape(propShape);
+
+        //Validate: the code-point difference must not be mistaken for a comparison type error
+        RDFValidationReport validationReport = shapesGraph.Validate(dataGraph);
+
+        Assert.IsNotNull(validationReport);
+        //"a" is below "\u00C4", so the data graph does not conform
+        Assert.IsFalse(validationReport.Conforms);
+        //Only the min-inclusive constraint of the property shape is violated
+        Assert.AreEqual(1, validationReport.ResultsCount);
+        Assert.IsTrue(validationReport.Results[0].SourceConstraintComponent.Equals(RDFVocabulary.SHACL.MIN_INCLUSIVE_CONSTRAINT_COMPONENT));
+    }
     #endregion
 }

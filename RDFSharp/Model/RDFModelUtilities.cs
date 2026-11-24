@@ -574,6 +574,22 @@ namespace RDFSharp.Model
             new DateTimeFormatPair("---ddzzz", "---ddZ")
         };
 
+        //Single source of truth about which lexical formats belong to which date/time datatype: validation uses it
+        //to normalize the literal and value extraction uses it to read the instant back (time:general* has no formats)
+        private static readonly Dictionary<RDFModelEnums.RDFDatatypes, DateTimeFormatPair[]> DateTimeFormatsByDatatype
+            = new Dictionary<RDFModelEnums.RDFDatatypes, DateTimeFormatPair[]>
+        {
+            { RDFModelEnums.RDFDatatypes.XSD_DATETIME, SupportedDateTimeFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP, SupportedDateTimeStampFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_DATE, SupportedDateFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_TIME, SupportedTimeFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY, SupportedGMonthDayFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH, SupportedGYearMonthFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_GYEAR, SupportedGYearFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_GMONTH, SupportedGMonthFormats },
+            { RDFModelEnums.RDFDatatypes.XSD_GDAY, SupportedGDayFormats }
+        };
+
         //Bidirectional datatype<->description maps, built once by reflecting over the enum's
         //DescriptionAttributes, so the two lookups below become O(1) dictionary hits instead of a
         //per-call reflection scan. The maps are populated in enum declaration order, so when two
@@ -611,6 +627,44 @@ namespace RDFSharp.Model
             => DatatypeEnumByDescription.TryGetValue(datatype ?? string.Empty, out RDFModelEnums.RDFDatatypes enumValue)
                 ? enumValue
                 : default; //RDFS_LITERAL (=0)
+
+        /// <summary>
+        /// Gives the UTC instant stored in the given date/time typed literal, false when its datatype has no format table
+        /// </summary>
+        internal static bool TryGetDateTimeValue(RDFTypedLiteral typedLiteral, out DateTime dateTimeValue)
+        {
+            //Datatypes without a format table (the time:general* family) have no instant to give back
+            if (DateTimeFormatsByDatatype.TryGetValue(typedLiteral.Datatype.TargetDatatype, out DateTimeFormatPair[] datetimeFormatPairs))
+            {
+                //The stored value is the normalized output form, which the input formats of its datatype accept
+                foreach (DateTimeFormatPair formatPair in datetimeFormatPairs)
+                    //The first format that matches gives the instant, exactly as validation reads the literal
+                    if (DateTime.TryParseExact(typedLiteral.Value, formatPair.InputFormat, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dateTimeValue))
+                        return true;
+            }
+
+            //No format matched: the caller must not use the value
+            dateTimeValue = default;
+            return false;
+        }
+
+        /// <summary>
+        /// Gives the value of the given numeric typed literal in its value space: double for xsd:double and xsd:float, decimal for every other numeric datatype
+        /// </summary>
+        internal static (bool isFloatingPoint, double doubleValue, decimal decimalValue) GetNumericValue(RDFTypedLiteral typedLiteral)
+        {
+            //xsd:double and xsd:float keep NaN, infinities and exponent forms that decimal cannot represent
+            if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
+                 || typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT)
+                return (true, double.Parse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture), default);
+
+            //owl:rational ("p/q") needs evaluation before being a number
+            if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                return (false, default, RDFArithmeticEngine.ComputeOWLRationalValue(typedLiteral));
+
+            //Every other numeric datatype is exact and lives in the decimal value space
+            return (false, default, decimal.Parse(typedLiteral.Value, CultureInfo.InvariantCulture));
+        }
 
         /// <summary>
         /// Validates the value of the given typed literal against its datatype
@@ -766,32 +820,17 @@ namespace RDFSharp.Model
                 #endregion
 
                 #region DATETIME CATEGORY
+                //Every date/time datatype with a format table is normalized against the formats registered for it
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
-                    return TryParseDateTime(literalValue, SupportedDateTimeFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP:
-                    return TryParseDateTime(literalValue, SupportedDateTimeStampFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_DATE:
-                    return TryParseDateTime(literalValue, SupportedDateFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_TIME:
-                    return TryParseDateTime(literalValue, SupportedTimeFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
-                    return TryParseDateTime(literalValue, SupportedGMonthDayFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
-                    return TryParseDateTime(literalValue, SupportedGYearMonthFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
-                    return TryParseDateTime(literalValue, SupportedGYearFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
-                    return TryParseDateTime(literalValue, SupportedGMonthFormats);
-
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
-                    return TryParseDateTime(literalValue, SupportedGDayFormats);
+                    return TryParseDateTime(literalValue, DateTimeFormatsByDatatype[datatype]);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
                     return (RDFShims.TimeGeneralDayRegex.Value.IsMatch(literalValue), literalValue);

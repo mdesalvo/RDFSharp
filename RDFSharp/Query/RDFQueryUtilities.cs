@@ -74,6 +74,11 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// Result of CompareRDFPatternMembers when the given pattern members cannot be compared (SPARQL type error)
+        /// </summary>
+        internal const int ComparisonTypeError = -99;
+
+        /// <summary>
         /// Compares the given pattern members, throwing a "Type Error" whenever the comparison operator detects sematically incompatible members;
         /// </summary>
         internal static int CompareRDFPatternMembers(RDFPatternMember left, RDFPatternMember right)
@@ -96,32 +101,41 @@ namespace RDFSharp.Query
                 case RDFContext _:
                 {
                     //RESOURCE/CONTEXT VS RESOURCE/CONTEXT/PLAINLITERAL
+                    //Only the sign is returned, since a raw code-point difference could collide with ComparisonTypeError
                     if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
-                        return string.CompareOrdinal(left.ToString(), right.ToString());
+                        //Resources and contexts are ordered against strings by the code points of their lexical form
+                        return Math.Sign(string.CompareOrdinal(left.ToString(), right.ToString()));
 
                     //RESOURCE/CONTEXT VS TYPEDLITERAL
                     if (((RDFTypedLiteral)right).HasStringDatatype())
-                        return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
+                        //A string-typed literal takes part in the order with its lexical value
+                        return Math.Sign(string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value));
 
-                    return -99; //Type Error
+                    //Resources and contexts are comparable only with string-typed literals
+                    return ComparisonTypeError;
                 }
                 //PLAINLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
                 case RDFPlainLiteral _ when right is RDFResource || right is RDFContext || right is RDFPlainLiteral:
-                    return string.CompareOrdinal(left.ToString(), right.ToString());
+                    //Plain literals are ordered by the code points of their string form (the language tag included)
+                    return Math.Sign(string.CompareOrdinal(left.ToString(), right.ToString()));
                 //PLAINLITERAL VS TYPEDLITERAL
                 case RDFPlainLiteral _ when ((RDFTypedLiteral)right).HasStringDatatype():
-                    return string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value);
+                    //A string-typed literal takes part in the order with its lexical value
+                    return Math.Sign(string.CompareOrdinal(left.ToString(), ((RDFTypedLiteral)right).Value));
                 case RDFPlainLiteral _:
-                    return -99; //Type Error
+                    //Plain literals are comparable only with string-typed literals
+                    return ComparisonTypeError;
                 default:
                 {
                     //TYPEDLITERAL VS RESOURCE/CONTEXT/PLAINLITERAL
                     if (right is RDFResource || right is RDFContext || right is RDFPlainLiteral)
                     {
                         if (((RDFTypedLiteral)left).HasStringDatatype())
-                            return string.CompareOrdinal(((RDFTypedLiteral)left).Value, right.ToString());
+                            //A string-typed literal takes part in the order with its lexical value
+                            return Math.Sign(string.CompareOrdinal(((RDFTypedLiteral)left).Value, right.ToString()));
 
-                        return -99; //Type Error
+                        //A non-string typed literal cannot be compared with resources or plain literals
+                        return ComparisonTypeError;
                     }
 
                     //TYPEDLITERAL VS TYPEDLITERAL
@@ -131,11 +145,15 @@ namespace RDFSharp.Query
                     {
                         if (((RDFTypedLiteral)right).HasDatetimeDatatype())
                         {
-                            DateTime leftValueDateTime = DateTime.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-                            DateTime rightValueDateTime = DateTime.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
-                            return leftValueDateTime.CompareTo(rightValueDateTime);
+                            //Both instants come from the lexical formats of their datatypes
+                            if (RDFModelUtilities.TryGetDateTimeValue((RDFTypedLiteral)left, out DateTime leftValueDateTime)
+                                 && RDFModelUtilities.TryGetDateTimeValue((RDFTypedLiteral)right, out DateTime rightValueDateTime))
+                                return leftValueDateTime.CompareTo(rightValueDateTime);
+                            //A date or time without a lexical format (time:general*) has no instant to be ordered by
+                            return ComparisonTypeError;
                         }
-                        return -99; //Type Error
+                        //A date or time cannot be compared with a value of another datatype family
+                        return ComparisonTypeError;
                     }
 
                     //DECIMAL
@@ -143,17 +161,28 @@ namespace RDFSharp.Query
                     {
                         if (((RDFTypedLiteral)right).HasDecimalDatatype())
                         {
-                            //owl:rational needs parsing and evaluation before being compared (LEFT)
-                            decimal leftValueDecimal = ((RDFTypedLiteral)left).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                                ? RDFArithmeticEngine.ComputeOWLRationalValue((RDFTypedLiteral)left)
-                                : decimal.Parse(((RDFTypedLiteral)left).Value, CultureInfo.InvariantCulture);
-                            //owl:rational needs parsing and evaluation before being compared (RIGHT)
-                            decimal rightValueDecimal = ((RDFTypedLiteral)right).Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                                ? RDFArithmeticEngine.ComputeOWLRationalValue((RDFTypedLiteral)right)
-                                : decimal.Parse(((RDFTypedLiteral)right).Value, CultureInfo.InvariantCulture);
-                            return leftValueDecimal.CompareTo(rightValueDecimal);
+                            //Each side is read in the value space of its datatype (double for xsd:double/xsd:float and decimal otherwise)
+                            (bool leftIsFloatingPoint, double leftValueDouble, decimal leftValueDecimal) = RDFModelUtilities.GetNumericValue((RDFTypedLiteral)left);
+                            (bool rightIsFloatingPoint, double rightValueDouble, decimal rightValueDecimal) = RDFModelUtilities.GetNumericValue((RDFTypedLiteral)right);
+
+                            //Two exact numbers are compared without losing precision
+                            if (!leftIsFloatingPoint && !rightIsFloatingPoint)
+                                return leftValueDecimal.CompareTo(rightValueDecimal);
+
+                            //A floating point operand brings the comparison into the double value space (numeric type promotion)
+                            if (!leftIsFloatingPoint)
+                                leftValueDouble = (double)leftValueDecimal;
+                            if (!rightIsFloatingPoint)
+                                rightValueDouble = (double)rightValueDecimal;
+
+                            //NaN is not ordered with any number (SPARQL: every comparison with NaN is false)
+                            if (double.IsNaN(leftValueDouble) || double.IsNaN(rightValueDouble))
+                                return ComparisonTypeError;
+                            //Infinities take part in the order as the extremes of the double value space
+                            return leftValueDouble.CompareTo(rightValueDouble);
                         }
-                        return -99; //Type Error
+                        //A number cannot be compared with a value of another datatype family
+                        return ComparisonTypeError;
                     }
 
                     //STRING
@@ -163,9 +192,11 @@ namespace RDFSharp.Query
                         {
                             string leftValueString = ((RDFTypedLiteral)left).Value;
                             string rightValueString = ((RDFTypedLiteral)right).Value;
-                            return string.CompareOrdinal(leftValueString, rightValueString);
+                            //Two string-typed literals are ordered by the code points of their lexical values
+                            return Math.Sign(string.CompareOrdinal(leftValueString, rightValueString));
                         }
-                        return -99; //Type Error
+                        //A string-typed literal cannot be compared with a value of another datatype family
+                        return ComparisonTypeError;
                     }
 
                     //GEOGRAPHIC
@@ -183,7 +214,8 @@ namespace RDFSharp.Query
                             rightGeometry.SRID = 4326;
                             return leftGeometry.CompareTo(rightGeometry);
                         }
-                        return -99; //Type Error
+                        //A geographic value cannot be compared with a value of another datatype family
+                        return ComparisonTypeError;
                     }
 
                     //TIMESPAN
@@ -195,7 +227,8 @@ namespace RDFSharp.Query
                             TimeSpan rightValueDuration = XmlConvert.ToTimeSpan(((RDFTypedLiteral)right).Value);
                             return leftValueDuration.CompareTo(rightValueDuration);
                         }
-                        return -99; //Type Error
+                        //A duration cannot be compared with a value of another datatype family
+                        return ComparisonTypeError;
                     }
 
                     //BOOLEAN
@@ -207,11 +240,13 @@ namespace RDFSharp.Query
                             bool rightValueBoolean = bool.Parse(((RDFTypedLiteral)right).Value);
                             return leftValueBoolean.CompareTo(rightValueBoolean);
                         }
-                        return -99; //Type Error
+                        //A boolean cannot be compared with a value of another datatype family
+                        return ComparisonTypeError;
                     }
 
                     //Fallback (not possible)
-                    return -99; //Type Error
+                    //A typed literal of an unsupported datatype family is incomparable
+                    return ComparisonTypeError;
                 }
             }
         }

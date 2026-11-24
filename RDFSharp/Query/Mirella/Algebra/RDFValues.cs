@@ -114,8 +114,7 @@ namespace RDFSharp.Query
                 return result;
             }
 
-            //Create the rows of the SPARQL values
-            bool containsNullBindings = false;
+            //Create the rows of the SPARQL values: UNDEF cells stay UNBOUND, which the join treats as compatible with any value
             for (int i = 0; i < MaxBindingsLength(); i++)
             {
                 Dictionary<string, string> bindings = new Dictionary<string, string>();
@@ -123,14 +122,9 @@ namespace RDFSharp.Query
                 {
                     RDFPatternMember bindingValue = binding.Value.ElementAtOrDefault(i);
                     bindings.Add(binding.Key, bindingValue?.ToString());
-                    if (bindingValue == null)
-                        containsNullBindings = true;
                 }
                 result.AddRow(bindings);
             }
-
-            //An all-UNDEF values block behaves as optional
-            result.IsOptional = containsNullBindings;
 
             return result;
         }

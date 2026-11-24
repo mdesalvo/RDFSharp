@@ -22,4 +22,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("RDFSharp.Test")]
 [assembly: InternalsVisibleTo("RDFSharp.Extensions")]
 [assembly: InternalsVisibleTo("OWLSharp")]
+[assembly: InternalsVisibleTo("OWLSharp.Test")]
 [assembly: InternalsVisibleTo("OWLSharp.Extensions")]
+[assembly: InternalsVisibleTo("OWLSharp.Extensions.Test")]

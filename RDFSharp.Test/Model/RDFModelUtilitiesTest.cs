@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace RDFSharp.Test.Model;
@@ -969,6 +970,111 @@ public class RDFModelUtilitiesTest
     [DataRow(null, RDFModelEnums.RDFDatatypes.RDFS_LITERAL)] //fallback to rdfs:Literal
     public void ShouldGetEnumFromDatatype(string input, RDFModelEnums.RDFDatatypes expected)
         => Assert.AreEqual(expected, input.GetEnumFromDatatype());
+
+    [TestMethod]
+    [DataRow("2021-05-17T12:34:56Z", RDFModelEnums.RDFDatatypes.XSD_DATETIME, "yyyy-MM-ddTHH:mm:ss", "2021-05-17T12:34:56")]
+    [DataRow("2021-05-17T12:34:56Z", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP, "yyyy-MM-ddTHH:mm:ss", "2021-05-17T12:34:56")]
+    [DataRow("2021-05-17Z", RDFModelEnums.RDFDatatypes.XSD_DATE, "yyyy-MM-dd", "2021-05-17")]
+    [DataRow("12:34:56Z", RDFModelEnums.RDFDatatypes.XSD_TIME, "HH:mm:ss", "12:34:56")]
+    [DataRow("--05-17Z", RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY, "MM-dd", "05-17")]
+    [DataRow("2021-05Z", RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH, "yyyy-MM", "2021-05")]
+    [DataRow("2021Z", RDFModelEnums.RDFDatatypes.XSD_GYEAR, "yyyy", "2021")]
+    [DataRow("--05Z", RDFModelEnums.RDFDatatypes.XSD_GMONTH, "MM", "05")]
+    [DataRow("---17Z", RDFModelEnums.RDFDatatypes.XSD_GDAY, "dd", "17")]
+    public void ShouldGetDateTimeValueOfEveryDatatypeWithFormatTable(string value, RDFModelEnums.RDFDatatypes datatype, string componentsFormat, string expectedComponents)
+    {
+        //The literal stores the normalized form of its value (for instance "2021Z" for the xsd:gYear 2021)
+        RDFTypedLiteral typedLiteral = new RDFTypedLiteral(value, datatype);
+
+        //The stored form must be read back, which a general-purpose date parser cannot do for the gregorian fragments
+        Assert.IsTrue(RDFModelUtilities.TryGetDateTimeValue(typedLiteral, out DateTime dateTimeValue));
+        //The lexical forms are explicitly UTC (Z), so the components they carry are read from the UTC instant and do not depend on the machine time zone
+        Assert.AreEqual(expectedComponents, dateTimeValue.ToString(componentsFormat, CultureInfo.InvariantCulture));
+    }
+
+    [TestMethod]
+    public void ShouldGetDateTimeValuesOfGregorianYearsInChronologicalOrder()
+    {
+        //Two xsd:gYear literals of different years, which must be told apart by instant
+        RDFTypedLiteral earlierYear = new RDFTypedLiteral("2019", RDFModelEnums.RDFDatatypes.XSD_GYEAR);
+        RDFTypedLiteral laterYear = new RDFTypedLiteral("2021", RDFModelEnums.RDFDatatypes.XSD_GYEAR);
+
+        Assert.IsTrue(RDFModelUtilities.TryGetDateTimeValue(earlierYear, out DateTime earlierValue));
+        Assert.IsTrue(RDFModelUtilities.TryGetDateTimeValue(laterYear, out DateTime laterValue));
+        //The earlier year gives the earlier instant
+        Assert.IsLessThan(0, earlierValue.CompareTo(laterValue));
+    }
+
+    [TestMethod]
+    [DataRow("2021", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
+    [DataRow("--05", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
+    [DataRow("---17", RDFModelEnums.RDFDatatypes.TIME_GENERALDAY)]
+    [DataRow("hello", RDFModelEnums.RDFDatatypes.XSD_STRING)]
+    [DataRow("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER)]
+    public void ShouldNotGetDateTimeValueOfDatatypeWithoutFormatTable(string value, RDFModelEnums.RDFDatatypes datatype)
+    {
+        //time:general* literals are valid dates but have no format table, while the other datatypes are not dates at all
+        RDFTypedLiteral typedLiteral = new RDFTypedLiteral(value, datatype);
+
+        Assert.IsFalse(RDFModelUtilities.TryGetDateTimeValue(typedLiteral, out DateTime dateTimeValue));
+        //The out value must not be used by callers when no value is given
+        Assert.AreEqual(default, dateTimeValue);
+    }
+
+    [TestMethod]
+    [DataRow("NaN", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("1e400", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("-1e400", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("1E30", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("1E30", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+    public void ShouldGetNumericValueOfDoubleAndFloatInDoubleValueSpace(string value, RDFModelEnums.RDFDatatypes datatype)
+    {
+        //The literal stores NaN, the infinities and the exponent forms that decimal cannot hold
+        RDFTypedLiteral typedLiteral = new RDFTypedLiteral(value, datatype);
+
+        (bool isFloatingPoint, double doubleValue, decimal decimalValue) = RDFModelUtilities.GetNumericValue(typedLiteral);
+
+        //xsd:double and xsd:float live in the double value space
+        Assert.IsTrue(isFloatingPoint);
+        //The decimal slot is unused for them
+        Assert.AreEqual(0m, decimalValue);
+        //The stored form is read back as the number it represents
+        switch (value)
+        {
+            case "NaN":
+                Assert.IsTrue(double.IsNaN(doubleValue));
+                break;
+            case "1e400":
+                Assert.IsTrue(double.IsPositiveInfinity(doubleValue));
+                break;
+            case "-1e400":
+                Assert.IsTrue(double.IsNegativeInfinity(doubleValue));
+                break;
+            default:
+                Assert.AreEqual(1E+30, doubleValue, 1E+16);
+                break;
+        }
+    }
+
+    [TestMethod]
+    [DataRow("12.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL, "12.5")]
+    [DataRow("25", RDFModelEnums.RDFDatatypes.XSD_INTEGER, "25")]
+    [DataRow("-7", RDFModelEnums.RDFDatatypes.XSD_LONG, "-7")]
+    [DataRow("10/4", RDFModelEnums.RDFDatatypes.OWL_RATIONAL, "2.5")]
+    public void ShouldGetNumericValueOfExactDatatypesInDecimalValueSpace(string value, RDFModelEnums.RDFDatatypes datatype, string expectedDecimal)
+    {
+        //The literal holds an exact number (owl:rational included, as the quotient of its two parts)
+        RDFTypedLiteral typedLiteral = new RDFTypedLiteral(value, datatype);
+
+        (bool isFloatingPoint, double doubleValue, decimal decimalValue) = RDFModelUtilities.GetNumericValue(typedLiteral);
+
+        //Exact datatypes live in the decimal value space
+        Assert.IsFalse(isFloatingPoint);
+        //The double slot is unused for them
+        Assert.AreEqual(0d, doubleValue);
+        //The number is read without the rounding of a double
+        Assert.AreEqual(decimal.Parse(expectedDecimal, CultureInfo.InvariantCulture), decimalValue);
+    }
 
     #endregion
 }

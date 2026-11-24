@@ -554,20 +554,37 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Compares two cells for sorting: an UNBOUND (null) cell is the smallest value; bound values are
-        /// compared by Unicode code point (Ordinal), as agreed for the migration (SPARQL-style ordering).
+        /// Compares two cells for sorting by SPARQL 1.1 order: UNBOUND first, then blank nodes, IRIs and literals, with terms of the same kind ordered by value.
         /// </summary>
-        private static int CompareCells(string leftCell, string rightCell)
+        private static int CompareCells(string leftCell, RDFPatternMember leftTerm, string rightCell, RDFPatternMember rightTerm)
         {
+            //UNBOUND is the smallest value of all
             if (leftCell == null)
+                //Two UNBOUND cells tie, letting the stable sort keep their original order
                 return rightCell == null ? 0 : -1;
+            //A bound left cell follows an UNBOUND right cell
             if (rightCell == null)
                 return 1;
-            return string.CompareOrdinal(leftCell, rightCell);
+
+            //SPARQL 1.1 orders terms by kind first: blank node (0), IRI (1) then literal (2)
+            int leftKindRank = leftTerm is RDFResource leftResource ? (leftResource.IsBlank ? 0 : 1) : 2;
+            int rightKindRank = rightTerm is RDFResource rightResource ? (rightResource.IsBlank ? 0 : 1) : 2;
+            //Terms of different kinds never reach the value comparison
+            if (leftKindRank != rightKindRank)
+                return leftKindRank < rightKindRank ? -1 : 1;
+
+            //Terms of the same kind are ordered by value (numerically for numbers and chronologically for dates)
+            int valueComparison = RDFQueryUtilities.CompareRDFPatternMembers(leftTerm, rightTerm);
+            //A type error means the two values are incomparable and must be ordered by the fallback below
+            if (valueComparison != RDFQueryUtilities.ComparisonTypeError)
+                return Math.Sign(valueComparison);
+
+            //SPARQL leaves the relative order of incomparable terms undefined but the sort needs a fixed one
+            return Math.Sign(string.CompareOrdinal(leftCell, rightCell));
         }
 
         /// <summary>
-        /// Returns a new table with the rows ordered by the given keys (column name + descending flag).
+        /// Returns a new table with the rows ordered by the given keys (column name + descending flag) following the SPARQL 1.1 order of terms.
         /// The sort is STABLE (rows equal on all keys keep their original order), UNBOUND sorts first when
         /// ascending and last when descending, and keys whose column is absent are ignored.
         /// </summary>
@@ -601,13 +618,26 @@ namespace RDFSharp.Query
 
             if (keys.Count > 0)
             {
+                //Each sort-key column is parsed once up front, so that the comparisons never parse during the sort
+                Dictionary<int, RDFPatternMember[]> termsByOrdinal = new Dictionary<int, RDFPatternMember[]>();
+                foreach ((int ordinal, bool descending) key in keys)
+                {
+                    //Two keys on the same column share the terms already parsed for it
+                    if (!termsByOrdinal.ContainsKey(key.ordinal))
+                        //An UNBOUND cell has no term to parse
+                        termsByOrdinal[key.ordinal] = rows.Select(row => row[key.ordinal] == null ? null : RDFQueryUtilities.ParseRDFPatternMember(row[key.ordinal])).ToArray();
+                }
+
                 //Sort an index array; the original index is the final tie-break, making the sort stable
                 int[] order = Enumerable.Range(0, rowCount).ToArray();
                 Array.Sort(order, (x, y) =>
                 {
                     foreach ((int ordinal, bool descending) key in keys)
                     {
-                        int comparison = CompareCells(rows[x][key.ordinal], rows[y][key.ordinal]);
+                        //The terms of this key column are the ones parsed before the sort started
+                        RDFPatternMember[] keyTerms = termsByOrdinal[key.ordinal];
+                        //The comparison needs both the cell (for the fallback order) and its parsed term (for the value order)
+                        int comparison = CompareCells(rows[x][key.ordinal], keyTerms[x], rows[y][key.ordinal], keyTerms[y]);
                         if (comparison != 0)
                             return key.descending ? -comparison : comparison;
                     }

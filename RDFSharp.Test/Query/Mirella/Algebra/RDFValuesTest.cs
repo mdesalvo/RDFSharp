@@ -85,8 +85,8 @@ public class RDFValuesTest
         RDFTable valuesTable = values.GetRDFTable();
 
         Assert.IsNotNull(valuesTable);
-        //Contains an UNDEF binding (?V3) => the values block behaves as optional
-        Assert.IsTrue(valuesTable.IsOptional);
+        //An UNDEF binding does not make the values block optional
+        Assert.IsFalse(valuesTable.IsOptional);
         Assert.AreEqual(3, valuesTable.Columns.Count);
         Assert.IsTrue(valuesTable.HasColumn("?V1"));
         Assert.IsTrue(valuesTable.HasColumn("?V2"));
@@ -138,8 +138,8 @@ public class RDFValuesTest
         RDFTable valuesTable = values.GetRDFTable();
         Assert.AreEqual(1, valuesTable.Rows.Count);
         Assert.IsTrue(valuesTable.Rows[0].IsUnbound("?V1"));
-        //An UNDEF binding makes the block behave as optional
-        Assert.IsTrue(valuesTable.IsOptional);
+        //An UNDEF binding does not make the values block optional
+        Assert.IsFalse(valuesTable.IsOptional);
     }
 
     [TestMethod]
@@ -163,8 +163,8 @@ public class RDFValuesTest
         Assert.AreEqual(five.ToString(), valuesTable.Rows[0]["?V1"]);
         Assert.IsTrue(valuesTable.Rows[1].IsUnbound("?V1"));
         Assert.AreEqual(twentyfive.ToString(), valuesTable.Rows[2]["?V1"]);
-        //The interleaved UNDEF makes the block behave as optional
-        Assert.IsTrue(valuesTable.IsOptional);
+        //An UNDEF binding does not make the values block optional
+        Assert.IsFalse(valuesTable.IsOptional);
     }
 
     [TestMethod]

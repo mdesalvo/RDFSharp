@@ -1532,6 +1532,110 @@ public class RDFTableEngineTest
     }
 
     [TestMethod]
+    public void ShouldSortIntegersByNumericValue()
+    {
+        //120, 12 and 9 are in the order that the ordinal comparison of their cells would get wrong ("9" follows "12" and "120")
+        RDFTable table = BuildTable(["?N"],
+            ["120^^http://www.w3.org/2001/XMLSchema#integer"],
+            ["12^^http://www.w3.org/2001/XMLSchema#integer"],
+            ["9^^http://www.w3.org/2001/XMLSchema#integer"]);
+
+        //Ascending order follows the numeric value
+        Assert.AreEqual(
+            "?N\n9^^http://www.w3.org/2001/XMLSchema#integer\n12^^http://www.w3.org/2001/XMLSchema#integer\n120^^http://www.w3.org/2001/XMLSchema#integer",
+            RenderTable(RDFTableEngine.SortTable(table, [("?N", false)])));
+        //Descending order is the exact reverse of the numeric one
+        Assert.AreEqual(
+            "?N\n120^^http://www.w3.org/2001/XMLSchema#integer\n12^^http://www.w3.org/2001/XMLSchema#integer\n9^^http://www.w3.org/2001/XMLSchema#integer",
+            RenderTable(RDFTableEngine.SortTable(table, [("?N", true)])));
+    }
+
+    [TestMethod]
+    public void ShouldSortMixedNumericDatatypesByNumericValue()
+    {
+        //SPARQL compares numbers across decimal, double and integer datatypes by their value
+        RDFTable table = BuildTable(["?N"],
+            ["10^^http://www.w3.org/2001/XMLSchema#double"],
+            ["3^^http://www.w3.org/2001/XMLSchema#integer"],
+            ["2.5^^http://www.w3.org/2001/XMLSchema#decimal"]);
+
+        //The datatype does not influence the order: only the numeric value does
+        Assert.AreEqual(
+            "?N\n2.5^^http://www.w3.org/2001/XMLSchema#decimal\n3^^http://www.w3.org/2001/XMLSchema#integer\n10^^http://www.w3.org/2001/XMLSchema#double",
+            RenderTable(RDFTableEngine.SortTable(table, [("?N", false)])));
+    }
+
+    [TestMethod]
+    public void ShouldSortDatesChronologically()
+    {
+        //The dates are not given in chronological order, so that the sort has to reorder them
+        RDFTable table = BuildTable(["?N"],
+            ["2023-05-01^^http://www.w3.org/2001/XMLSchema#date"],
+            ["2021-12-31^^http://www.w3.org/2001/XMLSchema#date"],
+            ["2022-01-15^^http://www.w3.org/2001/XMLSchema#date"]);
+
+        //Ascending order is the chronological one
+        Assert.AreEqual(
+            "?N\n2021-12-31^^http://www.w3.org/2001/XMLSchema#date\n2022-01-15^^http://www.w3.org/2001/XMLSchema#date\n2023-05-01^^http://www.w3.org/2001/XMLSchema#date",
+            RenderTable(RDFTableEngine.SortTable(table, [("?N", false)])));
+    }
+
+    [TestMethod]
+    public void ShouldSortGregorianYearsChronologically()
+    {
+        //The years are not given in chronological order, so that the sort has to reorder them by value
+        RDFTable table = BuildTable(["?N"],
+            ["2021^^http://www.w3.org/2001/XMLSchema#gYear"],
+            ["2015^^http://www.w3.org/2001/XMLSchema#gYear"],
+            ["2019^^http://www.w3.org/2001/XMLSchema#gYear"]);
+
+        //Ascending order is the chronological one
+        Assert.AreEqual(
+            "?N\n2015^^http://www.w3.org/2001/XMLSchema#gYear\n2019^^http://www.w3.org/2001/XMLSchema#gYear\n2021^^http://www.w3.org/2001/XMLSchema#gYear",
+            RenderTable(RDFTableEngine.SortTable(table, [("?N", false)])));
+        //Descending order is the reverse chronological one
+        Assert.AreEqual(
+            "?N\n2021^^http://www.w3.org/2001/XMLSchema#gYear\n2019^^http://www.w3.org/2001/XMLSchema#gYear\n2015^^http://www.w3.org/2001/XMLSchema#gYear",
+            RenderTable(RDFTableEngine.SortTable(table, [("?N", true)])));
+    }
+
+    [TestMethod]
+    public void ShouldSortUnboundThenBlankNodesThenIRIsThenLiterals()
+    {
+        //One cell per kind of term, given in the reverse of the SPARQL 1.1 order
+        RDFTable table = BuildTable(["?N"], ["lit"], ["http://example.org/res"], ["bnode:x"], [null]);
+
+        //Ascending order is UNBOUND then blank node then IRI then literal
+        Assert.AreEqual(
+            "?N\n<U>\nbnode:x\nhttp://example.org/res\nlit",
+            RenderTable(RDFTableEngine.SortTable(table, [("?N", false)])));
+    }
+
+    [TestMethod]
+    public void ShouldSortIncomparableLiteralsByOrdinalOrderOfCellsOnEveryRun()
+    {
+        //An integer and a date are incomparable by value, so only the ordinal order of their cells can place them
+        RDFTable table = BuildTable(["?N"],
+            ["5^^http://www.w3.org/2001/XMLSchema#integer"],
+            ["2022-01-15^^http://www.w3.org/2001/XMLSchema#date"]);
+        //The same rows in the opposite insertion order, to prove that the result does not depend on it
+        RDFTable reversedTable = BuildTable(["?N"],
+            ["2022-01-15^^http://www.w3.org/2001/XMLSchema#date"],
+            ["5^^http://www.w3.org/2001/XMLSchema#integer"]);
+        //"2" precedes "5" in code-point order, so the date comes first
+        string expected = "?N\n2022-01-15^^http://www.w3.org/2001/XMLSchema#date\n5^^http://www.w3.org/2001/XMLSchema#integer";
+
+        //Repeating the sort proves that the order of incomparable terms is fixed
+        for (int run = 0; run < 3; run++)
+        {
+            //Insertion order: integer then date
+            Assert.AreEqual(expected, RenderTable(RDFTableEngine.SortTable(table, [("?N", false)])));
+            //Insertion order: date then integer
+            Assert.AreEqual(expected, RenderTable(RDFTableEngine.SortTable(reversedTable, [("?N", false)])));
+        }
+    }
+
+    [TestMethod]
     public void ShouldDistinctCollapsingDuplicatesPreservingOrder()
     {
         RDFTable table = BuildTable(["?N"], ["N2"], ["N1"], ["N2"], ["N1"]);
