@@ -206,6 +206,7 @@
     });
     toc.hidden = false;
     document.body.classList.add('has-toc');
+    window.dispatchEvent(new Event('resize')); // the rail narrows the column, so the pairs must fit again
     // The section being read is the last one whose heading has passed the upper third of the window. At the foot of
     // the page the last section wins: its heading may never climb that far, because the page ends before it can.
     var mark = function () {
