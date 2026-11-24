@@ -41,21 +41,27 @@ RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
+RDFResource whiteWine = new RDFResource(vr + "WhiteWine");
+RDFResource hasAlcohol = new RDFResource(vr + "alcohol");
+
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+RDFTypedLiteral maximumLightAlcohol = new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
 RDFVariable alcohol = new RDFVariable("alcohol");
 
 RDFSelectQuery lightWhites = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "WhiteWine")))
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, whiteWine))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "alcohol"), alcohol))
+        .AddPattern(new RDFPattern(wine, hasAlcohol, alcohol))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en")))))
+            new RDFConstantExpression(englishTag))))
         .AddFilter(new RDFFilter(new RDFComparisonExpression(
             RDFQueryEnums.RDFComparisonFlavors.LessThan,
             alcohol,
-            new RDFConstantExpression(new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))))
+            new RDFConstantExpression(maximumLightAlcohol)))))
     .AddProjectionVariable(label)
     .AddProjectionVariable(alcohol);
 
@@ -94,14 +100,16 @@ WHERE {
 ```
 
 ```csharp
-RDFResource organicProperty = new RDFResource(vr + "organic");
-RDFTypedLiteral yes = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource isOrganic = new RDFResource(vr + "organic");
+
+RDFTypedLiteral organicTrue = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
 
 RDFSelectQuery conventionalReds = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, redWine))
         .AddFilter(new RDFFilter(new RDFNotExpression(new RDFExistsExpression(
-            new RDFPatternGroup().AddPattern(new RDFPattern(wine, organicProperty, yes)))))))
+            new RDFPatternGroup().AddPattern(new RDFPattern(wine, isOrganic, organicTrue)))))))
     .AddProjectionVariable(wine);
 
 RDFSelectQueryResult conventionalResult = await conventionalReds.ApplyToGraphAsync(catalog);
@@ -138,17 +146,22 @@ WHERE {
 ```
 
 ```csharp
-RDFResource novello = new RDFResource(vrd + "novello-2025");
-RDFGraph harvest = new RDFGraph()
-    .AddTriple(new RDFTriple(novello, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
-    .AddTriple(new RDFTriple(novello, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")));
-RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+
+RDFResource novello2025 = new RDFResource(vrd + "novello-2025");
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
 
 RDFVariable organic = new RDFVariable("organic");
+
+RDFGraph harvest = new RDFGraph()
+    .AddTriple(new RDFTriple(novello2025, RDFVocabulary.RDF.TYPE, redWine))
+    .AddTriple(new RDFTriple(novello2025, producedBy, poggioAlto));
+RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
+
 RDFSelectQuery undeclared = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
-        .AddPattern(new RDFPattern(wine, organicProperty, organic).Optional())
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, redWine))
+        .AddPattern(new RDFPattern(wine, isOrganic, organic).Optional())
         .AddFilter(new RDFFilter(new RDFNotExpression(new RDFBoundExpression(organic)))))
     .AddProjectionVariable(wine);
 
@@ -184,24 +197,29 @@ WHERE {
 ```
 
 ```csharp
+RDFResource sweetWine = new RDFResource(vr + "SweetWine");
+
+RDFTypedLiteral minimumStrongAlcohol = new RDFTypedLiteral("14", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFVariable type = new RDFVariable("type");
+
 RDFComparisonExpression strong = new RDFComparisonExpression(
     RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
     alcohol,
-    new RDFConstantExpression(new RDFTypedLiteral("14", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+    new RDFConstantExpression(minimumStrongAlcohol));
 RDFComparisonExpression isRed = new RDFComparisonExpression(
     RDFQueryEnums.RDFComparisonFlavors.EqualTo,
     type,
-    new RDFConstantExpression(new RDFResource(vr + "RedWine")));
+    new RDFConstantExpression(redWine));
 RDFComparisonExpression isSweet = new RDFComparisonExpression(
     RDFQueryEnums.RDFComparisonFlavors.EqualTo,
     type,
-    new RDFConstantExpression(new RDFResource(vr + "SweetWine")));
+    new RDFConstantExpression(sweetWine));
 
 RDFSelectQuery strongWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, type))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "alcohol"), alcohol))
+        .AddPattern(new RDFPattern(wine, hasAlcohol, alcohol))
         .AddFilter(new RDFFilter(new RDFBooleanAndExpression(
             strong,
             new RDFBooleanOrExpression(isRed, isSweet)))))
@@ -242,21 +260,26 @@ WHERE {
 ```
 
 ```csharp
+RDFResource hasPrice = new RDFResource(vr + "price");
+
+RDFTypedLiteral priceCap = new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFVariable price = new RDFVariable("price");
+
 RDFSelectQuery lightAndCheap = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "alcohol"), alcohol)))
+        .AddPattern(new RDFPattern(wine, hasAlcohol, alcohol)))
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price)))
+        .AddPattern(new RDFPattern(wine, hasPrice, price)))
     .AddFilter(new RDFFilter(new RDFBooleanAndExpression(
         new RDFComparisonExpression(
             RDFQueryEnums.RDFComparisonFlavors.LessThan,
             alcohol,
-            new RDFConstantExpression(new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))),
+            new RDFConstantExpression(maximumLightAlcohol)),
         new RDFComparisonExpression(
             RDFQueryEnums.RDFComparisonFlavors.LessThan,
             price,
-            new RDFConstantExpression(new RDFTypedLiteral("12", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))))
+            new RDFConstantExpression(priceCap)))))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(alcohol)
     .AddProjectionVariable(price);
@@ -282,20 +305,25 @@ A regular expression and a list of terms, the two filters that people reach for 
 ```csharp
 using System.Text.RegularExpressions;
 
+RDFResource hasGrape = new RDFResource(vr + "grape");
+RDFResource vermentino = new RDFResource(vrd + "vermentino");
+RDFResource canaiolo = new RDFResource(vrd + "canaiolo");
+
 RDFVariable producer = new RDFVariable("producer");
+RDFVariable grape = new RDFVariable("grape");
+
 RDFSelectQuery vallerosaNamed = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFRegexExpression(label, new Regex("^vallerosa", RegexOptions.IgnoreCase)))))
     .AddProjectionVariable(label);
 
-RDFVariable grape = new RDFVariable("grape");
 RDFSelectQuery twoGrapes = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "grape"), grape))
+        .AddPattern(new RDFPattern(wine, hasGrape, grape))
         .AddFilter(new RDFFilter(new RDFInExpression(grape,
-            new List<RDFPatternMember> { new RDFResource(vrd + "vermentino"), new RDFResource(vrd + "canaiolo") }))))
+            new List<RDFPatternMember> { vermentino, canaiolo }))))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(grape);
 

@@ -23,12 +23,14 @@ using RDFSharp.Query;
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
-RDFResource giulia = new RDFResource(vrd + "giulia-neri");
-RDFResource riserva = new RDFResource(vrd + "riserva-2019");
-RDFResource stew = new RDFResource(vrd + "wild-boar-stew");
 RDFResource claims = new RDFResource(vr + "claims");
+RDFResource pairsWith = new RDFResource(vr + "pairsWith");
 
-RDFTriple pairing = new RDFTriple(riserva, new RDFResource(vr + "pairsWith"), stew);
+RDFResource giuliaNeri = new RDFResource(vrd + "giulia-neri");
+RDFResource riserva2019 = new RDFResource(vrd + "riserva-2019");
+RDFResource wildBoarStew = new RDFResource(vrd + "wild-boar-stew");
+
+RDFTriple pairing = new RDFTriple(riserva2019, pairsWith, wildBoarStew);
 Console.WriteLine(pairing);
 Console.WriteLine(pairing.ReificationSubject);
 ```
@@ -78,22 +80,29 @@ Four triples describe the pairing and the pairing itself is not among them: desc
 The description is a resource, so it can be the object of a triple and the subject of others. The cooperative links Giulia to the representative with `vr:claims` and adds an **annotation**: a note on the statement itself, a pair of a predicate and an object that `ReifyTriple` attaches to the representative. The graph is then merged into the catalog:
 
 ```csharp
+RDFResource personClass = new RDFResource(vr + "Person");
+RDFResource dishClass = new RDFResource(vr + "Dish");
+
+RDFPlainLiteral giuliaLabel = new RDFPlainLiteral("Giulia Neri");
+RDFPlainLiteral wildBoarStewLabel = new RDFPlainLiteral("Wild boar stew", "en");
+RDFPlainLiteral pairingComment = new RDFPlainLiteral("Tannins that stand up to game", "en");
+
 RDFGraph catalog = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(giulia, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Person")))
-    .AddTriple(new RDFTriple(giulia, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Giulia Neri")))
-    .AddTriple(new RDFTriple(stew, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Dish")))
-    .AddTriple(new RDFTriple(stew, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Wild boar stew", "en")));
+    .AddTriple(new RDFTriple(giuliaNeri, RDFVocabulary.RDF.TYPE, personClass))
+    .AddTriple(new RDFTriple(giuliaNeri, RDFVocabulary.RDFS.LABEL, giuliaLabel))
+    .AddTriple(new RDFTriple(wildBoarStew, RDFVocabulary.RDF.TYPE, dishClass))
+    .AddTriple(new RDFTriple(wildBoarStew, RDFVocabulary.RDFS.LABEL, wildBoarStewLabel));
 
 RDFGraph annotated = pairing.ReifyTriple(new List<(RDFResource, RDFPatternMember)> {
-    (RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("Tannins that stand up to game", "en")) });
+    (RDFVocabulary.RDFS.COMMENT, pairingComment) });
 catalog = (await catalog.UnionWithAsync(annotated))
-    .AddTriple(new RDFTriple(giulia, claims, pairing.ReificationSubject))
+    .AddTriple(new RDFTriple(giuliaNeri, claims, pairing.ReificationSubject))
     .SetContext(new Uri("https://vallerosa.example/catalog"));
 
 Console.WriteLine(catalog.TriplesCount);
 Console.WriteLine(await catalog.ContainsTripleAsync(pairing));
-Console.WriteLine((await catalog.SelectTriplesAsync(s: riserva, p: new RDFResource(vr + "pairsWith"))).Count);
+Console.WriteLine((await catalog.SelectTriplesAsync(s: riserva2019, p: pairsWith)).Count);
 foreach (RDFTriple triple in await catalog.SelectTriplesAsync(p: claims))
     Console.WriteLine($"{triple.Subject} | {triple.Object}");
 ```
@@ -131,7 +140,7 @@ RDF 1.2 makes this pattern part of the model. A statement that you talk about wi
 
 ```csharp
 RDFGraph asTerm = pairing.ReifyTripleTerm(new List<(RDFResource, RDFPatternMember)> {
-    (RDFVocabulary.RDFS.COMMENT, new RDFPlainLiteral("Tannins that stand up to game", "en")) });
+    (RDFVocabulary.RDFS.COMMENT, pairingComment) });
 Console.WriteLine(asTerm.TriplesCount);
 foreach (RDFTriple triple in asTerm)
     Console.WriteLine($"{triple.Subject} | {triple.Predicate} | {triple.Object}");

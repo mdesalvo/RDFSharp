@@ -46,22 +46,28 @@ RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
+RDFResource hasPrice = new RDFResource(vr + "price");
+
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+RDFTypedLiteral vatMultiplier = new RDFTypedLiteral("122", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral vatDivisor = new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable producer = new RDFVariable("producer");
 RDFVariable label = new RDFVariable("label");
 RDFVariable price = new RDFVariable("price");
 RDFVariable withVat = new RDFVariable("withVat");
-RDFConstantExpression english = new RDFConstantExpression(new RDFPlainLiteral("en"));
+RDFConstantExpression english = new RDFConstantExpression(englishTag);
 
 RDFDivideExpression withVatExpression = new RDFDivideExpression(
     new RDFRoundExpression(
-        new RDFMultiplyExpression(price, new RDFTypedLiteral("122", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))),
-    new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
+        new RDFMultiplyExpression(price, vatMultiplier)),
+    vatDivisor);
 
 RDFSelectQuery priceWithVat = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
+        .AddPattern(new RDFPattern(wine, hasPrice, price))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label, english)))
         .AddBind(new RDFBind(withVatExpression, withVat)))
     .AddProjectionVariable(label)
@@ -112,7 +118,7 @@ WHERE {
 RDFSelectQuery priceWithVatProjected = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
+        .AddPattern(new RDFPattern(wine, hasPrice, price))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label, english))))
     .AddProjectionVariable(label)
     .AddProjectionVariable(price)
@@ -138,11 +144,13 @@ WHERE {
 ```
 
 ```csharp
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+
 RDFVariable shout = new RDFVariable("shout");
 
 RDFSelectQuery upperCase = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label, english))))
     .AddProjectionVariable(label)
@@ -175,7 +183,7 @@ The producer pattern keeps the query on wines: without it the labels of the area
 ```csharp
 RDFSelectQuery byLabelLength = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label, english))))
     .AddModifier(new RDFOrderByModifier(new RDFStrLenExpression(label), RDFQueryEnums.RDFOrderByFlavors.ASC))
@@ -216,17 +224,21 @@ WHERE {
 ```
 
 ```csharp
+RDFResource hasVintage = new RDFResource(vr + "vintage");
+
+RDFTypedLiteral referenceYear = new RDFTypedLiteral("2025", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
 RDFVariable vintage = new RDFVariable("vintage");
 RDFVariable age = new RDFVariable("age");
 
 RDFSelectQuery ages = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "vintage"), vintage))
+        .AddPattern(new RDFPattern(wine, hasVintage, vintage))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label, english)))
         .AddBind(new RDFBind(
             new RDFSubtractExpression(
-                new RDFConstantExpression(new RDFTypedLiteral("2025", RDFModelEnums.RDFDatatypes.XSD_INTEGER)),
+                new RDFConstantExpression(referenceYear),
                 new RDFStrDtExpression(
                     new RDFSubstringExpression(new RDFStrExpression(vintage), 1, 4),
                     new RDFConstantExpression(RDFVocabulary.XSD.INTEGER))),
@@ -271,24 +283,31 @@ WHERE {
 ```
 
 ```csharp
-RDFResource novello = new RDFResource(vrd + "novello-2025");
-RDFGraph harvest = new RDFGraph()
-    .AddTriple(new RDFTriple(novello, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
-    .AddTriple(new RDFTriple(novello, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")));
-RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource isOrganic = new RDFResource(vr + "organic");
+
+RDFResource novello2025 = new RDFResource(vrd + "novello-2025");
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+
+RDFPlainLiteral notDeclaredText = new RDFPlainLiteral("not declared");
 
 RDFVariable organic = new RDFVariable("organic");
 RDFVariable declared = new RDFVariable("declared");
 
+RDFGraph harvest = new RDFGraph()
+    .AddTriple(new RDFTriple(novello2025, RDFVocabulary.RDF.TYPE, redWine))
+    .AddTriple(new RDFTriple(novello2025, producedBy, poggioAlto));
+RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
+
 RDFSelectQuery organicOrNot = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "organic"), organic).Optional())
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
+        .AddPattern(new RDFPattern(wine, isOrganic, organic).Optional())
         .AddBind(new RDFBind(
             new RDFIfExpression(
                 new RDFBoundExpression(organic),
                 new RDFStrExpression(organic),
-                new RDFConstantExpression(new RDFPlainLiteral("not declared"))),
+                new RDFConstantExpression(notDeclaredText)),
             declared)))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(declared);
@@ -317,24 +336,27 @@ RDFSelectQueryResult organicOrNotResult = await organicOrNot.ApplyToGraphAsync(c
 Hash expressions give the hexadecimal digest of a text. A short code that identifies each wine without showing its IRI is the SHA-256 of that IRI as a string. The term functions build new terms: here `STRAFTER` cuts the name of a wine out of its IRI, `CONCAT` puts it after the address of the partner shop and `IRI` turns the text into a resource.
 
 ```csharp
+RDFPlainLiteral shopAddress = new RDFPlainLiteral("https://shop.example/wines/");
+RDFPlainLiteral wineIriPrefix = new RDFPlainLiteral(vrd.ToString());
+
 RDFVariable fingerprint = new RDFVariable("fingerprint");
 RDFVariable shopPage = new RDFVariable("shopPage");
 
 RDFSelectQuery fingerprints = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer)))
+        .AddPattern(new RDFPattern(wine, producedBy, producer)))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(fingerprint, new RDFSHA256Expression(new RDFStrExpression(wine)));
 
 RDFSelectQuery shopPages = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
         .AddBind(new RDFBind(
             new RDFIriExpression(new RDFConcatExpression(
-                new RDFConstantExpression(new RDFPlainLiteral("https://shop.example/wines/")),
+                new RDFConstantExpression(shopAddress),
                 new RDFStrAfterExpression(
                     new RDFStrExpression(wine),
-                    new RDFConstantExpression(new RDFPlainLiteral(vrd.ToString()))))),
+                    new RDFConstantExpression(wineIriPrefix)))),
             shopPage)))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(shopPage);

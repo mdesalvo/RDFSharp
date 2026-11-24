@@ -36,19 +36,24 @@ RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
+RDFResource hasGrape = new RDFResource(vr + "grape");
+
+RDFResource sangiovese = new RDFResource(vrd + "sangiovese");
+RDFResource vermentino = new RDFResource(vrd + "vermentino");
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable grape = new RDFVariable("grape");
 
 RDFValues chosenGrapes = new RDFValues()
     .AddColumn(grape, new List<RDFPatternMember>
     {
-        new RDFResource(vrd + "sangiovese"),
-        new RDFResource(vrd + "vermentino")
+        sangiovese,
+        vermentino
     });
 
 RDFSelectQuery byGrape = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "grape"), grape))
+        .AddPattern(new RDFPattern(wine, hasGrape, grape))
         .AddValues(chosenGrapes))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(grape);
@@ -94,14 +99,16 @@ VALUES ?grape { vrd:sangiovese vrd:vermentino }
 ```
 
 ```csharp
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+
 RDFVariable label = new RDFVariable("label");
 
 RDFSelectQuery byGrapeAtTheEnd = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "grape"), grape))
+        .AddPattern(new RDFPattern(wine, hasGrape, grape))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en"))))))
+            new RDFConstantExpression(englishTag)))))
     .SetValues(chosenGrapes)
     .AddProjectionVariable(label)
     .AddProjectionVariable(grape);
@@ -146,23 +153,26 @@ WHERE {
 ```
 
 ```csharp
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource whiteWine = new RDFResource(vr + "WhiteWine");
+
 RDFVariable kind = new RDFVariable("kind");
 
 RDFValues pairs = new RDFValues()
     .AddColumn(grape, new List<RDFPatternMember>
     {
-        new RDFResource(vrd + "sangiovese"),
-        new RDFResource(vrd + "vermentino")
+        sangiovese,
+        vermentino
     })
     .AddColumn(kind, new List<RDFPatternMember>
     {
-        new RDFResource(vr + "RedWine"),
-        new RDFResource(vr + "WhiteWine")
+        redWine,
+        whiteWine
     });
 
 RDFSelectQuery byGrapeAndKind = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "grape"), grape))
+        .AddPattern(new RDFPattern(wine, hasGrape, grape))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, kind))
         .AddValues(pairs))
     .AddProjectionVariable(wine)

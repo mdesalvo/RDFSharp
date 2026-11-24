@@ -41,19 +41,22 @@ RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
+RDFResource whiteWine = new RDFResource(vr + "WhiteWine");
+RDFResource isOrganic = new RDFResource(vr + "organic");
+
+RDFTypedLiteral organicTrue = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
 
-RDFResource organic = new RDFResource(vr + "organic");
-RDFTypedLiteral isOrganic = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
-
 RDFSelectQuery organicWhites = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "WhiteWine")))
-        .AddPattern(new RDFPattern(wine, organic, isOrganic))
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, whiteWine))
+        .AddPattern(new RDFPattern(wine, isOrganic, organicTrue))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en"))))))
+            new RDFConstantExpression(englishTag)))))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(label);
 
@@ -93,8 +96,8 @@ ASK {
 ```csharp
 RDFAskQuery organicWhiteExists = new RDFAskQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "WhiteWine")))
-        .AddPattern(new RDFPattern(wine, organic, isOrganic)));
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, whiteWine))
+        .AddPattern(new RDFPattern(wine, isOrganic, organicTrue)));
 
 RDFAskQueryResult whiteAnswer = await organicWhiteExists.ApplyToGraphAsync(catalog);
 Console.WriteLine(whiteAnswer.AskResult);
@@ -113,10 +116,12 @@ True
 The result is an `RDFAskQueryResult` and its `AskResult` property holds the boolean. Changing the class of the wine to `vr:RoseWine` gives the other answer: the only rosé of the catalog is not organic.
 
 ```csharp
+RDFResource roseWine = new RDFResource(vr + "RoseWine");
+
 RDFAskQuery organicRoseExists = new RDFAskQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RoseWine")))
-        .AddPattern(new RDFPattern(wine, organic, isOrganic)));
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, roseWine))
+        .AddPattern(new RDFPattern(wine, isOrganic, organicTrue)));
 
 RDFAskQueryResult roseAnswer = await organicRoseExists.ApplyToGraphAsync(catalog);
 Console.WriteLine(roseAnswer.AskResult);
@@ -174,30 +179,43 @@ WHERE {
 ```csharp
 RDFNamespace schema = new RDFNamespace("schema", "https://schema.org/");
 
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource hasPrice = new RDFResource(vr + "price");
+RDFResource schemaProduct = new RDFResource(schema + "Product");
+RDFResource schemaOffer = new RDFResource(schema + "Offer");
+RDFResource schemaName = new RDFResource(schema + "name");
+RDFResource schemaManufacturer = new RDFResource(schema + "manufacturer");
+RDFResource schemaOffers = new RDFResource(schema + "offers");
+RDFResource schemaPrice = new RDFResource(schema + "price");
+RDFResource schemaPriceCurrency = new RDFResource(schema + "priceCurrency");
+
+RDFPlainLiteral euroCurrency = new RDFPlainLiteral("EUR");
+RDFPlainLiteral offerSuffix = new RDFPlainLiteral("-offer");
+
 RDFVariable producer = new RDFVariable("producer");
 RDFVariable producerName = new RDFVariable("producerName");
 RDFVariable price = new RDFVariable("price");
 RDFVariable offer = new RDFVariable("offer");
 
 RDFConstructQuery partnerExport = new RDFConstructQuery()
-    .AddTemplate(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(schema + "Product")))
-    .AddTemplate(new RDFPattern(wine, new RDFResource(schema + "name"), label))
-    .AddTemplate(new RDFPattern(wine, new RDFResource(schema + "manufacturer"), producer))
-    .AddTemplate(new RDFPattern(wine, new RDFResource(schema + "offers"), offer))
-    .AddTemplate(new RDFPattern(producer, new RDFResource(schema + "name"), producerName))
-    .AddTemplate(new RDFPattern(offer, RDFVocabulary.RDF.TYPE, new RDFResource(schema + "Offer")))
-    .AddTemplate(new RDFPattern(offer, new RDFResource(schema + "price"), price))
-    .AddTemplate(new RDFPattern(offer, new RDFResource(schema + "priceCurrency"), new RDFPlainLiteral("EUR")))
+    .AddTemplate(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, schemaProduct))
+    .AddTemplate(new RDFPattern(wine, schemaName, label))
+    .AddTemplate(new RDFPattern(wine, schemaManufacturer, producer))
+    .AddTemplate(new RDFPattern(wine, schemaOffers, offer))
+    .AddTemplate(new RDFPattern(producer, schemaName, producerName))
+    .AddTemplate(new RDFPattern(offer, RDFVocabulary.RDF.TYPE, schemaOffer))
+    .AddTemplate(new RDFPattern(offer, schemaPrice, price))
+    .AddTemplate(new RDFPattern(offer, schemaPriceCurrency, euroCurrency))
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
+        .AddPattern(new RDFPattern(wine, hasPrice, price))
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
         .AddPattern(new RDFPattern(producer, RDFVocabulary.RDFS.LABEL, producerName))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en")))))
+            new RDFConstantExpression(englishTag))))
         .AddBind(new RDFBind(new RDFIriExpression(new RDFConcatExpression(
             new RDFStrExpression(wine),
-            new RDFConstantExpression(new RDFPlainLiteral("-offer")))), offer)));
+            new RDFConstantExpression(offerSuffix))), offer)));
 
 RDFConstructQueryResult exported = await partnerExport.ApplyToGraphAsync(catalog);
 Console.WriteLine(exported.ConstructResultsCount);
@@ -308,8 +326,10 @@ DESCRIBE vrd:poggio-alto
 ```
 
 ```csharp
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+
 RDFDescribeQuery aboutPoggioAlto = new RDFDescribeQuery()
-    .AddDescribeTerm(new RDFResource(vrd + "poggio-alto"));
+    .AddDescribeTerm(poggioAlto);
 
 RDFDescribeQueryResult described = await aboutPoggioAlto.ApplyToGraphAsync(catalog);
 Console.WriteLine(described.DescribeResultsCount);
@@ -353,10 +373,14 @@ The first four triples are what the catalog says about the producer: its class, 
 The term to describe can also be a variable that patterns bind, as in `DESCRIBE ?producer WHERE { ... }`. Describing the producers of the Hilltop subzone gives the same six rows, because only one producer sits there:
 
 ```csharp
+RDFResource locatedIn = new RDFResource(vr + "locatedIn");
+
+RDFResource poggio = new RDFResource(vrd + "poggio");
+
 RDFDescribeQuery aboutHilltop = new RDFDescribeQuery()
     .AddDescribeTerm(producer)
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(producer, new RDFResource(vr + "locatedIn"), new RDFResource(vrd + "poggio"))));
+        .AddPattern(new RDFPattern(producer, locatedIn, poggio)));
 
 Console.WriteLine((await aboutHilltop.ApplyToGraphAsync(catalog)).DescribeResultsCount);
 ```

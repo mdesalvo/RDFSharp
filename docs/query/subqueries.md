@@ -55,18 +55,19 @@ WHERE {
 ```
 
 ```csharp
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource hasScore = new RDFResource(vr + "score");
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable producer = new RDFVariable("producer");
 RDFVariable score = new RDFVariable("score");
 RDFVariable anyWine = new RDFVariable("anyWine");
 RDFVariable anyScore = new RDFVariable("anyScore");
-RDFResource producedBy = new RDFResource(vr + "producedBy");
-RDFResource scoreProperty = new RDFResource(vr + "score");
 
 RDFSelectQuery topScores = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(anyWine, producedBy, producer))
-        .AddPattern(new RDFPattern(anyWine, scoreProperty, anyScore)))
+        .AddPattern(new RDFPattern(anyWine, hasScore, anyScore)))
     .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { producer })
         .AddAggregator(new RDFMaxAggregator(anyScore, score, RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric)))
     .AddProjectionVariable(producer)
@@ -75,7 +76,7 @@ RDFSelectQuery topScores = new RDFSelectQuery()
 RDFSelectQuery bestWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, producedBy, producer))
-        .AddPattern(new RDFPattern(wine, scoreProperty, score)))
+        .AddPattern(new RDFPattern(wine, hasScore, score)))
     .AddSubQuery(topScores)
     .AddProjectionVariable(producer)
     .AddProjectionVariable(wine)
@@ -133,15 +134,17 @@ WHERE {
 ```
 
 ```csharp
+RDFTypedLiteral acclaimThreshold = new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
 RDFVariable acclaimed = new RDFVariable("acclaimed");
 
 RDFSelectQuery ninetyPlus = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, scoreProperty, acclaimed))
+        .AddPattern(new RDFPattern(wine, hasScore, acclaimed))
         .AddFilter(new RDFFilter(new RDFComparisonExpression(
             RDFQueryEnums.RDFComparisonFlavors.GreaterOrEqualThan,
             acclaimed,
-            new RDFConstantExpression(new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER))))))
+            new RDFConstantExpression(acclaimThreshold)))))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(acclaimed)
     .Optional();

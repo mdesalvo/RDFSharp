@@ -93,11 +93,13 @@ From here on `sqlite` answers to everything the memory store answered to. The se
 ```csharp
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
-RDFResource rosso = new RDFResource(vrd + "rosso-2021");
-RDFResource score = new RDFResource(vr + "score");
-RDFContext winescope = new RDFContext("https://winescope.example/2025");
 
-foreach (RDFQuadruple quadruple in await sqlite.SelectQuadruplesAsync(c: winescope, s: rosso, p: score))
+RDFResource hasScore = new RDFResource(vr + "score");
+
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
+RDFContext winescopeContext = new RDFContext("https://winescope.example/2025");
+
+foreach (RDFQuadruple quadruple in await sqlite.SelectQuadruplesAsync(c: winescopeContext, s: rosso2021, p: hasScore))
     Console.WriteLine(quadruple);
 
 foreach (RDFGraph graph in await sqlite.ExtractGraphsAsync())
@@ -135,7 +137,7 @@ RDFVariable value = new RDFVariable("value");
 
 RDFSelectQuery query = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(guide, rosso, score, value)))
+        .AddPattern(new RDFPattern(guide, rosso2021, hasScore, value)))
     .AddProjectionVariable(guide)
     .AddProjectionVariable(value);
 

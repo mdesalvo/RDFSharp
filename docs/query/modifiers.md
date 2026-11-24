@@ -14,6 +14,10 @@ Every example on this page runs on [vallerosa-catalog.ttl]({{ '/assets/data/vall
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
+RDFResource hasPrice = new RDFResource(vr + "price");
+
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
 RDFVariable price = new RDFVariable("price");
@@ -22,9 +26,9 @@ RDFVariable producer = new RDFVariable("producer");
 
 RDFPatternGroup priceList = new RDFPatternGroup()
     .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-    .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
+    .AddPattern(new RDFPattern(wine, hasPrice, price))
     .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-        new RDFConstantExpression(new RDFPlainLiteral("en")))));
+        new RDFConstantExpression(englishTag))));
 ```
 
 ## What a modifier is
@@ -108,13 +112,15 @@ ORDER BY ASC(?alcohol) DESC(?price)
 ```
 
 ```csharp
+RDFResource hasAlcohol = new RDFResource(vr + "alcohol");
+
 RDFSelectQuery byStrength = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "alcohol"), alcohol))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
+        .AddPattern(new RDFPattern(wine, hasAlcohol, alcohol))
+        .AddPattern(new RDFPattern(wine, hasPrice, price))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en"))))))
+            new RDFConstantExpression(englishTag)))))
     .AddModifier(new RDFOrderByModifier(alcohol, RDFQueryEnums.RDFOrderByFlavors.ASC))
     .AddModifier(new RDFOrderByModifier(price, RDFQueryEnums.RDFOrderByFlavors.DESC))
     .AddProjectionVariable(label)
@@ -228,9 +234,11 @@ WHERE {
 ```
 
 ```csharp
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+
 RDFSelectQuery distinctProducers = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer)))
+        .AddPattern(new RDFPattern(wine, producedBy, producer)))
     .AddModifier(new RDFDistinctModifier())
     .AddProjectionVariable(producer);
 

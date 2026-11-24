@@ -108,9 +108,24 @@ WHERE {
 ```
 
 ```csharp
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource hasVintage = new RDFResource(vr + "vintage");
+RDFResource hasPrice = new RDFResource(vr + "price");
+RDFResource hasGrape = new RDFResource(vr + "grape");
+RDFResource hasBlend = new RDFResource(vr + "blend");
+
 RDFResource rosso2022 = new RDFResource(vrd + "rosso-2022");
-RDFResource rosato = new RDFResource(vrd + "rosato-2024");
-RDFResource priceProperty = new RDFResource(vr + "price");
+RDFResource rosato2024 = new RDFResource(vrd + "rosato-2024");
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+RDFResource sangiovese = new RDFResource(vrd + "sangiovese");
+RDFResource canaiolo = new RDFResource(vrd + "canaiolo");
+
+RDFPlainLiteral rosso2022EnglishLabel = new RDFPlainLiteral("Vallerosa Red", "en");
+RDFTypedLiteral rosso2022Vintage = new RDFTypedLiteral("2022", RDFModelEnums.RDFDatatypes.XSD_GYEAR);
+RDFTypedLiteral rosso2022Price = new RDFTypedLiteral("15.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral priceRise = new RDFTypedLiteral("1.05", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable price = new RDFVariable("price");
 RDFVariable newPrice = new RDFVariable("newPrice");
@@ -129,35 +144,32 @@ RDFMoveOperation archiveWinescope = new RDFMoveOperation()
     .SetToContext(new Uri("https://vallerosa.example/archive/winescope-2025"));
 
 RDFInsertDataOperation addVintage = new RDFInsertDataOperation()
-    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
-    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Red", "en")))
-    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")))
-    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, new RDFResource(vr + "vintage"),
-        new RDFTypedLiteral("2022", RDFModelEnums.RDFDatatypes.XSD_GYEAR)))
-    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, priceProperty,
-        new RDFTypedLiteral("15.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))
-    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, new RDFResource(vr + "grape"), new RDFResource(vrd + "sangiovese")))
-    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, new RDFResource(vr + "grape"), new RDFResource(vrd + "canaiolo")));
+    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, RDFVocabulary.RDF.TYPE, redWine))
+    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, RDFVocabulary.RDFS.LABEL, rosso2022EnglishLabel))
+    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, producedBy, poggioAlto))
+    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, hasVintage, rosso2022Vintage))
+    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, hasPrice, rosso2022Price))
+    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, hasGrape, sangiovese))
+    .AddInsertTemplate(new RDFPattern(catalogContext, rosso2022, hasGrape, canaiolo));
 
 RDFDeleteWhereOperation removeRosato = new RDFDeleteWhereOperation()
-    .AddDeleteTemplate(new RDFPattern(catalogContext, rosato, property, value))
+    .AddDeleteTemplate(new RDFPattern(catalogContext, rosato2024, property, value))
     .AddDeleteTemplate(new RDFPattern(catalogContext, list, RDFVocabulary.RDF.TYPE, listType))
     .AddDeleteTemplate(new RDFPattern(catalogContext, list, RDFVocabulary.RDF.FIRST, head))
     .AddDeleteTemplate(new RDFPattern(catalogContext, list, RDFVocabulary.RDF.REST, tail))
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(catalogContext, rosato, property, value))
-        .AddPattern(new RDFPattern(catalogContext, rosato, new RDFResource(vr + "blend"), list))
+        .AddPattern(new RDFPattern(catalogContext, rosato2024, property, value))
+        .AddPattern(new RDFPattern(catalogContext, rosato2024, hasBlend, list))
         .AddPattern(new RDFPattern(catalogContext, list, RDFVocabulary.RDF.TYPE, listType))
         .AddPattern(new RDFPattern(catalogContext, list, RDFVocabulary.RDF.FIRST, head))
         .AddPattern(new RDFPattern(catalogContext, list, RDFVocabulary.RDF.REST, tail)));
 
 RDFDeleteInsertWhereOperation raisePrices = new RDFDeleteInsertWhereOperation()
-    .AddDeleteTemplate(new RDFPattern(catalogContext, wine, priceProperty, price))
-    .AddInsertTemplate(new RDFPattern(catalogContext, wine, priceProperty, newPrice))
+    .AddDeleteTemplate(new RDFPattern(catalogContext, wine, hasPrice, price))
+    .AddInsertTemplate(new RDFPattern(catalogContext, wine, hasPrice, newPrice))
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(catalogContext, wine, priceProperty, price))
-        .AddBind(new RDFBind(new RDFMultiplyExpression(price,
-            new RDFTypedLiteral("1.05", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), newPrice)));
+        .AddPattern(new RDFPattern(catalogContext, wine, hasPrice, price))
+        .AddBind(new RDFBind(new RDFMultiplyExpression(price, priceRise), newPrice)));
 
 RDFOperationSet rollover = new RDFOperationSet()
     .AddOperation(archiveCalici)
@@ -183,7 +195,15 @@ foreach (RDFGraph graph in await store.ExtractGraphsAsync())
 <div class="result" markdown="1">
 
 ```
-
+RDFMoveOperation 5 5
+RDFMoveOperation 5 5
+RDFInsertDataOperation 7 0
+RDFDeleteWhereOperation 0 13
+RDFDeleteInsertWhereOperation 6 6
+147
+https://vallerosa.example/catalog 137
+https://vallerosa.example/archive/winescope-2025 5
+https://vallerosa.example/archive/guidacalici-2025 5
 ```
 
 </div>
@@ -207,15 +227,10 @@ Console.WriteLine(archiveOnly);
 <div class="result" markdown="1">
 
 ```
-RDFMoveOperation 5 5
-RDFMoveOperation 5 5
-RDFInsertDataOperation 7 0
-RDFDeleteWhereOperation 0 13
-RDFDeleteInsertWhereOperation 6 6
-147
-https://vallerosa.example/catalog 137
-https://vallerosa.example/archive/winescope-2025 5
-https://vallerosa.example/archive/guidacalici-2025 5
+2
+MOVE <https://guidacalici.example/2026> TO <https://vallerosa.example/archive/guidacalici-2026>
+;
+MOVE <https://winescope.example/2026> TO <https://vallerosa.example/archive/winescope-2026>
 ```
 
 </div>
@@ -234,7 +249,7 @@ An operation set is not a transaction. If an operation throws, the ones before i
 RDFGraph scratch = new RDFGraph();
 RDFOperationSet failing = new RDFOperationSet()
     .AddOperation(new RDFInsertDataOperation()
-        .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine"))))
+        .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDF.TYPE, redWine)))
     .AddOperation(archiveCalici);
 
 try
@@ -250,10 +265,7 @@ catch (RDFQueryException)
 <div class="result" markdown="1">
 
 ```
-2
-MOVE <https://guidacalici.example/2026> TO <https://vallerosa.example/archive/guidacalici-2026>
-;
-MOVE <https://winescope.example/2026> TO <https://vallerosa.example/archive/winescope-2026>
+1
 ```
 
 </div>

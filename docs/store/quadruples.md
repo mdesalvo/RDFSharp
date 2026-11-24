@@ -42,8 +42,8 @@ A context is an IRI. RDFSharp models it with `RDFContext` from the `RDFSharp.Sto
 using RDFSharp.Model;
 using RDFSharp.Store;
 
-RDFContext guidaCalici = new RDFContext("https://guidacalici.example/2025");
-RDFContext winescope = new RDFContext(new Uri("https://winescope.example/2025"));
+RDFContext guidaCaliciContext = new RDFContext("https://guidacalici.example/2025");
+RDFContext winescopeContext = new RDFContext(new Uri("https://winescope.example/2025"));
 RDFContext defaultContext = new RDFContext();
 Console.WriteLine(defaultContext);
 ```
@@ -68,21 +68,23 @@ A context must be an absolute IRI that does not stand for a blank node, since it
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
-RDFResource rosso = new RDFResource(vrd + "rosso-2021");
-RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
-RDFResource score = new RDFResource(vr + "score");
+RDFResource hasScore = new RDFResource(vr + "score");
 RDFResource producedBy = new RDFResource(vr + "producedBy");
 
-RDFQuadruple scoreInCalici = new RDFQuadruple(guidaCalici, rosso, score,
-    new RDFTypedLiteral("88", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
-RDFQuadruple scoreInWinescope = new RDFQuadruple(winescope, rosso, score,
-    new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
-RDFQuadruple producer = new RDFQuadruple(
-    new RDFContext("https://vallerosa.example/catalog"), rosso, producedBy, poggioAlto);
+RDFContext catalogContext = new RDFContext("https://vallerosa.example/catalog");
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+
+RDFTypedLiteral guidaCaliciScore = new RDFTypedLiteral("88", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+RDFTypedLiteral winescopeScore = new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
+RDFQuadruple scoreInCalici = new RDFQuadruple(guidaCaliciContext, rosso2021, hasScore, guidaCaliciScore);
+RDFQuadruple scoreInWinescope = new RDFQuadruple(winescopeContext, rosso2021, hasScore, winescopeScore);
+RDFQuadruple rossoProducedBy = new RDFQuadruple(catalogContext, rosso2021, producedBy, poggioAlto);
 
 Console.WriteLine(scoreInCalici);
 Console.WriteLine(scoreInWinescope);
-Console.WriteLine(producer);
+Console.WriteLine(rossoProducedBy);
 ```
 
 <div class="result" markdown="1">
@@ -101,7 +103,7 @@ A quadruple prints as context, subject, predicate and object, separated by space
 Console.WriteLine(scoreInCalici.Context);
 Console.WriteLine(scoreInCalici.Object);
 Console.WriteLine(scoreInCalici.TripleFlavor);   // SPL
-Console.WriteLine(producer.TripleFlavor);        // SPO
+Console.WriteLine(rossoProducedBy.TripleFlavor); // SPO
 ```
 
 <div class="result" markdown="1">
@@ -127,11 +129,11 @@ SPO
 When you already have a triple, give it a context with the other constructor. Suppose WineScope also lists the producer of the Vallerosa Red, the same fact the catalog states. Two quadruples come out of one triple. They are different:
 
 ```csharp
-RDFTriple producerTriple = new RDFTriple(rosso, producedBy, poggioAlto);
-RDFQuadruple fromCatalog = new RDFQuadruple(new RDFContext("https://vallerosa.example/catalog"), producerTriple);
-RDFQuadruple fromWinescope = new RDFQuadruple(winescope, producerTriple);
+RDFTriple rossoProducedByTriple = new RDFTriple(rosso2021, producedBy, poggioAlto);
+RDFQuadruple fromCatalog = new RDFQuadruple(catalogContext, rossoProducedByTriple);
+RDFQuadruple fromWinescope = new RDFQuadruple(winescopeContext, rossoProducedByTriple);
 
-Console.WriteLine(fromCatalog.Equals(producer));
+Console.WriteLine(fromCatalog.Equals(rossoProducedBy));
 Console.WriteLine(fromCatalog.Equals(fromWinescope));
 ```
 
@@ -151,40 +153,42 @@ The first comparison is `True`: the quadruple built from the triple is the one b
 A quadruple follows the rules of RDF. The constructors enforce them with an `RDFStoreException` whose message names the problem. A predicate cannot be a blank node. A context cannot be a blank node or something that is not an IRI. A triple cannot be missing either:
 
 ```csharp
+RDFResource blankPredicate = new RDFResource();
+
 try
 {
-    new RDFQuadruple(guidaCalici, rosso, new RDFResource(), poggioAlto);
+    new RDFQuadruple(guidaCaliciContext, rosso2021, blankPredicate, poggioAlto);
 }
-catch (RDFStoreException ex)
+catch (RDFStoreException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 
 try
 {
-    new RDFContext("_:guide");
+    RDFContext blankContext = new RDFContext("_:guide");
 }
-catch (RDFStoreException ex)
+catch (RDFStoreException exception)
 {
-    Console.WriteLine(ex.Message);
-}
-
-try
-{
-    new RDFContext("guida calici");
-}
-catch (RDFStoreException ex)
-{
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 
 try
 {
-    new RDFQuadruple(guidaCalici, null);
+    RDFContext spacedContext = new RDFContext("guida calici");
 }
-catch (RDFStoreException ex)
+catch (RDFStoreException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
+}
+
+try
+{
+    new RDFQuadruple(guidaCaliciContext, null);
+}
+catch (RDFStoreException exception)
+{
+    Console.WriteLine(exception.Message);
 }
 ```
 

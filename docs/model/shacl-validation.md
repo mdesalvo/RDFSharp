@@ -20,9 +20,9 @@ using RDFSharp.Model;
 RDFShapesGraph shapes = await RDFShapesGraph.FromRDFGraphAsync(await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-shapes.ttl"));
 RDFGraph vocabulary = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-vocab.ttl");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
-RDFGraph data = await vocabulary.UnionWithAsync(catalog);
+RDFGraph dataGraph = await vocabulary.UnionWithAsync(catalog);
 
-RDFValidationReport report = await shapes.ValidateAsync(data);
+RDFValidationReport report = await shapes.ValidateAsync(dataGraph);
 Console.WriteLine(report.Conforms);
 Console.WriteLine(report.ResultsCount);
 ```
@@ -66,7 +66,7 @@ The import is a graph on its own. By itself it passes and that is a trap:
 RDFGraph imported = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "import.ttl");
 Console.WriteLine((await shapes.ValidateAsync(imported)).Conforms);
 
-RDFGraph candidate = await data.UnionWithAsync(imported);
+RDFGraph candidate = await dataGraph.UnionWithAsync(imported);
 RDFValidationReport badReport = await shapes.ValidateAsync(candidate);
 Console.WriteLine(badReport.Conforms);
 Console.WriteLine(badReport.ResultsCount);
@@ -231,7 +231,7 @@ vrd:nero-2024 a vr:RedWine ;
 
 ```csharp
 RDFGraph fixedImport = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "import-fixed.ttl");
-RDFValidationReport goodReport = await shapes.ValidateAsync(await data.UnionWithAsync(fixedImport));
+RDFValidationReport goodReport = await shapes.ValidateAsync(await dataGraph.UnionWithAsync(fixedImport));
 Console.WriteLine(goodReport.Conforms);
 Console.WriteLine(goodReport.ResultsCount);
 ```

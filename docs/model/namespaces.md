@@ -40,18 +40,18 @@ try
 {
     RDFNamespace brokenPrefix = new RDFNamespace("vallerosa wine", "https://vallerosa.example/");
 }
-catch (RDFModelException ex)
+catch (RDFModelException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 
 try
 {
     RDFNamespace brokenUri = new RDFNamespace("vr", "not an address");
 }
-catch (RDFModelException ex)
+catch (RDFModelException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 ```
 
@@ -69,12 +69,18 @@ Cannot create RDFNamespace because "uri" parameter is not a valid Uri
 Take the Vermentino grape of the catalog and write it as Turtle. Its type comes from the cooperative's vocabulary, its label from RDF Schema and its link to DBpedia from OWL:
 
 ```csharp
-RDFResource vermentinoGrape = new RDFResource(vrd + "vermentino");
+RDFResource grapeClass = new RDFResource(vr + "Grape");
+
+RDFResource vermentino = new RDFResource(vrd + "vermentino");
+RDFResource dbpediaVermentino = new RDFResource("http://dbpedia.org/resource/Vermentino");
+
+RDFPlainLiteral vermentinoLabel = new RDFPlainLiteral("Vermentino");
+
 RDFGraph grape = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(vermentinoGrape, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Grape")))
-    .AddTriple(new RDFTriple(vermentinoGrape, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vermentino")))
-    .AddTriple(new RDFTriple(vermentinoGrape, RDFVocabulary.OWL.SAME_AS, new RDFResource("http://dbpedia.org/resource/Vermentino")));
+    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDF.TYPE, grapeClass))
+    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDFS.LABEL, vermentinoLabel))
+    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.OWL.SAME_AS, dbpediaVermentino));
 
 await grape.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "grape-before.ttl");
 ```
@@ -194,8 +200,8 @@ The register is global to the process, so what you add once serves every graph y
 To see the whole register, enumerate it or walk `RDFNamespaceRegister.NamespacesEnumerator`. To remove a namespace, use `RemoveByPrefix` or `RemoveByUri`. The standard ones are protected and a removal of them does nothing:
 
 ```csharp
-foreach (RDFNamespace ns in RDFNamespaceRegister.Instance)
-    Console.Write(ns.NamespacePrefix + " ");
+foreach (RDFNamespace registeredNamespace in RDFNamespaceRegister.Instance)
+    Console.Write(registeredNamespace.NamespacePrefix + " ");
 Console.WriteLine();
 
 RDFNamespaceRegister.RemoveByPrefix("rdf");
@@ -219,13 +225,15 @@ True
 The IRIs of RDF, RDF Schema, XML Schema and the other well-known vocabularies are ready as constants in the static class `RDFVocabulary`, one nested class for each vocabulary. Each has its `PREFIX` and its `BASE_URI` and a resource for every term it defines:
 
 ```csharp
+RDFResource rdfType = new RDFResource("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+
 Console.WriteLine(RDFVocabulary.RDF.TYPE);
 Console.WriteLine(RDFVocabulary.RDFS.LABEL);
 Console.WriteLine(RDFVocabulary.RDFS.SUB_CLASS_OF);
 Console.WriteLine(RDFVocabulary.OWL.SAME_AS);
 Console.WriteLine(RDFVocabulary.XSD.PREFIX);
 Console.WriteLine(RDFVocabulary.SHACL.BASE_URI);
-Console.WriteLine(RDFVocabulary.RDF.TYPE.Equals(new RDFResource("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")));
+Console.WriteLine(RDFVocabulary.RDF.TYPE.Equals(rdfType));
 ```
 
 <div class="result" markdown="1">

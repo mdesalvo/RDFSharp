@@ -32,13 +32,21 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFNamespaceRegister.AddNamespace(vr);
 RDFNamespaceRegister.AddNamespace(vrd);
 
+RDFResource wineClass = new RDFResource(vr + "Wine");
+RDFResource wineShapeIri = new RDFResource(vr + "WineShape");
+
+RDFPlainLiteral wineShapeMessage = new RDFPlainLiteral("A wine of the catalog does not follow the rules of the cooperative", "en");
+
+RDFVariable pathStart = new RDFVariable("start");
+RDFVariable pathEnd = new RDFVariable("end");
+
 RDFPropertyPath PathOf(RDFResource property)
-    => new RDFPropertyPath(new RDFVariable("start"), new RDFVariable("end"))
+    => new RDFPropertyPath(pathStart, pathEnd)
         .AddStep(RDFPropertyPathStep.Link(property));
 
-RDFNodeShape wineShape = new RDFNodeShape(new RDFResource(vr + "WineShape"));
-wineShape.AddTarget(new RDFTargetClass(new RDFResource(vr + "Wine")));
-wineShape.AddMessage(new RDFPlainLiteral("A wine of the catalog does not follow the rules of the cooperative", "en"));
+RDFNodeShape wineShape = new RDFNodeShape(wineShapeIri);
+wineShape.AddTarget(new RDFTargetClass(wineClass));
+wineShape.AddMessage(wineShapeMessage);
 Console.WriteLine(wineShape);
 Console.WriteLine(wineShape.TargetsCount);
 ```
@@ -57,26 +65,41 @@ https://vallerosa.example/vocab#WineShape
 The five rules of the cooperative become five property shapes, one for each property:
 
 ```csharp
-RDFPropertyShape vintageShape = new RDFPropertyShape(new RDFResource(vr + "WineVintageShape"), PathOf(new RDFResource(vr + "vintage")));
+RDFResource hasVintage = new RDFResource(vr + "vintage");
+RDFResource hasAlcohol = new RDFResource(vr + "alcohol");
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource hasPrice = new RDFResource(vr + "price");
+RDFResource producerClass = new RDFResource(vr + "Producer");
+RDFResource wineVintageShapeIri = new RDFResource(vr + "WineVintageShape");
+RDFResource wineAlcoholShapeIri = new RDFResource(vr + "WineAlcoholShape");
+RDFResource wineLabelShapeIri = new RDFResource(vr + "WineLabelShape");
+RDFResource wineProducerShapeIri = new RDFResource(vr + "WineProducerShape");
+RDFResource winePriceShapeIri = new RDFResource(vr + "WinePriceShape");
+
+RDFTypedLiteral minimumAlcohol = new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral maximumAlcohol = new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral priceFloor = new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
+RDFPropertyShape vintageShape = new RDFPropertyShape(wineVintageShapeIri, PathOf(hasVintage));
 vintageShape.AddConstraint(new RDFMinCountConstraint(1));
 vintageShape.AddConstraint(new RDFMaxCountConstraint(1));
 vintageShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_GYEAR));
 
-RDFPropertyShape alcoholShape = new RDFPropertyShape(new RDFResource(vr + "WineAlcoholShape"), PathOf(new RDFResource(vr + "alcohol")));
+RDFPropertyShape alcoholShape = new RDFPropertyShape(wineAlcoholShapeIri, PathOf(hasAlcohol));
 alcoholShape.AddConstraint(new RDFDatatypeConstraint(RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
-alcoholShape.AddConstraint(new RDFMinInclusiveConstraint(new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
-alcoholShape.AddConstraint(new RDFMaxInclusiveConstraint(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+alcoholShape.AddConstraint(new RDFMinInclusiveConstraint(minimumAlcohol));
+alcoholShape.AddConstraint(new RDFMaxInclusiveConstraint(maximumAlcohol));
 
-RDFPropertyShape labelShape = new RDFPropertyShape(new RDFResource(vr + "WineLabelShape"), PathOf(RDFVocabulary.RDFS.LABEL));
+RDFPropertyShape labelShape = new RDFPropertyShape(wineLabelShapeIri, PathOf(RDFVocabulary.RDFS.LABEL));
 labelShape.AddConstraint(new RDFLanguageInConstraint(new List<string> { "it", "en" }));
 labelShape.AddConstraint(new RDFUniqueLangConstraint(true));
 
-RDFPropertyShape producerShape = new RDFPropertyShape(new RDFResource(vr + "WineProducerShape"), PathOf(new RDFResource(vr + "producedBy")));
+RDFPropertyShape producerShape = new RDFPropertyShape(wineProducerShapeIri, PathOf(producedBy));
 producerShape.AddConstraint(new RDFMinCountConstraint(1));
-producerShape.AddConstraint(new RDFClassConstraint(new RDFResource(vr + "Producer")));
+producerShape.AddConstraint(new RDFClassConstraint(producerClass));
 
-RDFPropertyShape priceShape = new RDFPropertyShape(new RDFResource(vr + "WinePriceShape"), PathOf(new RDFResource(vr + "price")));
-priceShape.AddConstraint(new RDFMinExclusiveConstraint(new RDFTypedLiteral("0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+RDFPropertyShape priceShape = new RDFPropertyShape(winePriceShapeIri, PathOf(hasPrice));
+priceShape.AddConstraint(new RDFMinExclusiveConstraint(priceFloor));
 Console.WriteLine(vintageShape.ConstraintsCount);
 ```
 
@@ -98,13 +121,15 @@ Read them in order:
 Every `AddConstraint` is one SHACL constraint. The bounds are typed literals, because a bound of `5` as text would not be comparable to a decimal. Then the property shapes are attached to the node shape and everything goes into the shapes graph:
 
 ```csharp
+RDFResource wineShapesIri = new RDFResource(vr + "WineShapes");
+
 wineShape.AddConstraint(new RDFPropertyConstraint(vintageShape));
 wineShape.AddConstraint(new RDFPropertyConstraint(alcoholShape));
 wineShape.AddConstraint(new RDFPropertyConstraint(labelShape));
 wineShape.AddConstraint(new RDFPropertyConstraint(producerShape));
 wineShape.AddConstraint(new RDFPropertyConstraint(priceShape));
 
-RDFShapesGraph shapes = new RDFShapesGraph(new RDFResource(vr + "WineShapes"));
+RDFShapesGraph shapes = new RDFShapesGraph(wineShapesIri);
 shapes.AddShape(wineShape);
 shapes.AddShape(vintageShape);
 shapes.AddShape(alcoholShape);

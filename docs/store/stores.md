@@ -23,15 +23,17 @@ using RDFSharp.Store;
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
-RDFContext guidaCalici = new RDFContext("https://guidacalici.example/2025");
-RDFContext winescope = new RDFContext("https://winescope.example/2025");
-RDFResource rosso = new RDFResource(vrd + "rosso-2021");
-RDFResource score = new RDFResource(vr + "score");
+RDFResource hasScore = new RDFResource(vr + "score");
 
-RDFQuadruple scoreInCalici = new RDFQuadruple(guidaCalici, rosso, score,
-    new RDFTypedLiteral("88", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
-RDFQuadruple scoreInWinescope = new RDFQuadruple(winescope, rosso, score,
-    new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER));
+RDFContext guidaCaliciContext = new RDFContext("https://guidacalici.example/2025");
+RDFContext winescopeContext = new RDFContext("https://winescope.example/2025");
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
+
+RDFTypedLiteral guidaCaliciScore = new RDFTypedLiteral("88", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+RDFTypedLiteral winescopeScore = new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
+RDFQuadruple scoreInCalici = new RDFQuadruple(guidaCaliciContext, rosso2021, hasScore, guidaCaliciScore);
+RDFQuadruple scoreInWinescope = new RDFQuadruple(winescopeContext, rosso2021, hasScore, winescopeScore);
 
 RDFMemoryStore draft = new RDFMemoryStore();
 await (await draft.AddQuadrupleAsync(scoreInCalici)).AddQuadrupleAsync(scoreInWinescope);
@@ -61,7 +63,7 @@ Console.WriteLine(await draft.ContainsQuadrupleAsync(scoreInWinescope));
 Console.WriteLine(draft.QuadruplesCount);
 
 await draft.AddQuadrupleAsync(scoreInWinescope);
-await draft.RemoveQuadruplesAsync(c: guidaCalici);
+await draft.RemoveQuadruplesAsync(c: guidaCaliciContext);
 Console.WriteLine(draft.QuadruplesCount);
 
 await draft.ClearQuadruplesAsync();
@@ -79,7 +81,7 @@ False
 
 </div>
 
-The pattern is made of five optional parameters named `c`, `s`, `p`, `o` and `l`, for context, subject, predicate, object and literal. A parameter left out matches anything, so `c: guidaCalici` means "every quadruple of that guide, whatever it says". The same five parameters drive the searches below. The object and the literal exclude each other because a quadruple has only one of them.
+The pattern is made of five optional parameters named `c`, `s`, `p`, `o` and `l`, for context, subject, predicate, object and literal. A parameter left out matches anything, so `c: guidaCaliciContext` means "every quadruple of that guide, whatever it says". The same five parameters drive the searches below. The object and the literal exclude each other because a quadruple has only one of them.
 
 ## Merging a graph
 
@@ -147,7 +149,7 @@ https://winescope.example/2025 5
 `SelectQuadruplesAsync` takes the same five parameters as `RemoveQuadruplesAsync` and returns the list of quadruples that satisfy all the given ones. What the Vallerosa Red is known for in WineScope, by context and subject:
 
 ```csharp
-List<RDFQuadruple> inWinescope = await store.SelectQuadruplesAsync(c: winescope, s: rosso);
+List<RDFQuadruple> inWinescope = await store.SelectQuadruplesAsync(c: winescopeContext, s: rosso2021);
 foreach (RDFQuadruple quadruple in inWinescope)
     Console.WriteLine(quadruple);
 ```
@@ -163,11 +165,11 @@ https://winescope.example/2025 https://vallerosa.example/id/rosso-2021 https://v
 The five parameters combine freely. Here is who gave a 90 and which wines are red, by literal and by predicate and object:
 
 ```csharp
-RDFTypedLiteral ninety = new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
-foreach (RDFQuadruple quadruple in await store.SelectQuadruplesAsync(l: ninety))
+RDFResource redWine = new RDFResource(vr + "RedWine");
+
+foreach (RDFQuadruple quadruple in await store.SelectQuadruplesAsync(l: winescopeScore))
     Console.WriteLine(quadruple);
 
-RDFResource redWine = new RDFResource(vr + "RedWine");
 foreach (RDFQuadruple quadruple in await store.SelectQuadruplesAsync(p: RDFVocabulary.RDF.TYPE, o: redWine))
     Console.WriteLine(quadruple);
 ```
@@ -182,18 +184,20 @@ https://vallerosa.example/catalog https://vallerosa.example/id/riserva-2019 http
 
 </div>
 
-When you want a store back instead of a list, use the indexer: `store[s: rosso]` is a new memory store with everything said about the Vallerosa Red, by every source. Asking for an object and a literal together is refused:
+When you want a store back instead of a list, use the indexer: `store[s: rosso2021]` is a new memory store with everything said about the Vallerosa Red, by every source. Asking for an object and a literal together is refused:
 
 ```csharp
-Console.WriteLine(store[s: rosso].QuadruplesCount);
+RDFPlainLiteral rossoLabel = new RDFPlainLiteral("Vallerosa Red", "en");
+
+Console.WriteLine(store[s: rosso2021].QuadruplesCount);
 
 try
 {
-    await store.SelectQuadruplesAsync(o: rosso, l: new RDFPlainLiteral("Vallerosa Red", "en"));
+    await store.SelectQuadruplesAsync(o: rosso2021, l: rossoLabel);
 }
-catch (RDFStoreException ex)
+catch (RDFStoreException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 ```
 
@@ -209,10 +213,10 @@ Cannot access a store when both object and literals are given: they must be mutu
 The 13 quadruples of the Vallerosa Red are 11 from the catalog plus the two scores. Now the question of the story. Every score is a quadruple with the predicate `vr:score` whose context is the guide. Sorted by wine, the answer reads off the list:
 
 ```csharp
-List<RDFQuadruple> scores = await store.SelectQuadruplesAsync(p: score);
+List<RDFQuadruple> scores = await store.SelectQuadruplesAsync(p: hasScore);
 foreach (RDFQuadruple quadruple in scores
-    .OrderBy(q => q.Subject.ToString(), StringComparer.Ordinal)
-    .ThenBy(q => q.Context.ToString(), StringComparer.Ordinal))
+    .OrderBy(scoreQuadruple => scoreQuadruple.Subject.ToString(), StringComparer.Ordinal)
+    .ThenBy(scoreQuadruple => scoreQuadruple.Context.ToString(), StringComparer.Ordinal))
     Console.WriteLine($"{quadruple.Subject} | {quadruple.Context} | {((RDFLiteral)quadruple.Object).Value}");
 ```
 
@@ -298,7 +302,7 @@ RDFMemoryStore asyncStore = new RDFMemoryStore();
 await asyncStore.MergeGraphAsync(catalog);
 Console.WriteLine(await asyncStore.QuadruplesCountAsync);
 
-List<RDFQuadruple> names = await asyncStore.SelectQuadruplesAsync(s: rosso, p: RDFVocabulary.RDFS.LABEL);
+List<RDFQuadruple> names = await asyncStore.SelectQuadruplesAsync(s: rosso2021, p: RDFVocabulary.RDFS.LABEL);
 Console.WriteLine(names.Count);
 ```
 

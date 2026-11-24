@@ -47,13 +47,15 @@ RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable producer = new RDFVariable("producer");
 RDFVariable wines = new RDFVariable("wines");
 
 RDFSelectQuery winesPerProducer = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer)))
+        .AddPattern(new RDFPattern(wine, producedBy, producer)))
     .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { producer })
         .AddAggregator(new RDFCountAggregator(wine, wines)))
     .AddProjectionVariable(producer)
@@ -97,6 +99,9 @@ GROUP BY ?subzone
 ```
 
 ```csharp
+RDFResource locatedIn = new RDFResource(vr + "locatedIn");
+RDFResource hasScore = new RDFResource(vr + "score");
+
 catalog.SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
 await catalogStore.MergeGraphAsync(catalog);
@@ -109,9 +114,9 @@ RDFVariable averageScore = new RDFVariable("averageScore");
 
 RDFSelectQuery scorePerSubzone = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
-        .AddPattern(new RDFPattern(producer, new RDFResource(vr + "locatedIn"), subzone))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "score"), score)))
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
+        .AddPattern(new RDFPattern(producer, locatedIn, subzone))
+        .AddPattern(new RDFPattern(wine, hasScore, score)))
     .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { subzone })
         .AddAggregator(new RDFAvgAggregator(score, averageScore)))
     .AddProjectionVariable(subzone)
@@ -155,6 +160,9 @@ GROUP BY ?shop
 ```csharp
 RDFGraph sales = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-sales.ttl");
 
+RDFResource soldTo = new RDFResource(vr + "soldTo");
+RDFResource hasBottles = new RDFResource(vr + "bottles");
+
 RDFVariable sale = new RDFVariable("sale");
 RDFVariable shop = new RDFVariable("shop");
 RDFVariable bottles = new RDFVariable("bottles");
@@ -163,8 +171,8 @@ RDFVariable deliveries = new RDFVariable("deliveries");
 
 RDFSelectQuery bottlesPerShop = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "soldTo"), shop))
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "bottles"), bottles)))
+        .AddPattern(new RDFPattern(sale, soldTo, shop))
+        .AddPattern(new RDFPattern(sale, hasBottles, bottles)))
     .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { shop })
         .AddAggregator(new RDFSumAggregator(bottles, totalBottles))
         .AddAggregator(new RDFCountAggregator(sale, deliveries)))
@@ -211,16 +219,18 @@ HAVING (SUM(?bottles) > 100)
 ```
 
 ```csharp
+RDFTypedLiteral bottlesThreshold = new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
 RDFSelectQuery bigShops = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "soldTo"), shop))
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "bottles"), bottles)))
+        .AddPattern(new RDFPattern(sale, soldTo, shop))
+        .AddPattern(new RDFPattern(sale, hasBottles, bottles)))
     .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { shop })
         .AddAggregator(new RDFSumAggregator(bottles, totalBottles))
         .SetHavingExpression(new RDFComparisonExpression(
             RDFQueryEnums.RDFComparisonFlavors.GreaterThan,
             totalBottles,
-            new RDFConstantExpression(new RDFTypedLiteral("100", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))))
+            new RDFConstantExpression(bottlesThreshold))))
     .AddProjectionVariable(shop)
     .AddProjectionVariable(totalBottles);
 
@@ -244,6 +254,10 @@ RDFSelectQueryResult bigShopsResult = await bigShops.ApplyToGraphAsync(sales);
 Minimum, maximum, a sample and a concatenation work as the others. The two flavors of `RDFMinAggregator` and `RDFMaxAggregator`, `Numeric` and `String`, say how the values are compared: use `Numeric` for prices and scores, where 9 is less than 10. Use `String` for names. The cheapest and the dearest wine of each producer, one label picked from the group and all of them in one string:
 
 ```csharp
+RDFResource hasPrice = new RDFResource(vr + "price");
+
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+
 RDFVariable price = new RDFVariable("price");
 RDFVariable label = new RDFVariable("label");
 RDFVariable cheapest = new RDFVariable("cheapest");
@@ -253,11 +267,11 @@ RDFVariable allLabels = new RDFVariable("allLabels");
 
 RDFSelectQuery producerSummary = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
+        .AddPattern(new RDFPattern(wine, producedBy, producer))
+        .AddPattern(new RDFPattern(wine, hasPrice, price))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en"))))))
+            new RDFConstantExpression(englishTag)))))
     .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { producer })
         .AddAggregator(new RDFMinAggregator(price, cheapest, RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric))
         .AddAggregator(new RDFMaxAggregator(price, dearest, RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric))
@@ -285,14 +299,16 @@ RDFSelectQueryResult summary = await producerSummary.ApplyToGraphAsync(catalog);
 `SAMPLE` returns one value of each group and the language leaves open which one, so do not rely on it. A last count, without a grouping variable, runs over the whole ledger. It asks how many shops and how many different wines the 14 sales involve, each counted once with `Distinct()`:
 
 ```csharp
+RDFResource hasSoldWine = new RDFResource(vr + "soldWine");
+
 RDFVariable soldWine = new RDFVariable("soldWine");
 RDFVariable shopCount = new RDFVariable("shopCount");
 RDFVariable wineKinds = new RDFVariable("wineKinds");
 
 RDFSelectQuery overall = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "soldTo"), shop))
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "soldWine"), soldWine)))
+        .AddPattern(new RDFPattern(sale, soldTo, shop))
+        .AddPattern(new RDFPattern(sale, hasSoldWine, soldWine)))
     .AddModifier(new RDFGroupByModifier()
         .AddAggregator(new RDFCountAggregator(shop, shopCount).Distinct())
         .AddAggregator(new RDFCountAggregator(soldWine, wineKinds).Distinct()))

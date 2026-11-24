@@ -52,6 +52,10 @@ Console.WriteLine(cellar.DataSourcesCount);
 The question is: which wines have an English label and what scores did the guides give them? The label lives in the catalog and the score in the guides. A federation has no query language of its own: you write an ordinary query and apply it with `ApplyToFederationAsync`.
 
 ```csharp
+RDFResource hasScore = new RDFResource(vr + "score");
+
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
 RDFVariable score = new RDFVariable("score");
@@ -59,9 +63,9 @@ RDFVariable score = new RDFVariable("score");
 RDFSelectQuery scores = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "score"), score))
+        .AddPattern(new RDFPattern(wine, hasScore, score))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en"))))))
+            new RDFConstantExpression(englishTag)))))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(label)
     .AddProjectionVariable(score)
@@ -145,10 +149,14 @@ This is why the example above works: the table of `?wine rdfs:label ?label` come
 ```csharp
 RDFNamespace dbr = new RDFNamespace("dbr", "http://dbpedia.org/resource/");
 RDFNamespace dbo = new RDFNamespace("dbo", "http://dbpedia.org/ontology/");
+
 RDFResource originProperty = new RDFResource(dbo + "origin");
+
+RDFResource sangiovese = new RDFResource(dbr + "Sangiovese");
+
 RDFVariable origin = new RDFVariable("origin");
 
-RDFPattern sangioveseOrigin = new RDFPattern(new RDFResource(dbr + "Sangiovese"), originProperty, origin);
+RDFPattern sangioveseOrigin = new RDFPattern(sangiovese, originProperty, origin);
 Console.WriteLine(new RDFSelectQuery().AddPatternGroup(new RDFPatternGroup().AddPattern(sangioveseOrigin)));
 ```
 
@@ -251,6 +259,8 @@ ORDER BY ?name
 ```
 
 ```csharp
+RDFResource grapeClass = new RDFResource(dbo + "Grape");
+
 RDFVariable name = new RDFVariable("name");
 
 RDFSelectQuery origins = new RDFSelectQuery()
@@ -258,7 +268,7 @@ RDFSelectQuery origins = new RDFSelectQuery()
         .AddPattern(new RDFPattern(grape, RDFVocabulary.RDFS.LABEL, name))
         .AddPattern(new RDFPattern(grape, RDFVocabulary.OWL.SAME_AS, dbpediaGrape)))
     .AddService(new RDFService(dbpedia, new RDFPatternGroup()
-        .AddPattern(new RDFPattern(dbpediaGrape, RDFVocabulary.RDF.TYPE, new RDFResource(dbo + "Grape")))
+        .AddPattern(new RDFPattern(dbpediaGrape, RDFVocabulary.RDF.TYPE, grapeClass))
         .AddPattern(new RDFPattern(dbpediaGrape, originProperty, origin)), dbpediaOptions))
     .AddProjectionVariable(name)
     .AddProjectionVariable(origin)
@@ -292,7 +302,7 @@ RDFSelectQuery allOrigins = new RDFSelectQuery()
         .AddPattern(new RDFPattern(grape, RDFVocabulary.RDFS.LABEL, name))
         .AddPattern(new RDFPattern(grape, RDFVocabulary.OWL.SAME_AS, dbpediaGrape)))
     .AddService(new RDFService(dbpedia, new RDFPatternGroup()
-        .AddPattern(new RDFPattern(dbpediaGrape, RDFVocabulary.RDF.TYPE, new RDFResource(dbo + "Grape")))
+        .AddPattern(new RDFPattern(dbpediaGrape, RDFVocabulary.RDF.TYPE, grapeClass))
         .AddPattern(new RDFPattern(dbpediaGrape, originProperty, origin)), dbpediaOptions))
     .AddProjectionVariable(name)
     .AddProjectionVariable(origin);

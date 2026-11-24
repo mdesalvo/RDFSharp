@@ -65,25 +65,39 @@ INSERT DATA {
 ```
 
 ```csharp
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource hasVintage = new RDFResource(vr + "vintage");
+RDFResource hasAlcohol = new RDFResource(vr + "alcohol");
+RDFResource hasPrice = new RDFResource(vr + "price");
+RDFResource isOrganic = new RDFResource(vr + "organic");
+RDFResource hasGrape = new RDFResource(vr + "grape");
+
 RDFResource rosso2022 = new RDFResource(vrd + "rosso-2022");
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+RDFResource sangiovese = new RDFResource(vrd + "sangiovese");
+RDFResource canaiolo = new RDFResource(vrd + "canaiolo");
+
+RDFPlainLiteral rosso2022ItalianLabel = new RDFPlainLiteral("Rosso di Vallerosa", "it");
+RDFPlainLiteral rosso2022EnglishLabel = new RDFPlainLiteral("Vallerosa Red", "en");
+RDFTypedLiteral rosso2022Vintage = new RDFTypedLiteral("2022", RDFModelEnums.RDFDatatypes.XSD_GYEAR);
+RDFTypedLiteral rosso2022Alcohol = new RDFTypedLiteral("13.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral rosso2022Price = new RDFTypedLiteral("15.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral organicFalse = new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
 
 RDFInsertDataOperation insertVintage = new RDFInsertDataOperation()
     .AddPrefix(vr)
     .AddPrefix(vrd)
-    .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
-    .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Rosso di Vallerosa", "it")))
-    .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Red", "en")))
-    .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")))
-    .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "vintage"),
-        new RDFTypedLiteral("2022", RDFModelEnums.RDFDatatypes.XSD_GYEAR)))
-    .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "alcohol"),
-        new RDFTypedLiteral("13.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))
-    .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "price"),
-        new RDFTypedLiteral("15.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))
-    .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "organic"),
-        new RDFTypedLiteral("false", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)))
-    .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "grape"), new RDFResource(vrd + "sangiovese")))
-    .AddInsertTemplate(new RDFPattern(rosso2022, new RDFResource(vr + "grape"), new RDFResource(vrd + "canaiolo")));
+    .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDF.TYPE, redWine))
+    .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDFS.LABEL, rosso2022ItalianLabel))
+    .AddInsertTemplate(new RDFPattern(rosso2022, RDFVocabulary.RDFS.LABEL, rosso2022EnglishLabel))
+    .AddInsertTemplate(new RDFPattern(rosso2022, producedBy, poggioAlto))
+    .AddInsertTemplate(new RDFPattern(rosso2022, hasVintage, rosso2022Vintage))
+    .AddInsertTemplate(new RDFPattern(rosso2022, hasAlcohol, rosso2022Alcohol))
+    .AddInsertTemplate(new RDFPattern(rosso2022, hasPrice, rosso2022Price))
+    .AddInsertTemplate(new RDFPattern(rosso2022, isOrganic, organicFalse))
+    .AddInsertTemplate(new RDFPattern(rosso2022, hasGrape, sangiovese))
+    .AddInsertTemplate(new RDFPattern(rosso2022, hasGrape, canaiolo));
 
 RDFOperationResult vintageResult = await insertVintage.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{vintageResult.InsertResultsCount} {catalog.TriplesCount}");
@@ -135,16 +149,20 @@ WHERE {
 ```
 
 ```csharp
+RDFResource dishClass = new RDFResource(vr + "Dish");
+RDFResource pairsWith = new RDFResource(vr + "pairsWith");
+
 RDFResource grilledSteak = new RDFResource(vrd + "grilled-steak");
+
 RDFVariable wine = new RDFVariable("wine");
 
 RDFInsertWhereOperation pairWithSteak = new RDFInsertWhereOperation()
     .AddPrefix(vr)
     .AddPrefix(vrd)
-    .AddInsertTemplate(new RDFPattern(grilledSteak, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Dish")))
-    .AddInsertTemplate(new RDFPattern(wine, new RDFResource(vr + "pairsWith"), grilledSteak))
+    .AddInsertTemplate(new RDFPattern(grilledSteak, RDFVocabulary.RDF.TYPE, dishClass))
+    .AddInsertTemplate(new RDFPattern(wine, pairsWith, grilledSteak))
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto"))));
+        .AddPattern(new RDFPattern(wine, producedBy, poggioAlto)));
 
 RDFOperationResult pairingResult = await pairWithSteak.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{pairingResult.InsertResultsCount} {catalog.TriplesCount}");
@@ -184,13 +202,14 @@ DELETE DATA {
 ```
 
 ```csharp
-RDFResource rosato = new RDFResource(vrd + "rosato-2024");
+RDFResource rosato2024 = new RDFResource(vrd + "rosato-2024");
+
+RDFTypedLiteral rosato2024Price = new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
 
 RDFDeleteDataOperation stopQuoting = new RDFDeleteDataOperation()
     .AddPrefix(vr)
     .AddPrefix(vrd)
-    .AddDeleteTemplate(new RDFPattern(rosato, new RDFResource(vr + "price"),
-        new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+    .AddDeleteTemplate(new RDFPattern(rosato2024, hasPrice, rosato2024Price));
 
 RDFOperationResult quotingResult = await stopQuoting.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{quotingResult.DeleteResultsCount} {catalog.TriplesCount}");
@@ -235,6 +254,8 @@ WHERE {
 ```
 
 ```csharp
+RDFResource hasBlend = new RDFResource(vr + "blend");
+
 RDFVariable property = new RDFVariable("p");
 RDFVariable value = new RDFVariable("o");
 RDFVariable list = new RDFVariable("list");
@@ -245,13 +266,13 @@ RDFVariable tail = new RDFVariable("tail");
 RDFDeleteWhereOperation forgetRosato = new RDFDeleteWhereOperation()
     .AddPrefix(vr)
     .AddPrefix(vrd)
-    .AddDeleteTemplate(new RDFPattern(rosato, property, value))
+    .AddDeleteTemplate(new RDFPattern(rosato2024, property, value))
     .AddDeleteTemplate(new RDFPattern(list, RDFVocabulary.RDF.TYPE, listType))
     .AddDeleteTemplate(new RDFPattern(list, RDFVocabulary.RDF.FIRST, head))
     .AddDeleteTemplate(new RDFPattern(list, RDFVocabulary.RDF.REST, tail))
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(rosato, property, value))
-        .AddPattern(new RDFPattern(rosato, new RDFResource(vr + "blend"), list))
+        .AddPattern(new RDFPattern(rosato2024, property, value))
+        .AddPattern(new RDFPattern(rosato2024, hasBlend, list))
         .AddPattern(new RDFPattern(list, RDFVocabulary.RDF.TYPE, listType))
         .AddPattern(new RDFPattern(list, RDFVocabulary.RDF.FIRST, head))
         .AddPattern(new RDFPattern(list, RDFVocabulary.RDF.REST, tail)));
@@ -304,18 +325,18 @@ WHERE {
 ```
 
 ```csharp
-RDFResource priceProperty = new RDFResource(vr + "price");
+RDFTypedLiteral priceRise = new RDFTypedLiteral("1.05", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFVariable price = new RDFVariable("price");
 RDFVariable newPrice = new RDFVariable("newPrice");
 
 RDFDeleteInsertWhereOperation raisePrices = new RDFDeleteInsertWhereOperation()
     .AddPrefix(vr)
-    .AddDeleteTemplate(new RDFPattern(wine, priceProperty, price))
-    .AddInsertTemplate(new RDFPattern(wine, priceProperty, newPrice))
+    .AddDeleteTemplate(new RDFPattern(wine, hasPrice, price))
+    .AddInsertTemplate(new RDFPattern(wine, hasPrice, newPrice))
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, priceProperty, price))
-        .AddBind(new RDFBind(new RDFMultiplyExpression(price,
-            new RDFTypedLiteral("1.05", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), newPrice)));
+        .AddPattern(new RDFPattern(wine, hasPrice, price))
+        .AddBind(new RDFBind(new RDFMultiplyExpression(price, priceRise), newPrice)));
 
 RDFOperationResult raiseResult = await raisePrices.ApplyToGraphAsync(catalog);
 Console.WriteLine($"{raiseResult.DeleteResultsCount} {raiseResult.InsertResultsCount} {catalog.TriplesCount}");
@@ -378,16 +399,17 @@ await catalogStore.MergeGraphAsync((await RDFGraph.FromFileAsync(RDFModelEnums.R
 RDFMemoryStore store = await catalogStore.UnionWithAsync(
     await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig"));
 
+RDFResource hasScore = new RDFResource(vr + "score");
+
 RDFVariable guide = new RDFVariable("guide");
 RDFVariable score = new RDFVariable("score");
-RDFResource scoreProperty = new RDFResource(vr + "score");
 
 RDFDeleteWhereOperation forgetScores = new RDFDeleteWhereOperation()
     .AddPrefix(vr)
     .AddPrefix(vrd)
-    .AddDeleteTemplate(new RDFPattern(guide, rosato, scoreProperty, score))
+    .AddDeleteTemplate(new RDFPattern(guide, rosato2024, hasScore, score))
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(guide, rosato, scoreProperty, score)));
+        .AddPattern(new RDFPattern(guide, rosato2024, hasScore, score)));
 
 RDFOperationResult scoresResult = await forgetScores.ApplyToStoreAsync(store);
 Console.WriteLine($"{scoresResult.DeleteResultsCount} {store.QuadruplesCount}");

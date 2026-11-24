@@ -35,9 +35,11 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFNamespaceRegister.AddNamespace(vr);
 RDFNamespaceRegister.AddNamespace(vrd);
 
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
+RDFResource vinsanto2015 = new RDFResource(vrd + "vinsanto-2015");
+
 RDFMemoryStore guides = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.TriG, "vallerosa-guides.trig");
-RDFMemoryStore scores = await guides[s: new RDFResource(vrd + "rosso-2021")]
-    .UnionWithAsync(guides[s: new RDFResource(vrd + "vinsanto-2015")]);
+RDFMemoryStore scores = await guides[s: rosso2021].UnionWithAsync(guides[s: vinsanto2015]);
 Console.WriteLine(scores.QuadruplesCount);
 ```
 
@@ -72,13 +74,16 @@ Console.WriteLine(File.ReadAllText("scores.nq"));
 Every line is one quadruple: subject, predicate, object, context, closed by a dot. Note the order, which is the one of the standard: the context comes last, the opposite of the way RDFSharp prints a quadruple.
 
 ```csharp
+RDFResource hasScore = new RDFResource(vr + "score");
+
+RDFContext winescopeContext = new RDFContext("https://winescope.example/2025");
+
+RDFTypedLiteral winescopeScore = new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
 RDFMemoryStore fromNQuads = await RDFMemoryStore.FromFileAsync(RDFStoreEnums.RDFFormats.NQuads, "scores.nq");
 Console.WriteLine(fromNQuads.QuadruplesCount);
-Console.WriteLine(await fromNQuads.ContainsQuadrupleAsync(new RDFQuadruple(
-    new RDFContext("https://winescope.example/2025"),
-    new RDFResource(vrd + "rosso-2021"),
-    new RDFResource(vr + "score"),
-    new RDFTypedLiteral("90", RDFModelEnums.RDFDatatypes.XSD_INTEGER))));
+Console.WriteLine(await fromNQuads.ContainsQuadrupleAsync(
+    new RDFQuadruple(winescopeContext, rosso2021, hasScore, winescopeScore)));
 ```
 
 <div class="result" markdown="1">

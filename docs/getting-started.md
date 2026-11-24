@@ -31,19 +31,26 @@ using RDFSharp.Query;
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
 RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
+
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource hasPrice = new RDFResource(vr + "price");
+
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+RDFTypedLiteral priceCap = new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
 RDFVariable price = new RDFVariable("price");
 
 RDFSelectQuery query = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
+        .AddPattern(new RDFPattern(wine, RDFVocabulary.RDF.TYPE, redWine))
         .AddPattern(new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label))
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "price"), price))
+        .AddPattern(new RDFPattern(wine, hasPrice, price))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en")))))
+            new RDFConstantExpression(englishTag))))
         .AddFilter(new RDFFilter(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessThan,
-            price, new RDFConstantExpression(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))))
+            price, new RDFConstantExpression(priceCap)))))
     .AddProjectionVariable(label)
     .AddProjectionVariable(price);
 

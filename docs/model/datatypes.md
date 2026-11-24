@@ -44,9 +44,9 @@ try
 {
     RDFTypedLiteral twelveAndAHalf = new RDFTypedLiteral("twelve and a half", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
 }
-catch (RDFModelException ex)
+catch (RDFModelException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 ```
 
@@ -80,9 +80,9 @@ A wine with 135 degrees of alcohol would go straight into the catalog. What the 
 An `RDFDatatype` takes an IRI of your own, a **target datatype** to start from and a list of **facets**. A facet is one more condition on the value: a bound, a length, a pattern. The value must satisfy the target datatype first and then every facet. Alcohol by volume is a decimal from 0 to 20, both included:
 
 ```csharp
-RDFDatatype abv = new RDFDatatype(new Uri(vr + "abv"), RDFModelEnums.RDFDatatypes.XSD_DECIMAL,
+RDFDatatype abvDatatype = new RDFDatatype(new Uri(vr + "abv"), RDFModelEnums.RDFDatatypes.XSD_DECIMAL,
     new List<RDFFacet> { new RDFMinInclusiveFacet(0), new RDFMaxInclusiveFacet(20) });
-RDFDatatypeRegister.AddDatatype(abv);
+RDFDatatypeRegister.AddDatatype(abvDatatype);
 
 Console.WriteLine(RDFDatatypeRegister.DatatypesCount);
 Console.WriteLine(RDFDatatypeRegister.GetDatatype(vr + "abv").TargetDatatype);
@@ -97,7 +97,7 @@ XSD_DECIMAL
 
 </div>
 
-Registering the datatype is not needed to use it: you can pass `abv` straight to a typed literal. It is worth doing, because the register is the library's list of known datatypes, found by IRI like the namespaces of the previous chapter. A datatype whose IRI is already registered is not added a second time.
+Registering the datatype is not needed to use it: you can pass `abvDatatype` straight to a typed literal. It is worth doing, because the register is the library's list of known datatypes, found by IRI like the namespaces of the previous chapter. A datatype whose IRI is already registered is not added a second time.
 
 Here are the borders of the new datatype:
 
@@ -106,7 +106,7 @@ foreach (string value in new string[] { "0", "13.5", "20", "20.5", "-1", "135" }
 {
     try
     {
-        RDFTypedLiteral alcohol = new RDFTypedLiteral(value, abv);
+        RDFTypedLiteral alcohol = new RDFTypedLiteral(value, abvDatatype);
         Console.WriteLine($"{value} accepted");
     }
     catch (RDFModelException)
@@ -136,23 +136,28 @@ The bounds are inclusive, so 0 and 20 pass. A target datatype with no facets, pa
 Back to the spreadsheet. The new wine is `vrd:nero-2024` and its alcohol arrives as the text `135`. The import builds the literal with the datatype of the cooperative and the library refuses it. The row is kept out of the graph and the next line, with the corrected value, goes in:
 
 ```csharp
-RDFResource nero = new RDFResource(vrd + "nero-2024");
+RDFResource nero2024 = new RDFResource(vrd + "nero-2024");
+
 RDFResource hasAlcohol = new RDFResource(vr + "alcohol");
+
+RDFTypedLiteral correctedAlcohol = new RDFTypedLiteral("13.5", abvDatatype);
+
 RDFGraph delivery = new RDFGraph().SetContext(new Uri("https://vallerosa.example/catalog"));
 
 try
 {
-    delivery.AddTriple(new RDFTriple(nero, hasAlcohol, new RDFTypedLiteral("135", abv)));
+    RDFTypedLiteral excessiveAlcohol = new RDFTypedLiteral("135", abvDatatype);
+    delivery.AddTriple(new RDFTriple(nero2024, hasAlcohol, excessiveAlcohol));
 }
-catch (RDFModelException ex)
+catch (RDFModelException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 Console.WriteLine(delivery.TriplesCount);
 
-delivery.AddTriple(new RDFTriple(nero, hasAlcohol, new RDFTypedLiteral("13.5", abv)));
+delivery.AddTriple(new RDFTriple(nero2024, hasAlcohol, correctedAlcohol));
 Console.WriteLine(delivery.TriplesCount);
-Console.WriteLine((await delivery.SelectTriplesAsync(s: nero))[0].Object);
+Console.WriteLine((await delivery.SelectTriplesAsync(s: nero2024))[0].Object);
 ```
 
 <div class="result" markdown="1">
@@ -195,7 +200,7 @@ A datatype is knowledge too and `AddDatatype` writes it into a graph: its IRI as
 ```csharp
 RDFGraph vocabulary = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/vocab"))
-    .AddDatatype(abv);
+    .AddDatatype(abvDatatype);
 await vocabulary.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "abv.ttl");
 Console.WriteLine(vocabulary.TriplesCount);
 ```

@@ -50,13 +50,18 @@ RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
-RDFVariable wine = new RDFVariable("wine");
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource locatedIn = new RDFResource(vr + "locatedIn");
+RDFResource partOf = new RDFResource(vr + "partOf");
+
 RDFResource tuscany = new RDFResource(vrd + "tuscany");
 
+RDFVariable wine = new RDFVariable("wine");
+
 RDFPropertyPath winesOfTuscany = new RDFPropertyPath(wine, tuscany)
-    .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "producedBy")))
-    .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "locatedIn")))
-    .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "partOf")).ZeroOrMore());
+    .AddStep(RDFPropertyPathStep.Link(producedBy))
+    .AddStep(RDFPropertyPathStep.Link(locatedIn))
+    .AddStep(RDFPropertyPathStep.Link(partOf).ZeroOrMore());
 
 RDFSelectQuery tuscanWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(winesOfTuscany))
@@ -85,10 +90,12 @@ foreach (DataRow row in tuscan.SelectResults.Rows)
 All six wines, as expected: every producer is in the valley and the valley is in Tuscany. The star is what makes the query robust. Poggio is two links away from Tuscany, a producer in a larger area could be one link away: the same path answers for both. The same route to the North Hill instead of Tuscany finds only what lives there, because the star accepts zero links:
 
 ```csharp
-RDFPropertyPath winesOfNorthHill = new RDFPropertyPath(wine, new RDFResource(vrd + "colle-nord"))
-    .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "producedBy")))
-    .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "locatedIn")))
-    .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "partOf")).ZeroOrMore());
+RDFResource colleNord = new RDFResource(vrd + "colle-nord");
+
+RDFPropertyPath winesOfNorthHill = new RDFPropertyPath(wine, colleNord)
+    .AddStep(RDFPropertyPathStep.Link(producedBy))
+    .AddStep(RDFPropertyPathStep.Link(locatedIn))
+    .AddStep(RDFPropertyPathStep.Link(partOf).ZeroOrMore());
 
 RDFSelectQuery northHillWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(winesOfNorthHill))
@@ -121,12 +128,14 @@ WHERE {
 ```
 
 ```csharp
+RDFResource poggio = new RDFResource(vrd + "poggio");
+
 RDFVariable area = new RDFVariable("area");
 
 RDFSelectQuery above = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(
-        new RDFPropertyPath(new RDFResource(vrd + "poggio"), area)
-            .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "partOf")).OneOrMore())))
+        new RDFPropertyPath(poggio, area)
+            .AddStep(RDFPropertyPathStep.Link(partOf).OneOrMore())))
     .AddProjectionVariable(area);
 
 RDFSelectQueryResult aboveResult = await above.ApplyToGraphAsync(catalog);
@@ -163,10 +172,12 @@ WHERE {
 ```
 
 ```csharp
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+
 RDFSelectQuery winesOfProducer = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(
-        new RDFPropertyPath(new RDFResource(vrd + "poggio-alto"), wine)
-            .AddStep(RDFPropertyPathStep.Link(new RDFResource(vr + "producedBy")).Inverse())))
+        new RDFPropertyPath(poggioAlto, wine)
+            .AddStep(RDFPropertyPathStep.Link(producedBy).Inverse())))
     .AddProjectionVariable(wine);
 
 RDFSelectQueryResult winesResult = await winesOfProducer.ApplyToGraphAsync(catalog);
@@ -200,12 +211,13 @@ WHERE {
 ```
 
 ```csharp
-RDFResource partOf = new RDFResource(vr + "partOf");
+RDFResource valleRosa = new RDFResource(vrd + "valle-rosa");
+
 RDFVariable neighbour = new RDFVariable("neighbour");
 
 RDFSelectQuery neighbours = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(
-        new RDFPropertyPath(new RDFResource(vrd + "valle-rosa"), neighbour)
+        new RDFPropertyPath(valleRosa, neighbour)
             .AddStep(RDFPropertyPathStep.Alternative(new List<RDFPropertyPathStep>
             {
                 RDFPropertyPathStep.Link(partOf),
@@ -252,12 +264,14 @@ WHERE {
 ```
 
 ```csharp
+RDFResource wineClass = new RDFResource(vr + "Wine");
+
 RDFGraph vocab = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-vocab.ttl");
 RDFGraph vocabAndCatalog = await vocab.UnionWithAsync(catalog);
 
 RDFSelectQuery allWines = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(
-        new RDFPropertyPath(wine, new RDFResource(vr + "Wine"))
+        new RDFPropertyPath(wine, wineClass)
             .AddStep(RDFPropertyPathStep.Link(RDFVocabulary.RDF.TYPE))
             .AddStep(RDFPropertyPathStep.Link(RDFVocabulary.RDFS.SUB_CLASS_OF).ZeroOrMore())))
     .AddProjectionVariable(wine);
@@ -288,15 +302,20 @@ What this path does by hand is what a reasoner deduces on its own: once `vr:Swee
 `NegatedPropertySet` follows any predicate except those you list, separately for the forward and the inverse direction. All that the catalog says of the Vallerosa Red apart from its type, its labels and its blend:
 
 ```csharp
+RDFResource hasBlend = new RDFResource(vr + "blend");
+
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
+
 RDFVariable value = new RDFVariable("value");
+
 RDFSelectQuery otherFacts = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPropertyPath(
-        new RDFPropertyPath(new RDFResource(vrd + "rosso-2021"), value)
+        new RDFPropertyPath(rosso2021, value)
             .AddStep(RDFPropertyPathStep.NegatedPropertySet(new List<RDFResource>
             {
                 RDFVocabulary.RDF.TYPE,
                 RDFVocabulary.RDFS.LABEL,
-                new RDFResource(vr + "blend")
+                hasBlend
             }))))
     .AddProjectionVariable(value);
 

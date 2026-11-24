@@ -29,12 +29,20 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFNamespaceRegister.AddNamespace(vr);
 RDFNamespaceRegister.AddNamespace(vrd);
 
-RDFResource vermentino = new RDFResource(vrd + "vermentino-2023");
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource hasVintage = new RDFResource(vr + "vintage");
+
+RDFResource vermentino2023 = new RDFResource(vrd + "vermentino-2023");
+RDFResource treUlivi = new RDFResource(vrd + "tre-ulivi");
+
+RDFPlainLiteral vermentinoLabel = new RDFPlainLiteral("Vermentino of the Plain", "en");
+RDFTypedLiteral vermentinoVintage = new RDFTypedLiteral("2023", RDFModelEnums.RDFDatatypes.XSD_GYEAR);
+
 RDFGraph wine = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vermentino of the Plain", "en")))
-    .AddTriple(new RDFTriple(vermentino, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "tre-ulivi")))
-    .AddTriple(new RDFTriple(vermentino, new RDFResource(vr + "vintage"), new RDFTypedLiteral("2023", RDFModelEnums.RDFDatatypes.XSD_GYEAR)));
+    .AddTriple(new RDFTriple(vermentino2023, RDFVocabulary.RDFS.LABEL, vermentinoLabel))
+    .AddTriple(new RDFTriple(vermentino2023, producedBy, treUlivi))
+    .AddTriple(new RDFTriple(vermentino2023, hasVintage, vermentinoVintage));
 ```
 
 ## Write to a file
@@ -168,9 +176,9 @@ try
 {
     await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "missing.ttl");
 }
-catch (RDFModelException ex)
+catch (RDFModelException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 ```
 

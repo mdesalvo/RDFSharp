@@ -22,12 +22,12 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 A **resource** is something you can talk about: a wine, a winery, a grape. It is named by an IRI, a Web address that works as a unique name and never has to resolve to a page. In RDFSharp a resource is an `RDFResource`.
 
 ```csharp
-RDFResource vermentino = new RDFResource(vrd + "vermentino-2023");
+RDFResource vermentino2023 = new RDFResource(vrd + "vermentino-2023");
 RDFResource treUlivi = new RDFResource(vrd + "tre-ulivi");
 RDFResource draft = new RDFResource();
 
-Console.WriteLine(vermentino);
-Console.WriteLine(vermentino.IsBlank);
+Console.WriteLine(vermentino2023);
+Console.WriteLine(vermentino2023.IsBlank);
 Console.WriteLine(draft.IsBlank);
 ```
 
@@ -145,12 +145,15 @@ This is the reason the datatype matters. A query that asks for the wines under 1
 A **triple** is one statement: a **subject** (who we speak about), a **predicate** (what we say) and an **object** (the value of it). The subject and the predicate are resources. The object is either a resource or a literal, so the library offers two constructors and the triple takes one of two **flavors**: `SPO` when the object is a resource and `SPL` when it is a literal.
 
 ```csharp
-RDFTriple producedBy = new RDFTriple(vermentino, new RDFResource(vr + "producedBy"), treUlivi);
-RDFTriple hasVintage = new RDFTriple(vermentino, new RDFResource(vr + "vintage"), vintage);
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+RDFResource hasVintage = new RDFResource(vr + "vintage");
 
-Console.WriteLine(producedBy.TripleFlavor);
-Console.WriteLine(hasVintage.TripleFlavor);
-Console.WriteLine(hasVintage);
+RDFTriple producedByTriple = new RDFTriple(vermentino2023, producedBy, treUlivi);
+RDFTriple hasVintageTriple = new RDFTriple(vermentino2023, hasVintage, vintage);
+
+Console.WriteLine(producedByTriple.TripleFlavor);
+Console.WriteLine(hasVintageTriple.TripleFlavor);
+Console.WriteLine(hasVintageTriple);
 ```
 
 <div class="result" markdown="1">
@@ -166,13 +169,15 @@ https://vallerosa.example/id/vermentino-2023 https://vallerosa.example/vocab#vin
 The library refuses what RDF does not allow. The predicate of a triple must be a named resource, because a statement needs a verb that everybody can recognize:
 
 ```csharp
+RDFResource blankPredicate = new RDFResource();
+
 try
 {
-    RDFTriple refused = new RDFTriple(vermentino, new RDFResource(), treUlivi);
+    RDFTriple refused = new RDFTriple(vermentino2023, blankPredicate, treUlivi);
 }
-catch (RDFModelException ex)
+catch (RDFModelException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 ```
 
@@ -227,17 +232,25 @@ vrd:tre-ulivi rdfs:label "Cantina dei Tre Ulivi" .
 ```
 
 ```csharp
+RDFResource whiteWine = new RDFResource(vr + "WhiteWine");
+RDFResource hasAlcohol = new RDFResource(vr + "alcohol");
+RDFResource hasPrice = new RDFResource(vr + "price");
+RDFResource isOrganic = new RDFResource(vr + "organic");
+RDFResource hasGrape = new RDFResource(vr + "grape");
+
+RDFResource vermentino = new RDFResource(vrd + "vermentino");
+
 RDFGraph catalog = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "WhiteWine")))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDFS.LABEL, nameIt))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDFS.LABEL, nameEn))
-    .AddTriple(producedBy)
-    .AddTriple(hasVintage)
-    .AddTriple(new RDFTriple(vermentino, new RDFResource(vr + "alcohol"), alcohol))
-    .AddTriple(new RDFTriple(vermentino, new RDFResource(vr + "price"), price))
-    .AddTriple(new RDFTriple(vermentino, new RDFResource(vr + "organic"), organic))
-    .AddTriple(new RDFTriple(vermentino, new RDFResource(vr + "grape"), new RDFResource(vrd + "vermentino")))
+    .AddTriple(new RDFTriple(vermentino2023, RDFVocabulary.RDF.TYPE, whiteWine))
+    .AddTriple(new RDFTriple(vermentino2023, RDFVocabulary.RDFS.LABEL, nameIt))
+    .AddTriple(new RDFTriple(vermentino2023, RDFVocabulary.RDFS.LABEL, nameEn))
+    .AddTriple(producedByTriple)
+    .AddTriple(hasVintageTriple)
+    .AddTriple(new RDFTriple(vermentino2023, hasAlcohol, alcohol))
+    .AddTriple(new RDFTriple(vermentino2023, hasPrice, price))
+    .AddTriple(new RDFTriple(vermentino2023, isOrganic, organic))
+    .AddTriple(new RDFTriple(vermentino2023, hasGrape, vermentino))
     .AddTriple(new RDFTriple(treUlivi, RDFVocabulary.RDFS.LABEL, producerName));
 
 Console.WriteLine(catalog.TriplesCount);

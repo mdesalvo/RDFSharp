@@ -53,7 +53,9 @@ WHERE {
 ```
 
 ```csharp
-RDFPattern wineProducedBy = new RDFPattern(wine, new RDFResource(vr + "producedBy"), producer);
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+
+RDFPattern wineProducedBy = new RDFPattern(wine, producedBy, producer);
 RDFPattern producerLabel = new RDFPattern(producer, RDFVocabulary.RDFS.LABEL, label);
 
 RDFPatternGroup winesAndProducers = new RDFPatternGroup()
@@ -108,17 +110,23 @@ WHERE {
 ```
 
 ```csharp
-RDFResource novello = new RDFResource(vrd + "novello-2025");
-RDFGraph harvest = new RDFGraph()
-    .AddTriple(new RDFTriple(novello, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RedWine")))
-    .AddTriple(new RDFTriple(novello, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto")));
-RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource isOrganic = new RDFResource(vr + "organic");
+
+RDFResource novello2025 = new RDFResource(vrd + "novello-2025");
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
 
 RDFVariable organic = new RDFVariable("organic");
+
+RDFGraph harvest = new RDFGraph()
+    .AddTriple(new RDFTriple(novello2025, RDFVocabulary.RDF.TYPE, redWine))
+    .AddTriple(new RDFTriple(novello2025, producedBy, poggioAlto));
+RDFGraph catalogAndHarvest = await catalog.UnionWithAsync(harvest);
+
 RDFSelectQuery organicFlags = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(wineProducedBy)
-        .AddPattern(new RDFPattern(wine, new RDFResource(vr + "organic"), organic).Optional()))
+        .AddPattern(new RDFPattern(wine, isOrganic, organic).Optional()))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(organic);
 
@@ -163,7 +171,6 @@ WHERE {
 ```
 
 ```csharp
-RDFResource redWine = new RDFResource(vr + "RedWine");
 RDFResource whiteWine = new RDFResource(vr + "WhiteWine");
 
 RDFSelectQuery redsAndWhites = new RDFSelectQuery()
@@ -205,12 +212,12 @@ WHERE {
 ```
 
 ```csharp
-RDFTypedLiteral yes = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
+RDFTypedLiteral organicTrue = new RDFTypedLiteral("true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN);
 
 RDFSelectQuery conventional = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddBinaryPatternGroupMember(
-            wineProducedBy.Minus(new RDFPattern(wine, new RDFResource(vr + "organic"), yes))))
+            wineProducedBy.Minus(new RDFPattern(wine, isOrganic, organicTrue))))
     .AddProjectionVariable(wine);
 
 RDFSelectQueryResult notOrganic = await conventional.ApplyToGraphAsync(catalog);
@@ -291,6 +298,8 @@ A store keeps quadruples, so a pattern on a store can say a fourth thing: **wher
 The store of this section is the one of the Store chapters: the catalog merged into the context `https://vallerosa.example/catalog`, plus the two guides of [vallerosa-guides.trig]({{ '/assets/data/vallerosa-guides.trig' | relative_url }}). `ApplyToStoreAsync` is the counterpart of `ApplyToGraphAsync`.
 
 ```csharp
+RDFResource hasScore = new RDFResource(vr + "score");
+
 catalog.SetContext(new Uri("https://vallerosa.example/catalog"));
 RDFMemoryStore catalogStore = new RDFMemoryStore();
 await catalogStore.MergeGraphAsync(catalog);
@@ -299,11 +308,10 @@ RDFMemoryStore store = await catalogStore.UnionWithAsync(guides);
 
 RDFVariable guide = new RDFVariable("guide");
 RDFVariable score = new RDFVariable("score");
-RDFResource scoreProperty = new RDFResource(vr + "score");
 
 RDFSelectQuery scoresByGuide = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(guide, wine, scoreProperty, score)))
+        .AddPattern(new RDFPattern(guide, wine, hasScore, score)))
     .AddProjectionVariable(guide)
     .AddProjectionVariable(wine)
     .AddProjectionVariable(score);
@@ -331,11 +339,11 @@ RDFSelectQueryResult guideScores = await scoresByGuide.ApplyToStoreAsync(store);
 With a fixed context the pattern looks into that source only. Here is what WineScope alone says:
 
 ```csharp
-RDFContext winescope = new RDFContext("https://winescope.example/2025");
+RDFContext winescopeContext = new RDFContext("https://winescope.example/2025");
 
 RDFSelectQuery winescopeScores = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(winescope, wine, scoreProperty, score)))
+        .AddPattern(new RDFPattern(winescopeContext, wine, hasScore, score)))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(score);
 

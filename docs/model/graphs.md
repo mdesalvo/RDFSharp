@@ -19,14 +19,18 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 
 RDFResource producedBy = new RDFResource(vr + "producedBy");
 RDFResource hasPrice = new RDFResource(vr + "price");
-RDFResource cooperative = new RDFResource(vrd + "vallerosa");
+RDFResource cooperativeClass = new RDFResource(vr + "Cooperative");
+RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource whiteWine = new RDFResource(vr + "WhiteWine");
+RDFResource roseWine = new RDFResource(vr + "RoseWine");
+
+RDFResource vallerosa = new RDFResource(vrd + "vallerosa");
 RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
 RDFResource treUlivi = new RDFResource(vrd + "tre-ulivi");
-RDFResource rosso = new RDFResource(vrd + "rosso-2021");
-RDFResource riserva = new RDFResource(vrd + "riserva-2019");
-RDFResource vermentino = new RDFResource(vrd + "vermentino-2023");
-RDFResource rosato = new RDFResource(vrd + "rosato-2024");
-RDFResource redWine = new RDFResource(vr + "RedWine");
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
+RDFResource riserva2019 = new RDFResource(vrd + "riserva-2019");
+RDFResource vermentino2023 = new RDFResource(vrd + "vermentino-2023");
+RDFResource rosato2024 = new RDFResource(vrd + "rosato-2024");
 ```
 
 ## Create a graph
@@ -36,29 +40,39 @@ An `RDFGraph` is a set of triples with a name. The name is its **context**, an a
 The two wineries each send a graph with their own wines: for each wine its class, its English label, its producer and its price. Both also restate who the cooperative is.
 
 ```csharp
+RDFPlainLiteral rossoLabel = new RDFPlainLiteral("Vallerosa Red", "en");
+RDFPlainLiteral riservaLabel = new RDFPlainLiteral("Vallerosa Reserve", "en");
+RDFPlainLiteral vermentinoLabel = new RDFPlainLiteral("Vermentino of the Plain", "en");
+RDFPlainLiteral rosatoLabel = new RDFPlainLiteral("Valley Rosé", "en");
+
+RDFTypedLiteral rossoPrice = new RDFTypedLiteral("14.50", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral riservaPrice = new RDFTypedLiteral("32.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral vermentinoPrice = new RDFTypedLiteral("13.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral rosatoPrice = new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
 RDFGraph fromPoggioAlto = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(cooperative, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Cooperative")))
-    .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDF.TYPE, redWine))
-    .AddTriple(new RDFTriple(rosso, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Red", "en")))
-    .AddTriple(new RDFTriple(rosso, producedBy, poggioAlto))
-    .AddTriple(new RDFTriple(rosso, hasPrice, new RDFTypedLiteral("14.50", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))
-    .AddTriple(new RDFTriple(riserva, RDFVocabulary.RDF.TYPE, redWine))
-    .AddTriple(new RDFTriple(riserva, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vallerosa Reserve", "en")))
-    .AddTriple(new RDFTriple(riserva, producedBy, poggioAlto))
-    .AddTriple(new RDFTriple(riserva, hasPrice, new RDFTypedLiteral("32.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+    .AddTriple(new RDFTriple(vallerosa, RDFVocabulary.RDF.TYPE, cooperativeClass))
+    .AddTriple(new RDFTriple(rosso2021, RDFVocabulary.RDF.TYPE, redWine))
+    .AddTriple(new RDFTriple(rosso2021, RDFVocabulary.RDFS.LABEL, rossoLabel))
+    .AddTriple(new RDFTriple(rosso2021, producedBy, poggioAlto))
+    .AddTriple(new RDFTriple(rosso2021, hasPrice, rossoPrice))
+    .AddTriple(new RDFTriple(riserva2019, RDFVocabulary.RDF.TYPE, redWine))
+    .AddTriple(new RDFTriple(riserva2019, RDFVocabulary.RDFS.LABEL, riservaLabel))
+    .AddTriple(new RDFTriple(riserva2019, producedBy, poggioAlto))
+    .AddTriple(new RDFTriple(riserva2019, hasPrice, riservaPrice));
 
 RDFGraph fromTreUlivi = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddTriple(new RDFTriple(cooperative, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Cooperative")))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "WhiteWine")))
-    .AddTriple(new RDFTriple(vermentino, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Vermentino of the Plain", "en")))
-    .AddTriple(new RDFTriple(vermentino, producedBy, treUlivi))
-    .AddTriple(new RDFTriple(vermentino, hasPrice, new RDFTypedLiteral("13.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)))
-    .AddTriple(new RDFTriple(rosato, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "RoseWine")))
-    .AddTriple(new RDFTriple(rosato, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Valley Rosé", "en")))
-    .AddTriple(new RDFTriple(rosato, producedBy, treUlivi))
-    .AddTriple(new RDFTriple(rosato, hasPrice, new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+    .AddTriple(new RDFTriple(vallerosa, RDFVocabulary.RDF.TYPE, cooperativeClass))
+    .AddTriple(new RDFTriple(vermentino2023, RDFVocabulary.RDF.TYPE, whiteWine))
+    .AddTriple(new RDFTriple(vermentino2023, RDFVocabulary.RDFS.LABEL, vermentinoLabel))
+    .AddTriple(new RDFTriple(vermentino2023, producedBy, treUlivi))
+    .AddTriple(new RDFTriple(vermentino2023, hasPrice, vermentinoPrice))
+    .AddTriple(new RDFTriple(rosato2024, RDFVocabulary.RDF.TYPE, roseWine))
+    .AddTriple(new RDFTriple(rosato2024, RDFVocabulary.RDFS.LABEL, rosatoLabel))
+    .AddTriple(new RDFTriple(rosato2024, producedBy, treUlivi))
+    .AddTriple(new RDFTriple(rosato2024, hasPrice, rosatoPrice));
 
 Console.WriteLine(fromPoggioAlto.Context);
 Console.WriteLine(fromPoggioAlto.TriplesCount);
@@ -93,9 +107,9 @@ https://rdfsharp.codeplex.com/
 `ContainsTripleAsync` tells whether a triple is in the graph and `TriplesCount` tells how many there are. A graph is also a sequence of triples, so `foreach` walks it:
 
 ```csharp
-RDFTriple rossoPrice = new RDFTriple(rosso, hasPrice, new RDFTypedLiteral("14.50", RDFModelEnums.RDFDatatypes.XSD_DECIMAL));
-Console.WriteLine(await fromPoggioAlto.ContainsTripleAsync(rossoPrice));
-Console.WriteLine(await fromTreUlivi.ContainsTripleAsync(rossoPrice));
+RDFTriple rossoPriceTriple = new RDFTriple(rosso2021, hasPrice, rossoPrice);
+Console.WriteLine(await fromPoggioAlto.ContainsTripleAsync(rossoPriceTriple));
+Console.WriteLine(await fromTreUlivi.ContainsTripleAsync(rossoPriceTriple));
 
 foreach (RDFTriple triple in fromTreUlivi)
     if (triple.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
@@ -226,7 +240,7 @@ The operations return graphs, so they chain: `a.IntersectWith(b).UnionWith(c)` r
 A selector you leave out matches anything. The ones you give must all hold, so they narrow the result together. With no selector at all you get every triple of the graph. Pass them by name, as in the examples: the order of the parameters then does not matter.
 
 ```csharp
-foreach (RDFTriple triple in await catalog.SelectTriplesAsync(s: rosso))
+foreach (RDFTriple triple in await catalog.SelectTriplesAsync(s: rosso2021))
     Console.WriteLine($"{triple.Predicate} | {triple.Object}");
 ```
 
@@ -265,8 +279,7 @@ By object, the red wines. By literal, whatever costs exactly 13.00:
 foreach (RDFTriple triple in await catalog.SelectTriplesAsync(o: redWine))
     Console.WriteLine(triple.Subject);
 
-RDFTypedLiteral thirteen = new RDFTypedLiteral("13.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
-foreach (RDFTriple triple in await catalog.SelectTriplesAsync(l: thirteen))
+foreach (RDFTriple triple in await catalog.SelectTriplesAsync(l: vermentinoPrice))
     Console.WriteLine($"{triple.Subject} | {triple.Predicate}");
 ```
 
@@ -283,8 +296,8 @@ https://vallerosa.example/id/vermentino-2023 | https://vallerosa.example/vocab#p
 A selector compares RDF terms, not values. The catalog writes the price as `13.00`: a decimal written `13` has the same value but is another literal, so it finds nothing. Selectors also combine freely, here the predicate and the object together:
 
 ```csharp
-RDFTypedLiteral thirteenShort = new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
-Console.WriteLine((await catalog.SelectTriplesAsync(l: thirteenShort)).Count);
+RDFTypedLiteral vermentinoShortPrice = new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+Console.WriteLine((await catalog.SelectTriplesAsync(l: vermentinoShortPrice)).Count);
 Console.WriteLine((await catalog.SelectTriplesAsync(p: RDFVocabulary.RDF.TYPE, o: redWine)).Count);
 Console.WriteLine((await catalog.SelectTriplesAsync()).Count);
 ```
@@ -323,11 +336,11 @@ An object that is a resource and an object that is a literal exclude each other,
 ```csharp
 try
 {
-    await catalog.SelectTriplesAsync(o: redWine, l: thirteen);
+    await catalog.SelectTriplesAsync(o: redWine, l: vermentinoPrice);
 }
-catch (RDFModelException ex)
+catch (RDFModelException exception)
 {
-    Console.WriteLine(ex.Message);
+    Console.WriteLine(exception.Message);
 }
 ```
 
@@ -354,12 +367,12 @@ The same selectors drive three methods, which differ in what they give back:
 The rosé is sold out. `RemoveTripleAsync` removes one triple and `RemoveTriplesAsync` removes all those that match the same four arguments of `SelectTriplesAsync`. First the price of the rosé, a single triple, then everything else that has the rosé as subject:
 
 ```csharp
-await catalog.RemoveTripleAsync(new RDFTriple(rosato, hasPrice, new RDFTypedLiteral("10.00", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
+await catalog.RemoveTripleAsync(new RDFTriple(rosato2024, hasPrice, rosatoPrice));
 Console.WriteLine(catalog.TriplesCount);
 
-await catalog.RemoveTriplesAsync(s: rosato);
+await catalog.RemoveTriplesAsync(s: rosato2024);
 Console.WriteLine(catalog.TriplesCount);
-Console.WriteLine((await catalog.SelectTriplesAsync(s: rosato)).Count);
+Console.WriteLine((await catalog.SelectTriplesAsync(s: rosato2024)).Count);
 ```
 
 <div class="result" markdown="1">
@@ -415,7 +428,7 @@ Every `...Async` method of this chapter also has a synchronous form without the 
 long total = await catalog.TriplesCountAsync;
 Console.WriteLine(total);
 
-List<RDFTriple> ofRosso = await catalog.SelectTriplesAsync(s: rosso);
+List<RDFTriple> ofRosso = await catalog.SelectTriplesAsync(s: rosso2021);
 Console.WriteLine(ofRosso.Count);
 ```
 
@@ -431,10 +444,12 @@ Console.WriteLine(ofRosso.Count);
 On `net8.0` and later the graph is also an `IAsyncEnumerable<RDFTriple>`, so you can walk it with `await foreach`. This one is not available on `netstandard2.0`:
 
 ```csharp
-await catalog.AddTripleAsync(new RDFTriple(rosso, RDFVocabulary.RDFS.LABEL, new RDFPlainLiteral("Rosso di Vallerosa", "it")));
+RDFPlainLiteral rossoItalianLabel = new RDFPlainLiteral("Rosso di Vallerosa", "it");
+
+await catalog.AddTripleAsync(new RDFTriple(rosso2021, RDFVocabulary.RDFS.LABEL, rossoItalianLabel));
 
 await foreach (RDFTriple triple in catalog.TriplesEnumeratorAsync)
-    if (triple.Subject.Equals(rosso) && triple.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
+    if (triple.Subject.Equals(rosso2021) && triple.Predicate.Equals(RDFVocabulary.RDFS.LABEL))
         Console.WriteLine(triple.Object);
 ```
 

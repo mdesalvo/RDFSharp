@@ -42,15 +42,17 @@ RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFNamespaceRegister.AddNamespace(vr);
 RDFNamespaceRegister.AddNamespace(vrd);
 
-RDFResource rosso = new RDFResource(vrd + "rosso-2021");
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
 RDFResource sangiovese = new RDFResource(vrd + "sangiovese");
 RDFResource canaiolo = new RDFResource(vrd + "canaiolo");
+
+RDFPlainLiteral merlotName = new RDFPlainLiteral("Merlot");
 
 RDFCollection blend = new RDFCollection(RDFModelEnums.RDFItemTypes.Resource)
     .AddItem(sangiovese)
     .AddItem(canaiolo)
     .AddItem(sangiovese)
-    .AddItem(new RDFPlainLiteral("Merlot"));
+    .AddItem(merlotName);
 Console.WriteLine(blend.ItemsCount);
 ```
 
@@ -69,10 +71,12 @@ Four items went in and two stayed. The second Sangiovese is a duplicate and the 
 A collection is not a triple, so it must be turned into some. `AddCollection` does it and a triple from the wine to the collection joins the two. The wine points to the collection through its `ReificationSubject`: the first cell of the list.
 
 ```csharp
+RDFResource hasBlend = new RDFResource(vr + "blend");
+
 RDFGraph wines = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
     .AddCollection(blend)
-    .AddTriple(new RDFTriple(rosso, new RDFResource(vr + "blend"), blend.ReificationSubject));
+    .AddTriple(new RDFTriple(rosso2021, hasBlend, blend.ReificationSubject));
 Console.WriteLine(wines.TriplesCount);
 await wines.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "blend.ttl");
 ```
@@ -121,9 +125,9 @@ Reading a list back is walking this chain. The catalog stores the blend of every
 
 ```csharp
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
-RDFResource vinsanto = new RDFResource(vrd + "vinsanto-2015");
+RDFResource vinsanto2015 = new RDFResource(vrd + "vinsanto-2015");
 
-RDFResource cell = (RDFResource)(await catalog.SelectTriplesAsync(s: vinsanto, p: new RDFResource(vr + "blend")))[0].Object;
+RDFResource cell = (RDFResource)(await catalog.SelectTriplesAsync(s: vinsanto2015, p: hasBlend))[0].Object;
 while (!cell.Equals(RDFVocabulary.RDF.NIL))
 {
     Console.WriteLine((await catalog.SelectTriplesAsync(s: cell, p: RDFVocabulary.RDF.FIRST))[0].Object);
@@ -147,15 +151,20 @@ The Valley Vin Santo is mostly Malvasia, with Trebbiano after it. A query that a
 The Valley Vin Santo won two prizes. They are texts, they have no order that matters and nobody can say that the list is complete: a bag of literals.
 
 ```csharp
-RDFContainer awards = new RDFContainer(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)
-    .AddItem(new RDFPlainLiteral("Gold, Concorso Vini di Siena 2023"))
-    .AddItem(new RDFPlainLiteral("Best Sweet Wine, Tuscan Cellars Fair 2024"));
-Console.WriteLine(awards.ItemsCount);
+RDFResource awards = new RDFResource(vr + "awards");
+
+RDFPlainLiteral goldAward = new RDFPlainLiteral("Gold, Concorso Vini di Siena 2023");
+RDFPlainLiteral bestSweetWineAward = new RDFPlainLiteral("Best Sweet Wine, Tuscan Cellars Fair 2024");
+
+RDFContainer awardsBag = new RDFContainer(RDFModelEnums.RDFContainerTypes.Bag, RDFModelEnums.RDFItemTypes.Literal)
+    .AddItem(goldAward)
+    .AddItem(bestSweetWineAward);
+Console.WriteLine(awardsBag.ItemsCount);
 
 RDFGraph sweet = new RDFGraph()
     .SetContext(new Uri("https://vallerosa.example/catalog"))
-    .AddContainer(awards)
-    .AddTriple(new RDFTriple(vinsanto, new RDFResource(vr + "awards"), awards.ReificationSubject));
+    .AddContainer(awardsBag)
+    .AddTriple(new RDFTriple(vinsanto2015, awards, awardsBag.ReificationSubject));
 Console.WriteLine(sweet.TriplesCount);
 await sweet.ToFileAsync(RDFModelEnums.RDFFormats.Turtle, "awards.ttl");
 ```

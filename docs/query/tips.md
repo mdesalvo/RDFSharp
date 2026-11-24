@@ -19,13 +19,14 @@ RDFNamespace vr = new RDFNamespace("vr", "https://vallerosa.example/vocab#");
 RDFNamespace vrd = new RDFNamespace("vrd", "https://vallerosa.example/id/");
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 
+RDFResource producedBy = new RDFResource(vr + "producedBy");
+
+RDFResource rosso2021 = new RDFResource(vrd + "rosso-2021");
+
 RDFVariable wine = new RDFVariable("wine");
 RDFVariable label = new RDFVariable("label");
 RDFVariable price = new RDFVariable("price");
 RDFVariable producer = new RDFVariable("producer");
-
-RDFResource rosso = new RDFResource(vrd + "rosso-2021");
-RDFResource producedBy = new RDFResource(vr + "producedBy");
 ```
 
 ## The order of your patterns
@@ -39,9 +40,13 @@ The engine answers a pattern group by evaluating its patterns and joining the re
 A pattern that begins with a constant, such as one naming `vrd:poggio-alto`, is usually the most selective one and ends up first whatever its position in your query. The reordering never changes the answer: it changes only the way the engine gets there.
 
 ```csharp
+RDFResource hasPrice = new RDFResource(vr + "price");
+
+RDFResource poggioAlto = new RDFResource(vrd + "poggio-alto");
+
 RDFPattern wineLabel = new RDFPattern(wine, RDFVocabulary.RDFS.LABEL, label);
-RDFPattern winePrice = new RDFPattern(wine, new RDFResource(vr + "price"), price);
-RDFPattern wineOfPoggio = new RDFPattern(wine, new RDFResource(vr + "producedBy"), new RDFResource(vrd + "poggio-alto"));
+RDFPattern winePrice = new RDFPattern(wine, hasPrice, price);
+RDFPattern wineOfPoggio = new RDFPattern(wine, producedBy, poggioAlto);
 
 RDFSelectQuery broadFirst = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
@@ -154,9 +159,13 @@ The price never reaches the outer table. See [Subqueries]({{ '/query/subqueries/
 `?s ?p ?o` has a variable in every position, so every triple of the data source matches it. On the catalog these are 143 rows. On a larger source they are all its triples.
 
 ```csharp
+RDFVariable anySubject = new RDFVariable("s");
+RDFVariable anyPredicate = new RDFVariable("p");
+RDFVariable anyObject = new RDFVariable("o");
+
 RDFSelectQuery everything = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFVariable("s"), new RDFVariable("p"), new RDFVariable("o"))));
+        .AddPattern(new RDFPattern(anySubject, anyPredicate, anyObject)));
 Console.WriteLine(everything);
 Console.WriteLine((await everything.ApplyToGraphAsync(catalog)).SelectResultsCount);
 ```
@@ -183,12 +192,20 @@ On a federation the damage grows, because every pattern is asked of every member
 The engine computes with the datatype of a literal. A price written as a typed `xsd:decimal` can be averaged and compared. A price written as a plain literal is text and arithmetic on text finds nothing to work with. A partner shop has returned the prices of three wines as plain text. The catalog holds them as decimals:
 
 ```csharp
-RDFGraph importedPrices = new RDFGraph();
-importedPrices.AddTriple(new RDFTriple(rosso, new RDFResource(vr + "price"), new RDFPlainLiteral("14.50")));
-importedPrices.AddTriple(new RDFTriple(new RDFResource(vrd + "riserva-2019"), new RDFResource(vr + "price"), new RDFPlainLiteral("32.00")));
-importedPrices.AddTriple(new RDFTriple(new RDFResource(vrd + "bianco-2023"), new RDFResource(vr + "price"), new RDFPlainLiteral("11.00")));
+RDFResource riserva2019 = new RDFResource(vrd + "riserva-2019");
+RDFResource bianco2023 = new RDFResource(vrd + "bianco-2023");
+
+RDFPlainLiteral rossoPrice = new RDFPlainLiteral("14.50");
+RDFPlainLiteral riservaPrice = new RDFPlainLiteral("32.00");
+RDFPlainLiteral biancoPrice = new RDFPlainLiteral("11.00");
 
 RDFVariable average = new RDFVariable("average");
+
+RDFGraph importedPrices = new RDFGraph();
+importedPrices.AddTriple(new RDFTriple(rosso2021, hasPrice, rossoPrice));
+importedPrices.AddTriple(new RDFTriple(riserva2019, hasPrice, riservaPrice));
+importedPrices.AddTriple(new RDFTriple(bianco2023, hasPrice, biancoPrice));
+
 RDFSelectQuery averagePrice = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup().AddPattern(winePrice))
     .AddModifier(new RDFGroupByModifier().AddAggregator(new RDFAvgAggregator(price, average)));
@@ -209,22 +226,25 @@ plain:
 The average of the plain prices is empty, with no error to tell you why. The same happens with comparisons and with computed values: a filter for prices below 13 keeps two wines of the catalog and none of the import. The price with VAT of an imported wine is unbound.
 
 ```csharp
+RDFTypedLiteral priceCap = new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+RDFTypedLiteral vatMultiplier = new RDFTypedLiteral("1.22", RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
+
+RDFVariable withVat = new RDFVariable("withVat");
+
 RDFSelectQuery under13 = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(winePrice)
         .AddFilter(new RDFFilter(new RDFComparisonExpression(
             RDFQueryEnums.RDFComparisonFlavors.LessThan, price,
-            new RDFConstantExpression(new RDFTypedLiteral("13", RDFModelEnums.RDFDatatypes.XSD_DECIMAL))))))
+            new RDFConstantExpression(priceCap)))))
     .AddProjectionVariable(wine);
 Console.WriteLine("typed: " + (await under13.ApplyToGraphAsync(catalog)).SelectResultsCount);
 Console.WriteLine("plain: " + (await under13.ApplyToGraphAsync(importedPrices)).SelectResultsCount);
 
-RDFVariable withVat = new RDFVariable("withVat");
 RDFSelectQuery priceWithVat = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(winePrice)
-        .AddBind(new RDFBind(new RDFMultiplyExpression(price,
-            new RDFTypedLiteral("1.22", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)), withVat)))
+        .AddBind(new RDFBind(new RDFMultiplyExpression(price, vatMultiplier), withVat)))
     .AddProjectionVariable(wine)
     .AddProjectionVariable(withVat);
 foreach (DataRow row in (await priceWithVat.ApplyToGraphAsync(importedPrices)).SelectResults.Rows)

@@ -81,16 +81,19 @@ An `RDFAskQuery` asks whether a pattern has any solution and the endpoint answer
 ```csharp
 RDFResource origin = new RDFResource(dbo + "origin");
 
+RDFResource italy = new RDFResource(dbr + "Italy");
+RDFResource greece = new RDFResource(dbr + "Greece");
+
 RDFAskQuery italianOrigin = new RDFAskQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(grape, RDFVocabulary.RDF.TYPE, grapeClass))
         .AddPattern(new RDFPattern(grape, wineRegion, tuscany))
-        .AddPattern(new RDFPattern(grape, origin, new RDFResource(dbr + "Italy"))));
+        .AddPattern(new RDFPattern(grape, origin, italy)));
 RDFAskQuery greekOrigin = new RDFAskQuery()
     .AddPatternGroup(new RDFPatternGroup()
         .AddPattern(new RDFPattern(grape, RDFVocabulary.RDF.TYPE, grapeClass))
         .AddPattern(new RDFPattern(grape, wineRegion, tuscany))
-        .AddPattern(new RDFPattern(grape, origin, new RDFResource(dbr + "Greece"))));
+        .AddPattern(new RDFPattern(grape, origin, greece)));
 
 Console.WriteLine((await italianOrigin.ApplyToSPARQLEndpointAsync(dbpedia)).AskResult);
 Console.WriteLine((await greekOrigin.ApplyToSPARQLEndpointAsync(dbpedia)).AskResult);
@@ -398,10 +401,14 @@ Cannot read given "SPARQL Query Results XML Format" source because: Data at the 
 `CONSTRUCT` and `DESCRIBE` do not return rows: they ask for `application/turtle` or `text/turtle` and read the answer as an RDF graph, which you obtain with `ToRDFGraphAsync`.
 
 ```csharp
+RDFResource sangiovese = new RDFResource(dbr + "Sangiovese");
+
+RDFVariable country = new RDFVariable("country");
+
 RDFConstructQuery sangioveseOrigin = new RDFConstructQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(new RDFResource(dbr + "Sangiovese"), origin, new RDFVariable("country"))))
-    .AddTemplate(new RDFPattern(new RDFResource(dbr + "Sangiovese"), origin, new RDFVariable("country")));
+        .AddPattern(new RDFPattern(sangiovese, origin, country)))
+    .AddTemplate(new RDFPattern(sangiovese, origin, country));
 RDFGraph origins = await (await sangioveseOrigin.ApplyToSPARQLEndpointAsync(dbpedia)).ToRDFGraphAsync();
 Console.WriteLine(origins.TriplesCount);
 foreach (RDFTriple triple in origins)

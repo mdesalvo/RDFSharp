@@ -58,8 +58,8 @@ RDFTypedLiteral cellar = new RDFTypedLiteral("POINT(11.33 43.34)", RDFModelEnums
 
 RDFVariable shop = new RDFVariable("shop");
 RDFVariable name = new RDFVariable("name");
-RDFVariable geom = new RDFVariable("geom");
-RDFVariable wkt = new RDFVariable("wkt");
+RDFVariable geometry = new RDFVariable("geom");
+RDFVariable geometryWkt = new RDFVariable("wkt");
 ```
 
 > RDFSharp registers the GeoSPARQL namespace under the prefix `geosparql`, because `geo` already belongs to the older W3C WGS84 vocabulary. The SPARQL on this page follows the OGC habit and writes `geo:`; in C# the constants of `RDFVocabulary.GEOSPARQL` remove any doubt.
@@ -90,22 +90,26 @@ ORDER BY ?km
 ```
 
 ```csharp
-RDFVariable km = new RDFVariable("km");
+RDFResource shopClass = new RDFResource(vr + "Shop");
+
+RDFTypedLiteral metresPerKilometre = new RDFTypedLiteral("1000", RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
+RDFVariable kilometres = new RDFVariable("km");
 
 RDFSelectQuery distances = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(shop, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Shop")))
+        .AddPattern(new RDFPattern(shop, RDFVocabulary.RDF.TYPE, shopClass))
         .AddPattern(new RDFPattern(shop, RDFVocabulary.RDFS.LABEL, name))
-        .AddPattern(new RDFPattern(shop, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geom))
-        .AddPattern(new RDFPattern(geom, RDFVocabulary.GEOSPARQL.AS_WKT, wkt))
+        .AddPattern(new RDFPattern(shop, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geometry))
+        .AddPattern(new RDFPattern(geometry, RDFVocabulary.GEOSPARQL.AS_WKT, geometryWkt))
         .AddBind(new RDFBind(
             new RDFRoundExpression(new RDFDivideExpression(
-                new RDFGeoDistanceExpression(wkt, cellar),
-                new RDFConstantExpression(new RDFTypedLiteral("1000", RDFModelEnums.RDFDatatypes.XSD_INTEGER)))),
-            km)))
-    .AddModifier(new RDFOrderByModifier(km, RDFQueryEnums.RDFOrderByFlavors.ASC))
+                new RDFGeoDistanceExpression(geometryWkt, cellar),
+                new RDFConstantExpression(metresPerKilometre))),
+            kilometres)))
+    .AddModifier(new RDFOrderByModifier(kilometres, RDFQueryEnums.RDFOrderByFlavors.ASC))
     .AddProjectionVariable(name)
-    .AddProjectionVariable(km);
+    .AddProjectionVariable(kilometres);
 
 RDFSelectQueryResult result = await distances.ApplyToGraphAsync(sales);
 ```
@@ -155,12 +159,12 @@ RDFGeoBufferExpression deliveryArea = new RDFGeoBufferExpression(new RDFConstant
 
 RDFSelectQuery nearby = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(shop, RDFVocabulary.RDF.TYPE, new RDFResource(vr + "Shop")))
+        .AddPattern(new RDFPattern(shop, RDFVocabulary.RDF.TYPE, shopClass))
         .AddPattern(new RDFPattern(shop, RDFVocabulary.RDFS.LABEL, name))
-        .AddPattern(new RDFPattern(shop, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geom))
-        .AddPattern(new RDFPattern(geom, RDFVocabulary.GEOSPARQL.AS_WKT, wkt))
+        .AddPattern(new RDFPattern(shop, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geometry))
+        .AddPattern(new RDFPattern(geometry, RDFVocabulary.GEOSPARQL.AS_WKT, geometryWkt))
         .AddFilter(new RDFFilter(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-            new RDFGeoWithinExpression(wkt, deliveryArea),
+            new RDFGeoWithinExpression(geometryWkt, deliveryArea),
             new RDFConstantExpression(RDFTypedLiteral.True)))))
     .AddProjectionVariable(name);
 ```
@@ -204,6 +208,12 @@ GROUP BY ?zone
 ```
 
 ```csharp
+RDFResource soldTo = new RDFResource(vr + "soldTo");
+RDFResource hasBottles = new RDFResource(vr + "bottles");
+
+RDFPlainLiteral freeDelivery = new RDFPlainLiteral("free delivery");
+RDFPlainLiteral courier = new RDFPlainLiteral("courier");
+
 RDFVariable sale = new RDFVariable("sale");
 RDFVariable bottles = new RDFVariable("bottles");
 RDFVariable zone = new RDFVariable("zone");
@@ -211,14 +221,14 @@ RDFVariable total = new RDFVariable("total");
 
 RDFSelectQuery byZone = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "soldTo"), shop))
-        .AddPattern(new RDFPattern(sale, new RDFResource(vr + "bottles"), bottles))
-        .AddPattern(new RDFPattern(shop, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geom))
-        .AddPattern(new RDFPattern(geom, RDFVocabulary.GEOSPARQL.AS_WKT, wkt))
+        .AddPattern(new RDFPattern(sale, soldTo, shop))
+        .AddPattern(new RDFPattern(sale, hasBottles, bottles))
+        .AddPattern(new RDFPattern(shop, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geometry))
+        .AddPattern(new RDFPattern(geometry, RDFVocabulary.GEOSPARQL.AS_WKT, geometryWkt))
         .AddBind(new RDFBind(
-            new RDFIfExpression(new RDFGeoWithinExpression(wkt, deliveryArea),
-                new RDFConstantExpression(new RDFPlainLiteral("free delivery")),
-                new RDFConstantExpression(new RDFPlainLiteral("courier"))),
+            new RDFIfExpression(new RDFGeoWithinExpression(geometryWkt, deliveryArea),
+                new RDFConstantExpression(freeDelivery),
+                new RDFConstantExpression(courier)),
             zone)))
     .AddModifier(new RDFGroupByModifier(new List<RDFVariable> { zone })
         .AddAggregator(new RDFSumAggregator(bottles, total)));
@@ -266,26 +276,32 @@ WHERE {
 RDFGraph catalog = await RDFGraph.FromFileAsync(RDFModelEnums.RDFFormats.Turtle, "vallerosa-catalog.ttl");
 RDFGraph map = await catalog.UnionWithAsync(sales);
 
-RDFVariable a = new RDFVariable("a"), b = new RDFVariable("b");
-RDFVariable ga = new RDFVariable("ga"), gb = new RDFVariable("gb");
-RDFVariable wa = new RDFVariable("wa"), wb = new RDFVariable("wb");
+RDFResource partOf = new RDFResource(vr + "partOf");
+
 RDFResource valleRosa = new RDFResource(vrd + "valle-rosa");
+
+RDFVariable firstSubzone = new RDFVariable("a");
+RDFVariable secondSubzone = new RDFVariable("b");
+RDFVariable firstGeometry = new RDFVariable("ga");
+RDFVariable secondGeometry = new RDFVariable("gb");
+RDFVariable firstWkt = new RDFVariable("wa");
+RDFVariable secondWkt = new RDFVariable("wb");
 
 RDFSelectQuery neighbours = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(a, new RDFResource(vr + "partOf"), valleRosa))
-        .AddPattern(new RDFPattern(b, new RDFResource(vr + "partOf"), valleRosa))
-        .AddPattern(new RDFPattern(a, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, ga))
-        .AddPattern(new RDFPattern(ga, RDFVocabulary.GEOSPARQL.AS_WKT, wa))
-        .AddPattern(new RDFPattern(b, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, gb))
-        .AddPattern(new RDFPattern(gb, RDFVocabulary.GEOSPARQL.AS_WKT, wb))
+        .AddPattern(new RDFPattern(firstSubzone, partOf, valleRosa))
+        .AddPattern(new RDFPattern(secondSubzone, partOf, valleRosa))
+        .AddPattern(new RDFPattern(firstSubzone, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, firstGeometry))
+        .AddPattern(new RDFPattern(firstGeometry, RDFVocabulary.GEOSPARQL.AS_WKT, firstWkt))
+        .AddPattern(new RDFPattern(secondSubzone, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, secondGeometry))
+        .AddPattern(new RDFPattern(secondGeometry, RDFVocabulary.GEOSPARQL.AS_WKT, secondWkt))
         .AddFilter(new RDFFilter(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-            new RDFGeoTouchesExpression(wa, wb),
+            new RDFGeoTouchesExpression(firstWkt, secondWkt),
             new RDFConstantExpression(RDFTypedLiteral.True))))
         .AddFilter(new RDFFilter(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.LessThan,
-            new RDFStrExpression(a), new RDFStrExpression(b)))))
-    .AddProjectionVariable(a)
-    .AddProjectionVariable(b);
+            new RDFStrExpression(firstSubzone), new RDFStrExpression(secondSubzone)))))
+    .AddProjectionVariable(firstSubzone)
+    .AddProjectionVariable(secondSubzone);
 ```
 
 </div>
@@ -324,20 +340,22 @@ WHERE {
 ```
 
 ```csharp
+RDFPlainLiteral englishTag = new RDFPlainLiteral("en");
+RDFTypedLiteral plot = new RDFTypedLiteral("POINT(11.355 43.365)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
+
 RDFVariable subzone = new RDFVariable("subzone");
 RDFVariable label = new RDFVariable("label");
-RDFTypedLiteral plot = new RDFTypedLiteral("POINT(11.355 43.365)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT);
 
 RDFSelectQuery whereIsIt = new RDFSelectQuery()
     .AddPatternGroup(new RDFPatternGroup()
-        .AddPattern(new RDFPattern(subzone, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geom))
-        .AddPattern(new RDFPattern(geom, RDFVocabulary.GEOSPARQL.AS_WKT, wkt))
+        .AddPattern(new RDFPattern(subzone, RDFVocabulary.GEOSPARQL.HAS_GEOMETRY, geometry))
+        .AddPattern(new RDFPattern(geometry, RDFVocabulary.GEOSPARQL.AS_WKT, geometryWkt))
         .AddPattern(new RDFPattern(subzone, RDFVocabulary.RDFS.LABEL, label))
         .AddFilter(new RDFFilter(new RDFComparisonExpression(RDFQueryEnums.RDFComparisonFlavors.EqualTo,
-            new RDFGeoContainsExpression(wkt, plot),
+            new RDFGeoContainsExpression(geometryWkt, plot),
             new RDFConstantExpression(RDFTypedLiteral.True))))
         .AddFilter(new RDFFilter(new RDFLangMatchesExpression(label,
-            new RDFConstantExpression(new RDFPlainLiteral("en"))))))
+            new RDFConstantExpression(englishTag)))))
     .AddProjectionVariable(subzone)
     .AddProjectionVariable(label);
 
