@@ -16,7 +16,7 @@ Then open http://localhost:4000/RDFSharp/. The `jekyll/jekyll:pages` image carri
 | Path | Holds |
 |---|---|
 | `_data/nav.yml` | the index: groups, pages and their order. The order is the reading order, which the pager at the foot of every page follows |
-| `_layouts/default.html` | the only layout: top bar, index, page header, pager, footer |
+| `_layouts/default.html` | the only layout: top bar, index, page header, pager |
 | `_includes/` | the logo and the hand-drawn graph of the home page |
 | `assets/css/site.css`, `assets/js/site.js` | the whole look and behaviour, no framework |
 | `assets/data/` | the Vallerosa files every example works on |

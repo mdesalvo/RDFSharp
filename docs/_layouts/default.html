@@ -93,7 +93,6 @@
     {%- if next %}<a class="next" href="{{ next.url | relative_url }}"><small>Next</small>{{ next.title }}</a>{% endif %}
   </nav>
   {%- endif %}
-  <footer class="foot"><span class="mark">{% include logo.html %}</span>RDFSharp is open source under the Apache 2.0 license.<br><a href="https://github.com/mdesalvo/RDFSharp/edit/main/docs/{{ page.path }}">Improve this page on GitHub</a></footer>
 </main>
 
 <script>window.RDFSHARP_SEARCH = "{{ '/search.json' | relative_url }}";</script>

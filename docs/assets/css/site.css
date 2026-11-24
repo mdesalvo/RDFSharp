@@ -339,7 +339,7 @@ div.card { background: none; }
 .mermaid.figure { overflow-x: auto; text-align: center; }
 .mermaid.figure svg { display: inline-block; width: auto; max-width: none; }
 
-/* Pager and footer: plain words, no boxes. */
+/* Pager: plain words, no boxes. */
 .pager { display: flex; justify-content: space-between; gap: 16px; margin-top: 60px; padding-top: 18px; border-top: 1px solid var(--line); }
 .pager a { text-decoration: none; color: var(--ink); font: 400 20px/1.3 var(--display); }
 .pager a:hover { color: var(--accent); }
@@ -347,10 +347,6 @@ div.card { background: none; }
 .pager .prev small::before { content: "← "; }
 .pager .next { text-align: right; margin-left: auto; }
 .pager .next small::after { content: " →"; }
-.foot { margin-top: 40px; font-size: 13.5px; line-height: 1.7; color: var(--faint); text-align: center; }
-.foot .mark { display: block; width: 24px; height: 24px; margin: 0 auto 8px; opacity: .85; }
-.foot a { color: var(--faint); }
-.foot a:hover { color: var(--accent); }
 
 /* The web behind the page: a few nodes of linked data drifting in the margins, linked when they pass close. */
 .web { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
