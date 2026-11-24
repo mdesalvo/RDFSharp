@@ -249,9 +249,6 @@ namespace RDFSharp.Query
                             #region HEAD
                             if (string.Equals(node.Name, "HEAD", StringComparison.OrdinalIgnoreCase))
                             {
-                                if (!node.HasChildNodes)
-                                    throw new Exception("\"head\" node was found without children.");
-
                                 foundHead = true;
                                 foreach (XmlNode varNode in node.ChildNodes)
                                 {
@@ -280,7 +277,7 @@ namespace RDFSharp.Query
                                 foreach (XmlNode resNode in node.ChildNodes)
                                 {
                                     #region RESULT
-                                    if (string.Equals(resNode.Name, "RESULT", StringComparison.OrdinalIgnoreCase) && resNode.HasChildNodes)
+                                    if (string.Equals(resNode.Name, "RESULT", StringComparison.OrdinalIgnoreCase))
                                     {
                                         Dictionary<string, string> results = new Dictionary<string, string>();
                                         foreach (XmlNode bindingNode in resNode.ChildNodes)

@@ -57,7 +57,8 @@ namespace RDFSharp.Query
                 }
             }
 
-            if (rowAdded)
+            //A row without bindings is a valid solution in which no variable is bound (the only solution of a variable-less query)
+            if (rowAdded || bindings.Count == 0)
                 table.Rows.Add(resultRow);
         }
 

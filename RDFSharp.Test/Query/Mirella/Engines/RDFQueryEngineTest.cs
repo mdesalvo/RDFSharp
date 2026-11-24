@@ -6150,5 +6150,214 @@ public class RDFQueryEngineTest
 
     #endregion
 
+    #region Ground triple patterns
+
+    /// <summary>
+    /// Builds a graph where ex:a states two facts (ex:p ex:b and ex:q ex:c) and a literal fact; two more subjects share ex:p ex:b.
+    /// </summary>
+    private static RDFGraph BuildGroundPatternGraph()
+    {
+        //Three subjects share "ex:p ex:b" so that the group's variable pattern has a known cardinality of 3
+        return new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:p"), new RDFResource("ex:b")),
+            new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:q"), new RDFResource("ex:c")),
+            new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:r"), new RDFPlainLiteral("lit")),
+            new RDFTriple(new RDFResource("ex:x1"), new RDFResource("ex:p"), new RDFResource("ex:b")),
+            new RDFTriple(new RDFResource("ex:x2"), new RDFResource("ex:p"), new RDFResource("ex:b"))
+        ]);
+    }
+
+    [TestMethod]
+    [DataRow("<ex:a> <ex:p> <ex:b>", true)]
+    [DataRow("<ex:a> <ex:p> <ex:zz>", false)]
+    [DataRow("<ex:a> <ex:r> \"lit\"", true)]
+    [DataRow("<ex:a> <ex:r> \"other\"", false)]
+    public void ShouldEvaluateGroundPatternAskOnGraph(string groundPattern, bool expectedAnswer)
+    {
+        //The query holds a single ground pattern: the ASK answer is whether that triple is in the graph
+        RDFAskQuery query = RDFAskQuery.FromString($"ASK {{ {groundPattern} }}");
+        RDFAskQueryResult result = new RDFQueryEngine().EvaluateAskQuery(query, BuildGroundPatternGraph());
+
+        //The triple exists only for the first and third pattern (resource object and literal object)
+        Assert.AreEqual(expectedAnswer, result.AskResult);
+    }
+
+    [TestMethod]
+    [DataRow("<ex:a> <ex:q> <ex:c>", 3)]
+    [DataRow("<ex:a> <ex:q> <ex:zz>", 0)]
+    public void ShouldEvaluateGroundPatternAlongsideVariablePatternOnGraph(string groundPattern, int expectedRows)
+    {
+        //The ground pattern is a pure existence condition on the rows of the variable pattern
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT ?x WHERE {{ ?x <ex:p> <ex:b> . {groundPattern} }} ORDER BY ?x");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildGroundPatternGraph());
+
+        //Every ?x row survives when the ground triple exists and none does otherwise
+        Assert.AreEqual(expectedRows, result.SelectResultsCount);
+        Assert.AreEqual(1, result.SelectResults.Columns.Count);
+        if (expectedRows > 0)
+        {
+            Assert.AreEqual("ex:a", result.SelectResults.Rows[0]["?X"].ToString());
+            Assert.AreEqual("ex:x1", result.SelectResults.Rows[1]["?X"].ToString());
+            Assert.AreEqual("ex:x2", result.SelectResults.Rows[2]["?X"].ToString());
+        }
+    }
+
+    [TestMethod]
+    [DataRow("<ex:a> <ex:q> <ex:c>")]
+    [DataRow("<ex:a> <ex:q> <ex:zz>")]
+    public void ShouldKeepLeftRowsOnGroundPatternInsideOptional(string groundPattern)
+    {
+        //The optional part only holds a ground pattern: it can neither drop the left rows nor add a column
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT ?x WHERE {{ ?x <ex:p> <ex:b> . OPTIONAL {{ {groundPattern} }} }} ORDER BY ?x");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildGroundPatternGraph());
+
+        //The three left rows are kept whether the ground triple exists or not
+        Assert.AreEqual(3, result.SelectResultsCount);
+        Assert.AreEqual(1, result.SelectResults.Columns.Count);
+        Assert.AreEqual("ex:a", result.SelectResults.Rows[0]["?X"].ToString());
+        Assert.AreEqual("ex:x1", result.SelectResults.Rows[1]["?X"].ToString());
+        Assert.AreEqual("ex:x2", result.SelectResults.Rows[2]["?X"].ToString());
+    }
+
+    [TestMethod]
+    [DataRow("<ex:a> <ex:q> <ex:c>", 4)]
+    [DataRow("<ex:a> <ex:q> <ex:zz>", 1)]
+    public void ShouldDropOnlyTheBranchWithFailingGroundPatternInsideUnion(string groundPattern, int expectedRows)
+    {
+        //The left branch carries the ground pattern while the right branch matches the single ex:a ex:q ex:c triple
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT ?x WHERE {{ {{ ?x <ex:p> <ex:b> . {groundPattern} }} UNION {{ ?x <ex:q> <ex:c> }} }}");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildGroundPatternGraph());
+
+        //The left branch contributes its 3 rows only when the ground triple exists while the right branch always gives 1
+        Assert.AreEqual(expectedRows, result.SelectResultsCount);
+    }
+
+    [TestMethod]
+    [DataRow("<ex:a> <ex:q> <ex:c>")]
+    [DataRow("<ex:a> <ex:q> <ex:zz>")]
+    public void ShouldRemoveNothingOnGroundPatternInsideMinus(string groundPattern)
+    {
+        //The minus operand shares no variable with the left side: SPARQL 1.1 (section 8.3) removes nothing
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT ?x WHERE {{ ?x <ex:p> <ex:b> MINUS {{ {groundPattern} }} }}");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildGroundPatternGraph());
+
+        //The three left rows survive whether the ground triple exists or not
+        Assert.AreEqual(3, result.SelectResultsCount);
+    }
+
+    [TestMethod]
+    [DataRow("<ex:a> <ex:q> <ex:c>", 0)]
+    [DataRow("<ex:a> <ex:q> <ex:zz>", 3)]
+    public void ShouldRemoveEveryRowOnExistingGroundPatternInsideNotExists(string groundPattern, int expectedRows)
+    {
+        //Unlike MINUS the exists test does not require shared variables: an existing ground triple fails every row
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT ?x WHERE {{ ?x <ex:p> <ex:b> . FILTER NOT EXISTS {{ {groundPattern} }} }}");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildGroundPatternGraph());
+
+        //All rows are removed when the ground triple exists and all are kept otherwise
+        Assert.AreEqual(expectedRows, result.SelectResultsCount);
+    }
+
+    [TestMethod]
+    [DataRow("ex:g1", true)]
+    [DataRow("ex:g2", false)]
+    public void ShouldEvaluateGroundPatternAskOnStoreWithContext(string context, bool expectedAnswer)
+    {
+        //The triple sits in ex:g1 only
+        RDFMemoryStore store = new RDFMemoryStore(
+        [
+            new RDFQuadruple(new RDFContext("ex:g1"), new RDFResource("ex:a"), new RDFResource("ex:p"), new RDFResource("ex:b")),
+            new RDFQuadruple(new RDFContext("ex:g2"), new RDFResource("ex:x1"), new RDFResource("ex:p"), new RDFResource("ex:b"))
+        ]);
+        RDFAskQuery query = RDFAskQuery.FromString($"ASK {{ GRAPH <{context}> {{ <ex:a> <ex:p> <ex:b> }} }}");
+        RDFAskQueryResult result = new RDFQueryEngine().EvaluateAskQuery(query, store);
+
+        //The answer is true only for the graph that holds the triple
+        Assert.AreEqual(expectedAnswer, result.AskResult);
+    }
+
+    [TestMethod]
+    public void ShouldNotMultiplyRowsOnGroundPatternWithoutContextOnStoreHoldingTripleInTwoContexts()
+    {
+        //The ground triple sits in two contexts while each ?x matches in a single one
+        RDFMemoryStore store = new RDFMemoryStore(
+        [
+            new RDFQuadruple(new RDFContext("ex:g1"), new RDFResource("ex:x1"), new RDFResource("ex:p"), new RDFResource("ex:b")),
+            new RDFQuadruple(new RDFContext("ex:g1"), new RDFResource("ex:x2"), new RDFResource("ex:p"), new RDFResource("ex:b")),
+            new RDFQuadruple(new RDFContext("ex:g1"), new RDFResource("ex:a"), new RDFResource("ex:q"), new RDFResource("ex:c")),
+            new RDFQuadruple(new RDFContext("ex:g2"), new RDFResource("ex:a"), new RDFResource("ex:q"), new RDFResource("ex:c"))
+        ]);
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?x WHERE { ?x <ex:p> <ex:b> . <ex:a> <ex:q> <ex:c> } ORDER BY ?x");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, store);
+
+        //The ground pattern only states existence: each ?x is returned once instead of once per context
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Assert.AreEqual("ex:x1", result.SelectResults.Rows[0]["?X"].ToString());
+        Assert.AreEqual("ex:x2", result.SelectResults.Rows[1]["?X"].ToString());
+    }
+
+    [TestMethod]
+    [DataRow(true, true)]
+    [DataRow(false, false)]
+    public void ShouldEvaluateGroundPatternAskOnFederationWithSPARQLEndpoint(bool endpointHoldsTriple, bool expectedAnswer)
+    {
+        string receivedQuery = "";
+
+        //The endpoint answers the ground pattern with no variables and one empty result when the triple exists
+        string mockedResponseXml = endpointHoldsTriple
+            ? """
+              <?xml version="1.0" encoding="utf-8"?>
+              <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                <head />
+                <results>
+                  <result />
+                </results>
+              </sparql>
+              """
+            : """
+              <?xml version="1.0" encoding="utf-8"?>
+              <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                <head />
+                <results />
+              </sparql>
+              """;
+        string endpointPath = $"/RDFQueryEngineTest/ShouldEvaluateGroundPatternAskOnFederationWithSPARQLEndpoint_{endpointHoldsTriple}/sparql";
+        server
+            .Given(
+                Request.Create()
+                    .WithPath(endpointPath)
+                    .UsingGet()
+                    .WithParam(queryParams => queryParams.ContainsKey("query")))
+            .RespondWith(
+                Response.Create()
+                    .WithHeader("Content-Type", "application/sparql-results+xml")
+                    .WithCallback(req =>
+                    {
+                        receivedQuery = req.RawQuery;
+                        return new WireMock.ResponseMessage
+                        {
+                            BodyData = new BodyData
+                            {
+                                BodyAsString = mockedResponseXml,
+                                Encoding = Encoding.UTF8,
+                                DetectedBodyType = BodyType.String
+                            }
+                        };
+                    })
+                    .WithStatusCode(HttpStatusCode.OK));
+
+        RDFFederation federation = new RDFFederation().AddSPARQLEndpoint(new RDFSPARQLEndpoint(new Uri(server.Url + endpointPath)));
+        RDFAskQuery query = RDFAskQuery.FromString("ASK { <ex:a> <ex:p> <ex:b> }");
+        RDFAskQueryResult result = new RDFQueryEngine().EvaluateAskQuery(query, federation);
+
+        //The ground pattern travels to the endpoint as a query on that very triple
+        Assert.IsTrue(HttpUtility.UrlDecode(receivedQuery).Contains("<ex:a> <ex:p> <ex:b>", StringComparison.Ordinal));
+        //One empty result means the triple exists while no result means it does not
+        Assert.AreEqual(expectedAnswer, result.AskResult);
+    }
+
+    #endregion
+
     #endregion
 }

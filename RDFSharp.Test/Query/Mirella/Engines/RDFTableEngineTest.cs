@@ -62,6 +62,18 @@ public class RDFTableEngineTest
     }
 
     [TestMethod]
+    public void ShouldAddDataRowWithoutBindings()
+    {
+        DataTable table = new DataTable();
+        RDFTableEngine.AddColumn(table, "?Y");
+        RDFTableEngine.AddRow(table, new Dictionary<string, string>());
+
+        //A solution that binds no variable keeps its row with an unbound cell
+        Assert.AreEqual(1, table.Rows.Count);
+        Assert.IsTrue(table.Rows[0].IsNull("?Y"));
+    }
+
+    [TestMethod]
     public void ShouldNotAddDataRowBecauseUnknownBinding()
     {
         DataTable table = new DataTable();
