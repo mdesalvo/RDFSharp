@@ -65,7 +65,8 @@ namespace RDFSharp.Model
             foreach (RDFPatternMember valueNode in valueNodes)
             {
                 int comparison = RDFQueryUtilities.CompareRDFPatternMembers(Value, valueNode);
-                if (comparison == -99 || comparison >= 0)
+                //A value that does not exceed the lower bound or is incomparable with it (type error) violates the constraint
+                if (comparison == RDFQueryUtilities.ComparisonTypeError || comparison >= 0)
                     report.AddResult(new RDFValidationResult(shape,
                                                              RDFVocabulary.SHACL.MIN_EXCLUSIVE_CONSTRAINT_COMPONENT,
                                                              focusNode,

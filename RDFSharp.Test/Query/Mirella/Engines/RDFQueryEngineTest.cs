@@ -3306,7 +3306,7 @@ public class RDFQueryEngineTest
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables);
         Assert.HasCount(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value);
         Assert.IsTrue(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0] != null);
-        Assert.IsTrue((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional); //UNDEF => optional
+        Assert.IsFalse((bool)queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].IsOptional); //UNDEF does not make the block optional
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Columns.Count);
         Assert.AreEqual(1, queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows.Count);
         Assert.IsTrue(string.Equals(queryEngine.PatternGroupMemberResultTables.ElementAt(0).Value[0].Rows[0]["?Y"] ?? string.Empty, string.Empty, StringComparison.Ordinal));
@@ -5943,6 +5943,209 @@ public class RDFQueryEngineTest
         RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
 
         Assert.AreEqual(3, result.SelectResultsCount);
+    }
+
+    #endregion
+
+    #region VALUES with UNDEF, FILTER on strings and ORDER BY by value
+
+    /// <summary>
+    /// Builds three wines with their grape and type, so that every VALUES row matches an unambiguous set of wines.
+    /// </summary>
+    private static RDFGraph BuildWineGraph()
+    {
+        //wine1 is a red sangiovese; wine2 is a white vermentino; wine3 is a white sangiovese that no VALUES row of the tests matches
+        return new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:wine1"), new RDFResource("ex:grape"), new RDFResource("ex:sangiovese")),
+            new RDFTriple(new RDFResource("ex:wine1"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:RedWine")),
+            new RDFTriple(new RDFResource("ex:wine2"), new RDFResource("ex:grape"), new RDFResource("ex:vermentino")),
+            new RDFTriple(new RDFResource("ex:wine2"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:WhiteWine")),
+            new RDFTriple(new RDFResource("ex:wine3"), new RDFResource("ex:grape"), new RDFResource("ex:sangiovese")),
+            new RDFTriple(new RDFResource("ex:wine3"), RDFVocabulary.RDF.TYPE, new RDFResource("ex:WhiteWine"))
+        ]);
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateValuesWithUndefInsidePatternGroupKeepingOnlyCompatibleRows()
+    {
+        //The second VALUES row leaves ?t UNDEF, so it accepts any type of vermentino wine
+        RDFSelectQuery query = RDFSelectQuery.FromString("""
+            SELECT ?w ?g ?t
+            WHERE {
+              ?w <ex:grape> ?g .
+              ?w <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?t .
+              VALUES (?g ?t) { (<ex:sangiovese> <ex:RedWine>) (<ex:vermentino> UNDEF) }
+            }
+            ORDER BY ?w
+            """);
+        //The query runs on the wine graph, where the VALUES block joins the two patterns
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildWineGraph());
+
+        //wine3 is sangiovese but white: it matches neither VALUES row, which a left join would have kept
+        Assert.AreEqual(2, result.SelectResultsCount);
+        //The first row is the red sangiovese wine matched by the fully bound VALUES row
+        Assert.AreEqual("ex:wine1", result.SelectResults.Rows[0]["?W"].ToString());
+        Assert.AreEqual("ex:sangiovese", result.SelectResults.Rows[0]["?G"].ToString());
+        Assert.AreEqual("ex:RedWine", result.SelectResults.Rows[0]["?T"].ToString());
+        //The second row is the vermentino wine matched by the VALUES row with the UNDEF type
+        Assert.AreEqual("ex:wine2", result.SelectResults.Rows[1]["?W"].ToString());
+        Assert.AreEqual("ex:vermentino", result.SelectResults.Rows[1]["?G"].ToString());
+        Assert.AreEqual("ex:WhiteWine", result.SelectResults.Rows[1]["?T"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateTrailingValuesWithUndefKeepingOnlyCompatibleRows()
+    {
+        //The same VALUES block as the pattern group one, written after the WHERE clause as query-level inline data
+        RDFSelectQuery query = RDFSelectQuery.FromString("""
+            SELECT ?w ?g ?t
+            WHERE {
+              ?w <ex:grape> ?g .
+              ?w <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?t .
+            }
+            VALUES (?g ?t) { (<ex:sangiovese> <ex:RedWine>) (<ex:vermentino> UNDEF) }
+            """);
+        //The query runs on the wine graph, where the trailing VALUES block filters the solutions of the WHERE clause
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildWineGraph());
+
+        //wine3 is sangiovese but white: it matches neither VALUES row, which a left join would have kept
+        Assert.AreEqual(2, result.SelectResultsCount);
+        //Rows are looked up by wine, since the query has no ORDER BY that fixes their position
+        DataRow redWineRow = result.SelectResults.Rows.Cast<DataRow>().Single(row => row["?W"].ToString() == "ex:wine1");
+        //The red sangiovese wine is matched by the fully bound VALUES row
+        Assert.AreEqual("ex:sangiovese", redWineRow["?G"].ToString());
+        Assert.AreEqual("ex:RedWine", redWineRow["?T"].ToString());
+        DataRow whiteWineRow = result.SelectResults.Rows.Cast<DataRow>().Single(row => row["?W"].ToString() == "ex:wine2");
+        //The vermentino wine is matched by the VALUES row with the UNDEF type
+        Assert.AreEqual("ex:vermentino", whiteWineRow["?G"].ToString());
+        Assert.AreEqual("ex:WhiteWine", whiteWineRow["?T"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateValuesMadeOnlyOfUndefKeepingEveryRow()
+    {
+        //A VALUES block with a single UNDEF constrains nothing, so it must not drop any row
+        RDFSelectQuery query = RDFSelectQuery.FromString("""
+            SELECT ?w ?g
+            WHERE {
+              ?w <ex:grape> ?g .
+              VALUES ?g { UNDEF }
+            }
+            ORDER BY ?w
+            """);
+        //The query runs on the wine graph, which holds three wines with a grape each
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildWineGraph());
+
+        //All the three wines come back, since UNDEF is compatible with every grape
+        Assert.AreEqual(3, result.SelectResultsCount);
+        Assert.AreEqual("ex:wine1", result.SelectResults.Rows[0]["?W"].ToString());
+        Assert.AreEqual("ex:sangiovese", result.SelectResults.Rows[0]["?G"].ToString());
+        Assert.AreEqual("ex:wine2", result.SelectResults.Rows[1]["?W"].ToString());
+        Assert.AreEqual("ex:vermentino", result.SelectResults.Rows[1]["?G"].ToString());
+        Assert.AreEqual("ex:wine3", result.SelectResults.Rows[2]["?W"].ToString());
+        Assert.AreEqual("ex:sangiovese", result.SelectResults.Rows[2]["?G"].ToString());
+    }
+
+    [TestMethod]
+    [DataRow("<", 1)]
+    [DataRow("!=", 1)]
+    [DataRow(">", 0)]
+    [DataRow("=", 0)]
+    public void ShouldFilterPlainLiteralsAgainstNonAsciiLiteralByCodePointOrder(string comparisonOperator, int expectedRows)
+    {
+        //The graph holds a single plain literal that is far below the compared one in code points
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFPlainLiteral("a"))
+        ]);
+        //"a" (U+0061) precedes "\u00C4" (U+00C4) in code-point order, so only the operators that accept it keep the row
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            $"SELECT ?o WHERE {{ <ex:s> <ex:p> ?o . FILTER(?o {comparisonOperator} \"\u00C4\") }}");
+        //The filter runs the string comparison that used to collide with the type error marker
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+        //The row survives only when the operator holds between "a" and the compared literal
+        Assert.AreEqual(expectedRows, result.SelectResultsCount);
+    }
+
+    [TestMethod]
+    public void ShouldOrderByNumericValueAndLimit()
+    {
+        //120 12 9 sorted as text would be 12 120 9, so the two smallest rows prove the numeric order
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?n WHERE { VALUES ?n { 120 12 9 } } ORDER BY ?n LIMIT 2");
+        //The query needs no data source content, since the values come from the VALUES block
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, new RDFGraph());
+
+        //LIMIT 2 keeps the two smallest values
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Assert.AreEqual("9^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?N"].ToString());
+        Assert.AreEqual("12^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[1]["?N"].ToString());
+    }
+
+    /// <summary>
+    /// Builds three wines with the vintage year as xsd:gYear, in non-chronological insertion order.
+    /// </summary>
+    private static RDFGraph BuildVintageGraph()
+    {
+        //The vintages are 2021 then 2015 then 2019, so that only a value-based order can sort them
+        return new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:wine1"), new RDFResource("ex:vintage"), new RDFTypedLiteral("2021", RDFModelEnums.RDFDatatypes.XSD_GYEAR)),
+            new RDFTriple(new RDFResource("ex:wine2"), new RDFResource("ex:vintage"), new RDFTypedLiteral("2015", RDFModelEnums.RDFDatatypes.XSD_GYEAR)),
+            new RDFTriple(new RDFResource("ex:wine3"), new RDFResource("ex:vintage"), new RDFTypedLiteral("2019", RDFModelEnums.RDFDatatypes.XSD_GYEAR))
+        ]);
+    }
+
+    [TestMethod]
+    public void ShouldFilterGregorianYearsLowerThanGivenYear()
+    {
+        //Only the 2015 and 2019 vintages precede the xsd:gYear 2020
+        RDFSelectQuery query = RDFSelectQuery.FromString("""
+            SELECT ?w
+            WHERE { ?w <ex:vintage> ?v . FILTER(?v < "2020"^^<http://www.w3.org/2001/XMLSchema#gYear>) }
+            ORDER BY ?w
+            """);
+        //The filter compares the stored forms of the xsd:gYear literals, which a general-purpose date parser rejects
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildVintageGraph());
+
+        //The 2015 vintage is wine2 and the 2019 vintage is wine3
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Assert.AreEqual("ex:wine2", result.SelectResults.Rows[0]["?W"].ToString());
+        Assert.AreEqual("ex:wine3", result.SelectResults.Rows[1]["?W"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldFilterGregorianYearsEqualToGivenYear()
+    {
+        //Only the 2021 vintage equals the xsd:gYear 2021
+        RDFSelectQuery query = RDFSelectQuery.FromString("""
+            SELECT ?w
+            WHERE { ?w <ex:vintage> ?v . FILTER(?v = "2021"^^<http://www.w3.org/2001/XMLSchema#gYear>) }
+            """);
+        //The filter compares the stored forms of the xsd:gYear literals, which a general-purpose date parser rejects
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildVintageGraph());
+
+        //The 2021 vintage is wine1
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual("ex:wine1", result.SelectResults.Rows[0]["?W"].ToString());
+    }
+
+    [TestMethod]
+    [DataRow("ASC", "2015Z", "2019Z", "2021Z")]
+    [DataRow("DESC", "2021Z", "2019Z", "2015Z")]
+    public void ShouldOrderByGregorianYearsChronologically(string direction, string firstYear, string secondYear, string thirdYear)
+    {
+        //The sort key is the xsd:gYear vintage, whose insertion order in the graph is not chronological
+        RDFSelectQuery query = RDFSelectQuery.FromString($"SELECT ?v WHERE {{ ?w <ex:vintage> ?v }} ORDER BY {direction}(?v)");
+        //The sort orders the stored forms of the xsd:gYear literals by their value
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildVintageGraph());
+
+        //The rows follow the chronological order (or its reverse for DESC)
+        Assert.AreEqual(3, result.SelectResultsCount);
+        Assert.AreEqual($"{firstYear}^^http://www.w3.org/2001/XMLSchema#gYear", result.SelectResults.Rows[0]["?V"].ToString());
+        Assert.AreEqual($"{secondYear}^^http://www.w3.org/2001/XMLSchema#gYear", result.SelectResults.Rows[1]["?V"].ToString());
+        Assert.AreEqual($"{thirdYear}^^http://www.w3.org/2001/XMLSchema#gYear", result.SelectResults.Rows[2]["?V"].ToString());
     }
 
     #endregion

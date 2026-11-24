@@ -114,74 +114,74 @@ public class RDFQueryUtilitiesTest
     [DataRow("ex:res1", "alit@en-US", 1)]
     [DataRow("ex:res1", "lit^^http://www.w3.org/2001/XMLSchema#string", -1)]
     [DataRow("ex:res1", "alit^^http://www.w3.org/2001/XMLSchema#string", 1)]
-    [DataRow("ex:res1", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+    [DataRow("ex:res1", "25^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("lit1", "ex:res1", 1)]
     [DataRow("lit1", "lit2", -1)]
     [DataRow("lit1", "lit1@en-US", -1)]
     [DataRow("lit1", "lit1", 0)]
     [DataRow("lit2", "lit1", 1)]
     [DataRow("lit1", "lit^^http://www.w3.org/2001/XMLSchema#string", 1)]
-    [DataRow("lit1", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+    [DataRow("lit1", "25^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("lit1@en-US", "ex:res1", 1)]
     [DataRow("lit1@en-US", "lit2", -1)]
     [DataRow("lit1@en-US", "lit1@en-US", 0)]
     [DataRow("lit1@en-US", "lit1", 1)]
     [DataRow("lit1@en", "lit1@en-US", -1)]
     [DataRow("lit1@en", "lit^^http://www.w3.org/2001/XMLSchema#string", 1)]
-    [DataRow("lit1@en", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+    [DataRow("lit1@en", "25^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "true^^http://www.w3.org/2001/XMLSchema#boolean", -1)]
     [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "false^^http://www.w3.org/2001/XMLSchema#boolean", 0)]
     [DataRow("true^^http://www.w3.org/2001/XMLSchema#boolean", "false^^http://www.w3.org/2001/XMLSchema#boolean", 1)]
     [DataRow("true^^http://www.w3.org/2001/XMLSchema#boolean", "true^^http://www.w3.org/2001/XMLSchema#boolean", 0)]
-    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "ex:res", -99)]
-    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit", -99)]
-    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit@en-US", -99)]
-    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit^^http://www.w3.org/2001/XMLSchema#string", -99)]
+    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "ex:res", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit@en-US", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("false^^http://www.w3.org/2001/XMLSchema#boolean", "lit^^http://www.w3.org/2001/XMLSchema#string", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "25.8^^http://www.w3.org/2001/XMLSchema#float", -1)]
     [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "25.0^^http://www.w3.org/2001/XMLSchema#double", 0)]
     [DataRow("25.8^^http://www.w3.org/2001/XMLSchema#float", "25^^http://www.w3.org/2001/XMLSchema#integer", 1)]
     [DataRow("10/2^^http://www.w3.org/2002/07/owl#rational", "5.00^^http://www.w3.org/2001/XMLSchema#float", 0)]
     [DataRow("5.00^^http://www.w3.org/2001/XMLSchema#float", "10/2^^http://www.w3.org/2002/07/owl#rational", 0)]
-    [DataRow("10/2^^http://www.w3.org/2002/07/owl#rational", "lit", -99)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "ex:res", -99)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit", -99)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit@en-US", -99)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit^^http://www.w3.org/2001/XMLSchema#string", -99)]
+    [DataRow("10/2^^http://www.w3.org/2002/07/owl#rational", "lit", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "ex:res", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit@en-US", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "lit^^http://www.w3.org/2001/XMLSchema#string", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hellu^^http://www.w3.org/2001/XMLSchema#string", -1)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello^^http://www.w3.org/2001/XMLSchema#string", 0)]
     [DataRow("hellu^^http://www.w3.org/2001/XMLSchema#string", "hello^^http://www.w3.org/2001/XMLSchema#string", 1)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "ex:res", 1)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello", 0)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello", -99)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "hello@en-US", -1)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello@en-US", -99)]
-    [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
-    [DataRow("hello@EN^^http://www.w3.org/2001/XMLSchema#string", "10/2^^http://www.w3.org/2002/07/owl#rational", -99)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello^^http://www.w3.org/2001/XMLSchema#string", -99)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello@en-US", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("hello^^http://www.w3.org/2001/XMLSchema#string", "25^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("hello@EN^^http://www.w3.org/2001/XMLSchema#string", "10/2^^http://www.w3.org/2002/07/owl#rational", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "hello^^http://www.w3.org/2001/XMLSchema#string", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("2022-03-04T12:00:00.000Z^^http://www.w3.org/2001/XMLSchema#dateTime", "2022-03-04T13:00:00.000Z^^http://www.w3.org/2001/XMLSchema#dateTime", -1)]
     [DataRow("2022-03-04T12:00:00Z^^http://www.w3.org/2001/XMLSchema#dateTime", "2022-03-04T12:00:00.0Z^^http://www.w3.org/2001/XMLSchema#dateTime", 0)]
     [DataRow("2022-03-04T12:00:00.000Z^^http://www.w3.org/2001/XMLSchema#dateTime", "2022-03-04T11:00:00Z^^http://www.w3.org/2001/XMLSchema#dateTime", 1)]
-    [DataRow("12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", "ex:res", -99)]
+    [DataRow("12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", "ex:res", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("ex:res", "12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", -1)]
-    [DataRow("12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", "lit", -99)]
+    [DataRow("12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", "lit", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("lit", "12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", -1)]
-    [DataRow("12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", "lit@en-US", -99)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "2022-03-04Z^^http://www.w3.org/2001/XMLSchema#date", -99)]
-    [DataRow("2022-03-04Z^^http://www.w3.org/2001/XMLSchema#date", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+    [DataRow("12:00:00Z^^http://www.w3.org/2001/XMLSchema#time", "lit@en-US", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "2022-03-04Z^^http://www.w3.org/2001/XMLSchema#date", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("2022-03-04Z^^http://www.w3.org/2001/XMLSchema#date", "25^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "P1YT1H^^http://www.w3.org/2001/XMLSchema#duration", -1)]
     [DataRow("P1YT1H^^http://www.w3.org/2001/XMLSchema#duration", "P1YT1H0M0S^^http://www.w3.org/2001/XMLSchema#duration", 0)]
     [DataRow("P1YT1H^^http://www.w3.org/2001/XMLSchema#duration", "P1Y0M0D^^http://www.w3.org/2001/XMLSchema#duration", 1)]
-    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "ex:res", -99)]
-    [DataRow("ex:res", "P1Y^^http://www.w3.org/2001/XMLSchema#duration", -99)]
-    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "lit", -99)]
-    [DataRow("lit", "P1Y^^http://www.w3.org/2001/XMLSchema#duration", -99)]
-    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "lit@en-US", -99)]
-    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "P1Y^^http://www.w3.org/2001/XMLSchema#duration", -99)]
-    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "ex:res", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("ex:res", "P1Y^^http://www.w3.org/2001/XMLSchema#duration", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "lit", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("lit", "P1Y^^http://www.w3.org/2001/XMLSchema#duration", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "lit@en-US", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("25^^http://www.w3.org/2001/XMLSchema#integer", "P1Y^^http://www.w3.org/2001/XMLSchema#duration", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("P1Y^^http://www.w3.org/2001/XMLSchema#duration", "25^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", "POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", 0)]
     [DataRow("POINT (9.28854 50)^^http://www.opengis.net/ont/geosparql#wktLiteral", "POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", 1)]
     [DataRow("POINT (9.08854 40)^^http://www.opengis.net/ont/geosparql#wktLiteral", "POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", -1)]
-    [DataRow("POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", "25^^http://www.w3.org/2001/XMLSchema#integer", -99)]
+    [DataRow("POINT (9.18854 45)^^http://www.opengis.net/ont/geosparql#wktLiteral", "25^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
     public void ShouldCompareNotNullPatternMembers(string leftVal, string rightVal, int expectedCompare)
     {
         RDFPatternMember leftPMember = RDFQueryUtilities.ParseRDFPatternMember(leftVal);
@@ -189,8 +189,8 @@ public class RDFQueryUtilitiesTest
         switch (expectedCompare)
         {
             //Type Error
-            case -99:
-                Assert.AreEqual(-99, RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember));
+            case RDFQueryUtilities.ComparisonTypeError:
+                Assert.AreEqual(RDFQueryUtilities.ComparisonTypeError, RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember));
                 break;
             //LowerThan
             case -1:
@@ -205,6 +205,50 @@ public class RDFQueryUtilitiesTest
                 Assert.IsGreaterThan(0, RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember));
                 break;
         }
+    }
+
+    [TestMethod]
+    [DataRow("2019^^http://www.w3.org/2001/XMLSchema#gYear", "2021^^http://www.w3.org/2001/XMLSchema#gYear", -1)]
+    [DataRow("2021^^http://www.w3.org/2001/XMLSchema#gYear", "2021^^http://www.w3.org/2001/XMLSchema#gYear", 0)]
+    [DataRow("2021^^http://www.w3.org/2001/XMLSchema#gYear", "2019^^http://www.w3.org/2001/XMLSchema#gYear", 1)]
+    [DataRow("--03^^http://www.w3.org/2001/XMLSchema#gMonth", "--05^^http://www.w3.org/2001/XMLSchema#gMonth", -1)]
+    [DataRow("--05^^http://www.w3.org/2001/XMLSchema#gMonth", "--03^^http://www.w3.org/2001/XMLSchema#gMonth", 1)]
+    [DataRow("---03^^http://www.w3.org/2001/XMLSchema#gDay", "---05^^http://www.w3.org/2001/XMLSchema#gDay", -1)]
+    [DataRow("---05^^http://www.w3.org/2001/XMLSchema#gDay", "---03^^http://www.w3.org/2001/XMLSchema#gDay", 1)]
+    [DataRow("2021-03^^http://www.w3.org/2001/XMLSchema#gYearMonth", "2021-05^^http://www.w3.org/2001/XMLSchema#gYearMonth", -1)]
+    [DataRow("2021-05^^http://www.w3.org/2001/XMLSchema#gYearMonth", "2021-03^^http://www.w3.org/2001/XMLSchema#gYearMonth", 1)]
+    [DataRow("--03-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", "--05-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", -1)]
+    [DataRow("--05-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", "--03-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", 1)]
+    [DataRow("2021^^http://www.w3.org/2006/time#generalYear", "2022^^http://www.w3.org/2006/time#generalYear", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("NaN^^http://www.w3.org/2001/XMLSchema#double", "1^^http://www.w3.org/2001/XMLSchema#double", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("1^^http://www.w3.org/2001/XMLSchema#double", "NaN^^http://www.w3.org/2001/XMLSchema#double", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("NaN^^http://www.w3.org/2001/XMLSchema#double", "NaN^^http://www.w3.org/2001/XMLSchema#double", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("NaN^^http://www.w3.org/2001/XMLSchema#double", "1^^http://www.w3.org/2001/XMLSchema#integer", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("1e400^^http://www.w3.org/2001/XMLSchema#double", "1e300^^http://www.w3.org/2001/XMLSchema#double", 1)]
+    [DataRow("1e300^^http://www.w3.org/2001/XMLSchema#double", "1e400^^http://www.w3.org/2001/XMLSchema#double", -1)]
+    [DataRow("1E30^^http://www.w3.org/2001/XMLSchema#double", "5^^http://www.w3.org/2001/XMLSchema#integer", 1)]
+    [DataRow("5^^http://www.w3.org/2001/XMLSchema#integer", "1E30^^http://www.w3.org/2001/XMLSchema#double", -1)]
+    public void ShouldCompareValidLiteralsOfValueSpacesThatGeneralPurposeParsersReject(string leftVal, string rightVal, int expectedCompare)
+    {
+        RDFPatternMember leftPMember = RDFQueryUtilities.ParseRDFPatternMember(leftVal);
+        RDFPatternMember rightPMember = RDFQueryUtilities.ParseRDFPatternMember(rightVal);
+        //The comparison of valid literals never throws: it gives an order or the type error marker
+        Assert.AreEqual(expectedCompare, RDFQueryUtilities.CompareRDFPatternMembers(leftPMember, rightPMember));
+    }
+
+    [TestMethod]
+    [DataRow("a", "\u00C4")]
+    [DataRow("a", "\u0448")]
+    public void ShouldReturnSignOnlyWhenComparingPlainLiteralsFarApartInCodePoints(string smallerValue, string greaterValue)
+    {
+        //The two values are far apart in code points (\u0448 differs from "a" by 999), which a raw difference would return as is
+        RDFPlainLiteral smallerLiteral = new RDFPlainLiteral(smallerValue);
+        RDFPlainLiteral greaterLiteral = new RDFPlainLiteral(greaterValue);
+
+        //The smaller literal precedes the greater one with the sign only
+        Assert.AreEqual(-1, RDFQueryUtilities.CompareRDFPatternMembers(smallerLiteral, greaterLiteral));
+        //The greater literal follows the smaller one with the sign only
+        Assert.AreEqual(1, RDFQueryUtilities.CompareRDFPatternMembers(greaterLiteral, smallerLiteral));
     }
 
     [TestMethod]

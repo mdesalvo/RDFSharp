@@ -172,7 +172,7 @@ namespace RDFSharp.Query
                 int comparison = RDFQueryUtilities.CompareRDFPatternMembers(leftArgumentPMember, rightArgumentPMember);
 
                 //Type Error
-                if (comparison == -99)
+                if (comparison == RDFQueryUtilities.ComparisonTypeError)
                     return null;
 
                 //Type Correct
