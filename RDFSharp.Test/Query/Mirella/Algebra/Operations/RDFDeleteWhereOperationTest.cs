@@ -288,6 +288,26 @@ public class RDFDeleteWhereOperationTest
     }
 
     [TestMethod]
+    public void ShouldApplyToGraphWithGroundShortForm()
+    {
+        //The graph holds the triple to delete together with an unrelated one
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:p"), new RDFResource("ex:b")),
+            new RDFTriple(new RDFResource("ex:c"), new RDFResource("ex:p"), new RDFResource("ex:d"))
+        ]);
+        //The short form uses the ground pattern both as condition and as delete template
+        RDFDeleteWhereOperation operation = RDFDeleteWhereOperation.FromString("DELETE WHERE { <ex:a> <ex:p> <ex:b> }");
+        RDFOperationResult result = operation.ApplyToGraph(graph);
+
+        //Only the named triple is removed
+        Assert.AreEqual(1, result.DeleteResultsCount);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.IsFalse(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:p"), new RDFResource("ex:b"))));
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:c"), new RDFResource("ex:p"), new RDFResource("ex:d"))));
+    }
+
+    [TestMethod]
     public void ShouldApplyToGraphWithGroundTemplate()
     {
         RDFGraph graph = new RDFGraph(

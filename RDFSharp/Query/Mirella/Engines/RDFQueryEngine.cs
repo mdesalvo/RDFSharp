@@ -592,6 +592,10 @@ namespace RDFSharp.Query
             List<RDFTriple> matchingTriples = null;
             switch (templateHoleDetector.ToString())
             {
+                case "":
+                    matchingTriples = graph.SelectTriples(s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
+                    break;
+
                 case "S":
                     matchingTriples = graph.SelectTriples(p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     break;
@@ -639,9 +643,8 @@ namespace RDFSharp.Query
                     break;
             }
 
-            //Fully-bound patterns (no holes) match no switch case and leave the table empty
-            if (matchingTriples != null)
-                RDFTableEngine.PopulateTable(pattern, matchingTriples, patternResultTable);
+            //Each matching triple becomes one row with the values of the pattern's variables
+            RDFTableEngine.PopulateTable(pattern, matchingTriples, patternResultTable);
 
             return patternResultTable;
         }
@@ -689,6 +692,10 @@ namespace RDFSharp.Query
             List<RDFQuadruple> matchingQuadruples = null;
             switch (templateHoleDetector.ToString())
             {
+                case "":
+                    matchingQuadruples = store.SelectQuadruples(c: hasContext ? (RDFContext)pattern.Context : null, s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null).Take(1).ToList();
+                    break;
+
                 case "C":
                     matchingQuadruples = store.SelectQuadruples(s: (RDFResource)pattern.Subject, p: (RDFResource)pattern.Predicate, o: pObjRes ? (RDFResource)pattern.Object : null, l: pObjLit ? (RDFLiteral)pattern.Object : null);
                     break;
@@ -822,9 +829,8 @@ namespace RDFSharp.Query
                     break;
             }
 
-            //Fully-bound patterns (no holes) match no switch case and leave the table empty
-            if (matchingQuadruples != null)
-                RDFTableEngine.PopulateTable(pattern, matchingQuadruples, patternResultTable);
+            //Each matching quadruple becomes one row with the values of the pattern's variables
+            RDFTableEngine.PopulateTable(pattern, matchingQuadruples, patternResultTable);
 
             return patternResultTable;
         }

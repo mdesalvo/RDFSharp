@@ -207,7 +207,7 @@ public class RDFSelectQueryResultTest
   }
 
   [TestMethod]
-  public void ShouldThrowExceptionOnDeserializingSelectQueryResultBecauseHeadWithoutChildren()
+  public void ShouldDeserializeSelectQueryResultWithHeadWithoutChildrenDroppingBindingsOnUndeclaredVariables()
   {
     MemoryStream stream = new MemoryStream();
     using (StreamWriter writer = new StreamWriter(stream))
@@ -226,7 +226,83 @@ public class RDFSelectQueryResultTest
         </sparql>
         """);
 
-    Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    //A binding on a variable that the head does not declare cannot fill any cell, so it yields no row
+    RDFSelectQueryResult result = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray()));
+
+    Assert.AreEqual(0, result.SelectResults.Columns.Count);
+    Assert.AreEqual(0, result.SelectResultsCount);
+  }
+
+  [TestMethod]
+  public void ShouldDeserializeSelectQueryResultWithHeadWithoutChildrenAndOneResultWithoutChildren()
+  {
+    MemoryStream stream = new MemoryStream();
+    using (StreamWriter writer = new StreamWriter(stream))
+      writer.WriteLine(
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+          <head/>
+          <results>
+            <result/>
+          </results>
+        </sparql>
+        """);
+
+    //A query without variables is answered by one solution that binds nothing
+    RDFSelectQueryResult result = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray()));
+
+    Assert.AreEqual(0, result.SelectResults.Columns.Count);
+    Assert.AreEqual(1, result.SelectResultsCount);
+  }
+
+  [TestMethod]
+  public void ShouldDeserializeSelectQueryResultWithHeadWithoutChildrenAndNoResults()
+  {
+    MemoryStream stream = new MemoryStream();
+    using (StreamWriter writer = new StreamWriter(stream))
+      writer.WriteLine(
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+          <head/>
+          <results/>
+        </sparql>
+        """);
+
+    //No solution at all means that the variable-less query is not satisfied
+    RDFSelectQueryResult result = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray()));
+
+    Assert.AreEqual(0, result.SelectResults.Columns.Count);
+    Assert.AreEqual(0, result.SelectResultsCount);
+  }
+
+  [TestMethod]
+  public void ShouldDeserializeSelectQueryResultWithOneResultWithoutBindings()
+  {
+    MemoryStream stream = new MemoryStream();
+    using (StreamWriter writer = new StreamWriter(stream))
+      writer.WriteLine(
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+          <head>
+            <variable name="?S"/>
+            <variable name="?P"/>
+          </head>
+          <results>
+            <result/>
+          </results>
+        </sparql>
+        """);
+
+    //A solution that binds no variable keeps its row with every cell unbound
+    RDFSelectQueryResult result = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray()));
+
+    Assert.AreEqual(2, result.SelectResults.Columns.Count);
+    Assert.AreEqual(1, result.SelectResultsCount);
+    Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?S"));
+    Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?P"));
   }
 
   [TestMethod]

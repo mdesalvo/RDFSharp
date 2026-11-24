@@ -79,11 +79,11 @@ namespace RDFSharp.Query
 
         #region Methods
         /// <summary>
-        /// Adds the given pattern to the pattern group (only if it contains at least one variable)
+        /// Adds the given pattern to the pattern group (a ground pattern is accepted and acts as an existence condition)
         /// </summary>
         public RDFPatternGroup AddPattern(RDFPattern pattern)
         {
-            if (pattern?.Variables.Count > 0 && !GetPatterns().Any(p => p.Equals(pattern)))
+            if (pattern != null && !GetPatterns().Any(p => p.Equals(pattern)))
             {
                 GroupMembers.Add(pattern);
 
