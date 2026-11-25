@@ -450,13 +450,10 @@ namespace RDFSharp.Query
         private List<RDFPattern> MaterializeOperationTemplates(RDFOperation operation, RDFDataSource datasource, string deleteInsertCommand = null)
         {
             //Evaluate the WHERE clause of the operation down to its result table
-            RDFTable resultTable = new RDFTable();
-            List<RDFQueryMember> evaluableQueryMembers = operation.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Count > 0)
-            {
-                EvaluateQueryMembers(evaluableQueryMembers, datasource);
-                resultTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
-            }
+            EvaluateQueryMembers(operation.GetEvaluableQueryMembers().ToList(), datasource);
+
+            //Without members the WHERE clause is the empty group: its single empty solution lets the templates be instantiated once
+            RDFTable resultTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
 
             //Pick the side of templates to materialize
             List<RDFPattern> templates;

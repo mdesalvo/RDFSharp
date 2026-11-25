@@ -23,6 +23,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -1128,7 +1129,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateSelectQueryOnGraphWithNoResultsBecauseNoEvaluableQueryMembers()
+    public void ShouldEvaluateSelectQueryOnGraphWithSingleEmptySolutionBecauseNoEvaluableQueryMembers()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -1142,7 +1143,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(0, result.SelectResults.Columns.Count);
-        Assert.AreEqual(0, result.SelectResultsCount);
+        Assert.AreEqual(1, result.SelectResultsCount);
     }
 
     [TestMethod]
@@ -2932,7 +2933,7 @@ public class RDFQueryEngineTest
     }
 
     [TestMethod]
-    public void ShouldEvaluateAskQueryFalseBecauseNoEvaluableQueryMembers()
+    public void ShouldEvaluateAskQueryTrueBecauseNoEvaluableQueryMembers()
     {
         RDFGraph graph = new RDFGraph(
         [
@@ -2944,7 +2945,7 @@ public class RDFQueryEngineTest
         RDFAskQueryResult result = new RDFQueryEngine().EvaluateAskQuery(query, graph);
 
         Assert.IsNotNull(result);
-        Assert.IsFalse(result.AskResult);
+        Assert.IsTrue(result.AskResult);
     }
 
     //UTILITIES
@@ -6434,6 +6435,145 @@ public class RDFQueryEngineTest
         Assert.IsTrue(HttpUtility.UrlDecode(receivedQuery).Contains("<ex:a> <ex:p> <ex:b>", StringComparison.Ordinal));
         //One empty result means the triple exists while no result means it does not
         Assert.AreEqual(expectedAnswer, result.AskResult);
+    }
+
+    #endregion
+
+    #region Empty group solution
+
+    /// <summary>
+    /// Builds a graph with the single triple ex:s ex:p ex:o, matched by the ex:p patterns and missed by the ex:nomatch ones.
+    /// </summary>
+    private static RDFGraph BuildSingleTripleGraph()
+        => new RDFGraph([ new RDFTriple(new RDFResource("ex:s"), new RDFResource("ex:p"), new RDFResource("ex:o")) ]);
+
+    [TestMethod]
+    public async Task ShouldKeepSolutionOfGroupWithOnlyFailingBindAsync()
+    {
+        //The division by zero is an error: the variable stays unbound but the solution of the empty group survives
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?r WHERE { BIND(1 / 0 AS ?r) }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?R"));
+    }
+
+    [TestMethod]
+    public async Task ShouldKeepSolutionOfEmptyGroupWithFailingProjectionExpressionAsync()
+    {
+        //The projection expression fails on the single solution of the empty group and leaves its variable unbound
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (1 / 0 AS ?x) WHERE { }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?X"));
+    }
+
+    [TestMethod]
+    public async Task ShouldAnswerTrueToAskWithOnlyFailingBindAsync()
+    {
+        //The failing BIND keeps the solution of the empty group so the ASK has something to confirm
+        RDFAskQuery query = RDFAskQuery.FromString("ASK { BIND(1 / 0 AS ?r) }");
+        RDFAskQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.IsTrue(result.AskResult);
+    }
+
+    [TestMethod]
+    public async Task ShouldKeepFailingBindSolutionInUnionBranchAsync()
+    {
+        //Each branch is a group made of a sole BIND: the failing one still yields its solution with ?r unbound
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?r WHERE { { BIND(1 AS ?r) } UNION { BIND(1 / 0 AS ?r) } }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(2, result.SelectResultsCount);
+        Assert.AreEqual(1, result.SelectResults.Rows.Cast<DataRow>().Count(row => row.IsNull("?R")));
+        Assert.AreEqual(1, result.SelectResults.Rows.Cast<DataRow>().Count(row => !row.IsNull("?R") && row["?R"].ToString() == $"1^^{RDFVocabulary.XSD.INTEGER}"));
+    }
+
+    [TestMethod]
+    public async Task ShouldKeepFailingBindSolutionInNestedGroupJoinedWithPatternAsync()
+    {
+        //The nested group has the single empty solution extended by the failing BIND: joined with the pattern it keeps the pattern row
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?s ?r WHERE { ?s <ex:p> ?o { BIND(1 / 0 AS ?r) } }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(BuildSingleTripleGraph());
+
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual("ex:s", result.SelectResults.Rows[0]["?S"].ToString());
+        Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?R"));
+    }
+
+    [TestMethod]
+    public async Task ShouldNotInventSolutionForBindAfterPatternWithoutMatchesAsync()
+    {
+        //The pattern has no solution and the BIND extends no solution: nothing is created
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?r WHERE { ?s <ex:nomatch> ?o BIND(1 AS ?r) }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(BuildSingleTripleGraph());
+
+        Assert.AreEqual(0, result.SelectResultsCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldNotInventSolutionForProjectionExpressionAfterPatternWithoutMatchesAsync()
+    {
+        //The projection expression is evaluated on the solutions of the pattern: there are none
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (1 AS ?x) WHERE { ?s <ex:nomatch> ?o }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(BuildSingleTripleGraph());
+
+        Assert.AreEqual(0, result.SelectResultsCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldAnswerFalseToAskWithBindAfterPatternWithoutMatchesAsync()
+    {
+        //No solution of the pattern means no solution to extend: the BIND cannot make the ASK true
+        RDFAskQuery query = RDFAskQuery.FromString("ASK { ?s <ex:nomatch> ?o BIND(1 AS ?r) }");
+        RDFAskQueryResult result = await query.ApplyToGraphAsync(BuildSingleTripleGraph());
+
+        Assert.IsFalse(result.AskResult);
+    }
+
+    [TestMethod]
+    public async Task ShouldReturnSingleSolutionWithoutVariablesForEmptyGroupAsync()
+    {
+        //The empty group has exactly one solution and it binds no variable
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(0, result.SelectResults.Columns.Count);
+        Assert.AreEqual(1, result.SelectResultsCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldAnswerTrueToAskOnEmptyGroupAsync()
+    {
+        //The single solution of the empty group is enough to confirm the ASK
+        RDFAskQuery query = RDFAskQuery.FromString("ASK { }");
+        RDFAskQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.IsTrue(result.AskResult);
+    }
+
+    [TestMethod]
+    public async Task ShouldBindValueOnSingleSolutionOfGroupWithOnlyBindAsync()
+    {
+        //The succeeding BIND extends the single solution of the empty group with its value
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?r WHERE { BIND(1 AS ?r) }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual($"1^^{RDFVocabulary.XSD.INTEGER}", result.SelectResults.Rows[0]["?R"].ToString());
+    }
+
+    [TestMethod]
+    public async Task ShouldProjectValueOnSingleSolutionOfEmptyGroupAsync()
+    {
+        //The projection expression extends the single solution of the empty group with its value
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (1 AS ?x) WHERE { }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual($"1^^{RDFVocabulary.XSD.INTEGER}", result.SelectResults.Rows[0]["?X"].ToString());
     }
 
     #endregion

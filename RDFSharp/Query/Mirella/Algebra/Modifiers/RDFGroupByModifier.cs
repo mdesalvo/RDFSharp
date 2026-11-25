@@ -347,7 +347,8 @@ namespace RDFSharp.Query
             Aggregators.ForEach(ag => projFuncTables.Add(ag.ExecuteProjectionTable(partitionVariables)));
             projFuncTables.RemoveAll(pft => pft == null);
 
-            return RDFTableEngine.CombineTables(projFuncTables);
+            //A modifier without aggregators projects no group: it must not become the empty solution that joining nothing yields
+            return projFuncTables.Count == 0 ? new RDFTable() : RDFTableEngine.CombineTables(projFuncTables);
         }
 
         /// <summary>
