@@ -15,6 +15,7 @@
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using RDFSharp.Model;
 using RDFSharp.Store;
 using static RDFSharp.Query.RDFQueryLexer;
@@ -134,6 +135,11 @@ namespace RDFSharp.Query
         ///   <b>GRAPH</b> — delegated to <see cref="ParseGraphGraphPattern"/>: the following group is parsed
         ///   with the parsed graph specifier (a fixed <see cref="RDFContext"/> or an <see cref="RDFVariable"/>)
         ///   fixed as the per-pattern context of every triple it contains, then appended like any other element.
+        /// </item>
+        /// <item>
+        ///   <b>BIND after preceding members</b> — per the SPARQL algebra a BIND extends the join of EVERYTHING
+        ///   that precedes it in the group: the accumulator is wrapped into a subquery projecting its in-scope
+        ///   variables plus the bound one (see <see cref="ExtendPrecedingMembers"/>).
         /// </item>
         /// <item>
         ///   <b>Other graph-pattern keywords</b> (FILTER, BIND, VALUES, SELECT sub-select, SERVICE) — each is
@@ -279,6 +285,17 @@ namespace RDFSharp.Query
                     continue;
                 }
 
+                //BIND ::= 'BIND' '(' Expression 'AS' Var ')'
+                //A BIND that follows other members must see the variables they bind: the engine evaluates each pattern
+                //group in isolation, so absorbing the BIND into a new group would leave its expression with no input.
+                //The accumulator is therefore wrapped into a subquery that also projects the bound variable.
+                if (upcomingKeyword == "BIND" && accumulatedMembers.Count > 0)
+                {
+                    ConsumeKeyword(parserContext);
+                    ExtendPrecedingMembers(parserContext, accumulatedMembers, ParseBind(parserContext));
+                    continue;
+                }
+
                 //FILTER, BIND and VALUES are NOT algebra tree nodes and NOT sibling members: they are
                 //RDFPatternGroupMembers that belong INSIDE a pattern group (RDFPatternGroup.AddFilter / AddBind /
                 //AddValues). When one of them opens the group body (before any triple), it still has to land in a
@@ -336,8 +353,9 @@ namespace RDFSharp.Query
         /// </summary>
         private static void AppendBasicGraphPatternMember(RDFQueryParserContext parserContext, List<RDFQueryMember> accumulatedMembers, List<RDFFilter> accumulatedFilters)
         {
-            //Read the triples/binds/values into a fresh pattern group, and the direct filters aside
-            (RDFPatternGroup patternGroup, List<RDFFilter> directFilters) = ParseBasicGraphPatternMember(parserContext);
+            //Read the triples/binds/values into a fresh pattern group with the direct filters kept aside: the run must know
+            //whether other members precede it, because a BIND then has to extend them instead of joining this run only
+            (RDFPatternGroup patternGroup, List<RDFFilter> directFilters) = ParseBasicGraphPatternMember(parserContext, accumulatedMembers.Count > 0);
 
             //Append the pattern group only if it actually carries members: a run made of FILTER(s) alone produces
             //an empty pattern group (its filters went to 'directFilters'), which must not pollute the body with a
@@ -596,7 +614,7 @@ namespace RDFSharp.Query
         /// in <see cref="ParseGroupGraphPatternSub"/>.
         /// </para>
         /// </summary>
-        private static (RDFPatternGroup PatternGroup, List<RDFFilter> DirectFilters) ParseBasicGraphPatternMember(RDFQueryParserContext parserContext)
+        private static (RDFPatternGroup PatternGroup, List<RDFFilter> DirectFilters) ParseBasicGraphPatternMember(RDFQueryParserContext parserContext, bool groupHasPrecedingMembers)
         {
             //Allocate a fresh pattern group to collect the triples (and binds/values) produced by this BGP scan
             RDFPatternGroup basicGraphPatternGroup = new RDFPatternGroup();
@@ -642,8 +660,14 @@ namespace RDFSharp.Query
                 }
                 if (upcomingKeyword == "BIND")
                 {
+                    //With members preceding this run the BIND must extend all of them: end the run here and leave the
+                    //keyword on the reader for ParseGroupGraphPatternSub
+                    if (groupHasPrecedingMembers)
+                        return (basicGraphPatternGroup, directFilters);
+
+                    //Nothing precedes the run: the BIND joins the run's own triples (AddBind rejects a repeated variable)
                     ConsumeKeyword(parserContext);
-                    ParseBind(parserContext, basicGraphPatternGroup);
+                    basicGraphPatternGroup.AddBind(ParseBind(parserContext));
                     continue;
                 }
                 if (upcomingKeyword == "VALUES")
@@ -737,6 +761,86 @@ namespace RDFSharp.Query
                 AddQueryMember(joiningSubQuery, memberToWrap);
 
             return joiningSubQuery;
+        }
+
+        /// <summary>
+        /// Replaces the accumulated members with a subquery that joins them and projects their in-scope variables plus the bound one.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the bound variable is already in scope of the accumulated members.</exception>
+        private static void ExtendPrecedingMembers(RDFQueryParserContext parserContext, List<RDFQueryMember> accumulatedMembers, RDFBind bind)
+        {
+            //The variables that the preceding members expose are the ones the BIND expression can read and the ones
+            //the extending subquery must keep projecting (a SELECT with an explicit list drops everything else)
+            List<RDFVariable> inScopeVariables = new List<RDFVariable>();
+            foreach (RDFQueryMember precedingMember in accumulatedMembers)
+                CollectInScopeVariables(precedingMember, inScopeVariables);
+
+            //SPARQL forbids binding a variable that the preceding members already expose
+            if (inScopeVariables.Any(inScopeVariable => inScopeVariable.Equals(bind.Variable)))
+                throw new RDFQueryException("Cannot parse SPARQL BIND: variable '" + bind.Variable + "' is already in scope of the group graph pattern " + GetCoordinates(parserContext));
+
+            //The subquery joins the whole accumulator as one unit: the bind expression is evaluated on its solutions
+            RDFSelectQuery extendingSubQuery = WrapIntoSubQuery(accumulatedMembers);
+
+            //Every in-scope variable stays visible to the members that follow the BIND
+            foreach (RDFVariable inScopeVariable in inScopeVariables)
+                extendingSubQuery.AddProjectionVariable(inScopeVariable);
+
+            //The bound variable is computed per solution of the joined members
+            extendingSubQuery.AddProjectionVariable(bind.Variable, bind.Expression);
+
+            //The subquery is now the only member: the group-level filters stay where they are because their scope is the whole group
+            accumulatedMembers.Clear();
+            accumulatedMembers.Add(extendingSubQuery);
+        }
+
+        /// <summary>
+        /// Appends to the given list the variables that a member exposes to the members following it in the same group.
+        /// </summary>
+        private static void CollectInScopeVariables(RDFQueryMember queryMember, List<RDFVariable> inScopeVariables)
+        {
+            //The variables the member exposes are gathered first so that a single merge step at the end keeps the
+            //first-appearance order of the caller's list without repeating a variable
+            List<RDFVariable> memberVariables = new List<RDFVariable>();
+
+            if (queryMember is RDFPatternGroup patternGroup)
+            {
+                //A pattern group already tracks the variables of its patterns, property paths, VALUES and BINDs
+                memberVariables.AddRange(patternGroup.Variables);
+            }
+            else if (queryMember is RDFSelectQuery subQuery)
+            {
+                if (subQuery.ProjectionVars.Count > 0)
+                {
+                    //An explicit projection hides every other variable of the subquery
+                    memberVariables.AddRange(subQuery.ProjectionVars.OrderBy(projectionVar => projectionVar.Value.Item1).Select(projectionVar => projectionVar.Key));
+                }
+                else
+                {
+                    //A wildcard projection exposes whatever its own members expose
+                    foreach (RDFQueryMember subQueryMember in subQuery.QueryMembers)
+                        CollectInScopeVariables(subQueryMember, memberVariables);
+                }
+            }
+            else if (queryMember is RDFBinaryQueryMember binaryQueryMember)
+            {
+                //A UNION exposes the variables of both branches while a MINUS exposes only its left side (the right side only subtracts)
+                CollectInScopeVariables(binaryQueryMember.LeftOperand, memberVariables);
+                if (binaryQueryMember.OperatorType == RDFQueryEnums.RDFBinaryOperatorType.Union)
+                    CollectInScopeVariables(binaryQueryMember.RightOperand, memberVariables);
+            }
+            else if (queryMember is RDFService service)
+            {
+                //A variable endpoint is bound by the SERVICE itself and its inner pattern exposes its own variables
+                if (service.EndpointVariable != null)
+                    memberVariables.Add(service.EndpointVariable);
+                CollectInScopeVariables(service.InnerPattern, memberVariables);
+            }
+
+            //Merge the member's variables into the running list without repeating any
+            foreach (RDFVariable memberVariable in memberVariables)
+                if (!inScopeVariables.Any(inScopeVariable => inScopeVariable.Equals(memberVariable)))
+                    inScopeVariables.Add(memberVariable);
         }
 
         /// <summary>

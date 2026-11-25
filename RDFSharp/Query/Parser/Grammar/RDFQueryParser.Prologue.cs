@@ -83,7 +83,8 @@ namespace RDFSharp.Query
             }
             catch (RDFModelException iriParsingException)
             {
-                throw new RDFQueryException("Cannot parse SPARQL BASE declaration " + GetCoordinates(parserContext) + ": " + iriParsingException.Message, iriParsingException);
+                //The Turtle reader already writes the position into its message: strip it so the coordinates are reported once, at the end
+                throw new RDFQueryException("Cannot parse SPARQL BASE declaration: " + StripTurtleCoordinates(iriParsingException.Message) + " " + GetCoordinates(parserContext), iriParsingException);
             }
         }
 
@@ -109,7 +110,8 @@ namespace RDFSharp.Query
             }
             catch (RDFModelException iriParsingException)
             {
-                throw new RDFQueryException("Cannot parse SPARQL PREFIX declaration " + GetCoordinates(parserContext) + ": " + iriParsingException.Message, iriParsingException);
+                //The Turtle reader already writes the position into its message: strip it so the coordinates are reported once, at the end
+                throw new RDFQueryException("Cannot parse SPARQL PREFIX declaration: " + StripTurtleCoordinates(iriParsingException.Message) + " " + GetCoordinates(parserContext), iriParsingException);
             }
         }
 

@@ -430,7 +430,8 @@ namespace RDFSharp.Query
             }
             catch (RDFModelException blankNodeParsingException)
             {
-                throw new RDFQueryException("Cannot parse SPARQL blank node " + GetCoordinates(parserContext) + ": " + blankNodeParsingException.Message, blankNodeParsingException);
+                //The Turtle reader already writes the position into its message: strip it so the coordinates are reported once, at the end
+                throw new RDFQueryException("Cannot parse SPARQL blank node: " + StripTurtleCoordinates(blankNodeParsingException.Message) + " " + GetCoordinates(parserContext), blankNodeParsingException);
             }
         }
 

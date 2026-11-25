@@ -118,5 +118,14 @@ public class RDFQueryLexerTest
         Assert.IsInstanceOfType<RDFPlainLiteral>(term);
         Assert.AreEqual("hello world", term.ToString());
     }
+
+    [TestMethod]
+    public void ShouldReportCoordinatesOnceOnMalformedTerm()
+    {
+        RDFQueryException exception = Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT ?o WHERE { ?s ?p ) }"));
+
+        //The Turtle reader already writes the position into its message: the parser must report it once, at the end
+        Assert.AreEqual("Cannot parse SPARQL term: Expected an RDF value here, found ')' [LINE:1,COL:25]", exception.Message);
+    }
     #endregion
 }

@@ -48,13 +48,13 @@ namespace RDFSharp.Query
     {
         #region GroupBy
         /// <summary>
-        /// The keywords that may legally FOLLOW a GROUP BY clause (HavingClause? OrderClause? LimitOffsetClauses?).
+        /// The keywords that may legally FOLLOW a GROUP BY clause (HavingClause? OrderClause? LimitOffsetClauses?) plus the trailing ValuesClause.
         /// Used to tell the end of the grouping-variable list from a non-representable function/built-in
         /// GroupCondition: any other bare keyword after the variables is a GroupCondition the flat model cannot
         /// represent, and must fail loudly rather than be silently left as unconsumed trailing input.
         /// </summary>
         private static readonly HashSet<string> GroupByFollowerKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            { "HAVING", "ORDER", "LIMIT", "OFFSET" };
+            { "HAVING", "ORDER", "LIMIT", "OFFSET", "VALUES" };
 
         /// <summary>
         /// Parses the body of a GROUP BY clause (the <c>GROUP</c> keyword has already been consumed by

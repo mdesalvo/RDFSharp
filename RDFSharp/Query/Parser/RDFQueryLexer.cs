@@ -228,7 +228,8 @@ namespace RDFSharp.Query
                 //This includes the UriFormatException raised when a prefixed name uses an UNDECLARED, UNRESOLVABLE
                 //prefix: the Turtle term-reader concatenates a null namespace with the local name and the resulting
                 //relative string fails 'new Uri(...)', which must read as a clean parse error rather than leak.
-                throw new RDFQueryException("Cannot parse SPARQL term " + GetCoordinates(parserContext) + ": " + termParsingException.Message, termParsingException);
+                //The Turtle reader already writes the position into its message: strip it so the coordinates are reported once, at the end
+                throw new RDFQueryException("Cannot parse SPARQL term: " + StripTurtleCoordinates(termParsingException.Message) + " " + GetCoordinates(parserContext), termParsingException);
             }
         }
 
@@ -238,6 +239,12 @@ namespace RDFSharp.Query
         /// </summary>
         internal static string GetCoordinates(RDFQueryParserContext parserContext)
             => RDFTurtle.GetTurtleContextCoordinates(parserContext.TermParsingContext);
+
+        /// <summary>
+        /// Removes the "[LINE:x,COL:y]" coordinates that the reused Turtle reader writes into its messages, wherever they sit.
+        /// </summary>
+        internal static string StripTurtleCoordinates(string message)
+            => RDFShims.TurtleCoordinatesRegex.Value.Replace(message, string.Empty);
 
         /// <summary>
         /// <para>

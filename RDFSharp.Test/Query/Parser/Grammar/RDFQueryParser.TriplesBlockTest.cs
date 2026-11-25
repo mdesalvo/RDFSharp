@@ -143,6 +143,17 @@ public partial class RDFQueryParserTest
         //ALL patterns (outer + chain) are contextualised by the same ?g variable
         Assert.IsTrue(patterns.All(p => p.Context is RDFVariable && p.Context.ToString() == "?G"));
     }
+
+    [TestMethod]
+    public void ShouldReportCoordinatesOnceOnMalformedLabeledBlankNode()
+    {
+        RDFQueryException exception = Assert.ThrowsExactly<RDFQueryException>(
+            () => RDFSelectQuery.FromString("SELECT * WHERE { _: <http://example.org/p> ?o }"));
+
+        //The Turtle reader already writes the position into its message: the parser must report it once, at the end
+        Assert.AreEqual(1, System.Text.RegularExpressions.Regex.Matches(exception.Message, @"\[LINE:").Count);
+        Assert.EndsWith("]", exception.Message);
+    }
     #endregion
 
     #region BlankNodesAndCollections (F4 end-to-end execution)

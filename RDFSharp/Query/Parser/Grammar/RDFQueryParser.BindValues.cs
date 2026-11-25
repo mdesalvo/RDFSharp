@@ -30,14 +30,10 @@ namespace RDFSharp.Query
     {
         #region Bind
         /// <summary>
-        /// Parses a <c>BIND(expression AS ?var)</c> assignment and attaches it to the target pattern group as an
-        /// <see cref="RDFBind"/> member: the engine evaluates the expression per-solution and binds its value to the
-        /// variable, extending the group's solution mapping. SPARQL grammar: <c>Bind ::= 'BIND' '(' Expression 'AS' Var ')'</c>.
-        /// The full expression grammar (boolean / comparison / arithmetic / built-ins / GeoSPARQL) is reused verbatim
-        /// via <see cref="ParseExpression"/>, sharing the very same machinery as FILTER and the SELECT projection.
+        /// Parses a <c>BIND(expression AS ?var)</c> assignment (SPARQL grammar <c>Bind ::= 'BIND' '(' Expression 'AS' Var ')'</c>) into an <see cref="RDFBind"/> that the caller attaches.
         /// </summary>
         /// <exception cref="RDFQueryException">When the parentheses, the mandatory 'AS' keyword, or the result variable are missing/malformed.</exception>
-        private static void ParseBind(RDFQueryParserContext parserContext, RDFPatternGroup targetPatternGroup)
+        private static RDFBind ParseBind(RDFQueryParserContext parserContext)
         {
             //Opening parenthesis of the BIND assignment
             ExpectChar(parserContext, '(', "BIND");
@@ -58,8 +54,8 @@ namespace RDFSharp.Query
             //Closing parenthesis of the BIND assignment
             ExpectChar(parserContext, ')', "BIND");
 
-            //Attach the computed binding to the surrounding pattern group
-            targetPatternGroup.AddBind(new RDFBind(bindExpression, bindVariable));
+            //Hand the computed binding back: the caller either absorbs it into its pattern group or extends the preceding members
+            return new RDFBind(bindExpression, bindVariable);
         }
         #endregion
 
