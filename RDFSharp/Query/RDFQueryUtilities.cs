@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Xml;
 using NetTopologySuite.Geometries;
@@ -43,33 +44,38 @@ namespace RDFSharp.Query
             if (pMember == null)
                 throw new RDFQueryException("Cannot parse pattern member because given \"pMember\" parameter is null.");
 
+            #region Typed Literal
+            //A trailing "^^" followed by an absolute datatype IRI marks a typed literal even when its value looks like an IRI:
+            //the check comes before the resource one because '^' cannot appear in a valid IRI (RFC 3986)
+            int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.Ordinal);
+            if (lastIndexOfDatatype != -1
+                 && lastIndexOfDatatype != pMember.Length - 2 //EndsWith "^^"
+                 && RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) != null)
+            {
+                string tLitValue = pMember.Substring(0, lastIndexOfDatatype);
+                string tLitDatatype = pMember.Substring(lastIndexOfDatatype + 2);
+                return new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
+            }
+            #endregion
+
             #region Resource
+            //An absolute IRI is a resource: a language-tagged literal whose value looks like an IRI cannot be told apart
+            //from an IRI having '@' in its path, so the resource reading wins
             if (Uri.TryCreate(pMember, UriKind.Absolute, out _))
                 return new RDFResource(pMember);
             #endregion
 
             #region Plain Literal
-            //Detect presence of semantically valid datatype indicator ("^^")
-            int lastIndexOfDatatype = pMember.LastIndexOf("^^", StringComparison.Ordinal);
-            if (lastIndexOfDatatype == -1
-                 || lastIndexOfDatatype == pMember.Length - 2 //EndsWith "^^"
-                 || RDFModelUtilities.GetUriFromString(pMember.Substring(lastIndexOfDatatype + 2)) == null)
+            //A trailing language tag splits the text into value and language
+            if (RDFShims.EndingLangTagRegex.Value.IsMatch(pMember))
             {
-                if (RDFShims.EndingLangTagRegex.Value.IsMatch(pMember))
-                {
-                    int lastIndexOfLanguage = pMember.LastIndexOf('@');
-                    string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
-                    string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
-                    return new RDFPlainLiteral(pLitVal, pLitLng);
-                }
-                return new RDFPlainLiteral(pMember);
+                int lastIndexOfLanguage = pMember.LastIndexOf('@');
+                string pLitVal = pMember.Substring(0, lastIndexOfLanguage);
+                string pLitLng = pMember.Substring(lastIndexOfLanguage + 1);
+                return new RDFPlainLiteral(pLitVal, pLitLng);
             }
-            #endregion
-
-            #region Typed Literal
-            string tLitValue = pMember.Substring(0, lastIndexOfDatatype);
-            string tLitDatatype = pMember.Substring(lastIndexOfDatatype + 2);
-            return new RDFTypedLiteral(tLitValue, RDFDatatypeRegister.GetDatatype(tLitDatatype));
+            //Any other text is a plain literal without language
+            return new RDFPlainLiteral(pMember);
             #endregion
         }
 
@@ -145,11 +151,25 @@ namespace RDFSharp.Query
                     {
                         if (((RDFTypedLiteral)right).HasDatetimeDatatype())
                         {
+                            //A generic calendar has no absolute instant: its values are ordered by signed position and only within the same datatype
+                            RDFModelEnums.RDFDatatypes leftDatatype = ((RDFTypedLiteral)left).Datatype.TargetDatatype;
+                            if (leftDatatype == RDFModelEnums.RDFDatatypes.TIME_GENERALDAY
+                                 || leftDatatype == RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH
+                                 || leftDatatype == RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)
+                            {
+                                return leftDatatype == ((RDFTypedLiteral)right).Datatype.TargetDatatype
+                                    ? Math.Sign(GetGeneralTimeValue((RDFTypedLiteral)left).CompareTo(GetGeneralTimeValue((RDFTypedLiteral)right)))
+                                    : ComparisonTypeError;
+                            }
+
                             //Both instants come from the lexical formats of their datatypes
                             if (RDFModelUtilities.TryGetDateTimeValue((RDFTypedLiteral)left, out DateTime leftValueDateTime)
                                  && RDFModelUtilities.TryGetDateTimeValue((RDFTypedLiteral)right, out DateTime rightValueDateTime))
+                            {
                                 return leftValueDateTime.CompareTo(rightValueDateTime);
-                            //A date or time without a lexical format (time:general*) has no instant to be ordered by
+                            }
+
+                            //A time:general* value on the right has no instant to be ordered against a date or time
                             return ComparisonTypeError;
                         }
                         //A date or time cannot be compared with a value of another datatype family
@@ -162,8 +182,8 @@ namespace RDFSharp.Query
                         if (((RDFTypedLiteral)right).HasDecimalDatatype())
                         {
                             //Each side is read in the value space of its datatype (double for xsd:double/xsd:float and decimal otherwise)
-                            (bool leftIsFloatingPoint, double leftValueDouble, decimal leftValueDecimal) = RDFModelUtilities.GetNumericValue((RDFTypedLiteral)left);
-                            (bool rightIsFloatingPoint, double rightValueDouble, decimal rightValueDecimal) = RDFModelUtilities.GetNumericValue((RDFTypedLiteral)right);
+                            (bool leftIsFloatingPoint, double leftValueDouble, decimal leftValueDecimal) = GetNumericValue((RDFTypedLiteral)left);
+                            (bool rightIsFloatingPoint, double rightValueDouble, decimal rightValueDecimal) = GetNumericValue((RDFTypedLiteral)right);
 
                             //Two exact numbers are compared without losing precision
                             if (!leftIsFloatingPoint && !rightIsFloatingPoint)
@@ -248,6 +268,55 @@ namespace RDFSharp.Query
                     //A typed literal of an unsupported datatype family is incomparable
                     return ComparisonTypeError;
                 }
+            }
+
+            //Gives the signed position of a time:generalYear/Month/Day literal: the time zone is dropped since a generic calendar has no absolute instant
+            BigInteger GetGeneralTimeValue(RDFTypedLiteral typedLiteral)
+            {
+                //The literal was validated at creation: its digits sit at the fixed positions of the datatype grammar
+                string lexicalValue = typedLiteral.Value;
+                switch (typedLiteral.Datatype.TargetDatatype)
+                {
+                    case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
+                        //Day lexical form is ---DD with an optional time zone
+                        return BigInteger.Parse(lexicalValue.Substring(3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+                    case RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH:
+                        //Month lexical form is --MM with an optional time zone
+                        return BigInteger.Parse(lexicalValue.Substring(2, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+                    default:
+                    {
+                        //Year lexical form is an optional minus sign and an unbounded digit run: the time zone that follows is not part of the run
+                        bool isBeforeCommonEra = lexicalValue[0] == '-';
+                        int yearDigitsStart = isBeforeCommonEra ? 1 : 0;
+                        //The digit run ends where the time zone (Z, + or -) starts or at the end of the value
+                        int yearDigitsEnd = yearDigitsStart;
+                        while (yearDigitsEnd < lexicalValue.Length && lexicalValue[yearDigitsEnd] >= '0' && lexicalValue[yearDigitsEnd] <= '9')
+                            yearDigitsEnd++;
+                        //A year before the common era is a negative position of the calendar
+                        BigInteger year = BigInteger.Parse(lexicalValue.Substring(yearDigitsStart, yearDigitsEnd - yearDigitsStart), NumberStyles.None, CultureInfo.InvariantCulture);
+                        return isBeforeCommonEra ? -year : year;
+                    }
+                }
+            }
+
+            //Gives the value of a numeric typed literal in its own value space: double for xsd:double and xsd:float, decimal for every other numeric datatype
+            (bool isFloatingPoint, double doubleValue, decimal decimalValue) GetNumericValue(RDFTypedLiteral typedLiteral)
+            {
+                //xsd:double and xsd:float keep NaN, infinities and exponent forms that decimal cannot represent
+                if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
+                     || typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT)
+                {
+                    //The literal was validated at creation: its lexical form always reads back as a double
+                    RDFModelUtilities.TryParseFloatingPoint(typedLiteral.Value, out double floatingPointValue);
+                    return (true, floatingPointValue, default);
+                }
+
+                //owl:rational ("p/q") needs evaluation before being a number
+                if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                    return (false, default, RDFArithmeticEngine.ComputeOWLRationalValue(typedLiteral));
+
+                //Every other numeric datatype is exact and lives in the decimal value space
+                return (false, default, decimal.Parse(typedLiteral.Value, CultureInfo.InvariantCulture));
             }
         }
 

@@ -96,7 +96,7 @@ public class RDFRoundExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("3", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("3.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
     }
 
     [TestMethod]
@@ -173,6 +173,37 @@ public class RDFRoundExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);
+    }
+
+    [TestMethod]
+    [DataRow("1522.5^^http://www.w3.org/2001/XMLSchema#decimal", "1523.0^^http://www.w3.org/2001/XMLSchema#decimal")]
+    [DataRow("-2.5^^http://www.w3.org/2001/XMLSchema#decimal", "-2.0^^http://www.w3.org/2001/XMLSchema#decimal")]
+    [DataRow("2.5^^http://www.w3.org/2001/XMLSchema#decimal", "3.0^^http://www.w3.org/2001/XMLSchema#decimal")]
+    [DataRow("-0.4^^http://www.w3.org/2001/XMLSchema#decimal", "0.0^^http://www.w3.org/2001/XMLSchema#decimal")]
+    [DataRow("2^^http://www.w3.org/2001/XMLSchema#int", "2^^http://www.w3.org/2001/XMLSchema#integer")]
+    [DataRow("2.5^^http://www.w3.org/2001/XMLSchema#double", "3^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("-2.5^^http://www.w3.org/2001/XMLSchema#double", "-2^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("-0.4^^http://www.w3.org/2001/XMLSchema#double", "0^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("2.5^^http://www.w3.org/2001/XMLSchema#float", "3^^http://www.w3.org/2001/XMLSchema#float")]
+    [DataRow("INF^^http://www.w3.org/2001/XMLSchema#double", "INF^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("-INF^^http://www.w3.org/2001/XMLSchema#double", "-INF^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("NaN^^http://www.w3.org/2001/XMLSchema#double", "NaN^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("5/2^^http://www.w3.org/2002/07/owl#rational", "3.0^^http://www.w3.org/2001/XMLSchema#decimal")]
+    public void ShouldApplyExpressionWithVariableAndGiveBaseNumericTypeOfArgument(string argumentValue, string expectedValue)
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", argumentValue }
+        });
+
+        RDFRoundExpression expression = new RDFRoundExpression(
+            new RDFVariable("?A"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.AreEqual(expectedValue, expressionResult.ToString());
     }
     #endregion
 }

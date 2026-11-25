@@ -285,5 +285,32 @@ public class RDFSumAggregatorTest
         Assert.AreEqual(1, result.RowsCount);
         Assert.IsTrue(result.Rows[0]["?S"].ToString().Equals($"33^^{RDFVocabulary.XSD.INTEGER}", System.StringComparison.Ordinal));
     }
+
+    [TestMethod]
+    public void ShouldApplyModifierWithSumAggregatorOverflowingToInfinity()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("1E308", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("1E308", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+
+        //SUM over two doubles at the top of the range overflows to INF instead of failing the group
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFSumAggregator(new RDFVariable("?A"), new RDFVariable("?RESULT")));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?RESULT"].ToString().Equals($"INF^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+    }
     #endregion
 }

@@ -153,12 +153,29 @@ public class RDFArithmeticEngineTest
     [DataRow("hello", RDFModelEnums.RDFDatatypes.XSD_STRING, '+', "4", RDFModelEnums.RDFDatatypes.XSD_INTEGER)] //non-numeric LEFT
     [DataRow("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER, '+', "true", RDFModelEnums.RDFDatatypes.XSD_BOOLEAN)] //non-numeric RIGHT
     [DataRow("6", RDFModelEnums.RDFDatatypes.XSD_INTEGER, '/', "0", RDFModelEnums.RDFDatatypes.XSD_INTEGER)] //decimal division by zero
-    [DataRow("6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '/', "0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)] //double division by zero
     [DataRow("79228162514264337593543950335", RDFModelEnums.RDFDatatypes.XSD_DECIMAL, '*', "2", RDFModelEnums.RDFDatatypes.XSD_INTEGER)] //decimal overflow
-    [DataRow("1E308", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '*', "10", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)] //double overflow -> Infinity
-    [DataRow("1E38", RDFModelEnums.RDFDatatypes.XSD_FLOAT, '*', "100", RDFModelEnums.RDFDatatypes.XSD_FLOAT)] //float downcast -> Infinity
     public void ShouldComputeNumericArithmeticReturningNull(string leftValue, RDFModelEnums.RDFDatatypes leftType, char op, string rightValue, RDFModelEnums.RDFDatatypes rightType)
         => Assert.IsNull(RDFArithmeticEngine.ComputeNumericOperation(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op));
+
+    //Float and double arithmetic follows IEEE 754: division by zero, overflow and infinite operands give INF, -INF or NaN instead of an error
+    [TestMethod]
+    [DataRow("1.0E0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '/', "0E0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("-1.0E0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '/', "0E0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "-INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '/', "0", RDFModelEnums.RDFDatatypes.XSD_INTEGER, "INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("1E308", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '*', "10", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("0E0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '/', "0E0", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "NaN", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '*', "2", RDFModelEnums.RDFDatatypes.XSD_INTEGER, "INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, '+', "-INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "NaN", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("3.4E38", RDFModelEnums.RDFDatatypes.XSD_FLOAT, '*', "10", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "INF", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+    [DataRow("1E38", RDFModelEnums.RDFDatatypes.XSD_FLOAT, '*', "100", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "INF", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+    [DataRow("-3.4E38", RDFModelEnums.RDFDatatypes.XSD_FLOAT, '*', "10", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "-INF", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+    [DataRow("1", RDFModelEnums.RDFDatatypes.XSD_FLOAT, '/', "0", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "INF", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+    public void ShouldComputeNumericArithmeticFollowingIEEE754(string leftValue, RDFModelEnums.RDFDatatypes leftType, char op, string rightValue, RDFModelEnums.RDFDatatypes rightType, string expectedValue, RDFModelEnums.RDFDatatypes expectedType)
+    {
+        RDFTypedLiteral result = RDFArithmeticEngine.ComputeNumericOperation(new RDFTypedLiteral(leftValue, leftType), new RDFTypedLiteral(rightValue, rightType), op);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(new RDFTypedLiteral(expectedValue, expectedType).ToString(), result.ToString());
+    }
 
     //A null operand is a type error => null result
     [TestMethod]

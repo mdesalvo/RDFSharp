@@ -96,7 +96,7 @@ public class RDFCeilExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("6", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("6.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
     }
 
     [TestMethod]
@@ -173,6 +173,31 @@ public class RDFCeilExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);
+    }
+
+    [TestMethod]
+    [DataRow("1.2^^http://www.w3.org/2001/XMLSchema#decimal", "2.0^^http://www.w3.org/2001/XMLSchema#decimal")]
+    [DataRow("1.2^^http://www.w3.org/2001/XMLSchema#double", "2^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("-1.2^^http://www.w3.org/2001/XMLSchema#float", "-1^^http://www.w3.org/2001/XMLSchema#float")]
+    [DataRow("5^^http://www.w3.org/2001/XMLSchema#integer", "5^^http://www.w3.org/2001/XMLSchema#integer")]
+    [DataRow("7^^http://www.w3.org/2001/XMLSchema#short", "7^^http://www.w3.org/2001/XMLSchema#integer")]
+    [DataRow("INF^^http://www.w3.org/2001/XMLSchema#double", "INF^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("11/2^^http://www.w3.org/2002/07/owl#rational", "6.0^^http://www.w3.org/2001/XMLSchema#decimal")]
+    public void ShouldApplyExpressionWithVariableAndGiveBaseNumericTypeOfArgument(string argumentValue, string expectedValue)
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", argumentValue }
+        });
+
+        RDFCeilExpression expression = new RDFCeilExpression(
+            new RDFVariable("?A"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.AreEqual(expectedValue, expressionResult.ToString());
     }
     #endregion
 }

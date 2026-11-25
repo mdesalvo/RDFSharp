@@ -47,12 +47,8 @@ namespace RDFSharp.Query
 
         /// <summary>
         /// Computes the SPARQL numeric arithmetic operation (operator ∈ {+,-,*,/}) between the two given numeric typed
-        /// literals, applying the XPath/SPARQL numeric type-promotion lattice (xsd:integer &lt; xsd:decimal &lt;
-        /// xsd:float &lt; xsd:double): the result keeps the "widest" operand type, integer/decimal operands are computed
-        /// exactly in System.Decimal (so no floating-point noise is introduced) and only genuine float/double operands
-        /// fall back to double; division of two integers yields xsd:decimal (op:numeric-divide). Returns null when an
-        /// operand is not numeric, on division by zero, on numeric overflow, or when a float/double result is not
-        /// finite (the caller interprets null as "no binding").
+        /// literals along the XPath/SPARQL numeric type-promotion lattice (xsd:integer &lt; xsd:decimal &lt; xsd:float
+        /// &lt; xsd:double), giving null (no binding) on a non-numeric operand or on an integer/decimal division by zero or overflow.
         /// </summary>
         internal static RDFTypedLiteral ComputeNumericOperation(RDFTypedLiteral leftLiteral, RDFTypedLiteral rightLiteral, char arithmeticOperator)
         {
@@ -105,9 +101,8 @@ namespace RDFSharp.Query
                 //Approximate regime (float/double) — the spec mandates double arithmetic for these types
                 double leftDouble  = GetDoubleValue(leftLiteral);
                 double rightDouble = GetDoubleValue(rightLiteral);
-                if (arithmeticOperator == '/' && rightDouble == 0d)
-                    return null;   //division by zero => no binding
 
+                //IEEE 754 applies: division by zero, overflow and infinite operands give INF, -INF or NaN instead of an error
                 double resultDouble;
                 switch (arithmeticOperator)
                 {
@@ -125,67 +120,102 @@ namespace RDFSharp.Query
                         break;
                 }
 
+                //A float result narrows the double outcome: an out-of-range magnitude becomes INF as IEEE 754 mandates.
+                //The literal constructor validates the lexical form and writes Infinity and -Infinity as the XSD forms INF and -INF
                 if (targetRank == RANK_FLOAT)
-                {
-                    float resultFloat = (float)resultDouble;
-                    return float.IsNaN(resultFloat) || float.IsInfinity(resultFloat)
-                        ? null
-                        : new RDFTypedLiteral(resultFloat.ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_FLOAT);
-                }
-                return double.IsNaN(resultDouble) || double.IsInfinity(resultDouble)
-                    ? null
-                    : new RDFTypedLiteral(resultDouble.ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+                    return new RDFTypedLiteral(((float)resultDouble).ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_FLOAT);
+                return new RDFTypedLiteral(resultDouble.ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
                 #endregion
             }
             catch (OverflowException) { return null; }   //out-of-range decimal => no binding
+        }
 
-            #region Utilities
-            //Ranks a literal in the numeric lattice; RANK_NONNUMERIC if it is not a numeric typed literal
-            int GetNumericRank(RDFTypedLiteral typedLiteral)
+        /// <summary>
+        /// Computes a SPARQL numeric function on the given numeric typed literal, giving a result of the base numeric type of the argument or null when it is not numeric.
+        /// </summary>
+        internal static RDFTypedLiteral ComputeNumericFunction(RDFTypedLiteral argument, Func<decimal, decimal> exactFunction, Func<double, double> approximateFunction)
+        {
+            //A non-numeric argument is a type error => no binding
+            int argumentRank = GetNumericRank(argument);
+            if (argumentRank == RANK_NONNUMERIC)
+                return null;
+
+            try
             {
-                if (typedLiteral == null || !typedLiteral.HasDecimalDatatype())
-                    return RANK_NONNUMERIC;
-
-                switch (typedLiteral.Datatype.TargetDatatype)
-                {
-                    case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
-                    case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
-                        return RANK_DECIMAL;
-                    case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
-                        return RANK_FLOAT;
-                    case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
-                    case RDFModelEnums.RDFDatatypes.OWL_REAL:
-                        return RANK_DOUBLE;
-
-                    //Integer family
-                    default:
-                        return RANK_INTEGER;
-                }
+                //Exact regime: a type derived from xsd:integer or xsd:decimal answers with its base type (xsd:int gives xsd:integer)
+                if (argumentRank == RANK_INTEGER)
+                    return new RDFTypedLiteral(exactFunction(GetDecimalValue(argument)).ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+                if (argumentRank == RANK_DECIMAL)
+                    return new RDFTypedLiteral(NormalizeDecimal(exactFunction(GetDecimalValue(argument))), RDFModelEnums.RDFDatatypes.XSD_DECIMAL);
             }
+            catch (OverflowException) { return null; }   //out-of-range decimal => no binding
 
-            //owl:rational ("p/q") must be evaluated; every other numeric literal parses straight to decimal...
-            decimal GetDecimalValue(RDFTypedLiteral typedLiteral)
-                => typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                    ? ComputeOWLRationalValue(typedLiteral)
-                    : decimal.Parse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture);
+            //Approximate regime: INF and NaN pass through the function and the literal constructor writes them in their XSD spelling
+            double resultDouble = approximateFunction(GetDoubleValue(argument));
+            if (argumentRank == RANK_FLOAT)
+                return new RDFTypedLiteral(((float)resultDouble).ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_FLOAT);
+            return new RDFTypedLiteral(resultDouble.ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
+        }
+        #endregion
 
-            //...and to double in the approximate regime
-            double GetDoubleValue(RDFTypedLiteral typedLiteral)
-                => typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                    ? Convert.ToDouble(ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture)
-                    : double.Parse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+        #region Utilities
+        /// <summary>
+        /// Ranks a literal in the numeric lattice, RANK_NONNUMERIC when it is not a numeric typed literal
+        /// </summary>
+        private static int GetNumericRank(RDFTypedLiteral typedLiteral)
+        {
+            if (typedLiteral == null || !typedLiteral.HasDecimalDatatype())
+                return RANK_NONNUMERIC;
 
-            //Canonical xsd:decimal lexical form: a decimal point with at least one digit on each side, no superfluous
-            //trailing zeros (3.10 -> 3.1, 26 -> 26.0, 2.0 stays 2.0)
-            string NormalizeDecimal(decimal value)
+            switch (typedLiteral.Datatype.TargetDatatype)
             {
-                string text = value.ToString(CultureInfo.InvariantCulture);
-                if (text.IndexOf('.') == -1)
-                    return text + ".0";
-                text = text.TrimEnd('0');
-                return text.EndsWith(".", StringComparison.Ordinal) ? text + "0" : text;
+                case RDFModelEnums.RDFDatatypes.XSD_DECIMAL:
+                case RDFModelEnums.RDFDatatypes.OWL_RATIONAL:
+                    return RANK_DECIMAL;
+                case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
+                    return RANK_FLOAT;
+                case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
+                case RDFModelEnums.RDFDatatypes.OWL_REAL:
+                    return RANK_DOUBLE;
+
+                //Integer family
+                default:
+                    return RANK_INTEGER;
             }
-            #endregion
+        }
+
+        /// <summary>
+        /// Gives the exact value of an integer or decimal numeric literal, evaluating owl:rational ("p/q") first
+        /// </summary>
+        private static decimal GetDecimalValue(RDFTypedLiteral typedLiteral)
+            => typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
+                ? ComputeOWLRationalValue(typedLiteral)
+                : decimal.Parse(typedLiteral.Value, NumberStyles.Number, CultureInfo.InvariantCulture);
+
+        /// <summary>
+        /// Gives the value of a numeric literal as a double for the approximate regime, evaluating owl:rational ("p/q") first
+        /// </summary>
+        private static double GetDoubleValue(RDFTypedLiteral typedLiteral)
+        {
+            if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                return Convert.ToDouble(ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture);
+
+            //The literal was validated at creation: its lexical form (INF and -INF included) always reads back as a double
+            RDFModelUtilities.TryParseFloatingPoint(typedLiteral.Value, out double typedLiteralValue);
+            return typedLiteralValue;
+        }
+
+        /// <summary>
+        /// Gives the canonical xsd:decimal lexical form of the given value
+        /// </summary>
+        private static string NormalizeDecimal(decimal value)
+        {
+            //Canonical form has a decimal point with at least one digit on each side and no superfluous trailing zeros (3.10 -> 3.1, 26 -> 26.0, 2.0 stays 2.0)
+            string text = value.ToString(CultureInfo.InvariantCulture);
+            if (text.IndexOf('.') == -1)
+                return text + ".0";
+            text = text.TrimEnd('0');
+            return text.EndsWith(".", StringComparison.Ordinal) ? text + "0" : text;
         }
         #endregion
     }

@@ -531,6 +531,10 @@ public class RDFTypedLiteralTest
     [DataRow("+1", RDFModelEnums.RDFDatatypes.TIME_GENERALDAY)]
     [DataRow("+3", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
     [DataRow("+61", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
+    [DataRow("x2021", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
+    [DataRow("2021x", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)]
+    [DataRow("abc---05", RDFModelEnums.RDFDatatypes.TIME_GENERALDAY)]
+    [DataRow("---05", RDFModelEnums.RDFDatatypes.TIME_GENERALMONTH)]
     public void ShouldNotCreateTypedLiteralOfDatetimeCategory(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
 
@@ -699,5 +703,38 @@ public class RDFTypedLiteralTest
         Assert.IsTrue(tlit3.Datatype.ToString().Equals("ex:humanTemperature", StringComparison.Ordinal));
         Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral("39.5", new RDFDatatype(new Uri("ex:humanTemperature"), RDFModelEnums.RDFDatatypes.XSD_INTEGER, null)));
     }
+
+    [TestMethod]
+    [DataRow("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "INF")]
+    [DataRow("+INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "INF")]
+    [DataRow("-INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "-INF")]
+    [DataRow("NaN", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "NaN")]
+    [DataRow("Infinity", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "INF")]
+    [DataRow("-Infinity", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "-INF")]
+    [DataRow("1e400", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "INF")]
+    [DataRow("INF", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "INF")]
+    [DataRow("+INF", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "INF")]
+    [DataRow("-INF", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "-INF")]
+    [DataRow("NaN", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "NaN")]
+    [DataRow("Infinity", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "INF")]
+    [DataRow("3.4e39", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "INF")]
+    [DataRow("1.1", RDFModelEnums.RDFDatatypes.XSD_FLOAT, "1.1")]
+    [DataRow("1.1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE, "1.1")]
+    public void ShouldCreateTypedLiteralOfFloatingPointCategoryStoringXsdSpecialValues(string value, RDFModelEnums.RDFDatatypes datatype, string expectedValue)
+    {
+        RDFTypedLiteral typedLiteral = new RDFTypedLiteral(value, datatype);
+
+        //The stored value spells the special values the XSD way and keeps the shortest form of the finite ones
+        Assert.AreEqual(expectedValue, typedLiteral.Value);
+    }
+
+    [TestMethod]
+    [DataRow("inf", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("INFINITE", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("+-INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)]
+    [DataRow("inf", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+    [DataRow("INFINITE", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
+    public void ShouldNotCreateTypedLiteralOfFloatingPointCategoryBecauseNotXsdSpecialValue(string value, RDFModelEnums.RDFDatatypes datatype)
+        => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
     #endregion
 }

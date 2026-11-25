@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
@@ -86,21 +85,9 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                     && leftArgumentTypedLiteral.HasDecimalDatatype())
-                {
-                    //owl:rational needs parsing and evaluation before being compared
-                    if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                    {
-                        expressionResult = new RDFTypedLiteral(
-                                                                Convert.ToString(Math.Ceiling(RDFArithmeticEngine.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    }
-                    else if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
-                    {
-                        expressionResult = new RDFTypedLiteral(
-                                                                Convert.ToString(Math.Ceiling(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    }
-                }
+                //The result keeps the base numeric type of the argument: exact for integer and decimal values and IEEE 754 for float and double ones
+                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral)
+                    expressionResult = RDFArithmeticEngine.ComputeNumericFunction(leftArgumentTypedLiteral, Math.Ceiling, Math.Ceiling);
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

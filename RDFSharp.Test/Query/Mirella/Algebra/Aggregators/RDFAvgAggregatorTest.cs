@@ -257,5 +257,32 @@ public class RDFAvgAggregatorTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingAvgAggregatorOverExpressionBecauseNullExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFAvgAggregator(null as RDFExpression, new RDFVariable("?PROJVAR")));
+
+    [TestMethod]
+    public void ShouldApplyModifierWithAvgAggregatorOverInfinity()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE).ToString() },
+            { "?C", new RDFResource("ex:value0").ToString() }
+        });
+
+        //AVG over an infinite and a finite double stays INF instead of failing the group
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFAvgAggregator(new RDFVariable("?A"), new RDFVariable("?RESULT")));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.IsTrue(result.Rows[0]["?RESULT"].ToString().Equals($"INF^^{RDFVocabulary.XSD.DOUBLE}", System.StringComparison.Ordinal));
+    }
     #endregion
 }

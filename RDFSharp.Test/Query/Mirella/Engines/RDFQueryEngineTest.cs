@@ -820,7 +820,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -838,7 +838,7 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(1, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -856,8 +856,8 @@ public class RDFQueryEngineTest
         Assert.IsNotNull(result.SelectResults);
         Assert.AreEqual(2, result.SelectResults.Columns.Count);
         Assert.AreEqual(1, result.SelectResultsCount);
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
-        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.DOUBLE}", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Y"].ToString().Equals($"3^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
+        Assert.IsTrue(result.SelectResults.Rows[0]["?Z"].ToString().Equals($"4^^{RDFVocabulary.XSD.FLOAT}", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -6146,6 +6146,85 @@ public class RDFQueryEngineTest
         Assert.AreEqual($"{firstYear}^^http://www.w3.org/2001/XMLSchema#gYear", result.SelectResults.Rows[0]["?V"].ToString());
         Assert.AreEqual($"{secondYear}^^http://www.w3.org/2001/XMLSchema#gYear", result.SelectResults.Rows[1]["?V"].ToString());
         Assert.AreEqual($"{thirdYear}^^http://www.w3.org/2001/XMLSchema#gYear", result.SelectResults.Rows[2]["?V"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldFilterInfiniteDoubleGreaterThanLargestFiniteBound()
+    {
+        //The INF double and the 1 double are stored in their XSD forms
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:s1"), new RDFResource("ex:v"), new RDFTypedLiteral("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
+            new RDFTriple(new RDFResource("ex:s2"), new RDFResource("ex:v"), new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))
+        ]);
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?s WHERE { ?s <ex:v> ?x . FILTER(?x > 1e308) }");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+        //Only the infinite value exceeds the largest finite bound
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual("ex:s1", result.SelectResults.Rows[0]["?S"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldOrderByDoublesIncludingInfinities()
+    {
+        //The values are inserted out of order and -INF and INF are the extremes of the double value space
+        RDFGraph graph = new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:s1"), new RDFResource("ex:v"), new RDFTypedLiteral("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
+            new RDFTriple(new RDFResource("ex:s2"), new RDFResource("ex:v"), new RDFTypedLiteral("-INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)),
+            new RDFTriple(new RDFResource("ex:s3"), new RDFResource("ex:v"), new RDFTypedLiteral("1", RDFModelEnums.RDFDatatypes.XSD_DOUBLE))
+        ]);
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?x WHERE { ?s <ex:v> ?x } ORDER BY ?x");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, graph);
+
+        //The rows follow the numeric order
+        Assert.AreEqual(3, result.SelectResultsCount);
+        Assert.AreEqual("-INF^^http://www.w3.org/2001/XMLSchema#double", result.SelectResults.Rows[0]["?X"].ToString());
+        Assert.AreEqual("1^^http://www.w3.org/2001/XMLSchema#double", result.SelectResults.Rows[1]["?X"].ToString());
+        Assert.AreEqual("INF^^http://www.w3.org/2001/XMLSchema#double", result.SelectResults.Rows[2]["?X"].ToString());
+    }
+
+    /// <summary>
+    /// Builds five eras with the year as time:generalYear, in scrambled insertion order.
+    /// </summary>
+    private static RDFGraph BuildEraGraph()
+    {
+        //The years are inserted out of order and their lexical order differs from their numeric order
+        return new RDFGraph(
+        [
+            new RDFTriple(new RDFResource("ex:era1"), new RDFResource("ex:year"), new RDFTypedLiteral("2021", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)),
+            new RDFTriple(new RDFResource("ex:era2"), new RDFResource("ex:year"), new RDFTypedLiteral("-0100", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)),
+            new RDFTriple(new RDFResource("ex:era3"), new RDFResource("ex:year"), new RDFTypedLiteral("10000", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)),
+            new RDFTriple(new RDFResource("ex:era4"), new RDFResource("ex:year"), new RDFTypedLiteral("-0500", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR)),
+            new RDFTriple(new RDFResource("ex:era5"), new RDFResource("ex:year"), new RDFTypedLiteral("0950", RDFModelEnums.RDFDatatypes.TIME_GENERALYEAR))
+        ]);
+    }
+
+    [TestMethod]
+    public void ShouldOrderByGeneralYearsBySignedPosition()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT ?y WHERE { ?s <ex:year> ?y } ORDER BY ?y");
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildEraGraph());
+
+        //The years are ordered by their signed position and not by their text
+        Assert.AreEqual(5, result.SelectResultsCount);
+        string[] expectedYears = ["-0500", "-0100", "0950", "2021", "10000"];
+        for (int rowIndex = 0; rowIndex < expectedYears.Length; rowIndex++)
+            Assert.AreEqual($"{expectedYears[rowIndex]}^^http://www.w3.org/2006/time#generalYear", result.SelectResults.Rows[rowIndex]["?Y"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldFilterGeneralYearsLowerThanGivenYear()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("""
+            SELECT ?y
+            WHERE { ?s <ex:year> ?y . FILTER(?y < "1000"^^<http://www.w3.org/2006/time#generalYear>) }
+            """);
+        RDFSelectQueryResult result = new RDFQueryEngine().EvaluateSelectQuery(query, BuildEraGraph());
+
+        //Only -0500 and -0100 and 0950 precede the year 1000
+        Assert.AreEqual(3, result.SelectResultsCount);
     }
 
     #endregion

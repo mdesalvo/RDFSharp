@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
@@ -85,8 +84,10 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                expressionResult = Uri.TryCreate(leftArgumentPMember?.ToString(), UriKind.Absolute, out _)
-                                    ? RDFTypedLiteral.False : RDFTypedLiteral.True;
+                //A failed argument stays an error (null); otherwise any plain or typed literal qualifies whatever its text looks like
+                if (leftArgumentPMember != null)
+                    expressionResult = leftArgumentPMember is RDFLiteral
+                                        ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }
