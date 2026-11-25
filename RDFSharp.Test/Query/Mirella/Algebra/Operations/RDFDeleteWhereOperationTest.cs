@@ -342,6 +342,54 @@ public class RDFDeleteWhereOperationTest
     }
 
     [TestMethod]
+    public async Task ShouldNotDeleteGroundTemplateWithoutSolutionOnGraphAsync()
+    {
+        RDFTriple groundTriple = new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:b"), new RDFResource("ex:c"));
+        RDFGraph graph = new RDFGraph([ groundTriple ]);
+        RDFDeleteWhereOperation operation = RDFDeleteWhereOperation.FromString("DELETE { <ex:a> <ex:b> <ex:c> } WHERE { ?s <ex:nomatch> ?o }");
+        RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(0, result.DeleteResultsCount);
+        Assert.IsTrue(graph.ContainsTriple(groundTriple));
+    }
+
+    [TestMethod]
+    public async Task ShouldDeleteGroundTemplateWithSolutionOnGraphAsync()
+    {
+        RDFTriple groundTriple = new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:b"), new RDFResource("ex:c"));
+        RDFGraph graph = new RDFGraph([ groundTriple ]);
+        RDFDeleteWhereOperation operation = RDFDeleteWhereOperation.FromString("DELETE { <ex:a> <ex:b> <ex:c> } WHERE { ?s <ex:b> ?o }");
+        RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(1, result.DeleteResultsCount);
+        Assert.AreEqual(0, graph.TriplesCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldNotDeleteGroundTemplateWithoutSolutionOnStoreAsync()
+    {
+        RDFQuadruple groundQuadruple = new RDFQuadruple(new RDFContext(), new RDFResource("ex:a"), new RDFResource("ex:b"), new RDFResource("ex:c"));
+        RDFMemoryStore store = new RDFMemoryStore([ groundQuadruple ]);
+        RDFDeleteWhereOperation operation = RDFDeleteWhereOperation.FromString("DELETE { <ex:a> <ex:b> <ex:c> } WHERE { ?s <ex:nomatch> ?o }");
+        RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+        Assert.AreEqual(0, result.DeleteResultsCount);
+        Assert.IsTrue(store.ContainsQuadruple(groundQuadruple));
+    }
+
+    [TestMethod]
+    public async Task ShouldDeleteGroundTemplateWithSolutionOnStoreAsync()
+    {
+        RDFQuadruple groundQuadruple = new RDFQuadruple(new RDFContext(), new RDFResource("ex:a"), new RDFResource("ex:b"), new RDFResource("ex:c"));
+        RDFMemoryStore store = new RDFMemoryStore([ groundQuadruple ]);
+        RDFDeleteWhereOperation operation = RDFDeleteWhereOperation.FromString("DELETE { <ex:a> <ex:b> <ex:c> } WHERE { ?s <ex:b> ?o }");
+        RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+        Assert.AreEqual(1, result.DeleteResultsCount);
+        Assert.AreEqual(0, store.QuadruplesCount);
+    }
+
+    [TestMethod]
     public void ShouldApplyToGraphWithVariableFromBind()
     {
         RDFGraph graph = new RDFGraph(

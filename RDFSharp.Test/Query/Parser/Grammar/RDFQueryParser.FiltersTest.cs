@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -587,6 +588,32 @@ public partial class RDFQueryParserTest
     public void ShouldThrowOnDanglingNotInExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() =>
             RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a . ?s ?q ?b FILTER(?a NOT ?b) }"));
+
+    [TestMethod]
+    [DataRow("true", true)]
+    [DataRow("false", false)]
+    public async Task ShouldEvaluateAskWithBooleanLiteralFilter(string booleanLiteral, bool expectedAnswer)
+    {
+        RDFAskQueryResult result = await RDFAskQuery.FromString("ASK { FILTER(" + booleanLiteral + ") }").ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(expectedAnswer, result.AskResult);
+    }
+
+    [TestMethod]
+    [DataRow("true", 5)]
+    [DataRow("false", 0)]
+    public async Task ShouldEvaluateSelectWithBooleanLiteralFilter(string booleanLiteral, int expectedRows)
+    {
+        RDFSelectQueryResult result = await RDFSelectQuery.FromString("SELECT ?s WHERE { ?s <http://ex/p> ?o FILTER(" + booleanLiteral + ") }")
+                                                          .ApplyToGraphAsync(BuildFilterScopeDataset());
+
+        Assert.AreEqual(expectedRows, result.SelectResults.Rows.Count);
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnNonBooleanLiteralFilter()
+        => Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o FILTER(\"abc\") }"));
     #endregion
 
     #region IP5.4 — FILTER group-graph-pattern scope

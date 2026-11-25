@@ -676,15 +676,21 @@ namespace RDFSharp.Model
         {
             //Tries to parse the given value into a DateTime having exactly the specified input/output formats.
             //RDFSharp datetime-based typed literals are automatically converted in UTC timezone (Z)
-            (bool, string) TryParseDateTime(string value, DateTimeFormatPair[] datetimeFormatPairs)
+            (bool, string) TryParseDateTime(string value, DateTimeFormatPair[] datetimeFormatPairs, bool isCalendarPeriod)
             {
                 foreach (DateTimeFormatPair formatPair in datetimeFormatPairs)
                 {
-                    (bool, string) result = DateTime.TryParseExact(value, formatPair.InputFormat, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime)
-                        ? (true, parsedDateTime.ToString(formatPair.OutputFormat, CultureInfo.InvariantCulture))
-                        : (false, value);
-                    if (result.Item1)
-                        return result;
+                    //A value that matches none of the input formats of its datatype is not well-formed
+                    if (!DateTime.TryParseExact(value, formatPair.InputFormat, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime parsedDateTime))
+                        continue;
+
+                    //The offset of a calendar period only tells where the period is reckoned: moving it to UTC would change its day,
+                    //month or year (2021+02:00 would become 2020), so the calendar fields are kept as written and the offset becomes Z
+                    if (isCalendarPeriod && formatPair.InputFormat.EndsWith("zzz", StringComparison.Ordinal))
+                        return (true, string.Concat(value.Substring(0, value.LastIndexOfAny(new[] { '+', '-' })), "Z"));
+
+                    //An instant moves to UTC keeping the same point in time, a value without offset or in Z keeps its fields
+                    return (true, parsedDateTime.ToString(formatPair.OutputFormat, CultureInfo.InvariantCulture));
                 }
                 return (false, value);
             }
@@ -823,17 +829,20 @@ namespace RDFSharp.Model
                 #endregion
 
                 #region DATETIME CATEGORY
-                //Every date/time datatype with a format table is normalized against the formats registered for it
+                //Instants are normalized against the formats registered for them, converting an offset to the same instant in UTC
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIME:
                 case RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP:
-                case RDFModelEnums.RDFDatatypes.XSD_DATE:
                 case RDFModelEnums.RDFDatatypes.XSD_TIME:
+                    return TryParseDateTime(literalValue, DateTimeFormatsByDatatype[datatype], false);
+
+                //Calendar periods are normalized against the formats registered for them, keeping the calendar fields as written
+                case RDFModelEnums.RDFDatatypes.XSD_DATE:
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY:
                 case RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH:
                 case RDFModelEnums.RDFDatatypes.XSD_GYEAR:
                 case RDFModelEnums.RDFDatatypes.XSD_GMONTH:
                 case RDFModelEnums.RDFDatatypes.XSD_GDAY:
-                    return TryParseDateTime(literalValue, DateTimeFormatsByDatatype[datatype]);
+                    return TryParseDateTime(literalValue, DateTimeFormatsByDatatype[datatype], true);
 
                 case RDFModelEnums.RDFDatatypes.TIME_GENERALDAY:
                     return (RDFShims.TimeGeneralDayRegex.Value.IsMatch(literalValue), literalValue);

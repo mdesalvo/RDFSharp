@@ -1030,6 +1030,50 @@ public class RDFInsertWhereOperationTest
     }
 
     [TestMethod]
+    public async Task ShouldNotInsertGroundTemplateWithoutSolutionOnGraphAsync()
+    {
+        RDFGraph graph = new RDFGraph([ new RDFTriple(new RDFResource("ex:a"), new RDFResource("ex:b"), new RDFResource("ex:c")) ]);
+        RDFInsertWhereOperation operation = RDFInsertWhereOperation.FromString("INSERT { <ex:x> <ex:y> <ex:z> } WHERE { ?s <ex:nomatch> ?o }");
+        RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(0, result.InsertResultsCount);
+        Assert.AreEqual(1, graph.TriplesCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldInsertGroundTemplateOnEmptyWhereOnGraphAsync()
+    {
+        RDFGraph graph = new RDFGraph();
+        RDFInsertWhereOperation operation = RDFInsertWhereOperation.FromString("INSERT { <ex:x> <ex:y> <ex:z> } WHERE { }");
+        RDFOperationResult result = await operation.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(1, result.InsertResultsCount);
+        Assert.IsTrue(graph.ContainsTriple(new RDFTriple(new RDFResource("ex:x"), new RDFResource("ex:y"), new RDFResource("ex:z"))));
+    }
+
+    [TestMethod]
+    public async Task ShouldNotInsertGroundTemplateWithoutSolutionOnStoreAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore([ new RDFQuadruple(new RDFContext(), new RDFResource("ex:a"), new RDFResource("ex:b"), new RDFResource("ex:c")) ]);
+        RDFInsertWhereOperation operation = RDFInsertWhereOperation.FromString("INSERT { <ex:x> <ex:y> <ex:z> } WHERE { ?s <ex:nomatch> ?o }");
+        RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+        Assert.AreEqual(0, result.InsertResultsCount);
+        Assert.AreEqual(1, store.QuadruplesCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldInsertGroundTemplateOnEmptyWhereOnStoreAsync()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        RDFInsertWhereOperation operation = RDFInsertWhereOperation.FromString("INSERT { <ex:x> <ex:y> <ex:z> } WHERE { }");
+        RDFOperationResult result = await operation.ApplyToStoreAsync(store);
+
+        Assert.AreEqual(1, result.InsertResultsCount);
+        Assert.IsTrue(store.ContainsQuadruple(new RDFQuadruple(new RDFContext(), new RDFResource("ex:x"), new RDFResource("ex:y"), new RDFResource("ex:z"))));
+    }
+
+    [TestMethod]
     public async Task ShouldApplyToNullStoreAsync()
     {
         RDFInsertWhereOperation operation = new RDFInsertWhereOperation();

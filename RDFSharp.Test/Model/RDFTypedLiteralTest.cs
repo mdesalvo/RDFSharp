@@ -736,5 +736,29 @@ public class RDFTypedLiteralTest
     [DataRow("INFINITE", RDFModelEnums.RDFDatatypes.XSD_FLOAT)]
     public void ShouldNotCreateTypedLiteralOfFloatingPointCategoryBecauseNotXsdSpecialValue(string value, RDFModelEnums.RDFDatatypes datatype)
         => Assert.ThrowsExactly<RDFModelException>(() => _ = new RDFTypedLiteral(value, datatype));
+    [TestMethod]
+    [DataRow("2021", RDFModelEnums.RDFDatatypes.XSD_GYEAR, "2021Z")]
+    [DataRow("2021Z", RDFModelEnums.RDFDatatypes.XSD_GYEAR, "2021Z")]
+    [DataRow("2021+00:00", RDFModelEnums.RDFDatatypes.XSD_GYEAR, "2021Z")]
+    [DataRow("2021+02:00", RDFModelEnums.RDFDatatypes.XSD_GYEAR, "2021Z")]
+    [DataRow("2021-05:00", RDFModelEnums.RDFDatatypes.XSD_GYEAR, "2021Z")]
+    [DataRow("2021-05-07", RDFModelEnums.RDFDatatypes.XSD_DATE, "2021-05-07Z")]
+    [DataRow("2021-05-07+00:00", RDFModelEnums.RDFDatatypes.XSD_DATE, "2021-05-07Z")]
+    [DataRow("2021-05-07+02:00", RDFModelEnums.RDFDatatypes.XSD_DATE, "2021-05-07Z")]
+    [DataRow("2021-05-07-05:00", RDFModelEnums.RDFDatatypes.XSD_DATE, "2021-05-07Z")]
+    [DataRow("2021-01+02:00", RDFModelEnums.RDFDatatypes.XSD_GYEARMONTH, "2021-01Z")]
+    [DataRow("--01+02:00", RDFModelEnums.RDFDatatypes.XSD_GMONTH, "--01Z")]
+    [DataRow("---01+02:00", RDFModelEnums.RDFDatatypes.XSD_GDAY, "---01Z")]
+    [DataRow("--01-01+02:00", RDFModelEnums.RDFDatatypes.XSD_GMONTHDAY, "--01-01Z")]
+    [DataRow("2021-05-07T10:30:00+02:00", RDFModelEnums.RDFDatatypes.XSD_DATETIME, "2021-05-07T08:30:00Z")]
+    [DataRow("2021-05-07T10:30:00+02:00", RDFModelEnums.RDFDatatypes.XSD_DATETIMESTAMP, "2021-05-07T08:30:00Z")]
+    [DataRow("10:30:00+02:00", RDFModelEnums.RDFDatatypes.XSD_TIME, "08:30:00Z")]
+    public void ShouldCreateTypedLiteralOfDatetimeCategoryStoringNormalizedValue(string value, RDFModelEnums.RDFDatatypes datatype, string expectedValue)
+    {
+        RDFTypedLiteral typedLiteral = new RDFTypedLiteral(value, datatype);
+
+        //Calendar periods keep the calendar fields they were written with while instants move to the same moment in UTC
+        Assert.AreEqual(expectedValue, typedLiteral.Value);
+    }
     #endregion
 }
