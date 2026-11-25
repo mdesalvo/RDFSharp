@@ -98,5 +98,39 @@ public partial class RDFQueryParserTest
 
         Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParser.ParsePrologue(parserContext));
     }
+
+    [TestMethod]
+    public void ShouldReportCoordinatesOnceOnMalformedBaseDeclaration()
+    {
+        RDFQueryParser.RDFQueryParserContext parserContext = RDFQueryParser.CreateContext("BASE <http://ex ample/> SELECT");
+
+        RDFQueryException exception = Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParser.ParsePrologue(parserContext));
+
+        //The Turtle reader already writes the position into its message: the parser must report it once, at the end
+        Assert.AreEqual(1, System.Text.RegularExpressions.Regex.Matches(exception.Message, @"\[LINE:").Count);
+        Assert.EndsWith("]", exception.Message);
+    }
+
+    [TestMethod]
+    public void ShouldReportCoordinatesOnceWhenBaseIriIsNotBracketed()
+    {
+        RDFQueryParser.RDFQueryParserContext parserContext = RDFQueryParser.CreateContext("BASE foo SELECT");
+
+        RDFQueryException exception = Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParser.ParsePrologue(parserContext));
+
+        //This Turtle message carries the position in the middle: it is moved to the end instead of being repeated
+        Assert.AreEqual("Cannot parse SPARQL BASE declaration: Unexpected character found: expected '<', found 'f' [LINE:1,COL:6]", exception.Message);
+    }
+
+    [TestMethod]
+    public void ShouldReportCoordinatesOnceOnMalformedPrefixDeclaration()
+    {
+        RDFQueryParser.RDFQueryParserContext parserContext = RDFQueryParser.CreateContext("PREFIX ex: <http://ex ample/> SELECT");
+
+        RDFQueryException exception = Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParser.ParsePrologue(parserContext));
+
+        Assert.AreEqual(1, System.Text.RegularExpressions.Regex.Matches(exception.Message, @"\[LINE:").Count);
+        Assert.EndsWith("]", exception.Message);
+    }
     #endregion
 }

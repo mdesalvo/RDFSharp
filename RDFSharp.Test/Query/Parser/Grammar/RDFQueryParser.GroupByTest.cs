@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -330,5 +331,22 @@ public partial class RDFQueryParserTest
             .AddTriple(new RDFTriple(new RDFResource("http://example.org/i3"), w, new RDFPlainLiteral("z")));
     }
 
+
+    [TestMethod]
+    public async Task ShouldParseTrailingValuesAfterGroupBy()
+    {
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(
+            new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //VALUES followed by '(' ends the GROUP BY condition list instead of being read as a function-call condition
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o (COUNT(?s) AS ?c) WHERE { ?s <http://ex.org/p> ?o } GROUP BY ?o VALUES (?s ?o) { (<http://ex.org/s> 5) }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("1^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?C"].ToString());
+    }
     #endregion
 }

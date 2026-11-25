@@ -15,9 +15,11 @@
 */
 
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
+using RDFSharp.Store;
 
 namespace RDFSharp.Test.Query;
 
@@ -82,6 +84,139 @@ public partial class RDFQueryParserTest
     [TestMethod]
     public void ShouldThrowOnBindWithoutResultVariable()
         => Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?o BIND(?o AS x) }"));
+    #endregion
+
+    #region BIND after preceding members
+    [TestMethod]
+    public async Task ShouldBindAfterGraphClauseOnStore()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        store.AddQuadruple(new RDFQuadruple(
+            new RDFContext("http://ex.org/g"), new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o ?d WHERE { GRAPH <http://ex.org/g> { ?s <http://ex.org/p> ?o } BIND(?o * 2 AS ?d) }");
+
+        //The BIND extends the join of the GRAPH member: an inner subquery projects ?o together with the computed ?d
+        Assert.Contains("SELECT ?S ?O ((?O * 2) AS ?D)", RDFTestUtilities.NormalizeEOL(query.ToString()));
+
+        RDFSelectQueryResult result = await query.ApplyToStoreAsync(store);
+
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("10^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?D"].ToString());
+    }
+
+    [TestMethod]
+    public async Task ShouldBindAfterOptionalMember()
+    {
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(
+            new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o ?z ?d WHERE { ?s <http://ex.org/p> ?o OPTIONAL { ?s <http://ex.org/q> ?z } BIND(?o * 2 AS ?d) }");
+
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+
+        //The optional member found nothing: ?z stays unbound while ?d is still computed from ?o
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("10^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?D"].ToString());
+        Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?Z"));
+    }
+
+    [TestMethod]
+    public async Task ShouldBindAfterNestedGroup()
+    {
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(
+            new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o ?x ?d WHERE { { ?s <http://ex.org/p> ?o } ?s <http://ex.org/p> ?x BIND(?o * 2 AS ?d) }");
+
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+
+        //?o is bound by the nested group while ?x is bound by the sibling triples: the BIND sees both
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("10^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?D"].ToString());
+    }
+
+    [TestMethod]
+    public async Task ShouldChainBindsAfterPrecedingMembers()
+    {
+        RDFMemoryStore store = new RDFMemoryStore();
+        store.AddQuadruple(new RDFQuadruple(
+            new RDFContext("http://ex.org/g"), new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o ?d ?e WHERE { GRAPH <http://ex.org/g> { ?s <http://ex.org/p> ?o } BIND(?o * 2 AS ?d) BIND(?d + 1 AS ?e) }");
+
+        RDFSelectQueryResult result = await query.ApplyToStoreAsync(store);
+
+        //The second BIND reads ?d, which the first BIND added to the in-scope variables
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("11^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?E"].ToString());
+    }
+
+    [TestMethod]
+    public async Task ShouldKeepJoiningTriplesThatFollowTheBind()
+    {
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(
+            new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o ?d ?w WHERE { ?s <http://ex.org/p> ?o OPTIONAL { ?s <http://ex.org/q> ?z } BIND(?o * 2 AS ?d) ?s <http://ex.org/p> ?w }");
+
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+
+        //The triples after the BIND join the extended solutions through ?s
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("10^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?D"].ToString());
+    }
+
+    [TestMethod]
+    public async Task ShouldBindAfterMinusWithoutExposingTheMinusOperandVariables()
+    {
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(
+            new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o ?d WHERE { ?s <http://ex.org/p> ?o MINUS { ?s <http://ex.org/q> ?z } BIND(?o * 2 AS ?d) }");
+
+        //The variables of the MINUS right side are never in scope: the extending subquery projects ?s ?o and ?d only
+        Assert.Contains("SELECT ?S ?O ((?O * 2) AS ?D)", RDFTestUtilities.NormalizeEOL(query.ToString()));
+
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("10^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?D"].ToString());
+    }
+
+    [TestMethod]
+    public void ShouldThrowOnBindOfVariableAlreadyInScopeOfPrecedingMembers()
+        => Assert.ThrowsExactly<RDFQueryException>(() => RDFQueryParserFactory.ParseQuery(
+            "SELECT * WHERE { OPTIONAL { ?s <http://ex.org/p> ?o } BIND(1 AS ?o) }"));
+
+    [TestMethod]
+    public async Task ShouldNotWrapBindThatFollowsOnlyTriplesOfItsOwnRun()
+    {
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(
+            new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o ?d WHERE { ?s <http://ex.org/p> ?o BIND(?o * 2 AS ?d) }");
+
+        //The BIND shares the pattern group of the triples that precede it: no inner subquery is synthesized
+        Assert.DoesNotContain("SELECT ?S", RDFTestUtilities.NormalizeEOL(query.ToString()));
+
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
+        Assert.AreEqual("10^^http://www.w3.org/2001/XMLSchema#integer", result.SelectResults.Rows[0]["?D"].ToString());
+    }
     #endregion
 
     #region Values

@@ -16,6 +16,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -105,6 +106,24 @@ public partial class RDFQueryParserTest
         Assert.AreEqual(2, orderBys.Count);
         Assert.AreEqual(RDFQueryEnums.RDFOrderByFlavors.ASC, orderBys[0].OrderByFlavor);
         Assert.AreEqual(RDFQueryEnums.RDFOrderByFlavors.DESC, orderBys[1].OrderByFlavor);
+    }
+
+    [TestMethod]
+    [DataRow("?o")]
+    [DataRow("DESC(?o)")]
+    public async Task ShouldParseTrailingValuesAfterOrderByCondition(string orderCondition)
+    {
+        RDFGraph graph = new RDFGraph();
+        graph.AddTriple(new RDFTriple(
+            new RDFResource("http://ex.org/s"), new RDFResource("http://ex.org/p"),
+            new RDFTypedLiteral("5", RDFModelEnums.RDFDatatypes.XSD_INTEGER)));
+
+        //VALUES followed by '(' ends the ORDER BY condition list instead of being read as a function call
+        RDFSelectQuery query = (RDFSelectQuery)RDFQueryParserFactory.ParseQuery(
+            "SELECT ?o WHERE { ?s <http://ex.org/p> ?o } ORDER BY " + orderCondition + " VALUES (?s ?o) { (<http://ex.org/s> 5) }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(graph);
+
+        Assert.AreEqual(1, result.SelectResults.Rows.Count);
     }
     #endregion
 }

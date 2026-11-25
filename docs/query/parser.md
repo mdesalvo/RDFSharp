@@ -266,7 +266,7 @@ catch (RDFQueryException exception)
 <div class="result" markdown="1">
 
 ```text
-RDFQueryException: Cannot parse SPARQL term [LINE:1,COL:18]: Found relative Uri reference 'rosso-2021' with no usable base Uri to resolve it against[LINE:1,COL:18]
+RDFQueryException: Cannot parse SPARQL term: Found relative Uri reference 'rosso-2021' with no usable base Uri to resolve it against [LINE:1,COL:18]
 ```
 
 </div>
@@ -458,7 +458,7 @@ catch (RDFQueryException exception)
 <div class="result" markdown="1">
 
 ```text
-RDFQueryException: Cannot parse SPARQL term [LINE:1,COL:36]: Cannot resolve qname because its namespace prefix 'vr' was never declared[LINE:1,COL:36]
+RDFQueryException: Cannot parse SPARQL term: Cannot resolve qname because its namespace prefix 'vr' was never declared [LINE:1,COL:36]
 ```
 
 </div>

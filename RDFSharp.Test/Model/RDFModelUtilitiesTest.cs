@@ -86,6 +86,18 @@ public class RDFModelUtilitiesTest
         => Assert.IsTrue(RDFShims.FourBytesUnicodeRegex.Value.IsMatch(input));
 
     [TestMethod]
+    [DataRow("Expected an RDF value here [LINE:1,COL:25]", "Expected an RDF value here")]
+    [DataRow("Unexpected character found[LINE:1,COL:6]: expected '<', found 'f'", "Unexpected character found: expected '<', found 'f'")]
+    public void ShouldRemoveTurtleCoordinatesByRegex(string input, string expected)
+        => Assert.AreEqual(expected, RDFShims.TurtleCoordinatesRegex.Value.Replace(input, string.Empty));
+
+    [TestMethod]
+    [DataRow("Expected an RDF value here [LINE:x,COL:25]")]
+    [DataRow("Expected an RDF value here")]
+    public void ShouldNotRemoveAnythingWithoutTurtleCoordinatesByRegex(string input)
+        => Assert.AreEqual(input, RDFShims.TurtleCoordinatesRegex.Value.Replace(input, string.Empty));
+
+    [TestMethod]
     [DataRow("\\U09Af")]
     [DataRow("\\u09A")]
     [DataRow("\\u09AP")]

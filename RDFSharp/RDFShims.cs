@@ -55,6 +55,8 @@ namespace RDFSharp
         internal const string TimeGeneralYearPattern = "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
         internal const string DayTimeDurationPattern = @"^-?P(([0-9]+D(T([0-9]+H([0-9]+M([0-9]+(\.[0-9]+)?S)?)?|[0-9]+M([0-9]+(\.[0-9]+)?S)?|[0-9]+(\.[0-9]+)?S))?)|T([0-9]+H([0-9]+M([0-9]+(\.[0-9]+)?S)?)?|[0-9]+M([0-9]+(\.[0-9]+)?S)?|[0-9]+(\.[0-9]+)?S))$";
         internal const string GeoRelatesPattern = "^[012TF\\*]{9}$";
+        /*SPARQL parser*/
+        internal const string TurtleCoordinatesPattern = @"\s*\[LINE:\d+,COL:\d+\]";
         /*NTriples*/
         internal const string SPBPattern  = @"^<[^<>\s]+>\s*<[^<>\s]+>\s*_:[^<>\s]+\s*\.$";
         internal const string SPOPattern  = @"^<[^<>\s]+>\s*<[^<>\s]+>\s*<[^<>\s]+>\s*\.$";
@@ -190,6 +192,13 @@ namespace RDFSharp
         internal static readonly Lazy<Regex> GeoRelatesRegex = new Lazy<Regex>(GeneratedGeoRelatesRegex);
         [GeneratedRegex(GeoRelatesPattern, RegexOptions.IgnoreCase)]
         private static partial Regex GeneratedGeoRelatesRegex();
+
+        /// <summary>
+        /// Regex to catch the "[LINE:x,COL:y]" coordinates that the Turtle reader writes into its error messages, at the end or in the middle
+        /// </summary>
+        internal static readonly Lazy<Regex> TurtleCoordinatesRegex = new Lazy<Regex>(GeneratedTurtleCoordinatesRegex);
+        [GeneratedRegex(TurtleCoordinatesPattern)]
+        private static partial Regex GeneratedTurtleCoordinatesRegex();
 
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad
@@ -410,6 +419,11 @@ namespace RDFSharp
         /// Regex to validates geof:sfRelate arguments
         /// </summary>
         internal static readonly Lazy<Regex> GeoRelatesRegex = new Lazy<Regex>(() => new Regex(GeoRelatesPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+
+        /// <summary>
+        /// Regex to catch the "[LINE:x,COL:y]" coordinates that the Turtle reader writes into its error messages, at the end or in the middle
+        /// </summary>
+        internal static readonly Lazy<Regex> TurtleCoordinatesRegex = new Lazy<Regex>(() => new Regex(TurtleCoordinatesPattern, RegexOptions.Compiled));
 
         /// <summary>
         /// Regex to detect S->P->B form of N-Triple/N-Quad

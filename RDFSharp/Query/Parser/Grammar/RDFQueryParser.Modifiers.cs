@@ -105,6 +105,12 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
+        /// The keywords that may legally FOLLOW an ORDER BY clause (the trailing ValuesClause and LimitOffsetClauses): they end the condition list instead of starting a function-call condition.
+        /// </summary>
+        private static readonly HashSet<string> OrderByFollowerKeywords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            { "VALUES", "LIMIT", "OFFSET" };
+
+        /// <summary>
         /// <para>
         /// Parses the body of an ORDER BY clause (the <c>ORDER</c> keyword has already been consumed by
         /// <see cref="ParseSolutionModifiers"/>) and attaches the resulting ordering modifiers via
@@ -173,7 +179,9 @@ namespace RDFSharp.Query
                 //A non-directive keyword used as a bare condition: either a built-in/function call immediately
                 //followed by '(' (e.g. ORDER BY STRLEN(?x)) or an EXISTS / NOT EXISTS graph-pattern test (whose
                 //operand is a '{ … }' group). Push the keyword back and let the expression grammar parse the whole.
+                //The follower keywords are excluded because 'VALUES (' would otherwise be mistaken for a function call
                 if (directionKeyword.Length > 0
+                     && !OrderByFollowerKeywords.Contains(directionKeyword)
                      && (SkipWhitespace(parserContext) == '(' || normalizedDirectionKeyword == "EXISTS" || normalizedDirectionKeyword == "NOT"))
                 {
                     UnreadString(parserContext, directionKeyword);
