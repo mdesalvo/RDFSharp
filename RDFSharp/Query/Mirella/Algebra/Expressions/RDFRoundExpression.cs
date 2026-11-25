@@ -16,7 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using RDFSharp.Model;
 
@@ -86,20 +85,23 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral
-                     && leftArgumentTypedLiteral.HasDecimalDatatype())
+                //The result keeps the base numeric type of the argument: exact for integer and decimal values and IEEE 754 for float and double ones
+                //fn:round gives the nearest integer and breaks a tie toward positive infinity (-2.5 gives -2 and 2.5 gives 3)
+                //Subtracting the floor is exact in both regimes (adding 0.5 would round a long decimal): INF and NaN fall through unchanged because the comparison with NaN is false
+                if (leftArgumentPMember is RDFTypedLiteral leftArgumentTypedLiteral)
                 {
-                    //owl:rational needs parsing and evaluation before being compared
-                    if (leftArgumentTypedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                    {
-                        expressionResult = new RDFTypedLiteral(
-                                                                Convert.ToString(Math.Round(RDFArithmeticEngine.ComputeOWLRationalValue(leftArgumentTypedLiteral)), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    }
-                    else if (double.TryParse(leftArgumentTypedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double leftArgumentNumericValue))
-                    {
-                        expressionResult = new RDFTypedLiteral(
-                                                                Convert.ToString(Math.Round(leftArgumentNumericValue), CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_DOUBLE);
-                    }
+                    expressionResult = RDFArithmeticEngine.ComputeNumericFunction(
+                        leftArgumentTypedLiteral,
+                        exactValue =>
+                        {
+                            decimal floorValue = Math.Floor(exactValue);
+                            return exactValue - floorValue >= 0.5m ? floorValue + 1 : floorValue;
+                        },
+                        approximateValue =>
+                        {
+                            double floorValue = Math.Floor(approximateValue);
+                            return approximateValue - floorValue >= 0.5 ? floorValue + 1 : floorValue;
+                        });
                 }
                 #endregion
             }

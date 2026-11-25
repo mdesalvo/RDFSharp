@@ -76,7 +76,7 @@ public class RDFAbsExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("20", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("20.0", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
     }
 
     [TestMethod]
@@ -96,7 +96,7 @@ public class RDFAbsExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("5.5", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("5.5", RDFModelEnums.RDFDatatypes.XSD_DECIMAL)));
     }
 
     [TestMethod]
@@ -173,6 +173,31 @@ public class RDFAbsExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);
+    }
+
+    [TestMethod]
+    [DataRow("-5^^http://www.w3.org/2001/XMLSchema#negativeInteger", "5^^http://www.w3.org/2001/XMLSchema#integer")]
+    [DataRow("-2.5^^http://www.w3.org/2001/XMLSchema#decimal", "2.5^^http://www.w3.org/2001/XMLSchema#decimal")]
+    [DataRow("-2.5^^http://www.w3.org/2001/XMLSchema#double", "2.5^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("-1.5^^http://www.w3.org/2001/XMLSchema#float", "1.5^^http://www.w3.org/2001/XMLSchema#float")]
+    [DataRow("-INF^^http://www.w3.org/2001/XMLSchema#double", "INF^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("NaN^^http://www.w3.org/2001/XMLSchema#double", "NaN^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("-7/2^^http://www.w3.org/2002/07/owl#rational", "3.5^^http://www.w3.org/2001/XMLSchema#decimal")]
+    public void ShouldApplyExpressionWithVariableAndGiveBaseNumericTypeOfArgument(string argumentValue, string expectedValue)
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", argumentValue }
+        });
+
+        RDFAbsExpression expression = new RDFAbsExpression(
+            new RDFVariable("?A"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.AreEqual(expectedValue, expressionResult.ToString());
     }
     #endregion
 }

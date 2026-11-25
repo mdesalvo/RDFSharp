@@ -649,21 +649,24 @@ namespace RDFSharp.Model
         }
 
         /// <summary>
-        /// Gives the value of the given numeric typed literal in its value space: double for xsd:double and xsd:float, decimal for every other numeric datatype
+        /// Reads an xsd:double or xsd:float lexical form into a double, accepting the XSD special values INF, +INF and -INF
         /// </summary>
-        internal static (bool isFloatingPoint, double doubleValue, decimal decimalValue) GetNumericValue(RDFTypedLiteral typedLiteral)
+        internal static bool TryParseFloatingPoint(string lexicalValue, out double value)
         {
-            //xsd:double and xsd:float keep NaN, infinities and exponent forms that decimal cannot represent
-            if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_DOUBLE
-                 || typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT)
-                return (true, double.Parse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture), default);
+            //XSD spells the infinities in upper case only: the .NET parser does not know them
+            if (string.Equals(lexicalValue, "INF", StringComparison.Ordinal) || string.Equals(lexicalValue, "+INF", StringComparison.Ordinal))
+            {
+                value = double.PositiveInfinity;
+                return true;
+            }
+            if (string.Equals(lexicalValue, "-INF", StringComparison.Ordinal))
+            {
+                value = double.NegativeInfinity;
+                return true;
+            }
 
-            //owl:rational ("p/q") needs evaluation before being a number
-            if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
-                return (false, default, RDFArithmeticEngine.ComputeOWLRationalValue(typedLiteral));
-
-            //Every other numeric datatype is exact and lives in the decimal value space
-            return (false, default, decimal.Parse(typedLiteral.Value, CultureInfo.InvariantCulture));
+            //NaN and the exponent forms are read by the .NET parser together with the legacy Infinity spellings that stored data may still hold
+            return double.TryParse(lexicalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
         }
 
         /// <summary>
@@ -873,14 +876,28 @@ namespace RDFSharp.Model
                     return (RDFShims.OWLRationalRegex.Value.IsMatch(literalValue), literalValue);
 
                 case RDFModelEnums.RDFDatatypes.XSD_DOUBLE:
-                    return double.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out double outDouble)
-                        ? (true, Convert.ToString(outDouble, CultureInfo.InvariantCulture))
-                        : (false, literalValue);
-
                 case RDFModelEnums.RDFDatatypes.XSD_FLOAT:
-                    return float.TryParse(literalValue, NumberStyles.Float, CultureInfo.InvariantCulture, out float outFloat)
-                        ? (true, Convert.ToString(outFloat, CultureInfo.InvariantCulture))
-                        : (false, literalValue);
+                {
+                    if (!TryParseFloatingPoint(literalValue, out double outFloatingPoint))
+                        return (false, literalValue);
+
+                    //A value beyond the float range narrows to INF or -INF instead of failing
+                    if (datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT)
+                        outFloatingPoint = (float)outFloatingPoint;
+
+                    //The stored form of the special values is the XSD one: the .NET spellings Infinity and -Infinity are not valid lexical forms
+                    if (double.IsNaN(outFloatingPoint))
+                        return (true, "NaN");
+                    if (double.IsPositiveInfinity(outFloatingPoint))
+                        return (true, "INF");
+                    if (double.IsNegativeInfinity(outFloatingPoint))
+                        return (true, "-INF");
+
+                    //Finite values keep their shortest round-trip form: a float is written as a float since widening it to double would print the noise digits of its binary expansion
+                    return datatype == RDFModelEnums.RDFDatatypes.XSD_FLOAT
+                        ? (true, Convert.ToString((float)outFloatingPoint, CultureInfo.InvariantCulture))
+                        : (true, Convert.ToString(outFloatingPoint, CultureInfo.InvariantCulture));
+                }
 
                 case RDFModelEnums.RDFDatatypes.XSD_INTEGER:
                     return decimal.TryParse(literalValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out decimal outInteger)

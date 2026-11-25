@@ -144,7 +144,8 @@ namespace RDFSharp.Query
                         //owl:rational needs parsing and evaluation before being compared
                         if (rowAggregatorValueTLit.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
                             return Convert.ToDouble(RDFArithmeticEngine.ComputeOWLRationalValue(rowAggregatorValueTLit), CultureInfo.InvariantCulture);
-                        if (double.TryParse(rowAggregatorValueTLit.Value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
+                        //The XSD infinities (INF, -INF) are valid double values that the .NET parser alone would reject
+                        if (RDFModelUtilities.TryParseFloatingPoint(rowAggregatorValueTLit.Value, out double result))
                             return result;
                     }
                 }
@@ -177,9 +178,15 @@ namespace RDFSharp.Query
         /// Parses a numeric typed literal to double for ordering comparisons (owl:rational is evaluated first)
         /// </summary>
         internal static double ParseTypedLiteralAsDouble(RDFTypedLiteral typedLiteral)
-            => typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL
-                ? Convert.ToDouble(RDFArithmeticEngine.ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture)
-                : double.Parse(typedLiteral.Value, NumberStyles.Float, CultureInfo.InvariantCulture);
+        {
+            //owl:rational ("p/q") needs evaluation before being a number
+            if (typedLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.OWL_RATIONAL)
+                return Convert.ToDouble(RDFArithmeticEngine.ComputeOWLRationalValue(typedLiteral), CultureInfo.InvariantCulture);
+
+            //The literal was validated at creation: its lexical form (INF and -INF included) always reads back as a double
+            RDFModelUtilities.TryParseFloatingPoint(typedLiteral.Value, out double typedLiteralValue);
+            return typedLiteralValue;
+        }
 
         /// <summary>
         /// Gets the row value for the aggregator as string

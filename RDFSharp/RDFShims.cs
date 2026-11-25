@@ -50,9 +50,9 @@ namespace RDFSharp
         /*Datatypes*/
         internal const string HexBinaryPattern = "^([0-9a-fA-F]{2})*$";
         internal const string OWLRationalPattern = "^(0|(-)?([1-9])+([0-9])*)(/([1-9])+([0-9])*)?$";
-        internal const string TimeGeneralDayPattern = "---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
-        internal const string TimeGeneralMonthPattern = "--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
-        internal const string TimeGeneralYearPattern = "-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?";
+        internal const string TimeGeneralDayPattern = "^---(0[1-9]|[1-9][0-9])(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$";
+        internal const string TimeGeneralMonthPattern = "^--(0[1-9]|1[0-9]|20)(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$";
+        internal const string TimeGeneralYearPattern = "^-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?$";
         internal const string DayTimeDurationPattern = @"^-?P(([0-9]+D(T([0-9]+H([0-9]+M([0-9]+(\.[0-9]+)?S)?)?|[0-9]+M([0-9]+(\.[0-9]+)?S)?|[0-9]+(\.[0-9]+)?S))?)|T([0-9]+H([0-9]+M([0-9]+(\.[0-9]+)?S)?)?|[0-9]+M([0-9]+(\.[0-9]+)?S)?|[0-9]+(\.[0-9]+)?S))$";
         internal const string GeoRelatesPattern = "^[012TF\\*]{9}$";
         /*SPARQL parser*/

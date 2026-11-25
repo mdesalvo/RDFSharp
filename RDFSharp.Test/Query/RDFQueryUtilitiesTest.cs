@@ -85,6 +85,15 @@ public class RDFQueryUtilitiesTest
     }
 
     [TestMethod]
+    public void ShouldParsePatternMemberAsTypedLiteralWhenItsValueLooksLikeAnIri()
+    {
+        RDFPatternMember pMember = RDFQueryUtilities.ParseRDFPatternMember("http://ex.org/x^^http://www.w3.org/2001/XMLSchema#string");
+
+        //'^' cannot appear in a valid IRI: the datatype suffix wins over the IRI-shaped value
+        Assert.IsTrue(pMember is RDFTypedLiteral pMemberLiteral && pMemberLiteral.Equals(new RDFTypedLiteral("http://ex.org/x", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+    }
+
+    [TestMethod]
     [DataRow(null, null, 0)]
     [DataRow(null, "ex:res1", -1)]
     [DataRow(null, "lit1", -1)]
@@ -219,7 +228,25 @@ public class RDFQueryUtilitiesTest
     [DataRow("2021-05^^http://www.w3.org/2001/XMLSchema#gYearMonth", "2021-03^^http://www.w3.org/2001/XMLSchema#gYearMonth", 1)]
     [DataRow("--03-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", "--05-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", -1)]
     [DataRow("--05-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", "--03-01^^http://www.w3.org/2001/XMLSchema#gMonthDay", 1)]
-    [DataRow("2021^^http://www.w3.org/2006/time#generalYear", "2022^^http://www.w3.org/2006/time#generalYear", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("2021^^http://www.w3.org/2006/time#generalYear", "2022^^http://www.w3.org/2006/time#generalYear", -1)]
+    [DataRow("-0500^^http://www.w3.org/2006/time#generalYear", "-0100^^http://www.w3.org/2006/time#generalYear", -1)]
+    [DataRow("2021^^http://www.w3.org/2006/time#generalYear", "10000^^http://www.w3.org/2006/time#generalYear", -1)]
+    [DataRow("10000^^http://www.w3.org/2006/time#generalYear", "2021^^http://www.w3.org/2006/time#generalYear", 1)]
+    [DataRow("2021Z^^http://www.w3.org/2006/time#generalYear", "2021+02:00^^http://www.w3.org/2006/time#generalYear", 0)]
+    [DataRow("---05^^http://www.w3.org/2006/time#generalDay", "---42^^http://www.w3.org/2006/time#generalDay", -1)]
+    [DataRow("--13^^http://www.w3.org/2006/time#generalMonth", "--02^^http://www.w3.org/2006/time#generalMonth", 1)]
+    [DataRow("2021^^http://www.w3.org/2006/time#generalYear", "--05^^http://www.w3.org/2006/time#generalMonth", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("2021^^http://www.w3.org/2006/time#generalYear", "2021^^http://www.w3.org/2001/XMLSchema#gYear", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("2021^^http://www.w3.org/2001/XMLSchema#gYear", "2021^^http://www.w3.org/2006/time#generalYear", RDFQueryUtilities.ComparisonTypeError)]
+    [DataRow("INF^^http://www.w3.org/2001/XMLSchema#double", "1e308^^http://www.w3.org/2001/XMLSchema#double", 1)]
+    [DataRow("-INF^^http://www.w3.org/2001/XMLSchema#double", "1^^http://www.w3.org/2001/XMLSchema#double", -1)]
+    [DataRow("INF^^http://www.w3.org/2001/XMLSchema#float", "INF^^http://www.w3.org/2001/XMLSchema#double", 0)]
+    [DataRow("-1e400^^http://www.w3.org/2001/XMLSchema#double", "-1e300^^http://www.w3.org/2001/XMLSchema#double", -1)]
+    [DataRow("1E30^^http://www.w3.org/2001/XMLSchema#float", "1E29^^http://www.w3.org/2001/XMLSchema#double", 1)]
+    [DataRow("12.5^^http://www.w3.org/2001/XMLSchema#decimal", "12.50^^http://www.w3.org/2001/XMLSchema#decimal", 0)]
+    [DataRow("-7^^http://www.w3.org/2001/XMLSchema#long", "-7^^http://www.w3.org/2001/XMLSchema#integer", 0)]
+    [DataRow("10/4^^http://www.w3.org/2002/07/owl#rational", "2.5^^http://www.w3.org/2001/XMLSchema#decimal", 0)]
+    [DataRow("9007199254740993^^http://www.w3.org/2001/XMLSchema#integer", "9007199254740992^^http://www.w3.org/2001/XMLSchema#integer", 1)]
     [DataRow("NaN^^http://www.w3.org/2001/XMLSchema#double", "1^^http://www.w3.org/2001/XMLSchema#double", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("1^^http://www.w3.org/2001/XMLSchema#double", "NaN^^http://www.w3.org/2001/XMLSchema#double", RDFQueryUtilities.ComparisonTypeError)]
     [DataRow("NaN^^http://www.w3.org/2001/XMLSchema#double", "NaN^^http://www.w3.org/2001/XMLSchema#double", RDFQueryUtilities.ComparisonTypeError)]

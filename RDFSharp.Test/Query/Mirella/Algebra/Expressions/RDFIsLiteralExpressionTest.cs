@@ -163,8 +163,7 @@ public class RDFIsLiteralExpressionTest
             new RDFVariableExpression(new RDFVariable("?Q")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
-        Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+        Assert.IsNull(expressionResult);
     }
 
     [TestMethod]
@@ -272,6 +271,78 @@ public class RDFIsLiteralExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithVariableAndCalculateResultOnBlankResource()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFResource("bnode:12345").ToString() }
+        });
+
+        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+            new RDFVariable("?A"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithExpressionAndCalculateResultOnTypedLiteralWithIriText()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFResource("ex:subj").ToString() }
+        });
+
+        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+            new RDFConstantExpression(new RDFTypedLiteral("http://ex.org/x", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteralWithLanguageAndIriText()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFResource("ex:subj").ToString() }
+        });
+
+        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+            new RDFConstantExpression(new RDFPlainLiteral("http://ex.org/x", "en")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
+    }
+    [TestMethod]
+    public void ShouldApplyExpressionWithVariableAndCalculateResultOnTypedLiteralWithIriText()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFTypedLiteral("http://ex.org/x", RDFModelEnums.RDFDatatypes.XSD_STRING).ToString() }
+        });
+
+        //The cell is read back as the typed literal it holds, not as the IRI its value looks like
+        RDFIsLiteralExpression expression = new RDFIsLiteralExpression(
+            new RDFVariable("?A"));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.True));
     }
     #endregion
 }

@@ -102,8 +102,16 @@ namespace RDFSharp.Query
             //Keep the larger value as the winner, preserving its original typed literal (and thus its datatype);
             //a null current value means no numeric row has been seen yet
             RDFTypedLiteral aggregatorValue = Context.GetPartitionKeyExecutionResult<RDFTypedLiteral>(partitionKey, null);
-            if (aggregatorValue == null || ParseTypedLiteralAsDouble(rowValue) > ParseTypedLiteralAsDouble(aggregatorValue))
+            if (aggregatorValue == null)
                 Context.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
+            else
+            {
+                //Values are compared in their own value space as ORDER BY does: integers beyond 2^53 and long decimals keep their exact order
+                int valueComparison = RDFQueryUtilities.CompareRDFPatternMembers(rowValue, aggregatorValue);
+                //NaN is not ordered with any number: the comparison error must never replace the current winner
+                if (valueComparison > 0 && valueComparison != RDFQueryUtilities.ComparisonTypeError)
+                    Context.UpdatePartitionKeyExecutionResult(partitionKey, rowValue);
+            }
         }
         /// <summary>
         /// Executes the partition on the given tablerow (STRING)

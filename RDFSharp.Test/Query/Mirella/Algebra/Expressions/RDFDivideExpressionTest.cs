@@ -322,7 +322,7 @@ public class RDFDivideExpressionTest
     }
 
     [TestMethod]
-    public void ShouldApplyExpressionWithEEAndNotCalculateResultBecauseZeroRightExpression()
+    public void ShouldApplyExpressionWithEEAndCalculateInfinityOnZeroRightExpression()
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
@@ -338,7 +338,8 @@ public class RDFDivideExpressionTest
             new RDFSubtractExpression(new RDFVariable("?A"), new RDFVariable("?A")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
-        Assert.IsNull(expressionResult);
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
     }
 
     [TestMethod]
@@ -382,7 +383,7 @@ public class RDFDivideExpressionTest
     }
 
     [TestMethod]
-    public void ShouldApplyExpressionWithEVAndNotCalculateResultBecauseZeroRightExpression()
+    public void ShouldApplyExpressionWithEVAndCalculateInfinityOnZeroRightExpression()
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
@@ -400,7 +401,8 @@ public class RDFDivideExpressionTest
             new RDFVariable("?C"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
-        Assert.IsNull(expressionResult);
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
     }
 
     [TestMethod]
@@ -460,7 +462,7 @@ public class RDFDivideExpressionTest
     }
 
     [TestMethod]
-    public void ShouldApplyExpressionWithVVAndNotCalculateResultBecauseZeroRightColumn()
+    public void ShouldApplyExpressionWithVVAndCalculateInfinityOnZeroRightColumn()
     {
         RDFTable table = new RDFTable();
         table.AddColumn("?A");
@@ -474,7 +476,8 @@ public class RDFDivideExpressionTest
         RDFDivideExpression expression = new RDFDivideExpression(new RDFVariable("?A"), new RDFVariable("?B"));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
-        Assert.IsNull(expressionResult);
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(new RDFTypedLiteral("INF", RDFModelEnums.RDFDatatypes.XSD_DOUBLE)));
     }
 
     [TestMethod]

@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using RDFSharp.Model;
@@ -85,9 +84,10 @@ namespace RDFSharp.Query
                 #endregion
 
                 #region Calculate Result
-                expressionResult = Uri.TryCreate(leftArgumentPMember?.ToString(), UriKind.Absolute, out Uri leftArgUri)
-                                    && leftArgUri.ToString().StartsWith("bnode:", StringComparison.OrdinalIgnoreCase)
-                                    ? RDFTypedLiteral.True : RDFTypedLiteral.False;
+                //A failed argument stays an error (null); otherwise only a blank node resource qualifies
+                if (leftArgumentPMember != null)
+                    expressionResult = leftArgumentPMember is RDFResource leftArgumentResource && leftArgumentResource.IsBlank
+                                        ? RDFTypedLiteral.True : RDFTypedLiteral.False;
                 #endregion
             }
             catch { /* Just a no-op, since type errors are normal when trying to face variable's bindings */ }

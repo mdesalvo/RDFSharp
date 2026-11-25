@@ -181,8 +181,7 @@ public class RDFIsBlankExpressionTest
             new RDFVariableExpression(new RDFVariable("?Q")));
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
-        Assert.IsNotNull(expressionResult);
-        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
+        Assert.IsNull(expressionResult);
     }
 
     [TestMethod]
@@ -308,6 +307,42 @@ public class RDFIsBlankExpressionTest
         RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
 
         Assert.IsNull(expressionResult);
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithExpressionAndCalculateResultOnTypedLiteralWithIriText()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFResource("ex:subj").ToString() }
+        });
+
+        RDFIsBlankExpression expression = new RDFIsBlankExpression(
+            new RDFConstantExpression(new RDFTypedLiteral("http://ex.org/x", RDFModelEnums.RDFDatatypes.XSD_STRING)));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
+    }
+
+    [TestMethod]
+    public void ShouldApplyExpressionWithExpressionAndCalculateResultOnPlainLiteralWithLanguageAndIriText()
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddRow(new Dictionary<string, string>
+        {
+            { "?A", new RDFResource("ex:subj").ToString() }
+        });
+
+        RDFIsBlankExpression expression = new RDFIsBlankExpression(
+            new RDFConstantExpression(new RDFPlainLiteral("http://ex.org/x", "en")));
+        RDFPatternMember expressionResult = expression.ApplyExpression(table.Rows[0]);
+
+        Assert.IsNotNull(expressionResult);
+        Assert.IsTrue(expressionResult.Equals(RDFTypedLiteral.False));
     }
     #endregion
 }

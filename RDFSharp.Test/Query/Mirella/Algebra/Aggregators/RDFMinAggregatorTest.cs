@@ -407,5 +407,32 @@ public class RDFMinAggregatorTest
     [TestMethod]
     public void ShouldThrowExceptionOnCreatingMinAggregatorOverExpressionBecauseNullExpression()
         => Assert.ThrowsExactly<RDFQueryException>(() => _ = new RDFMinAggregator(null as RDFExpression, new RDFVariable("?PROJVAR"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric));
+
+    [TestMethod]
+    [DataRow("9007199254740993^^http://www.w3.org/2001/XMLSchema#integer", "9007199254740992^^http://www.w3.org/2001/XMLSchema#integer", "9007199254740992^^http://www.w3.org/2001/XMLSchema#integer", "9007199254740992^^http://www.w3.org/2001/XMLSchema#integer")]
+    [DataRow("2.5^^http://www.w3.org/2001/XMLSchema#decimal", "3^^http://www.w3.org/2001/XMLSchema#double", "3^^http://www.w3.org/2001/XMLSchema#double", "2.5^^http://www.w3.org/2001/XMLSchema#decimal")]
+    [DataRow("-INF^^http://www.w3.org/2001/XMLSchema#double", "1^^http://www.w3.org/2001/XMLSchema#double", "INF^^http://www.w3.org/2001/XMLSchema#double", "-INF^^http://www.w3.org/2001/XMLSchema#double")]
+    [DataRow("1^^http://www.w3.org/2001/XMLSchema#double", "NaN^^http://www.w3.org/2001/XMLSchema#double", "3^^http://www.w3.org/2001/XMLSchema#double", "1^^http://www.w3.org/2001/XMLSchema#double")]
+    public void ShouldApplyModifierWithMinAggregatorNumericComparingValuesInTheirOwnValueSpace(string firstValue, string secondValue, string thirdValue, string expectedValue)
+    {
+        RDFTable table = new RDFTable();
+        table.AddColumn("?A");
+        table.AddColumn("?C");
+        foreach (string cellValue in new[] { firstValue, secondValue, thirdValue })
+            table.AddRow(new Dictionary<string, string>
+            {
+                { "?A", cellValue },
+                { "?C", new RDFResource("ex:value0").ToString() }
+            });
+
+        //Integers beyond 2^53 and mixed numeric types are ordered by value: NaN never replaces the current winner
+        RDFGroupByModifier modifier = new RDFGroupByModifier([new RDFVariable("?C")]);
+        modifier.AddAggregator(new RDFMinAggregator(new RDFVariable("?A"), new RDFVariable("?RESULT"), RDFQueryEnums.RDFMinMaxAggregatorFlavors.Numeric));
+        RDFTable result = modifier.ApplyModifier(table);
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(1, result.RowsCount);
+        Assert.AreEqual(expectedValue, result.Rows[0]["?RESULT"].ToString());
+    }
     #endregion
 }
