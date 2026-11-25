@@ -2828,7 +2828,7 @@ public class RDFQueryEngineTest
         RDFConstructQuery query = new RDFConstructQuery()
             .AddTemplate(new RDFPattern(new RDFResource("ex:pluto"),RDFVocabulary.RDF.TYPE,new RDFResource("ex:dog")))
             .AddPatternGroup(new RDFPatternGroup()
-                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf2"), new RDFVariable("?X")))
+                .AddPattern(new RDFPattern(new RDFVariable("?Y"), new RDFResource("ex:dogOf"), new RDFVariable("?X")))
                 .AddPattern(new RDFPattern(new RDFVariable("?X"), new RDFResource("ex:hasName"), new RDFVariable("?N")).Optional()))
             .AddModifier(new RDFLimitModifier(2));
         RDFConstructQueryResult result = new RDFQueryEngine().EvaluateConstructQuery(query, graph);
@@ -6574,6 +6574,37 @@ public class RDFQueryEngineTest
 
         Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual($"1^^{RDFVocabulary.XSD.INTEGER}", result.SelectResults.Rows[0]["?X"].ToString());
+    }
+
+    [TestMethod]
+    public async Task ShouldNotConstructGroundTemplateWithoutSolutionAsync()
+    {
+        //A template is instantiated once per solution: without any solution nothing is constructed
+        RDFConstructQuery query = RDFConstructQuery.FromString("CONSTRUCT { <http://ex.org/x> <http://ex.org/y> <http://ex.org/z> } WHERE { ?s <http://ex.org/nomatch> ?o }");
+        RDFConstructQueryResult result = await query.ApplyToGraphAsync(BuildSingleTripleGraph());
+
+        Assert.AreEqual(0, result.ConstructResultsCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldConstructGroundTemplateOnEmptyGroupAsync()
+    {
+        //The single solution of the empty group instantiates the ground template once
+        RDFConstructQuery query = RDFConstructQuery.FromString("CONSTRUCT { <http://ex.org/x> <http://ex.org/y> <http://ex.org/z> } WHERE { }");
+        RDFConstructQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(1, result.ConstructResultsCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldReadDayOfCalendarDateWithPositiveOffsetAsWrittenAsync()
+    {
+        //The offset says in which time zone the date is reckoned: the day stays the written one
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT (DAY(\"2021-05-07+02:00\"^^<http://www.w3.org/2001/XMLSchema#date>) AS ?d) WHERE { }");
+        RDFSelectQueryResult result = await query.ApplyToGraphAsync(new RDFGraph());
+
+        Assert.AreEqual(1, result.SelectResultsCount);
+        Assert.AreEqual($"7^^{RDFVocabulary.XSD.INTEGER}", result.SelectResults.Rows[0]["?D"].ToString());
     }
 
     #endregion

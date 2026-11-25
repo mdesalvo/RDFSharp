@@ -1080,6 +1080,10 @@ namespace RDFSharp.Query
                 #region GROUND TEMPLATE
                 if (template.Variables.Count == 0)
                 {
+                    //A template is instantiated once per solution: a ground one has nothing to instantiate when the WHERE clause has none
+                    if (resultTable.RowsCount == 0)
+                        continue;
+
                     if (needsContext)
                         bindings["?CONTEXT"] = templateCtx ?? defaultContext;
                     bindings["?SUBJECT"] = templateSubj;

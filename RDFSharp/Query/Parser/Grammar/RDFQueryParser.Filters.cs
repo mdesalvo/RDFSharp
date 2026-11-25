@@ -166,6 +166,14 @@ namespace RDFSharp.Query
                     return new RDFFilter(new RDFComparisonExpression(
                         RDFQueryEnums.RDFComparisonFlavors.EqualTo, geoExpression, new RDFConstantExpression(RDFTypedLiteral.True)));
 
+                //A boolean literal (FILTER(true), FILTER(false)) has no RDFFilter constructor of its own: it is tested for
+                //truth like the GeoSPARQL relations, so 'true' keeps every solution and 'false' drops them all.
+                case RDFConstantExpression constantExpression
+                  when constantExpression.LeftArgument is RDFTypedLiteral booleanLiteral
+                        && booleanLiteral.Datatype.TargetDatatype == RDFModelEnums.RDFDatatypes.XSD_BOOLEAN:
+                    return new RDFFilter(new RDFComparisonExpression(
+                        RDFQueryEnums.RDFComparisonFlavors.EqualTo, constantExpression, new RDFConstantExpression(RDFTypedLiteral.True)));
+
                 default:
                     throw new RDFQueryException("Cannot parse SPARQL FILTER: the constraint expression does not evaluate to a boolean usable as a filter " + GetCoordinates(parserContext));
             }
