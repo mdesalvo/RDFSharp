@@ -1474,8 +1474,25 @@ public class RDFTableEngineTest
     }
 
     [TestMethod]
-    public void ShouldCombineReturnEmptyOnNoTables()
-        => Assert.AreEqual(0, RDFTableEngine.CombineTables([]).RowsCount);
+    public void ShouldCombineReturnEmptySolutionOnNoTables()
+    {
+        RDFTable emptySolution = RDFTableEngine.CombineTables([]);
+
+        //The empty solution is one row binding no variable and carrying no UNBOUND cell
+        Assert.AreEqual(0, emptySolution.ColumnsCount);
+        Assert.AreEqual(1, emptySolution.RowsCount);
+        Assert.IsTrue(emptySolution.IsFullyBound);
+    }
+
+    [TestMethod]
+    public void ShouldCombineEmptySolutionWithTableActingAsIdentity()
+    {
+        RDFTable table = BuildTable(["?S", "?X"], ["s1", "vA"], ["s2", "vB"]);
+
+        //The empty solution is the identity of the join on both sides
+        Assert.AreEqual(RenderTable(table), RenderTable(RDFTableEngine.CombineTables([RDFTableEngine.CombineTables([]), table])));
+        Assert.AreEqual(RenderTable(table), RenderTable(RDFTableEngine.CombineTables([table, RDFTableEngine.CombineTables([])])));
+    }
 
     [TestMethod]
     public void ShouldCombineReturnSingleTableUnchanged()

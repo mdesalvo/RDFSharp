@@ -165,17 +165,11 @@ namespace RDFSharp.Query
         /// </summary>
         private RDFTable EvaluateQuery(RDFQuery query, RDFDataSource datasource)
         {
-            RDFTable queryResultTable = new RDFTable();
+            //Evaluate the active members of the query (none at all is the empty group)
+            EvaluateQueryMembers(query.GetEvaluableQueryMembers().ToList(), datasource);
 
-            List<RDFQueryMember> evaluableQueryMembers = query.GetEvaluableQueryMembers().ToList();
-            if (evaluableQueryMembers.Count > 0)
-            {
-                //Evaluate the active members of the query
-                EvaluateQueryMembers(evaluableQueryMembers, datasource);
-
-                //Combine intermediate results into final table
-                queryResultTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
-            }
+            //Combine intermediate results into final table: without members this is the empty solution of the empty group
+            RDFTable queryResultTable = RDFTableEngine.CombineTables(QueryMemberResultTables.Values.ToList());
 
             //EXISTS expressions living in WHERE-clause-scoped filters need their inner group graph pattern evaluated
             //(into PatternResults) before being applied, exactly as EvaluatePatternGroup does for pattern-group ones.

@@ -383,7 +383,7 @@ public class RDFSelectQueryTest
     }
 
     [TestMethod]
-    public void ShouldApplySelectQueryToGraphAndNotHaveResultsWithBindAndProjectExpressionsBecauseBindOnTop()
+    public void ShouldApplySelectQueryToGraphAndHaveUnboundBindAndProjectExpressionsBecauseBindOnTop()
     {
         RDFGraph graph = new RDFGraph();
         graph.AddTriple(new RDFTriple(new RDFResource("ex:flower"), RDFVocabulary.RDF.TYPE, RDFVocabulary.RDFS.CLASS));
@@ -400,11 +400,15 @@ public class RDFSelectQueryTest
 
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.SelectResults);
-        Assert.AreEqual(0, result.SelectResultsCount);
+        Assert.AreEqual(1, result.SelectResultsCount);
         Assert.AreEqual(3, result.SelectResults.Columns.Count);
         Assert.IsTrue(result.SelectResults.Columns[0].ColumnName.Equals("?V", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Columns[1].ColumnName.Equals("?VLENGTH", StringComparison.Ordinal));
         Assert.IsTrue(result.SelectResults.Columns[2].ColumnName.Equals("?VLENGTHISMORETHAN7", StringComparison.Ordinal));
+        //The BIND runs before ?V is bound: its error leaves ?VLENGTH and the expression over it unbound
+        Assert.IsTrue(result.SelectResults.Rows[0]["?V"].Equals("ex:flower"));
+        Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?VLENGTH"));
+        Assert.IsTrue(result.SelectResults.Rows[0].IsNull("?VLENGTHISMORETHAN7"));
     }
 
     [TestMethod]

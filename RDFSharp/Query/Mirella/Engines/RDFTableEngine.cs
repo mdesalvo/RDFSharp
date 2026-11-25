@@ -534,12 +534,18 @@ namespace RDFSharp.Query
         /// no UNBOUND cell in the common columns); otherwise it falls back to the safe outer-join, which honors
         /// OPTIONAL and the compatible-mappings semantics (UNBOUND in a common column joins as a wildcard). The
         /// two produce identical results (same rows, same order) under that guard, so this is a pure fast-path.
+        /// An empty list yields the empty solution: one row binding no variable, the identity of every join.
         /// </summary>
         internal static RDFTable CombineTables(List<RDFTable> dataTables)
         {
             switch (dataTables.Count)
             {
-                case 0: return new RDFTable();
+                case 0:
+                    //The join of nothing is the empty solution of SPARQL (an empty group has exactly one solution). It is built
+                    //fresh because callers extend it in place (BIND) and it has no UNBOUND cell, so it stays eligible for the inner-join fast-path.
+                    RDFTable emptySolutionTable = new RDFTable { IsFullyBound = true };
+                    emptySolutionTable.AddRow(Array.Empty<string>());
+                    return emptySolutionTable;
                 case 1: return dataTables[0];
             }
 
@@ -750,7 +756,7 @@ namespace RDFSharp.Query
             => EvaluateExpression(bind.Expression, bind.Variable, table);
 
         /// <summary>
-        /// Evaluates the given expression on the given table and projects the given variable. When
+        /// Evaluates the given expression on every row of the given table and projects the given variable. When
         /// <paramref name="isSynthetic"/> is true the projected column is flagged synthetic (internal scratch
         /// not meant to surface in the results), e.g. for ORDER BY over a non-variable expression.
         /// </summary>
@@ -763,24 +769,14 @@ namespace RDFSharp.Query
                 table.AddColumn(bindVariable, isSynthetic: isSynthetic);
                 int bindOrdinal = table.OrdinalOf(bindVariable);
 
-                //Valorize bind column
-                if (table.RowsCount == 0)
+                //Valorize bind column: an expression that fails on a row leaves its cell UNBOUND and keeps the row,
+                //while a table without rows stays without rows (an expression never creates a solution)
+                int rowCount = table.RowsCount;
+                RDFTableRowCollection rows = table.Rows;
+                for (int i = 0; i < rowCount; i++)
                 {
-                    //Ensure to add the row only in case the expression has evaluated without binding errors,
-                    //(otherwise in this scenario we would always answer true for ASK queries due to this row)
-                    RDFPatternMember bindResult = expression.ApplyExpression(table.NewRow());
-                    if (bindResult != null)
-                        table.AddRow(new Dictionary<string, string> { { bindVariable, bindResult.ToString() } });
-                }
-                else
-                {
-                    int rowCount = table.RowsCount;
-                    RDFTableRowCollection rows = table.Rows;
-                    for (int i = 0; i < rowCount; i++)
-                    {
-                        string[] cells = table.GetRowArray(i);
-                        cells[bindOrdinal] = expression.ApplyExpression(rows[i])?.ToString();
-                    }
+                    string[] cells = table.GetRowArray(i);
+                    cells[bindOrdinal] = expression.ApplyExpression(rows[i])?.ToString();
                 }
             }
         }
