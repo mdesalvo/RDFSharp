@@ -17,6 +17,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using RDFSharp.Query;
 
@@ -246,6 +247,53 @@ public class RDFAskQueryResultTest
                 """);
 
         Assert.ThrowsExactly<RDFQueryException>(() => RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+    }
+
+    [TestMethod]
+    public void ShouldSerializeTrueAskQueryResultWithLowerCaseBoolean()
+    {
+        MemoryStream stream = new MemoryStream();
+        RDFAskQueryResult askResult = new RDFAskQueryResult
+        {
+            AskResult = true
+        };
+        askResult.ToSparqlXmlResult(stream);
+        string document = Encoding.UTF8.GetString(stream.ToArray());
+
+        //The SRX schema requires the xs:boolean lexical form, which is case-sensitive
+        Assert.Contains("<boolean>true</boolean>", document, StringComparison.Ordinal);
+    }
+
+    [TestMethod]
+    public void ShouldSerializeFalseAskQueryResultWithLowerCaseBoolean()
+    {
+        MemoryStream stream = new MemoryStream();
+        RDFAskQueryResult askResult = new RDFAskQueryResult();
+        askResult.ToSparqlXmlResult(stream);
+        string document = Encoding.UTF8.GetString(stream.ToArray());
+
+        //The SRX schema requires the xs:boolean lexical form, which is case-sensitive
+        Assert.Contains("<boolean>false</boolean>", document, StringComparison.Ordinal);
+    }
+
+    [TestMethod]
+    public void ShouldDeserializeAskQueryResultWithUpperCaseBoolean()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.WriteLine(
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+                  <head />
+                  <boolean>TRUE</boolean>
+                </sparql>
+                """);
+
+        //Documents written by previous versions carry the upper case form
+        RDFAskQueryResult askResult = RDFAskQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray()));
+
+        Assert.IsTrue(askResult.AskResult);
     }
 
     [TestCleanup]
