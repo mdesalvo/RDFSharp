@@ -79,13 +79,22 @@ namespace RDFSharp.Query
                     sparqlRootNS.AppendChild(sparqlRootNSText);
                     sparqlRoot.Attributes.Append(sparqlRootNS);
 
+                    //SRX names variables without the leading "?" that the library keeps in its column names
+                    string[] srxVariableNames = new string[SelectResults.Columns.Count];
+                    foreach (DataColumn resultColumn in SelectResults.Columns)
+                    {
+                        srxVariableNames[resultColumn.Ordinal] = resultColumn.ColumnName.StartsWith("?", StringComparison.Ordinal)
+                            ? resultColumn.ColumnName.Substring(1)
+                            : resultColumn.ColumnName;
+                    }
+
                     #region sparqlHead
                     XmlNode sparqlHeadElement = sparqlDoc.CreateNode(XmlNodeType.Element, "head", null);
                     foreach (DataColumn resultColumn in SelectResults.Columns)
                     {
                         XmlNode variableElement = sparqlDoc.CreateNode(XmlNodeType.Element, "variable", null);
                         XmlAttribute varElName = sparqlDoc.CreateAttribute("name");
-                        XmlText varElNameText = sparqlDoc.CreateTextNode(resultColumn.ToString());
+                        XmlText varElNameText = sparqlDoc.CreateTextNode(srxVariableNames[resultColumn.Ordinal]);
                         varElName.AppendChild(varElNameText);
                         variableElement.Attributes.Append(varElName);
                         sparqlHeadElement.AppendChild(variableElement);
@@ -105,7 +114,7 @@ namespace RDFSharp.Query
                             {
                                 XmlNode bindingElement = sparqlDoc.CreateNode(XmlNodeType.Element, "binding", null);
                                 XmlAttribute bindElName = sparqlDoc.CreateAttribute("name");
-                                XmlText bindElNameText = sparqlDoc.CreateTextNode(resultColumnString);
+                                XmlText bindElNameText = sparqlDoc.CreateTextNode(srxVariableNames[resultColumn.Ordinal]);
                                 bindElName.AppendChild(bindElNameText);
                                 bindingElement.Attributes.Append(bindElName);
 
@@ -260,7 +269,7 @@ namespace RDFSharp.Query
                                         if (string.IsNullOrEmpty(varNode.Attributes["name"]?.Value))
                                             throw new Exception("one \"variable\" node was found without, or with empty, \"name\" attribute.");
 
-                                        RDFTableEngine.AddColumn(result.SelectResults, varNode.Attributes["name"].Value);
+                                        RDFTableEngine.AddColumn(result.SelectResults, ToColumnName(varNode.Attributes["name"].Value));
                                     }
                                     #endregion
                                 }
@@ -295,6 +304,9 @@ namespace RDFSharp.Query
                                                 if (!bindingNode.HasChildNodes)
                                                     throw new Exception("one \"binding\" node was found without children.");
 
+                                                //The result row is keyed by column names so the binding name gets the same normalization as the head variables
+                                                string bindingColumnName = ToColumnName(bindingNode.Attributes["name"].Value);
+
                                                 #region URI / BNODE
                                                 if (string.Equals(bindingNode.FirstChild.Name, "URI", StringComparison.OrdinalIgnoreCase)
                                                     || string.Equals(bindingNode.FirstChild.Name, "BNODE", StringComparison.OrdinalIgnoreCase))
@@ -303,7 +315,7 @@ namespace RDFSharp.Query
                                                         throw new Exception("one \"uri\" node contained data not corresponding to a valid Uri.");
 
                                                     foundUri = true;
-                                                    results.Add(bindingNode.Attributes["name"].Value, bindingNode.InnerText);
+                                                    results.Add(bindingColumnName, bindingNode.InnerText);
                                                 }
                                                 #endregion
 
@@ -312,11 +324,11 @@ namespace RDFSharp.Query
                                                 {
                                                     foundLit = true;
                                                     if (bindingNode.FirstChild.Attributes == null || bindingNode.FirstChild.Attributes.Count == 0)
-                                                        results.Add(bindingNode.Attributes["name"].Value, bindingNode.InnerText);
+                                                        results.Add(bindingColumnName, bindingNode.InnerText);
                                                     else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["datatype"]?.Value))
-                                                        results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}^^{bindingNode.FirstChild.Attributes["datatype"].Value}");
+                                                        results.Add(bindingColumnName, $"{bindingNode.FirstChild.InnerText}^^{bindingNode.FirstChild.Attributes["datatype"].Value}");
                                                     else if (!string.IsNullOrEmpty(bindingNode.FirstChild.Attributes["xml:lang"]?.Value))
-                                                        results.Add(bindingNode.Attributes["name"].Value, $"{bindingNode.FirstChild.InnerText}@{bindingNode.FirstChild.Attributes["xml:lang"].Value}");
+                                                        results.Add(bindingColumnName, $"{bindingNode.FirstChild.InnerText}@{bindingNode.FirstChild.Attributes["xml:lang"].Value}");
                                                     else
                                                         throw new Exception("one \"literal\" node was found with attribute different from \"datatype\" or \"xml:lang\".");
                                                 }
@@ -350,6 +362,12 @@ namespace RDFSharp.Query
             }
 
             return result;
+
+            #region Utilities
+            //SRX names variables without "?" while the library columns require it: documents written with it are accepted as they are
+            string ToColumnName(string srxVariableName)
+                => srxVariableName.StartsWith("?", StringComparison.Ordinal) ? srxVariableName : $"?{srxVariableName}";
+            #endregion
         }
 
         /// <summary>

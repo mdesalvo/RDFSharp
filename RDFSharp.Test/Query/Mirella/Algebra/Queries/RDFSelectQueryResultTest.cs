@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using RDFSharp.Model;
 using RDFSharp.Query;
@@ -551,6 +552,136 @@ public class RDFSelectQueryResultTest
         """);
 
     Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray())));
+  }
+
+  [TestMethod]
+  public void ShouldSerializeSelectQueryResultToStreamWithVariableNamesWithoutQuestionMark()
+  {
+    RDFSelectQueryResult selectResult = new RDFSelectQueryResult();
+    selectResult.SelectResults.Columns.Add(new DataColumn("?S", typeof(string)));
+    selectResult.SelectResults.Columns.Add(new DataColumn("?T", typeof(string)));
+    DataRow row0 = selectResult.SelectResults.NewRow();
+    row0["?S"] = "ex:org";
+    row0["?T"] = "hello@EN-US";
+    selectResult.SelectResults.Rows.Add(row0);
+    DataRow row1 = selectResult.SelectResults.NewRow();
+    row1["?S"] = "ex:other";
+    selectResult.SelectResults.Rows.Add(row1);
+    selectResult.SelectResults.AcceptChanges();
+
+    MemoryStream stream = new MemoryStream();
+    selectResult.ToSparqlXmlResult(stream);
+    string document = Encoding.UTF8.GetString(stream.ToArray());
+
+    //The SRX schema names variables without "?" and an unbound cell yields no binding
+    Assert.AreEqual(RDFTestUtilities.NormalizeEOL(
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+        <head>
+          <variable name="S" />
+          <variable name="T" />
+        </head>
+        <results>
+          <result>
+            <binding name="S">
+              <uri>ex:org</uri>
+            </binding>
+            <binding name="T">
+              <literal xml:lang="EN-US">hello</literal>
+            </binding>
+          </result>
+          <result>
+            <binding name="S">
+              <uri>ex:other</uri>
+            </binding>
+          </result>
+        </results>
+      </sparql>
+      """), RDFTestUtilities.NormalizeEOL(document));
+  }
+
+  [TestMethod]
+  public void ShouldDeserializeSelectQueryResultWithVariableNamesWithoutQuestionMark()
+  {
+    MemoryStream stream = new MemoryStream();
+    using (StreamWriter writer = new StreamWriter(stream))
+      writer.WriteLine(
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+          <head>
+            <variable name="s"/>
+            <variable name="t"/>
+          </head>
+          <results>
+            <result>
+              <binding name="s">
+                <uri>ex:org</uri>
+              </binding>
+              <binding name="t">
+                <literal xml:lang="en">hello</literal>
+              </binding>
+            </result>
+            <result>
+              <binding name="s">
+                <uri>ex:other</uri>
+              </binding>
+              <binding name="t">
+                <literal datatype="http://www.w3.org/2001/XMLSchema#string">world</literal>
+              </binding>
+            </result>
+          </results>
+        </sparql>
+        """);
+
+    RDFSelectQueryResult result = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray()));
+
+    Assert.AreEqual(2, result.SelectResults.Columns.Count);
+    Assert.AreEqual("?S", result.SelectResults.Columns[0].ColumnName);
+    Assert.AreEqual("?T", result.SelectResults.Columns[1].ColumnName);
+    Assert.AreEqual(2, result.SelectResultsCount);
+    Assert.AreEqual("ex:org", result.SelectResults.Rows[0]["?S"]);
+    Assert.AreEqual("hello@en", result.SelectResults.Rows[0]["?T"]);
+    Assert.AreEqual("ex:other", result.SelectResults.Rows[1]["?S"]);
+    Assert.AreEqual($"world^^{RDFVocabulary.XSD.STRING}", result.SelectResults.Rows[1]["?T"]);
+  }
+
+  [TestMethod]
+  public void ShouldDeserializeSelectQueryResultWithMixedVariableNameForms()
+  {
+    MemoryStream stream = new MemoryStream();
+    using (StreamWriter writer = new StreamWriter(stream))
+      writer.WriteLine(
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <sparql xmlns="http://www.w3.org/2005/sparql-results#">
+          <head>
+            <variable name="?s"/>
+            <variable name="t"/>
+          </head>
+          <results>
+            <result>
+              <binding name="s">
+                <uri>ex:org</uri>
+              </binding>
+              <binding name="?t">
+                <uri>ex:other</uri>
+              </binding>
+            </result>
+          </results>
+        </sparql>
+        """);
+
+    //A name declared with "?" in the head and bound without it (and vice versa) addresses the same column
+    RDFSelectQueryResult result = RDFSelectQueryResult.FromSparqlXmlResult(new MemoryStream(stream.ToArray()));
+
+    Assert.AreEqual(2, result.SelectResults.Columns.Count);
+    Assert.AreEqual("?S", result.SelectResults.Columns[0].ColumnName);
+    Assert.AreEqual("?T", result.SelectResults.Columns[1].ColumnName);
+    Assert.AreEqual(1, result.SelectResultsCount);
+    Assert.AreEqual("ex:org", result.SelectResults.Rows[0]["?S"]);
+    Assert.AreEqual("ex:other", result.SelectResults.Rows[0]["?T"]);
   }
 
   [TestCleanup]

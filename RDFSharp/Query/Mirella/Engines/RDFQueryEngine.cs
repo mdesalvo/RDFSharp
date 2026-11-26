@@ -918,19 +918,6 @@ namespace RDFSharp.Query
         /// <exception cref="RDFQueryException"></exception>
         internal static RDFQueryResult ApplyRawToSPARQLEndpoint(string queryType, string query, RDFSPARQLEndpoint sparqlEndpoint, RDFSPARQLEndpointQueryOptions sparqlEndpointQueryOptions)
         {
-            #region Utilities
-            void AdjustVariableColumnNames(DataTable qrTable)
-            {
-                //Eventually adjust column names (should start with "?")
-                int columnsCount = qrTable.Columns.Count;
-                for (int i = 0; i < columnsCount; i++)
-                {
-                    if (!qrTable.Columns[i].ColumnName.StartsWith("?", StringComparison.Ordinal))
-                        qrTable.Columns[i].ColumnName = $"?{qrTable.Columns[i].ColumnName}";
-                }
-            }
-            #endregion
-
             RDFQueryResult queryResult = null;
             if (!string.IsNullOrWhiteSpace(query) && sparqlEndpoint != null)
             {
@@ -1007,17 +994,14 @@ namespace RDFSharp.Query
 
                                 case "SELECT":
                                     queryResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
-                                    AdjustVariableColumnNames(((RDFSelectQueryResult)queryResult).SelectResults);
                                     break;
 
                                 case "CONSTRUCT":
                                     queryResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                                    AdjustVariableColumnNames(((RDFConstructQueryResult)queryResult).ConstructResults);
                                     break;
 
                                 case "DESCRIBE":
                                     queryResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                                    AdjustVariableColumnNames(((RDFDescribeQueryResult)queryResult).DescribeResults);
                                     break;
                             }
                         }

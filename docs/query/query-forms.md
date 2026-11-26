@@ -427,7 +427,7 @@ await organicWhitesResult.ToSparqlXmlResultAsync("organic-whites.srx");
         <uri>https://vallerosa.example/id/bianco-2023</uri>
       </binding>
       <binding name="LABEL">
-        <literal xml:lang="en">Le Crete White</literal>
+        <literal xml:lang="EN">Le Crete White</literal>
       </binding>
     </result>
     <result>
@@ -435,7 +435,7 @@ await organicWhitesResult.ToSparqlXmlResultAsync("organic-whites.srx");
         <uri>https://vallerosa.example/id/vermentino-2023</uri>
       </binding>
       <binding name="LABEL">
-        <literal xml:lang="en">Vermentino of the Plain</literal>
+        <literal xml:lang="EN">Vermentino of the Plain</literal>
       </binding>
     </result>
   </results>
