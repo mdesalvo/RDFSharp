@@ -67,7 +67,9 @@ RDFVariable geometryWkt = new RDFVariable("wkt");
 
 ## How far is each shop
 
-`geof:distance` measures the distance between two geometries. RDFSharp always answers in metres, computed on a projection suited to the area, so the numbers are real distances on the ground. Divided by 1000 and rounded, they become kilometres.
+`geof:distance` measures the distance between two geometries. RDFSharp computes it in metres, on a projection suited to the area, so the numbers are real distances on the ground. Divided by 1000 and rounded, they become kilometres.
+
+In SPARQL text the unit argument of `geof:distance` and `geof:buffer` may be `uom:metre` or the QUDT metre with its decimal multiples and submultiples (`unit:M`, `unit:DecaM`, `unit:HectoM`, `unit:KiloM`, `unit:DeciM`, `unit:CentiM`, `unit:MilliM` and `unit:MicroM`): the parser converts between them and the metres of the engine, so a distance asked in `unit:KiloM` comes back in kilometres and a radius given in `unit:KiloM` becomes 1000 times as many metres. Any other unit is rejected by the parser. `RDFGeoDistanceExpression` and `RDFGeoBufferExpression` built in C# always work in metres. The units of the vocabulary are `RDFVocabulary.GEOSPARQL.UOM.METRE` and `RDFVocabulary.GEOSPARQL.UNIT.*`.
 
 <div class="pair" markdown="1">
 

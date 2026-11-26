@@ -843,61 +843,112 @@ namespace RDFSharp.Model
                 throw new RDFModelException("Cannot read RDF graph from Uri because given \"uri\" parameter does not represent an absolute Uri.");
             #endregion
 
-            RDFGraph graph = new RDFGraph();
+            //Holds the dereferenced graph: it is assigned inside the try because every failure there leaves the method through the catch
+            RDFGraph graph;
             try
             {
                 //Grab eventual dereference Uri
                 Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
 
+                //The request goes to the remapped address because the namespace register may redirect the given Uri to its dereference Uri
                 HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
+
+                //Linked data addresses often redirect to the document that serves the representation: a few hops are followed
                 webRequest.MaximumAutomaticRedirections = 3;
                 webRequest.AllowAutoRedirect = true;
+
+                //The timeout is the one given by the caller: -1 waits indefinitely
                 webRequest.Timeout = timeoutMilliseconds;
+
+                //The Accept list tells the server which formats the readers understand
                 webRequest.Accept = "application/rdf+xml,text/turtle,application/turtle,application/x-turtle,application/n-triples,application/trix";
 
-                HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-                if (webRequest.HaveResponse)
+                //Disposing the response releases its connection, which .NET Framework caps per host
+                using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
                 {
                     //Cascade detection of ContentType from response
                     string responseContentType = webResponse.ContentType;
                     if (string.IsNullOrWhiteSpace(responseContentType))
-                    {
-                        responseContentType = webResponse.Headers["ContentType"];
-                        if (string.IsNullOrWhiteSpace(responseContentType))
-                        {
-                            responseContentType = "application/rdf+xml"; //Fallback to RDF/XML
-                        }
-                    }
+                        responseContentType = webResponse.Headers["ContentType"] ?? string.Empty;
 
+                    //A missing content type is told apart from a generic one because it still falls back to RDF/XML
+                    bool isContentTypeMissing = string.IsNullOrWhiteSpace(responseContentType);
+
+                    //The content types of the supported formats win over the Uri extension
+                    RDFModelEnums.RDFFormats rdfFormat;
+                    
                     //RDF/XML
                     if (responseContentType.Contains("application/rdf+xml"))
-                    {
-                        graph = FromStream(RDFModelEnums.RDFFormats.RdfXml, webResponse.GetResponseStream(), remappedUri);
-                    }
+                        rdfFormat = RDFModelEnums.RDFFormats.RdfXml;
 
                     //TURTLE
                     else if (responseContentType.Contains("text/turtle")
-                             || responseContentType.Contains("application/turtle")
-                             || responseContentType.Contains("application/x-turtle"))
-                    {
-                        graph = FromStream(RDFModelEnums.RDFFormats.Turtle, webResponse.GetResponseStream(), remappedUri);
-                    }
+                              || responseContentType.Contains("application/turtle")
+                              || responseContentType.Contains("application/x-turtle"))
+                        rdfFormat = RDFModelEnums.RDFFormats.Turtle;
 
                     //N-TRIPLES
                     else if (responseContentType.Contains("application/n-triples"))
-                    {
-                        graph = FromStream(RDFModelEnums.RDFFormats.NTriples, webResponse.GetResponseStream(), remappedUri);
-                    }
+                        rdfFormat = RDFModelEnums.RDFFormats.NTriples;
 
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
+                        rdfFormat = RDFModelEnums.RDFFormats.TriX;
+
+                    //A generic content type (like the one that GitHub raw files get) says nothing about the format: the extension of the Uri tells it
+                    else if (isContentTypeMissing
+                              || responseContentType.Contains("text/plain")
+                              || responseContentType.Contains("application/octet-stream")
+                              || responseContentType.Contains("application/xml")
+                              || responseContentType.Contains("text/xml"))
                     {
-                        graph = FromStream(RDFModelEnums.RDFFormats.TriX, webResponse.GetResponseStream(), remappedUri);
+                        //The extension of the remapped address (the query string is not part of the path) names the format of the document
+                        string uriExtension = Path.GetExtension(remappedUri.AbsolutePath);
+
+                        //Extensions that name a format of the readers: any other one is handled by the default case
+                        switch (uriExtension.ToLowerInvariant())
+                        {
+                            //RDF/XML
+                            case ".rdf":
+                            case ".owl":
+                                rdfFormat = RDFModelEnums.RDFFormats.RdfXml;
+                                break;
+ 
+                            //TURTLE
+                            case ".ttl":
+                                rdfFormat = RDFModelEnums.RDFFormats.Turtle;
+                                break;
+ 
+                            //N-TRIPLES
+                            case ".nt":
+                                rdfFormat = RDFModelEnums.RDFFormats.NTriples;
+                                break;
+ 
+                            //TRIX
+                            case ".trix":
+                                rdfFormat = RDFModelEnums.RDFFormats.TriX;
+                                break;
+
+                            //The extension does not tell an RDF format: only a response without content type is still assumed to be RDF/XML
+                            default:
+                                if (!isContentTypeMissing)
+                                    throw new RDFModelException($"the content type \"{responseContentType}\" is generic and the extension \"{uriExtension}\" of the Uri does not tell an RDF format");
+                                rdfFormat = RDFModelEnums.RDFFormats.RdfXml;
+                                break;
+                        }
                     }
+
+                    //Any other content type (HTML pages or JSON-LD for example) is not an RDF format that the readers understand
+                    else
+                        throw new RDFModelException($"the content type \"{responseContentType}\" is not an RDF format that can be read");
+
+                    //The body is read with the format that the content type or the extension told
+                    graph = FromStream(rdfFormat, webResponse.GetResponseStream(), remappedUri);
                 }
             }
             catch (Exception ex)
             {
+                //Network failures and unreadable answers reach the application as the library exception
                 throw new RDFModelException($"Cannot read RDF graph from Uri {uri} because: " + ex.Message);
             }
 

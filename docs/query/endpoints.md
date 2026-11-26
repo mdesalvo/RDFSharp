@@ -398,6 +398,8 @@ Cannot read given "SPARQL Query Results XML Format" source because: Data at the 
 
 </div>
 
+With `GiveEmptyResult` as the error behavior of the query options, the same answer gives the empty result instead of the exception.
+
 `CONSTRUCT` and `DESCRIBE` do not return rows: they ask for `application/turtle` or `text/turtle` and read the answer as an RDF graph, which you obtain with `ToRDFGraphAsync`.
 
 ```csharp

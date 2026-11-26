@@ -34,8 +34,8 @@ public class RDFGeoBufferExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, 150))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, 150))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, 150, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, 150, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -47,8 +47,8 @@ public class RDFGeoBufferExpressionTest
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.LeftArgument);
         Assert.IsNull(expression.RightArgument);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, 150))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, 150))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, 150, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, 150, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -208,8 +208,8 @@ public class RDFGeoBufferExpressionTest
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.BufferMetersExpression);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, ?M))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, ?M))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, ?M, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, ?M, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -228,8 +228,8 @@ public class RDFGeoBufferExpressionTest
 
         Assert.IsNotNull(expression);
         Assert.IsNotNull(expression.BufferMetersExpression);
-        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, ?M))", System.StringComparison.Ordinal));
-        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, ?M))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString().Equals($"(<{RDFVocabulary.GEOSPARQL.GEOF.BUFFER}>(?V, ?M, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
+        Assert.IsTrue(expression.ToString([RDFNamespaceRegister.GetByPrefix("geof")]).Equals("(geof:buffer(?V, ?M, <http://www.opengis.net/def/uom/OGC/1.0/metre>))", System.StringComparison.Ordinal));
     }
 
     [TestMethod]

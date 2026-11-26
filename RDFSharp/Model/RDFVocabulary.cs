@@ -1210,7 +1210,7 @@ namespace RDFSharp.Model
 
         #region GEOSPARQL
         /// <summary>
-        /// GEOSPARQL represents the OGC GeoSPARQL 1.0 vocabulary (with SF and GEOF extensions)
+        /// GEOSPARQL represents the OGC GeoSPARQL 1.0 vocabulary (with SF, GEOF, UOM and UNIT extensions)
         /// </summary>
         public static class GEOSPARQL
         {
@@ -1722,6 +1722,93 @@ namespace RDFSharp.Model
                 /// geof:sfWithin
                 /// </summary>
                 public static readonly RDFResource SF_WITHIN = new RDFResource($"{BASE_URI}sfWithin");
+            }
+
+            /// <summary>
+            /// Units of measure of the OGC
+            /// </summary>
+            public static class UOM
+            {
+                /// <summary>
+                /// uom
+                /// </summary>
+                public static readonly string PREFIX = "uom";
+
+                /// <summary>
+                /// http://www.opengis.net/def/uom/OGC/1.0/
+                /// </summary>
+                public static readonly string BASE_URI = "http://www.opengis.net/def/uom/OGC/1.0/";
+
+                /// <summary>
+                /// http://www.opengis.net/def/uom/OGC/1.0/
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://www.opengis.net/def/uom/OGC/1.0/";
+
+                /// <summary>
+                /// uom:metre
+                /// </summary>
+                public static readonly RDFResource METRE = new RDFResource($"{BASE_URI}metre");
+            }
+
+            /// <summary>
+            /// Units of measure of QUDT
+            /// </summary>
+            public static class UNIT
+            {
+                /// <summary>
+                /// unit
+                /// </summary>
+                public static readonly string PREFIX = "unit";
+
+                /// <summary>
+                /// http://qudt.org/vocab/unit/
+                /// </summary>
+                public static readonly string BASE_URI = "http://qudt.org/vocab/unit/";
+
+                /// <summary>
+                /// http://qudt.org/vocab/unit/
+                /// </summary>
+                public static readonly string DEREFERENCE_URI = "http://qudt.org/vocab/unit/";
+
+                /// <summary>
+                /// unit:M
+                /// </summary>
+                public static readonly RDFResource M = new RDFResource($"{BASE_URI}M");
+
+                /// <summary>
+                /// unit:KiloM
+                /// </summary>
+                public static readonly RDFResource KILO_M = new RDFResource($"{BASE_URI}KiloM");
+
+                /// <summary>
+                /// unit:HectoM
+                /// </summary>
+                public static readonly RDFResource HECTO_M = new RDFResource($"{BASE_URI}HectoM");
+
+                /// <summary>
+                /// unit:DecaM
+                /// </summary>
+                public static readonly RDFResource DECA_M = new RDFResource($"{BASE_URI}DecaM");
+
+                /// <summary>
+                /// unit:DeciM
+                /// </summary>
+                public static readonly RDFResource DECI_M = new RDFResource($"{BASE_URI}DeciM");
+
+                /// <summary>
+                /// unit:CentiM
+                /// </summary>
+                public static readonly RDFResource CENTI_M = new RDFResource($"{BASE_URI}CentiM");
+
+                /// <summary>
+                /// unit:MilliM
+                /// </summary>
+                public static readonly RDFResource MILLI_M = new RDFResource($"{BASE_URI}MilliM");
+
+                /// <summary>
+                /// unit:MicroM
+                /// </summary>
+                public static readonly RDFResource MICRO_M = new RDFResource($"{BASE_URI}MicroM");
             }
             #endregion
         }

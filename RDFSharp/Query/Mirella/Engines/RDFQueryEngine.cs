@@ -984,27 +984,39 @@ namespace RDFSharp.Query
 
                     //Parse response from SPARQL endpoint
                     if (sparqlResponse != null)
-                        using (MemoryStream sStream = new MemoryStream(sparqlResponse))
+                    {
+                        try
                         {
-                            switch (queryType)
+                            using (MemoryStream sStream = new MemoryStream(sparqlResponse))
                             {
-                                case "ASK":
-                                    queryResult = RDFAskQueryResult.FromSparqlXmlResult(sStream);
-                                    break;
+                                //SELECT and ASK answers are SPARQL XML results while CONSTRUCT and DESCRIBE answers are Turtle graphs
+                                switch (queryType)
+                                {
+                                    case "ASK":
+                                        queryResult = RDFAskQueryResult.FromSparqlXmlResult(sStream);
+                                        break;
 
-                                case "SELECT":
-                                    queryResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
-                                    break;
+                                    case "SELECT":
+                                        queryResult = RDFSelectQueryResult.FromSparqlXmlResult(sStream);
+                                        break;
 
-                                case "CONSTRUCT":
-                                    queryResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                                    break;
+                                    case "CONSTRUCT":
+                                        queryResult = RDFConstructQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                                        break;
 
-                                case "DESCRIBE":
-                                    queryResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
-                                    break;
+                                    case "DESCRIBE":
+                                        queryResult = RDFDescribeQueryResult.FromRDFGraph(RDFGraph.FromStream(RDFModelEnums.RDFFormats.Turtle, sStream));
+                                        break;
+                                }
                             }
                         }
+                        catch (Exception ex) when ((ex is RDFQueryException || ex is RDFModelException)
+                                                    && sparqlEndpointQueryOptions.ErrorBehavior == RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult)
+                        {
+                            //The endpoint answered 200 with a body that is not the requested format (a JSON answer to SELECT or ASK, a non-Turtle one to CONSTRUCT or DESCRIBE):
+                            //GiveEmptyResult hides it, so that the empty result is given below as for any other failure of the endpoint
+                        }
+                    }
                 }
             }
 

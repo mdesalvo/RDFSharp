@@ -95,6 +95,8 @@ namespace RDFSharp.Model
                     new RDFNamespace(RDFVocabulary.GEOSPARQL.PREFIX, RDFVocabulary.GEOSPARQL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.GEOSPARQL.SF.PREFIX, RDFVocabulary.GEOSPARQL.SF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.SF.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.GEOSPARQL.GEOF.PREFIX, RDFVocabulary.GEOSPARQL.GEOF.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.GEOF.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.GEOSPARQL.UOM.PREFIX, RDFVocabulary.GEOSPARQL.UOM.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.UOM.DEREFERENCE_URI)).SetReserved(true),
+                    new RDFNamespace(RDFVocabulary.GEOSPARQL.UNIT.PREFIX, RDFVocabulary.GEOSPARQL.UNIT.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.GEOSPARQL.UNIT.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.SKOS.PREFIX, RDFVocabulary.SKOS.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.SKOS.SKOSXL.PREFIX, RDFVocabulary.SKOS.SKOSXL.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.SKOS.SKOSXL.DEREFERENCE_URI)).SetReserved(true),
                     new RDFNamespace(RDFVocabulary.TIME.PREFIX, RDFVocabulary.TIME.BASE_URI).SetDereferenceUri(new Uri(RDFVocabulary.TIME.DEREFERENCE_URI)).SetReserved(true),
