@@ -200,4 +200,172 @@ public partial class RDFQueryParserTest
         }
     }
     #endregion
+
+    #region GeoUnits
+    private const string MetreUnit = "http://www.opengis.net/def/uom/OGC/1.0/metre";
+    private const string QudtUnits = "http://qudt.org/vocab/unit/";
+
+    //Helper: the left side of the comparison that a geo-distance filter desugars to (the converted distance expression).
+    private static RDFExpression DistanceExpressionOf(string unit)
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            $"SELECT * WHERE {{ ?s ?p ?a . ?s ?q ?b FILTER(geof:distance(?a, ?b, {unit}) < 100) }}");
+
+        RDFFilter expressionFilter = (RDFFilter)SingleFilterOf(query);
+        return (RDFExpression)((RDFComparisonExpression)expressionFilter.Expression).LeftArgument;
+    }
+
+    //Helper: the distance in the given unit between two fixed points, computed by the engine on a small graph.
+    private static double EvaluateDistanceBetweenCities(string queryText)
+    {
+        RDFResource position = new RDFResource("http://ex/position");
+        RDFGraph cities = new RDFGraph()
+            .AddTriple(new RDFTriple(new RDFResource("http://ex/milan"), position, new RDFTypedLiteral("POINT (9.19 45.46)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)))
+            .AddTriple(new RDFTriple(new RDFResource("http://ex/rome"), position, new RDFTypedLiteral("POINT (12.49 41.89)", RDFModelEnums.RDFDatatypes.GEOSPARQL_WKT)));
+
+        RDFSelectQueryResult result = RDFSelectQuery.FromString(queryText).ApplyToGraph(cities);
+
+        //The cell prints as "value^^datatype": only the value is needed
+        return double.Parse(result.SelectResults.Rows[0]["?D"].ToString().Split("^^")[0], System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    private static string DistanceQueryInUnit(string unit)
+        => $"SELECT ?d WHERE {{ <http://ex/milan> <http://ex/position> ?milan . <http://ex/rome> <http://ex/position> ?rome BIND(geof:distance(?milan, ?rome, {unit}) AS ?d) }}";
+
+    [TestMethod]
+    [DataRow("<" + MetreUnit + ">")]
+    [DataRow("<" + QudtUnits + "M>")]
+    public void ShouldParseGeoDistanceFunctionInMetresWithoutConversion(string unit)
+        => Assert.IsInstanceOfType<RDFGeoDistanceExpression>(DistanceExpressionOf(unit));
+
+    [TestMethod]
+    [DataRow("DecaM", 10)]
+    [DataRow("HectoM", 100)]
+    [DataRow("KiloM", 1000)]
+    public void ShouldParseGeoDistanceFunctionInLargerUnitAsDivision(string unitName, int scale)
+    {
+        RDFDivideExpression division = Assert.IsInstanceOfType<RDFDivideExpression>(DistanceExpressionOf($"<{QudtUnits}{unitName}>"));
+
+        Assert.IsInstanceOfType<RDFGeoDistanceExpression>(division.LeftArgument);
+        Assert.AreEqual(scale.ToString(), ((RDFTypedLiteral)division.RightArgument).Value);
+        Assert.AreEqual(RDFVocabulary.XSD.INTEGER.ToString(), ((RDFTypedLiteral)division.RightArgument).Datatype.ToString());
+    }
+
+    [TestMethod]
+    [DataRow("DeciM", 10)]
+    [DataRow("CentiM", 100)]
+    [DataRow("MilliM", 1000)]
+    [DataRow("MicroM", 1000000)]
+    public void ShouldParseGeoDistanceFunctionInSmallerUnitAsMultiplication(string unitName, int scale)
+    {
+        RDFMultiplyExpression multiplication = Assert.IsInstanceOfType<RDFMultiplyExpression>(DistanceExpressionOf($"<{QudtUnits}{unitName}>"));
+
+        Assert.IsInstanceOfType<RDFGeoDistanceExpression>(multiplication.LeftArgument);
+        Assert.AreEqual(scale.ToString(), ((RDFTypedLiteral)multiplication.RightArgument).Value);
+    }
+
+    [TestMethod]
+    public void ShouldEvaluateGeoDistanceFunctionInConvertedUnits()
+    {
+        double metres = EvaluateDistanceBetweenCities(DistanceQueryInUnit("<" + MetreUnit + ">"));
+        double kilometres = EvaluateDistanceBetweenCities(DistanceQueryInUnit("<" + QudtUnits + "KiloM>"));
+        double millimetres = EvaluateDistanceBetweenCities(DistanceQueryInUnit("<" + QudtUnits + "MilliM>"));
+
+        Assert.IsGreaterThan(0, metres);
+        Assert.AreEqual(metres / 1000, kilometres, 1e-9);
+        Assert.AreEqual(metres * 1000, millimetres, 1e-3);
+    }
+
+    [TestMethod]
+    public void ShouldParseGeoDistanceFunctionInConvertedUnitBackAfterPrinting()
+    {
+        string kilometresQuery = DistanceQueryInUnit("<" + QudtUnits + "KiloM>");
+
+        RDFSelectQuery parsedQuery = RDFSelectQuery.FromString(kilometresQuery);
+        RDFSelectQuery reparsedQuery = RDFSelectQuery.FromString(parsedQuery.ToString());
+
+        Assert.AreEqual(EvaluateDistanceBetweenCities(kilometresQuery), EvaluateDistanceBetweenCities(parsedQuery.ToString()), 1e-9);
+        Assert.AreEqual(parsedQuery.ToString(), reparsedQuery.ToString());
+    }
+
+    [TestMethod]
+    [DataRow(MetreUnit, 10d, 10d)]
+    [DataRow(QudtUnits + "M", 10d, 10d)]
+    [DataRow(QudtUnits + "KiloM", 10d, 10000d)]
+    [DataRow(QudtUnits + "HectoM", 3d, 300d)]
+    [DataRow(QudtUnits + "DecaM", 2d, 20d)]
+    [DataRow(QudtUnits + "DeciM", 5d, 0.5d)]
+    [DataRow(QudtUnits + "CentiM", 25d, 0.25d)]
+    [DataRow(QudtUnits + "MilliM", 1500d, 1.5d)]
+    [DataRow(QudtUnits + "MicroM", 500000d, 0.5d)]
+    public void ShouldParseGeoBufferFunctionWithFixedRadiusConvertedToMetres(string unit, double radius, double expectedMeters)
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            $"SELECT * WHERE {{ ?s ?p ?a FILTER(geof:sfWithin(geof:buffer(?a, {radius.ToString(System.Globalization.CultureInfo.InvariantCulture)}, <{unit}>), ?a)) }}");
+
+        RDFGeoBufferExpression buffer = (RDFGeoBufferExpression)((RDFGeoWithinExpression)GeoExpressionOf(query)).LeftArgument;
+        Assert.AreEqual(expectedMeters, buffer.BufferMeters);
+        Assert.IsNull(buffer.BufferMetersExpression);
+    }
+
+    [TestMethod]
+    public void ShouldParseGeoBufferFunctionWithoutUnitInMetres()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString("SELECT * WHERE { ?s ?p ?a FILTER(geof:sfWithin(geof:buffer(?a, 25), ?a)) }");
+
+        RDFGeoBufferExpression buffer = (RDFGeoBufferExpression)((RDFGeoWithinExpression)GeoExpressionOf(query)).LeftArgument;
+        Assert.AreEqual(25d, buffer.BufferMeters);
+    }
+
+    [TestMethod]
+    public void ShouldParseGeoBufferFunctionWithDynamicRadiusInLargerUnitAsMultiplication()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            $"SELECT * WHERE {{ ?s ?p ?a . ?s ?r ?radius FILTER(geof:sfWithin(geof:buffer(?a, ?radius, <{QudtUnits}KiloM>), ?a)) }}");
+
+        RDFGeoBufferExpression buffer = (RDFGeoBufferExpression)((RDFGeoWithinExpression)GeoExpressionOf(query)).LeftArgument;
+        RDFMultiplyExpression multiplication = Assert.IsInstanceOfType<RDFMultiplyExpression>(buffer.BufferMetersExpression);
+        Assert.AreEqual("1000", ((RDFTypedLiteral)multiplication.RightArgument).Value);
+    }
+
+    [TestMethod]
+    public void ShouldParseGeoBufferFunctionWithDynamicRadiusInSmallerUnitAsDivision()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            $"SELECT * WHERE {{ ?s ?p ?a . ?s ?r ?radius FILTER(geof:sfWithin(geof:buffer(?a, ?radius, <{QudtUnits}MilliM>), ?a)) }}");
+
+        RDFGeoBufferExpression buffer = (RDFGeoBufferExpression)((RDFGeoWithinExpression)GeoExpressionOf(query)).LeftArgument;
+        RDFDivideExpression division = Assert.IsInstanceOfType<RDFDivideExpression>(buffer.BufferMetersExpression);
+        Assert.AreEqual("1000", ((RDFTypedLiteral)division.RightArgument).Value);
+    }
+
+    [TestMethod]
+    public void ShouldParseGeoBufferFunctionWithDynamicRadiusInMetresWithoutConversion()
+    {
+        RDFSelectQuery query = RDFSelectQuery.FromString(
+            $"SELECT * WHERE {{ ?s ?p ?a . ?s ?r ?radius FILTER(geof:sfWithin(geof:buffer(?a, ?radius, <{MetreUnit}>), ?a)) }}");
+
+        RDFGeoBufferExpression buffer = (RDFGeoBufferExpression)((RDFGeoWithinExpression)GeoExpressionOf(query)).LeftArgument;
+        Assert.IsInstanceOfType<RDFVariableExpression>(buffer.BufferMetersExpression);
+    }
+
+    [TestMethod]
+    [DataRow("<" + QudtUnits + "FT>", QudtUnits + "FT")]
+    [DataRow("<" + QudtUnits + "YD>", QudtUnits + "YD")]
+    [DataRow("<http://www.opengis.net/def/uom/OGC/1.0/degree>", "http://www.opengis.net/def/uom/OGC/1.0/degree")]
+    [DataRow("?u", "?")]
+    [DataRow("\"m\"", "m")]
+    public void ShouldThrowOnGeoFunctionsWithUnsupportedUnit(string unit, string expectedInMessage)
+    {
+        RDFQueryException distanceException = Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?a . ?s ?q ?b . ?s ?r ?u FILTER(geof:distance(?a, ?b, {unit}) < 100) }}"));
+        RDFQueryException bufferException = Assert.ThrowsExactly<RDFQueryException>(() =>
+            RDFSelectQuery.FromString($"SELECT * WHERE {{ ?s ?p ?a . ?s ?r ?u FILTER(geof:sfWithin(geof:buffer(?a, 10, {unit}), ?a)) }}"));
+
+        Assert.Contains("is not supported", distanceException.Message);
+        Assert.Contains(expectedInMessage, distanceException.Message);
+        Assert.Contains("is not supported", bufferException.Message);
+        Assert.Contains(expectedInMessage, bufferException.Message);
+    }
+    #endregion
 }

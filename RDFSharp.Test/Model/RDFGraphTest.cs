@@ -21,9 +21,13 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using RDFSharp.Query;
 using System.Threading;
 using System.Threading.Tasks;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 
 namespace RDFSharp.Test.Model;
 
@@ -2493,6 +2497,71 @@ public class RDFGraphTest
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
         => await Assert.ThrowsExactlyAsync<RDFModelException>(async () => await RDFGraph.FromUriAsync(new Uri("http://rdfsharp.test/"), 500));
+
+    #region Tests (FromUri on mocked server)
+    private const string TurtleBody = "<http://ex/s> <http://ex/p> <http://ex/o> .";
+    private const string RdfXmlBody = """
+        <?xml version="1.0" encoding="utf-8"?>
+        <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="http://ex/s">
+            <rdf:type rdf:resource="http://ex/o" />
+          </rdf:Description>
+        </rdf:RDF>
+        """;
+
+    private static WireMockServer ServeContent(string path, string contentType, string body)
+    {
+        WireMockServer server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath(path))
+            .RespondWith(
+                Response.Create()
+                    .WithHeader("Content-Type", contentType)
+                    .WithBody(body)
+                    .WithStatusCode(HttpStatusCode.OK));
+        return server;
+    }
+
+    [TestMethod]
+    [DataRow("text/plain", "/x.ttl", TurtleBody)]
+    [DataRow("text/plain", "/x.TTL", TurtleBody)]
+    [DataRow("text/plain", "/x.nt", TurtleBody)]
+    [DataRow("application/octet-stream", "/x.nt", TurtleBody)]
+    [DataRow("application/xml", "/x.owl", RdfXmlBody)]
+    [DataRow("text/xml", "/x.rdf", RdfXmlBody)]
+    [DataRow("text/turtle", "/x.rdf", TurtleBody)]
+    [DataRow("application/rdf+xml", "/x.ttl", RdfXmlBody)]
+    public async Task ShouldReadGraphFromUriWithFormatChosenByContentTypeOrExtension(string contentType, string path, string body)
+    {
+        using WireMockServer server = ServeContent(path, contentType, body);
+        Uri uri = new Uri(server.Url + path);
+
+        RDFGraph syncGraph = RDFGraph.FromUri(uri);
+        RDFGraph asyncGraph = await RDFGraph.FromUriAsync(uri);
+
+        Assert.AreEqual(1, syncGraph.TriplesCount);
+        Assert.AreEqual(1, asyncGraph.TriplesCount);
+    }
+
+    [TestMethod]
+    [DataRow("text/plain", "/x")]
+    [DataRow("text/plain", "/x.txt")]
+    [DataRow("text/html", "/x.ttl")]
+    [DataRow("application/ld+json", "/x.rdf")]
+    public async Task ShouldRaiseExceptionOnImportingFromUriWithUnreadableContentType(string contentType, string path)
+    {
+        using WireMockServer server = ServeContent(path, contentType, TurtleBody);
+        Uri uri = new Uri(server.Url + path);
+
+        RDFModelException syncException = Assert.ThrowsExactly<RDFModelException>(() => RDFGraph.FromUri(uri));
+        RDFModelException asyncException = await Assert.ThrowsExactlyAsync<RDFModelException>(() => RDFGraph.FromUriAsync(uri));
+
+        Assert.StartsWith($"Cannot read RDF graph from Uri {uri} because:", syncException.Message);
+        Assert.Contains(contentType, syncException.Message);
+        Assert.StartsWith($"Cannot read RDF graph from Uri {uri} because:", asyncException.Message);
+        Assert.Contains(contentType, asyncException.Message);
+    }
+    #endregion
 
     public TestContext TestContext { get; set; }
     #endregion

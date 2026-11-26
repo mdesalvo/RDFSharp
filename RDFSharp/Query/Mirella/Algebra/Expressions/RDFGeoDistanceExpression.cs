@@ -98,7 +98,7 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(geof:distance(L,R))
+            //(geof:distance(L,R,U))
             sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.DISTANCE, prefixes)}(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
@@ -109,7 +109,7 @@ namespace RDFSharp.Query
                 sb.Append(expRightArgument.ToString(prefixes));
             else
                 sb.Append(RDFQueryPrinter.PrintPatternMember((RDFPatternMember)RightArgument, prefixes));
-            sb.Append($", {RDFQueryPrinter.PrintPatternMember(new RDFResource("http://www.opengis.net/def/uom/OGC/1.0/metre"), prefixes)}))");
+            sb.Append($", {RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.UOM.METRE, prefixes)}))");
 
             return sb.ToString();
         }

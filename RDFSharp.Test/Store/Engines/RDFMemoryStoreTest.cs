@@ -22,9 +22,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using RDFSharp.Query;
 using System.Threading;
 using System.Threading.Tasks;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 
 namespace RDFSharp.Test.Store;
 
@@ -1835,6 +1839,61 @@ public class RDFMemoryStoreTest
     [TestMethod]
     public async Task ShouldRaiseExceptionOnImportingFromUnreacheableUriAsync()
         => await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(new Uri("http://rdfsharp.test/"), 500));
+
+    #region Tests (FromUri on mocked server)
+    private const string NQuadsBody = "<http://ex/s> <http://ex/p> <http://ex/o> <http://ex/c> .";
+    private const string TriGBody = "<http://ex/c> { <http://ex/s> <http://ex/p> <http://ex/o> . }";
+
+    private static WireMockServer ServeContent(string path, string contentType, string body)
+    {
+        WireMockServer server = WireMockServer.Start();
+        server
+            .Given(Request.Create().WithPath(path))
+            .RespondWith(
+                Response.Create()
+                    .WithHeader("Content-Type", contentType)
+                    .WithBody(body)
+                    .WithStatusCode(HttpStatusCode.OK));
+        return server;
+    }
+
+    [TestMethod]
+    [DataRow("text/plain", "/x.nq", NQuadsBody)]
+    [DataRow("text/plain", "/x.NQ", NQuadsBody)]
+    [DataRow("application/octet-stream", "/x.trig", TriGBody)]
+    [DataRow("application/xml", "/x.nq", NQuadsBody)]
+    [DataRow("application/n-quads", "/x.trig", NQuadsBody)]
+    public async Task ShouldReadStoreFromUriWithFormatChosenByContentTypeOrExtension(string contentType, string path, string body)
+    {
+        using WireMockServer server = ServeContent(path, contentType, body);
+        Uri uri = new Uri(server.Url + path);
+
+        RDFMemoryStore syncStore = RDFMemoryStore.FromUri(uri);
+        RDFMemoryStore asyncStore = await RDFMemoryStore.FromUriAsync(uri);
+
+        Assert.AreEqual(1, syncStore.QuadruplesCount);
+        Assert.AreEqual(1, asyncStore.QuadruplesCount);
+    }
+
+    [TestMethod]
+    [DataRow("text/plain", "/x")]
+    [DataRow("text/plain", "/x.txt")]
+    [DataRow("text/html", "/x.nq")]
+    [DataRow("application/json", "/x.trig")]
+    public async Task ShouldRaiseExceptionOnImportingFromUriWithUnreadableContentType(string contentType, string path)
+    {
+        using WireMockServer server = ServeContent(path, contentType, NQuadsBody);
+        Uri uri = new Uri(server.Url + path);
+
+        RDFStoreException syncException = Assert.ThrowsExactly<RDFStoreException>(() => RDFMemoryStore.FromUri(uri));
+        RDFStoreException asyncException = await Assert.ThrowsExactlyAsync<RDFStoreException>(() => RDFMemoryStore.FromUriAsync(uri));
+
+        Assert.StartsWith("Cannot read RDF memory store from Uri because:", syncException.Message);
+        Assert.Contains(contentType, syncException.Message);
+        Assert.StartsWith("Cannot read RDF memory store from Uri because:", asyncException.Message);
+        Assert.Contains(contentType, asyncException.Message);
+    }
+    #endregion
     #endregion
 
     #region Tests (Async)

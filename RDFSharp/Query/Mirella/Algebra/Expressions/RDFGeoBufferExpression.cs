@@ -68,7 +68,7 @@ namespace RDFSharp.Query
 
         #region Interfaces
         /// <summary>
-        /// Gives the string representation of the geof:distance function
+        /// Gives the string representation of the geof:buffer function
         /// </summary>
         public override string ToString()
             => ToString(RDFModelUtilities.EmptyNamespaceList);
@@ -76,7 +76,7 @@ namespace RDFSharp.Query
         {
             StringBuilder sb = new StringBuilder();
 
-            //(geof:buffer(L,N))
+            //(geof:buffer(L,N,U))
             sb.Append($"({RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.GEOF.BUFFER, prefixes)}(");
             if (LeftArgument is RDFExpression expLeftArgument)
                 sb.Append(expLeftArgument.ToString(prefixes));
@@ -85,7 +85,7 @@ namespace RDFSharp.Query
             sb.Append(BufferMetersExpression != null
                         ? $", {BufferMetersExpression.ToString(prefixes)}"
                         : $", {Convert.ToString(BufferMeters, CultureInfo.InvariantCulture)}");
-            sb.Append("))");
+            sb.Append($", {RDFQueryPrinter.PrintPatternMember(RDFVocabulary.GEOSPARQL.UOM.METRE, prefixes)}))");
 
             return sb.ToString();
         }

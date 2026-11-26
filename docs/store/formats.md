@@ -216,7 +216,7 @@ The first number is the count of lines of the N-Quads text, one for each quadrup
 
 ## From the Web
 
-A partner can also publish its store at an address. `RDFMemoryStore.FromUriAsync` asks that address for a store and reads whatever comes back. It sends an `Accept` header that lists the three media types of the table above and picks the parser from the `Content-Type` of the answer. When the server states none, it reads the body as N-Quads. The second parameter is a timeout in milliseconds, 20 seconds by default.
+A partner can also publish its store at an address. `RDFMemoryStore.FromUriAsync` asks that address for a store and reads the answer. It sends an `Accept` header that lists the three media types of the table above and picks the parser from the `Content-Type` of the answer. When the server gives a generic content type (`text/plain`, `application/octet-stream`, `application/xml` or `text/xml`) the parser is chosen from the extension of the address (`.nq`, `.trig` or `.trix`). When the server states no content type, the extension decides as well and N-Quads is the fallback. Any other content type raises an `RDFStoreException`. The second parameter is a timeout in milliseconds, 20 seconds by default.
 
 ```csharp
 try

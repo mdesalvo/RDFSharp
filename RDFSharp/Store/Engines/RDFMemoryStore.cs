@@ -693,46 +693,100 @@ namespace RDFSharp.Store
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because given \"uri\" parameter does not represent an absolute Uri.");
             #endregion
 
-            RDFMemoryStore memStore = new RDFMemoryStore();
-
+            //Holds the dereferenced store: it is assigned inside the try because every failure there leaves the method through the catch
+            RDFMemoryStore memStore;
             try
             {
                 //Grab eventual dereference Uri
                 Uri remappedUri = RDFModelUtilities.RemapUriForDereference(uri);
 
+                //The request goes to the remapped address because the namespace register may redirect the given Uri to its dereference Uri
                 HttpWebRequest webRequest = WebRequest.CreateHttp(remappedUri);
+
+                //Linked data addresses often redirect to the document that serves the representation: a few hops are followed
                 webRequest.MaximumAutomaticRedirections = 3;
                 webRequest.AllowAutoRedirect = true;
+
+                //The timeout is the one given by the caller: -1 waits indefinitely
                 webRequest.Timeout = timeoutMilliseconds;
+
+                //The Accept list tells the server which formats the readers understand
                 webRequest.Accept = "application/n-quads,application/trix,application/trig";
 
-                HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse();
-                if (webRequest.HaveResponse)
+                //Disposing the response releases its connection, which .NET Framework caps per host
+                using (HttpWebResponse webResponse = (HttpWebResponse)webRequest.GetResponse())
                 {
                     //Cascade detection of ContentType from response
                     string responseContentType = webResponse.ContentType;
                     if (string.IsNullOrWhiteSpace(responseContentType))
-                    {
-                        responseContentType = webResponse.Headers["ContentType"];
-                        if (string.IsNullOrWhiteSpace(responseContentType))
-                            responseContentType = "application/n-quads"; //Fallback to N-QUADS
-                    }
+                        responseContentType = webResponse.Headers["ContentType"] ?? string.Empty;
+
+                    //A missing content type is told apart from a generic one because it still falls back to N-Quads
+                    bool isContentTypeMissing = string.IsNullOrWhiteSpace(responseContentType);
+
+                    //The content types of the supported formats win over the Uri extension
+                    RDFStoreEnums.RDFFormats rdfFormat;
 
                     //N-QUADS
                     if (responseContentType.Contains("application/n-quads"))
-                        memStore = FromStream(RDFStoreEnums.RDFFormats.NQuads, webResponse.GetResponseStream());
+                        rdfFormat = RDFStoreEnums.RDFFormats.NQuads;
 
                     //TRIX
                     else if (responseContentType.Contains("application/trix"))
-                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriX, webResponse.GetResponseStream());
+                        rdfFormat = RDFStoreEnums.RDFFormats.TriX;
 
                     //TRIG
                     else if (responseContentType.Contains("application/trig"))
-                        memStore = FromStream(RDFStoreEnums.RDFFormats.TriG, webResponse.GetResponseStream());
+                        rdfFormat = RDFStoreEnums.RDFFormats.TriG;
+
+                    //A generic content type (like the one that GitHub raw files get) says nothing about the format: the extension of the Uri tells it
+                    else if (isContentTypeMissing
+                              || responseContentType.Contains("text/plain")
+                              || responseContentType.Contains("application/octet-stream")
+                              || responseContentType.Contains("application/xml")
+                              || responseContentType.Contains("text/xml"))
+                    {
+                        //The extension of the remapped address (the query string is not part of the path) names the format of the document
+                        string uriExtension = Path.GetExtension(remappedUri.AbsolutePath);
+
+                        //Extensions that name a format of the readers: any other one is handled by the default case
+                        switch (uriExtension.ToLowerInvariant())
+                        {
+                            //N-QUADS
+                            case ".nq":
+                                rdfFormat = RDFStoreEnums.RDFFormats.NQuads;
+                                break;
+
+                            //TRIX
+                            case ".trix":
+                                rdfFormat = RDFStoreEnums.RDFFormats.TriX;
+                                break;
+
+                            //TRIG
+                            case ".trig":
+                                rdfFormat = RDFStoreEnums.RDFFormats.TriG;
+                                break;
+
+                            //The extension does not tell an RDF format: only a response without content type is still assumed to be N-Quads
+                            default:
+                                if (!isContentTypeMissing)
+                                    throw new RDFStoreException($"the content type \"{responseContentType}\" is generic and the extension \"{uriExtension}\" of the Uri does not tell an RDF format");
+                                rdfFormat = RDFStoreEnums.RDFFormats.NQuads;
+                                break;
+                        }
+                    }
+
+                    //Any other content type (HTML pages for example) is not an RDF format that the readers understand
+                    else
+                        throw new RDFStoreException($"the content type \"{responseContentType}\" is not an RDF format that can be read");
+
+                    //The body is read with the format that the content type or the extension told
+                    memStore = FromStream(rdfFormat, webResponse.GetResponseStream());
                 }
             }
             catch (Exception ex)
             {
+                //Network failures and unreadable answers reach the application as the library exception
                 throw new RDFStoreException("Cannot read RDF memory store from Uri because: " + ex.Message);
             }
 

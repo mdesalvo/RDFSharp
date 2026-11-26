@@ -104,7 +104,7 @@ The standard vocabularies come out as `rdf:`, `rdfs:` and `owl:`, because the li
 
 ## The register
 
-`RDFNamespaceRegister` is the library's single list of known namespaces. It is a static class: you never create one, you call `AddNamespace` on it. A new library starts with 23 entries: the 22 standard vocabularies and `rdfsharp`, the default namespace.
+`RDFNamespaceRegister` is the library's single list of known namespaces. It is a static class: you never create one, you call `AddNamespace` on it. A new library starts with 25 entries: the 24 standard vocabularies and `rdfsharp`, the default namespace.
 
 ```csharp
 Console.WriteLine(RDFNamespaceRegister.NamespacesCount);
@@ -118,9 +118,9 @@ Console.WriteLine(RDFNamespaceRegister.NamespacesCount);
 <div class="result" markdown="1">
 
 ```
-23
 25
-25
+27
+27
 ```
 
 </div>
@@ -213,7 +213,7 @@ Console.WriteLine(RDFNamespaceRegister.GetByPrefix("dbr") == null);
 <div class="result" markdown="1">
 
 ```
-rdfsharp rdf rdfs xsd owl sh swrl swrlb xml dc dcam dcterms dctype foaf geo geosparql sf geof skos skosxl time greg thors vr vrd dbr
+rdfsharp rdf rdfs xsd owl sh swrl swrlb xml dc dcam dcterms dctype foaf geo geosparql sf geof uom unit skos skosxl time greg thors vr vrd dbr
 True
 True
 ```
@@ -262,7 +262,7 @@ A term is an `RDFResource` like any other, so `RDFVocabulary.RDF.TYPE` and the r
 | `DC` | `dc` | Dublin Core elements, with `DCAM`, `DCTERMS` and `DCTYPE` |
 | `FOAF` | `foaf` | people and their relations |
 | `GEO` | `geo` | points on the map |
-| `GEOSPARQL` | `geosparql` | geometries and spatial functions, with `SF` and `GEOF` |
+| `GEOSPARQL` | `geosparql` | geometries and spatial functions, with `SF`, `GEOF`, `UOM` and `UNIT` |
 | `SKOS` | `skos` | thesauri and classification schemes, with `SKOSXL` |
 | `SWRL` | `swrl` | rules, with `SWRLB` for the built-in functions |
 | `TIME` | `time` | instants and intervals, with `GREG` and `THORS` |

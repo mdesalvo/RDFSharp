@@ -6609,5 +6609,100 @@ public class RDFQueryEngineTest
 
     #endregion
 
+    #region Tests (SPARQL endpoint answers)
+    private const string JsonAnswer = "{\"head\":{\"vars\":[\"s\"]},\"results\":{\"bindings\":[]}}";
+    private RDFSPARQLEndpoint ServeAnswer(string path, string answer)
+    {
+        server
+            .Given(Request.Create().WithPath(path))
+            .RespondWith(
+                Response.Create()
+                    .WithBody(answer, encoding: Encoding.UTF8)
+                    .WithStatusCode(HttpStatusCode.OK));
+        return new RDFSPARQLEndpoint(new Uri(server.Url + path));
+    }
+
+    [TestMethod]
+    public async Task ShouldGiveEmptySelectResultOnUnreadableAnswerWithGiveEmptyResultBehavior()
+    {
+        RDFSPARQLEndpoint endpoint = ServeAnswer("/RDFQueryEngineTest/ShouldGiveEmptySelectResultOnUnreadableAnswer", JsonAnswer);
+        RDFSPARQLEndpointQueryOptions options = new RDFSPARQLEndpointQueryOptions(-1, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult);
+
+        RDFSelectQueryResult syncResult = RDFSelectQuery.ApplyRawToSPARQLEndpoint("SELECT * WHERE { ?s ?p ?o }", endpoint, options);
+        RDFSelectQueryResult asyncResult = await RDFSelectQuery.ApplyRawToSPARQLEndpointAsync("SELECT * WHERE { ?s ?p ?o }", endpoint, options);
+
+        Assert.AreEqual(0, syncResult.SelectResultsCount);
+        Assert.AreEqual(0, syncResult.SelectResults.Columns.Count);
+        Assert.AreEqual(0, asyncResult.SelectResultsCount);
+        Assert.AreEqual(0, asyncResult.SelectResults.Columns.Count);
+    }
+
+    [TestMethod]
+    public async Task ShouldThrowReaderExceptionOnUnreadableSelectAnswerWithThrowExceptionBehavior()
+    {
+        RDFSPARQLEndpoint endpoint = ServeAnswer("/RDFQueryEngineTest/ShouldThrowReaderExceptionOnUnreadableSelectAnswer", JsonAnswer);
+        RDFSPARQLEndpointQueryOptions options = new RDFSPARQLEndpointQueryOptions(-1, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException);
+
+        RDFQueryException syncException = Assert.ThrowsExactly<RDFQueryException>(() => RDFSelectQuery.ApplyRawToSPARQLEndpoint("SELECT * WHERE { ?s ?p ?o }", endpoint, options));
+        RDFQueryException asyncException = await Assert.ThrowsExactlyAsync<RDFQueryException>(() => RDFSelectQuery.ApplyRawToSPARQLEndpointAsync("SELECT * WHERE { ?s ?p ?o }", endpoint, options));
+
+        Assert.StartsWith("Cannot read given \"SPARQL Query Results XML Format\" source because:", syncException.Message);
+        Assert.StartsWith("Cannot read given \"SPARQL Query Results XML Format\" source because:", asyncException.Message);
+    }
+
+    [TestMethod]
+    public async Task ShouldGiveEmptyAskResultOnUnreadableAnswerWithGiveEmptyResultBehavior()
+    {
+        RDFSPARQLEndpoint endpoint = ServeAnswer("/RDFQueryEngineTest/ShouldGiveEmptyAskResultOnUnreadableAnswer", JsonAnswer);
+        RDFSPARQLEndpointQueryOptions options = new RDFSPARQLEndpointQueryOptions(-1, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult);
+
+        RDFAskQueryResult syncResult = RDFAskQuery.ApplyRawToSPARQLEndpoint("ASK { ?s ?p ?o }", endpoint, options);
+        RDFAskQueryResult asyncResult = await RDFAskQuery.ApplyRawToSPARQLEndpointAsync("ASK { ?s ?p ?o }", endpoint, options);
+
+        Assert.IsFalse(syncResult.AskResult);
+        Assert.IsFalse(asyncResult.AskResult);
+    }
+
+    [TestMethod]
+    public async Task ShouldThrowReaderExceptionOnUnreadableAskAnswerWithThrowExceptionBehavior()
+    {
+        RDFSPARQLEndpoint endpoint = ServeAnswer("/RDFQueryEngineTest/ShouldThrowReaderExceptionOnUnreadableAskAnswer", JsonAnswer);
+        RDFSPARQLEndpointQueryOptions options = new RDFSPARQLEndpointQueryOptions(-1, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException);
+
+        RDFQueryException syncException = Assert.ThrowsExactly<RDFQueryException>(() => RDFAskQuery.ApplyRawToSPARQLEndpoint("ASK { ?s ?p ?o }", endpoint, options));
+        RDFQueryException asyncException = await Assert.ThrowsExactlyAsync<RDFQueryException>(() => RDFAskQuery.ApplyRawToSPARQLEndpointAsync("ASK { ?s ?p ?o }", endpoint, options));
+
+        Assert.StartsWith("Cannot read given \"SPARQL Query Results XML Format\" source because:", syncException.Message);
+        Assert.StartsWith("Cannot read given \"SPARQL Query Results XML Format\" source because:", asyncException.Message);
+    }
+
+    [TestMethod]
+    public async Task ShouldGiveEmptyConstructResultOnUnreadableAnswerWithGiveEmptyResultBehavior()
+    {
+        RDFSPARQLEndpoint endpoint = ServeAnswer("/RDFQueryEngineTest/ShouldGiveEmptyConstructResultOnUnreadableAnswer", JsonAnswer);
+        RDFSPARQLEndpointQueryOptions options = new RDFSPARQLEndpointQueryOptions(-1, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.GiveEmptyResult);
+
+        RDFConstructQueryResult syncResult = RDFConstructQuery.ApplyRawToSPARQLEndpoint("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", endpoint, options);
+        RDFConstructQueryResult asyncResult = await RDFConstructQuery.ApplyRawToSPARQLEndpointAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", endpoint, options);
+
+        Assert.AreEqual(0, syncResult.ConstructResultsCount);
+        Assert.AreEqual(0, asyncResult.ConstructResultsCount);
+    }
+
+    [TestMethod]
+    public async Task ShouldThrowReaderExceptionOnUnreadableConstructAnswerWithThrowExceptionBehavior()
+    {
+        RDFSPARQLEndpoint endpoint = ServeAnswer("/RDFQueryEngineTest/ShouldThrowReaderExceptionOnUnreadableConstructAnswer", JsonAnswer);
+        RDFSPARQLEndpointQueryOptions options = new RDFSPARQLEndpointQueryOptions(-1, RDFQueryEnums.RDFSPARQLEndpointQueryErrorBehaviors.ThrowException);
+
+        RDFModelException syncException = Assert.ThrowsExactly<RDFModelException>(() => RDFConstructQuery.ApplyRawToSPARQLEndpoint("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", endpoint, options));
+        RDFModelException asyncException = await Assert.ThrowsExactlyAsync<RDFModelException>(() => RDFConstructQuery.ApplyRawToSPARQLEndpointAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }", endpoint, options));
+
+        Assert.StartsWith("Cannot deserialize Turtle because:", syncException.Message);
+        Assert.StartsWith("Cannot deserialize Turtle because:", asyncException.Message);
+    }
+
+    #endregion
+
     #endregion
 }

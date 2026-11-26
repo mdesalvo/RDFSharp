@@ -70,6 +70,23 @@ public class RDFNamespaceRegisterTest
     }
 
     [TestMethod]
+    public void ShouldEnlistGeoSPARQLUnitsOfMeasureNamespaces()
+    {
+        RDFNamespace uom = RDFNamespaceRegister.GetByPrefix("uom");
+        Assert.IsNotNull(uom);
+        Assert.AreEqual(new Uri("http://www.opengis.net/def/uom/OGC/1.0/"), uom.NamespaceUri);
+        Assert.AreEqual(new Uri("http://www.opengis.net/def/uom/OGC/1.0/"), uom.DereferenceUri);
+        Assert.AreEqual("http://www.opengis.net/def/uom/OGC/1.0/metre", RDFVocabulary.GEOSPARQL.UOM.METRE.ToString());
+
+        RDFNamespace unit = RDFNamespaceRegister.GetByPrefix("unit");
+        Assert.IsNotNull(unit);
+        Assert.AreEqual(new Uri("http://qudt.org/vocab/unit/"), unit.NamespaceUri);
+        Assert.AreEqual(new Uri("http://qudt.org/vocab/unit/"), unit.DereferenceUri);
+        Assert.AreEqual("http://qudt.org/vocab/unit/KiloM", RDFVocabulary.GEOSPARQL.UNIT.KILO_M.ToString());
+        Assert.AreEqual("http://qudt.org/vocab/unit/MicroM", RDFVocabulary.GEOSPARQL.UNIT.MICRO_M.ToString());
+    }
+
+    [TestMethod]
     public void ShouldAddAndRemoveNamespaces()
     {
         RDFNamespace ex4NS = new RDFNamespace("ex4", "http://example.org4/");

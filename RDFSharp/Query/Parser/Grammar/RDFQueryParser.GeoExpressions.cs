@@ -110,6 +110,24 @@ namespace RDFSharp.Query
                 [RDFVocabulary.GEOSPARQL.GEOF.RCC8NTPPI.ToString()]= RDFQueryEnums.RDFGeoRCC8Relations.RCC8NTPPI,
                 [RDFVocabulary.GEOSPARQL.GEOF.RCC8EQ.ToString()]   = RDFQueryEnums.RDFGeoRCC8Relations.RCC8EQ
             };
+
+        /// <summary>
+        /// Units of measure accepted by geof:distance and geof:buffer, keyed by unit IRI: each one is the metre or a
+        /// decimal multiple/submultiple of it, given as an exact integer scale and the direction of the scale.
+        /// </summary>
+        private static readonly Dictionary<string, (int Scale, bool IsSubmultiple)> GeoUnits =
+            new Dictionary<string, (int Scale, bool IsSubmultiple)>
+            {
+                [RDFVocabulary.GEOSPARQL.UOM.METRE.ToString()]     = (1, false),
+                [RDFVocabulary.GEOSPARQL.UNIT.M.ToString()]        = (1, false),
+                [RDFVocabulary.GEOSPARQL.UNIT.DECA_M.ToString()]   = (10, false),
+                [RDFVocabulary.GEOSPARQL.UNIT.HECTO_M.ToString()]  = (100, false),
+                [RDFVocabulary.GEOSPARQL.UNIT.KILO_M.ToString()]   = (1000, false),
+                [RDFVocabulary.GEOSPARQL.UNIT.DECI_M.ToString()]   = (10, true),
+                [RDFVocabulary.GEOSPARQL.UNIT.CENTI_M.ToString()]  = (100, true),
+                [RDFVocabulary.GEOSPARQL.UNIT.MILLI_M.ToString()]  = (1000, true),
+                [RDFVocabulary.GEOSPARQL.UNIT.MICRO_M.ToString()]  = (1000000, true)
+            };
         #endregion
 
         #region GeoFunctionCall
@@ -156,30 +174,76 @@ namespace RDFSharp.Query
         }
 
         /// <summary>
-        /// Builds a <see cref="RDFGeoDistanceExpression"/> from <c>geof:distance(g1, g2, unit)</c>. The engine fixes
-        /// the unit of measure to metres, so the third argument (the unit IRI) is validated to be present but its
-        /// value is not otherwise used.
+        /// Builds a <see cref="RDFGeoDistanceExpression"/> from <c>geof:distance(g1, g2, unit)</c>: the engine computes in metres so a unit other than the metre wraps the distance in a division or a multiplication.
         /// </summary>
+        /// <exception cref="RDFQueryException">When the unit is not the metre or one of its decimal multiples/submultiples.</exception>
         private static RDFExpression BuildGeoDistanceExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
         {
             RequireGeoArgumentCount(parserContext, arguments, 3, RDFVocabulary.GEOSPARQL.GEOF.DISTANCE);
-            return new RDFGeoDistanceExpression(arguments[0], arguments[1]);
+
+            //The unit is validated at parse time so that an unsupported one never reaches the evaluation
+            (int Scale, bool IsSubmultiple) unit = ReadGeoUnit(parserContext, arguments[2], RDFVocabulary.GEOSPARQL.GEOF.DISTANCE);
+
+            //The engine measures the distance in metres
+            RDFGeoDistanceExpression distanceInMetres = new RDFGeoDistanceExpression(arguments[0], arguments[1]);
+
+            //The metre needs no conversion
+            if (unit.Scale == 1)
+                return distanceInMetres;
+
+            //The query asked for the distance in its own unit: the integer scale keeps the conversion exact
+            RDFTypedLiteral unitScale = new RDFTypedLiteral(unit.Scale.ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
+            //A unit smaller than the metre needs more of itself to cover the same distance while a larger one needs less
+            return unit.IsSubmultiple
+                ? (RDFExpression)new RDFMultiplyExpression(distanceInMetres, unitScale)
+                : new RDFDivideExpression(distanceInMetres, unitScale);
         }
 
         /// <summary>
-        /// Builds a <see cref="RDFGeoBufferExpression"/> from <c>geof:buffer(g, radius [, unit])</c>. The engine always
-        /// computes the buffer in metres, so the (optional) unit argument is accepted but discarded. When the radius is
-        /// a constant numeric literal it is stored as a fixed value; otherwise it is kept as a per-row expression.
+        /// Builds a <see cref="RDFGeoBufferExpression"/> from <c>geof:buffer(g, radius [, unit])</c>: the engine buffers in metres so the radius is converted from the (optional) unit, at parse time when it is a constant numeric literal and per row otherwise.
         /// </summary>
+        /// <exception cref="RDFQueryException">When the unit is not the metre or one of its decimal multiples/submultiples.</exception>
         private static RDFExpression BuildGeoBufferExpression(RDFQueryParserContext parserContext, List<RDFExpression> arguments)
         {
             if (arguments.Count < 2 || arguments.Count > 3)
                 throw new RDFQueryException("Cannot parse SPARQL function '" + RDFVocabulary.GEOSPARQL.GEOF.BUFFER + "': expected 2 or 3 argument(s) but found " + arguments.Count + " " + GetCoordinates(parserContext));
 
-            //Fixed radius: store as a double; dynamic radius: keep as a per-row expression
-            return TryGetDoubleLiteral(arguments[1], out double radius)
-                ? new RDFGeoBufferExpression(arguments[0], radius)
-                : new RDFGeoBufferExpression(arguments[0], arguments[1]);
+            //Without the unit argument the radius is already in metres
+            (int Scale, bool IsSubmultiple) unit = arguments.Count == 3
+                ? ReadGeoUnit(parserContext, arguments[2], RDFVocabulary.GEOSPARQL.GEOF.BUFFER)
+                : (1, false);
+
+            //Fixed radius: convert it to metres now and store it as a double
+            if (TryGetDoubleLiteral(arguments[1], out double radius))
+                return new RDFGeoBufferExpression(arguments[0], unit.IsSubmultiple ? radius / unit.Scale : radius * unit.Scale);
+
+            //Dynamic radius in metres: keep it as a per-row expression
+            if (unit.Scale == 1)
+                return new RDFGeoBufferExpression(arguments[0], arguments[1]);
+
+            //Dynamic radius in another unit: the integer scale keeps the per-row conversion to metres exact
+            RDFTypedLiteral unitScale = new RDFTypedLiteral(unit.Scale.ToString(CultureInfo.InvariantCulture), RDFModelEnums.RDFDatatypes.XSD_INTEGER);
+
+            //A unit smaller than the metre covers less ground per unit while a larger one covers more
+            return new RDFGeoBufferExpression(arguments[0], unit.IsSubmultiple
+                ? (RDFExpression)new RDFDivideExpression(arguments[1], unitScale)
+                : new RDFMultiplyExpression(arguments[1], unitScale));
+        }
+
+        /// <summary>
+        /// Reads the unit argument of a geo function into the scale that relates it to the metre.
+        /// </summary>
+        /// <exception cref="RDFQueryException">When the argument is not a constant IRI of the metre or of one of its decimal multiples/submultiples.</exception>
+        private static (int Scale, bool IsSubmultiple) ReadGeoUnit(RDFQueryParserContext parserContext, RDFExpression unitArgument, RDFResource functionIri)
+        {
+            //Only a constant IRI of a known unit is accepted: variables and literals cannot be converted at parse time
+            if (unitArgument is RDFConstantExpression constantExpression
+                 && constantExpression.LeftArgument is RDFResource unitIri
+                 && GeoUnits.TryGetValue(unitIri.ToString(), out (int Scale, bool IsSubmultiple) unit))
+                return unit;
+
+            throw new RDFQueryException("Cannot parse SPARQL function '" + functionIri + "': the unit of measure '" + unitArgument + "' is not supported, only the metre and its decimal multiples and submultiples are supported " + GetCoordinates(parserContext));
         }
 
         /// <summary>
