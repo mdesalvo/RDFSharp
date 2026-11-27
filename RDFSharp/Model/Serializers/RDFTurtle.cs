@@ -1596,9 +1596,10 @@ namespace RDFSharp.Model
 
         /// <summary>
         /// Check if the supplied code point represents a valid prefixed name start character
+        /// (it also permits "-" in order to accept hashed blank node labels)
         /// </summary>
         internal static bool IsBLANK_NODE_LABEL_StartChar(int codePoint)
-            => IsPN_CHARS_U(codePoint) || char.IsNumber((char)codePoint);
+            => IsPN_CHARS_U(codePoint) || char.IsNumber((char)codePoint) || codePoint == '-';
 
         /// <summary>
         /// Check if the supplied code point represents a valid blank node label character

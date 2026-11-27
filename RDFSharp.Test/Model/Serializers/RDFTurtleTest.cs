@@ -2623,7 +2623,7 @@ public class RDFTurtleTest
     {
         MemoryStream stream = new MemoryStream();
         using (StreamWriter writer = new StreamWriter(stream))
-            writer.Write("<http://subj/> <http://pred/> _:-nn2.");
+            writer.Write("<http://subj/> <http://pred/> _:.nn2.");
         Assert.ThrowsExactly<RDFModelException>(() => RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null));
     }
 
@@ -8877,6 +8877,19 @@ public class RDFTurtleTest
             new RDFResource("http://example.org/abcd\U0001D7CE"),
             new RDFResource("http://example.org/p"),
             new RDFResource("http://example.org/o"))));
+    }
+
+    [TestMethod]
+    public void ShouldDeserializeGraphWithBlankNodeHavingNegativeHash()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.Write("_:-123 <http://pred/> <http://obj/>.");
+        RDFGraph graph = RDFTurtle.Deserialize(new MemoryStream(stream.ToArray()), null);
+
+        Assert.IsNotNull(graph);
+        Assert.AreEqual(1, graph.TriplesCount);
+        Assert.IsTrue(string.Equals(graph.Single().Subject.ToString(), "bnode:-123", StringComparison.Ordinal));
     }
 
     [TestCleanup]

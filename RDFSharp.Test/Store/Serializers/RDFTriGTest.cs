@@ -676,6 +676,18 @@ public class RDFTriGTest
             new RDFResource("http://example.org/o"))));
     }
 
+    [TestMethod]
+    public void ShouldDeserializeDefaultGraphWithBlankNodeHavingNegativeHash()
+    {
+        MemoryStream stream = new MemoryStream();
+        using (StreamWriter writer = new StreamWriter(stream))
+            writer.Write("{_:-123 <http://pred/> <http://obj/>.}");
+        RDFMemoryStore store = RDFTriG.Deserialize(new MemoryStream(stream.ToArray()));
+
+        Assert.IsNotNull(store);
+        Assert.AreEqual(1, store.QuadruplesCount);
+    }
+
     [TestCleanup]
     public void Cleanup()
     {
