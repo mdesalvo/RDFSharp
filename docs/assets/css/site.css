@@ -347,6 +347,9 @@ div.card { background: none; }
 .pager .prev small::before { content: "← "; }
 .pager .next { text-align: right; margin-left: auto; }
 .pager .next small::after { content: " →"; }
+.improve { margin: 28px 0 0; font: 500 13px/1.4 var(--text); }
+.improve a { color: var(--faint); text-decoration: none; }
+.improve a:hover { color: var(--accent); }
 
 /* The web behind the page: a few nodes of linked data drifting in the margins, linked when they pass close. */
 .web { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }

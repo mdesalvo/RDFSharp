@@ -17,7 +17,7 @@ Then open http://localhost:4000/RDFSharp/. The `jekyll/jekyll:pages` image carri
 |---|---|
 | `_data/nav.yml` | the index: groups, pages and their order. The order is the reading order, which the pager at the foot of every page follows |
 | `_layouts/default.html` | the only layout: top bar, index, page header, pager |
-| `_includes/` | the logo and the hand-drawn graph of the home page |
+| `_includes/` | the logo and the cards that list the pages of a layer on its overview |
 | `assets/css/site.css`, `assets/js/site.js` | the whole look and behaviour, no framework |
 | `assets/data/` | the Vallerosa files every example works on |
 | `index.md`, `getting-started.md`, `vallerosa.md`, `going-further.md` | the pages outside the three layers |
@@ -34,11 +34,11 @@ lede: Find every wine of Tuscany, whatever the depth of the area it comes from. 
 ---
 ```
 
-The eyebrow above the title ("Query · 4 of 16") is computed from `nav.yml`.
+The eyebrow above the title (the name of the layer, such as "Query") is computed from `nav.yml`.
 
 ## The running example
 
-Every example works on the Vallerosa case, described in `vallerosa.md` and in the three files of `assets/data/`. That page is the reference: use its IRIs, its prefixes (`vr:` for the vocabulary, `vrd:` for the data), its wines and its numbers. Do not invent new wines, producers or prices; when a chapter needs something new (a dish, a sommelier, a bad import), give it a `vrd:` IRI and keep it inside that chapter.
+Every example works on the Vallerosa case, described in `vallerosa.md` and in the five files of `assets/data/`. That page is the reference: use its IRIs, its prefixes (`vr:` for the vocabulary, `vrd:` for the data), its wines and its numbers. Do not invent new wines, producers or prices; when a chapter needs something new (a dish, a sommelier, a bad import), give it a `vrd:` IRI and keep it inside that chapter.
 
 The vocabulary stays at RDF Schema level on purpose. Nothing in this manual uses OWL constructs beyond `owl:sameAs`: ontologies belong to the OWLSharp manual.
 
