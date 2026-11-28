@@ -93,6 +93,8 @@
     {%- if next %}<a class="next" href="{{ next.url | relative_url }}"><small>Next</small>{{ next.title }}</a>{% endif %}
   </nav>
   {%- endif %}
+
+  <p class="improve"><a href="https://github.com/mdesalvo/RDFSharp/edit/main/docs/{{ page.path }}">Improve this page</a></p>
 </main>
 
 <script>window.RDFSHARP_SEARCH = "{{ '/search.json' | relative_url }}";</script>
